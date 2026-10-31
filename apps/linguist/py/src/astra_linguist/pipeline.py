@@ -13,7 +13,13 @@ from dataclasses import dataclass
 from astra_lexicon import Replacer
 from astra_observe import get_tracer
 
-from .campaigns import MATCH_THRESHOLD, CampaignView, MatchedCampaign, match_campaign
+from .campaigns import (
+    MATCH_THRESHOLD,
+    CampaignView,
+    MatchedCampaign,
+    match_campaign,
+    named_campaign,
+)
 from .canonical import to_canonical
 from .context import build_context
 from .ingest import format_transcript
@@ -42,15 +48,24 @@ def process_session(
     resolver: SpeakerResolver,
     campaigns: list[CampaignView],
     threshold: int = MATCH_THRESHOLD,
+    campaign: str | None = None,
 ) -> SessionArtifacts:
-    """Raw scribe lines → formatted + (campaign-matched) context + canonical."""
+    """Raw scribe lines → formatted + (campaign-matched) context + canonical.
+
+    ``campaign`` is the `sessions.kdl` override (a `being.kdl` slug): the session is filed
+    under that campaign instead of the character-name match."""
     with _tracer.start_as_current_span("linguist.process_session") as span:
         transcript = format_transcript(date, audio, raw, replace, resolver)
-        matched = match_campaign(transcript, campaigns, threshold=threshold)
+        matched = (
+            named_campaign(transcript, campaigns, campaign)
+            if campaign is not None
+            else match_campaign(transcript, campaigns, threshold=threshold)
+        )
         context = build_context(transcript, matched) if matched is not None else None
         canonical = to_canonical(context) if context is not None else None
         span.set_attribute("linguist.lines", len(transcript.script))
         span.set_attribute("linguist.matched", matched is not None)
+        span.set_attribute("linguist.campaign_override", campaign is not None)
         return SessionArtifacts(
             transcript=transcript, matched=matched, context=context, canonical=canonical
         )

@@ -3,7 +3,8 @@
 // The GM's corrections for single sessions, which the pipeline reads instead of guessing.
 // Schema: `astra_ontology.sessions` (`SessionOverride`). One node per session:
 //
-//   session "<key>" [skip=#true] [kind="session"|"recap"|"special"] [title="…"] { note "why" }
+//   session "<key>" [skip=#true] [kind="session"|"recap"|"special"] [title="…"]
+//           [campaign="<slug>"] { note "why" }
 //
 // <key> is the session date (YYYY-M-D, not zero-padded) or, for a recap or special episode,
 // the date token of its id (<last>-recap-of-<first>).
@@ -11,10 +12,17 @@
 //          ingest, no mouthpiece episode. Its transcripts are still written.
 //   kind   the episode's kind, over what its script.json and digest.json say.
 //   title  the podcast episode title the mouthpiece catalog publishes.
-// An unknown property, a malformed key or a repeated key fails the load. The file is baked
+//   campaign  the being.kdl campaign slug the session belongs to, instead of the name-match
+//          guess: linguist files its transcript under that campaign's prefix and bills from
+//          its roles; the chronicle, heartwood and mouthpiece take it as the show; akasha
+//          files its page there. Output already written stays where it is until re-filed
+//          (linguist README). Cannot be combined with skip.
+// An unknown property, a malformed key, a repeated key, an unknown campaign slug, or skip
+// with campaign fails the load. The file is baked
 // into the Dagster image: an edit is live after `just deploy dagster-code dagster-daemon`.
-// akasha's build reads it too (a skipped session's transcript page stays in Script/Unsorted),
-// so a skip reaches akasha after `just deploy akasha-frontend`.
+// akasha's build reads it too (a skipped session's transcript page stays in Script/Unsorted;
+// a campaign override files it under that campaign), so an edit reaches akasha after
+// `just deploy akasha-frontend`.
 
 session "2025-6-30" skip=#true {
     note "Jorge's Starfinder game, not the Astra. Skipped with 2025-7-7 so it can never match a campaign; that session matched Deep Eyes only because \"Lev\" appears 14 times."
@@ -30,4 +38,12 @@ session "2025-8-11" skip=#true {
 
 session "2026-10-19-recap-of-2025-8-28" kind="special" {
     note "The prediction roundtable, rendered before episode files stored their kind."
+}
+
+session "2025-6-9" campaign="a-hunt-of-metal-and-vine" {
+    note "Two one-shots in one recording: the first half ends Noah's Cagley one-shot (Urth), the second half is A Hunt of Metal and Vine. The session stays filed under the second."
+}
+
+session "2026-9-3" campaign="urth" {
+    note "Noah's movie one-shot on Urth, with Josh, Jorge and Mike as Disney villains. It was filed under Through a Song, Darkly because the table talk names \"Benny\" 17 times and \"Johnny\" 10."
 }

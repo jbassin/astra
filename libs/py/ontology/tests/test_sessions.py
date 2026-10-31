@@ -73,3 +73,44 @@ def test_the_committed_file_loads_and_keeps_its_known_entries() -> None:
     special = o.get("2026-10-19-recap-of-2025-8-28")
     assert special is not None and special.kind == "special"
     assert all(entry.note for entry in o.sessions), "every override says why"
+
+
+def test_a_campaign_override_parses_and_is_looked_up() -> None:
+    o = parse_session_overrides('session "2026-9-3" campaign="urth" { note "Noah GMs" }')
+    assert o.campaign("2026-9-3") == "urth"
+    assert o.campaign("2026-9-4") is None
+    assert not o.skipped("2026-9-3")
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        'session "2026-9-3" skip=#true campaign="urth"',  # skipped yet filed
+        'session "2026-9-3" campaign=""',  # an empty slug
+    ],
+)
+def test_a_bad_campaign_override_fails_the_load(text: str) -> None:
+    with pytest.raises((KdlDecodeError, ValueError)):
+        parse_session_overrides(text)
+
+
+def test_an_unknown_campaign_slug_fails_the_load_when_the_roster_is_given(
+    tmp_path: Path,
+) -> None:
+    text = 'session "2026-9-3" campaign="urht"'
+    assert parse_session_overrides(text).campaign("2026-9-3") == "urht"  # no roster, no check
+    with pytest.raises(ValueError, match="urht"):
+        parse_session_overrides(text, campaigns=["urth", "deep-eyes"])
+    path = tmp_path / "sessions.kdl"
+    path.write_text(text)
+    with pytest.raises(ValueError, match="urht"):
+        load_session_overrides(path, campaigns=["urth"])
+    ok = 'session "2026-9-3" campaign="urth"'
+    assert parse_session_overrides(ok, campaigns=["urth"]).campaign("2026-9-3") == "urth"
+
+
+def test_the_committed_campaign_overrides_name_being_kdl_campaigns() -> None:
+    """ontology-being's loader checks every `campaign=` against being.kdl."""
+    o = session_overrides()
+    assert o.campaign("2026-9-3") == "urth"
+    assert o.campaign("2025-6-9") == "a-hunt-of-metal-and-vine"

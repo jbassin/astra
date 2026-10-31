@@ -4,7 +4,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { astraContentRoot } from "@astra/content-build";
-import { defaultBeingFile, loadBeing, loadSessionOverrides, skippedKeys } from "@astra/ontology";
+import {
+  defaultBeingFile,
+  loadBeing,
+  loadSessionOverrides,
+  parseSessionOverrides,
+  skippedKeys,
+} from "@astra/ontology";
 import { describe, expect, it } from "vitest";
 
 import { loadTranscripts, type ScriptLine } from "./transcript";
@@ -83,13 +89,56 @@ describe("sessions.kdl skips", () => {
   });
 
   it("leaves a skipped session in Script/Unsorted, billed by player name", () => {
-    const built = buildTranscripts(dir, [], being, new Set(["2025-8-11"]));
+    const skip = parseSessionOverrides('session "2025-8-11" skip=#true');
+    const built = buildTranscripts(dir, [], being, skip);
     expect(built.docs.map((d) => d.slug)).toEqual(["Script/Unsorted/2025-8-11"]);
     expect(built.meta["Script/Unsorted/2025-8-11"]?.speakers[0]?.char).toBe("Josh");
   });
 
   it("reads the checkout's sessions.kdl skips, which include The Blue Remains", () => {
     expect(skippedKeys(loadSessionOverrides()).has("2025-8-11")).toBe(true);
+  });
+});
+
+describe("sessions.kdl campaign overrides", () => {
+  // Campaign-3 names in the table talk, but the GM files the session under Urth.
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "akasha-campaign-"));
+  const script = [
+    ...Array.from({ length: 20 }, (_, i) => ({ ...line("Josh", i), text: "Benny waves." })),
+    { ...line("Josh", 20), text: "Fulton flexes." },
+    { ...line("Mike", 21), text: "Runway Brian squeaks." },
+    { ...line("Noah", 22), text: "Next up is Hades." },
+  ];
+  fs.writeFileSync(
+    path.join(dir, "2026-9-3.json"),
+    JSON.stringify({ date: "2026-9-3", audio: "/audio/2026-9-3.mp3", script }),
+  );
+  const being = loadBeing(defaultBeingFile());
+  const filed = parseSessionOverrides('session "2026-9-3" campaign="urth"');
+
+  it("guesses campaign 3 without the override", () => {
+    const built = buildTranscripts(dir, [], being);
+    expect(built.docs.map((d) => d.slug)).toEqual(["Script/Through-a-Song,-Darkly/2026-9-3"]);
+  });
+
+  it("files the page under the named campaign, billed from its roles", () => {
+    const built = buildTranscripts(dir, [], being, filed);
+    expect(built.docs.map((d) => d.slug)).toEqual(["Script/Urth/2026-9-3"]);
+    const chars = Object.fromEntries(
+      (built.meta["Script/Urth/2026-9-3"]?.speakers ?? []).map((s) => [s.user, s.char]),
+    );
+    // Josh plays two Urth one-shots: billed as the role this session names (Fulton, not Pete).
+    expect(chars).toEqual({ Josh: "Fulton", Mike: "Runway Brian", Noah: "Gamemaster" });
+  });
+
+  it("fails the build on a campaign being.kdl does not list", () => {
+    const typo = parseSessionOverrides('session "2026-9-3" campaign="urht"');
+    expect(() => buildTranscripts(dir, [], being, typo)).toThrow(/urht/);
+  });
+
+  it("reads the checkout's sessions.kdl, which files 2026-9-3 under Urth", () => {
+    const built = buildTranscripts(dir, [], being, loadSessionOverrides());
+    expect(built.docs.map((d) => d.slug)).toEqual(["Script/Urth/2026-9-3"]);
   });
 });
 

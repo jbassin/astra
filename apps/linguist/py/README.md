@@ -64,7 +64,16 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
 - **Show = the transcript's filename slug.** `show_for_date` reads `<slug>` from
   `<NNN>.<slug>.<date>.txt`; the slug matches a `being.kdl` campaign. Sessions that match no
   campaign are left out of the chronicle and pass mouthpiece's gate ungated. The campaign
-  match is a substring heuristic and can false-match; a `sessions.kdl` skip is the fix.
+  match is a substring heuristic and can false-match. The fix is in `sessions.kdl`: `skip=#true`
+  for a session in no show, or `campaign="<slug>"` to name its show. `session_transcripts` then
+  files it under that campaign (its prefix, billed from its roles) and `show_for_date` returns
+  that show whatever the filename says.
+- **A `campaign=` override does not move stored output.** It steers the next run only.
+  Re-materializing `session_transcripts` for the session writes the new stem and deletes the
+  old `<other>.<date>.txt` in `transcripts/` and `script/`; linguist-commit publishes the rename.
+  The chronicle episode keeps its old `show` until `session_episode_summary` reruns (paid) or
+  someone edits it, and the podcast episode keeps its id. akasha re-files the page on its next
+  build.
 - **Seasons regroup from scratch.** `campaign_timeline` sees only the episode list, so any new
   episode can re-partition a show's seasons and renumber season-nested URLs
   (`…/s<N>/<date>`). Josh accepted this; do not "fix" it without a new decision.

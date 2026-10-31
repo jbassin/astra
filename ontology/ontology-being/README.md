@@ -14,8 +14,10 @@ This package owns three files:
   (`@astra/ontology`: weal-bot, orator-backend, akasha-frontend) reads only this file.
 - `sessions.kdl`: the GM's per-session overrides. `skip=#true` leaves a session out of every
   show (no chronicle entry, heartwood ingest or mouthpiece episode; its transcripts are still
-  written), `kind` sets the episode kind, `title` sets the published podcast title, and a
-  `note` child says why.
+  written), `kind` sets the episode kind, `title` sets the published podcast title,
+  `campaign` names the `being.kdl` campaign a session belongs to (linguist, the chronicle,
+  heartwood, mouthpiece and akasha use it instead of the name-match guess; an unknown slug, or
+  `campaign` with `skip`, fails the load), and a `note` child says why.
 
 The models and parsers are in [`libs/py/ontology`](../../libs/py/ontology/README.md); this
 package pins the paths.

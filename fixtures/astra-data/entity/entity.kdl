@@ -243,6 +243,9 @@ entity "Bev Sirnow" {
     alias "Bev Cerno"
     source "defs"
 }
+entity "Billy Pebbles" kind="person" being="tanner" {
+    source "being"
+}
 entity "Black and White" {
     alias "black and white"
     source "defs"
@@ -292,6 +295,9 @@ entity "Chorath" {
     source "defs"
 }
 entity "Chris Gangle" kind="person" being="mike" {
+    source "being"
+}
+entity "Chuck" kind="person" being="mike" {
     source "being"
 }
 entity "Cliff" kind="person" being="jorge" {
@@ -469,6 +475,9 @@ entity "Fort DC" {
     alias "fort\\s*TC"
     source "defs"
 }
+entity "Fulton" kind="person" being="josh" {
+    source "being"
+}
 entity "Færrin" kind="place" page="Geography/Færrin" {
     alias "Farron"
     alias "Ferrum"
@@ -569,6 +578,9 @@ entity "Gryphon" {
 entity "Gryphonline" {
     alias "Griffin\\s*line"
     source "defs"
+}
+entity "Hades" kind="person" being="jorge" {
+    source "being"
 }
 entity "Hallia" kind="place" page="Geography/Calaria/Hallia/index" {
     alias "Halia"
@@ -1011,6 +1023,9 @@ entity "PaSuun" {
     alias "Hasun"
     source "defs"
 }
+entity "Pete" kind="person" being="josh" {
+    source "being"
+}
 entity "Pharos" {
     alias "Ferris"
     alias "Firas"
@@ -1072,6 +1087,9 @@ entity "Regent" {
     alias "regent"
     source "defs"
 }
+entity "Ren" kind="person" being="jorge" {
+    source "being"
+}
 entity "Renge" {
     alias "Renga"
     alias "Rengo"
@@ -1107,6 +1125,9 @@ entity "RunGunners" {
     alias "Run Gunners"
     alias "run gunners"
     source "defs"
+}
+entity "Runway Brian" kind="person" being="mike" {
+    source "being"
 }
 entity "Sable and Suns" {
     alias "Sable and Sons"

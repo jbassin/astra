@@ -35,6 +35,7 @@ class CampaignView:
     name: str
     is_main: bool
     roles: dict[str, list[CharacterRole]]
+    slug: str = ""  # the being.kdl slug, which a `sessions.kdl` `campaign=` names
 
 
 @dataclass(frozen=True)
@@ -55,7 +56,9 @@ def campaign_views(being: Being) -> list[CampaignView]:
             roles.setdefault(player, []).append(
                 CharacterRole(name=role.character, desc=list(role.descriptions))
             )
-        views.append(CampaignView(name=campaign.name, is_main=campaign.main, roles=roles))
+        views.append(
+            CampaignView(name=campaign.name, is_main=campaign.main, roles=roles, slug=campaign.slug)
+        )
     return views
 
 
@@ -77,30 +80,52 @@ def match_campaign(
 ) -> MatchedCampaign | None:
     """First campaign whose character names clear the keyword threshold + its billing."""
     for idx, campaign in enumerate(campaigns):
-        keywords = _character_names(campaign)
-        hits: dict[str, int] = {kw: 0 for kw in keywords}
-        for line in transcript.script:
-            for keyword in keywords:
-                if keyword in line.text:
-                    hits[keyword] += 1
-
+        hits = _hits(transcript, campaign)
         if sum(hits.values()) < threshold:
             continue
-
-        billing: dict[str, CharacterRole] = {}
-        for player, roles in campaign.roles.items():
-            best_name: str | None = None
-            best = -1
-            for role in roles:
-                hit = hits.get(role.name, -1)
-                if hit > best:
-                    best_name, best = role.name, hit
-            for role in roles:
-                if role.name == best_name or role.name in GM_NAMES:
-                    billing[player] = role
-                    break
-        return MatchedCampaign(campaign=campaign, idx=idx, billing=billing)
+        return MatchedCampaign(campaign=campaign, idx=idx, billing=_billing(campaign, hits))
     return None
+
+
+def named_campaign(
+    transcript: Transcript, campaigns: list[CampaignView], slug: str
+) -> MatchedCampaign:
+    """The campaign `sessions.kdl` names for this session (`campaign=<slug>`), billed as
+    `match_campaign` bills: each player as their most-named role. No threshold: the GM
+    said so. Raises `ValueError` for a slug that is not in ``campaigns``."""
+    for idx, campaign in enumerate(campaigns):
+        if campaign.slug == slug:
+            billing = _billing(campaign, _hits(transcript, campaign))
+            return MatchedCampaign(campaign=campaign, idx=idx, billing=billing)
+    raise ValueError(f"sessions.kdl names campaign {slug!r}, which being.kdl does not list")
+
+
+def _hits(transcript: Transcript, campaign: CampaignView) -> dict[str, int]:
+    """Lines naming each of the campaign's characters."""
+    keywords = _character_names(campaign)
+    hits: dict[str, int] = {kw: 0 for kw in keywords}
+    for line in transcript.script:
+        for keyword in keywords:
+            if keyword in line.text:
+                hits[keyword] += 1
+    return hits
+
+
+def _billing(campaign: CampaignView, hits: dict[str, int]) -> dict[str, CharacterRole]:
+    """Each player → their most-named role (the first on a tie; the GM stays the GM)."""
+    billing: dict[str, CharacterRole] = {}
+    for player, roles in campaign.roles.items():
+        best_name: str | None = None
+        best = -1
+        for role in roles:
+            hit = hits.get(role.name, -1)
+            if hit > best:
+                best_name, best = role.name, hit
+        for role in roles:
+            if role.name == best_name or role.name in GM_NAMES:
+                billing[player] = role
+                break
+    return billing
 
 
 def campaign_filename(matched: MatchedCampaign) -> str:

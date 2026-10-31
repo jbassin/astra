@@ -44,48 +44,79 @@ export function matchCampaign(
   nameBySlug: Map<string, string>,
 ): MatchedCampaign | null {
   for (const campaign of campaigns) {
-    const keywords = characterNames(campaign);
-    const hits: Record<string, number> = {};
-    for (const k of keywords) hits[k] = 0;
-    for (const { text } of transcript.script) {
-      for (const keyword of keywords) {
-        if (text.includes(keyword)) hits[keyword] = (hits[keyword] ?? 0) + 1;
-      }
-    }
-
+    const hits = characterHits(transcript, campaign);
     let sum = 0;
     for (const v of Object.values(hits)) sum += v;
     if (sum < MATCH_THRESHOLD) continue;
-
-    // Bill each player as their highest-hit character (GM stays GM), keyed by name.
-    const byPlayer = new Map<string, Role[]>();
-    for (const r of campaign.roles) {
-      const list = byPlayer.get(r.player) ?? [];
-      list.push(r);
-      byPlayer.set(r.player, list);
-    }
-    const billing: Record<string, string> = {};
-    for (const [playerSlug, roles] of byPlayer) {
-      const name = nameBySlug.get(playerSlug) ?? playerSlug;
-      const gm = roles.find(isGm);
-      if (gm) {
-        billing[name] = gm.character;
-        continue;
-      }
-      let best = -1;
-      let bestChar = roles[0]?.character ?? name;
-      for (const r of roles) {
-        const h = hits[r.character] ?? -1;
-        if (h > best) {
-          best = h;
-          bestChar = r.character;
-        }
-      }
-      billing[name] = bestChar;
-    }
-    return { campaign, billing };
+    return { campaign, billing: billingFor(campaign, hits, nameBySlug) };
   }
   return null;
+}
+
+/**
+ * The campaign `sessions.kdl` names for a session (`campaign="<slug>"`), billed the way
+ * `matchCampaign` bills, with no threshold: the GM's word replaces the guess. Throws for a
+ * slug being.kdl does not list.
+ */
+export function namedCampaign(
+  transcript: Transcript,
+  campaigns: Campaign[],
+  slug: string,
+  nameBySlug: Map<string, string>,
+): MatchedCampaign {
+  const campaign = campaigns.find((c) => c.slug === slug);
+  if (!campaign) throw new Error(`sessions.kdl names campaign "${slug}", not in being.kdl`);
+  return {
+    campaign,
+    billing: billingFor(campaign, characterHits(transcript, campaign), nameBySlug),
+  };
+}
+
+/** Lines naming each of the campaign's non-GM characters. */
+function characterHits(transcript: Transcript, campaign: Campaign): Record<string, number> {
+  const keywords = characterNames(campaign);
+  const hits: Record<string, number> = {};
+  for (const k of keywords) hits[k] = 0;
+  for (const { text } of transcript.script) {
+    for (const keyword of keywords) {
+      if (text.includes(keyword)) hits[keyword] = (hits[keyword] ?? 0) + 1;
+    }
+  }
+  return hits;
+}
+
+/** Bill each player as their highest-hit character (GM stays GM), keyed by name. */
+function billingFor(
+  campaign: Campaign,
+  hits: Record<string, number>,
+  nameBySlug: Map<string, string>,
+): Record<string, string> {
+  const byPlayer = new Map<string, Role[]>();
+  for (const r of campaign.roles) {
+    const list = byPlayer.get(r.player) ?? [];
+    list.push(r);
+    byPlayer.set(r.player, list);
+  }
+  const billing: Record<string, string> = {};
+  for (const [playerSlug, roles] of byPlayer) {
+    const name = nameBySlug.get(playerSlug) ?? playerSlug;
+    const gm = roles.find(isGm);
+    if (gm) {
+      billing[name] = gm.character;
+      continue;
+    }
+    let best = -1;
+    let bestChar = roles[0]?.character ?? name;
+    for (const r of roles) {
+      const h = hits[r.character] ?? -1;
+      if (h > best) {
+        best = h;
+        bestChar = r.character;
+      }
+    }
+    billing[name] = bestChar;
+  }
+  return billing;
 }
 
 /** The character a speaker is billed as this session, or their real name if the

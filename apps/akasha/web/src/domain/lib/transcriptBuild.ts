@@ -3,7 +3,8 @@
  * linguist session JSON into wiki pages: matchCampaign routes each session into
  * `Script/<campaign>/`
  * (or `Script/Unsorted/`; a session `sessions.kdl` marks `skip=#true` matches no campaign,
- * as linguist's `show_for_date` treats it), the markup mirrors faerrin's `remark-transcript.mjs`
+ * and one it gives `campaign=` goes to that campaign, as linguist's `show_for_date` treats
+ * them), the markup mirrors faerrin's `remark-transcript.mjs`
  * OUTPUT shape (`audio[data-transcript]` + `.transcript-line` rows the
  * TranscriptPlayer attaches to), and the proper-noun linker auto-links mentions of
  * wiki pages. The produced SiteDocs merge into the same site graph as the snapshot
@@ -12,9 +13,15 @@
  * Build-only (imported solely by scripts/build-content.ts) — keeps node:fs out of
  * the client/SSR bundle.
  */
-import type { Being } from "@astra/ontology";
+import {
+  type Being,
+  campaignOverrides,
+  checkSessionCampaigns,
+  type SessionOverrides,
+  skippedKeys,
+} from "@astra/ontology";
 
-import { characterFor, type MatchedCampaign, matchCampaign } from "./campaigns";
+import { characterFor, type MatchedCampaign, matchCampaign, namedCampaign } from "./campaigns";
 import { buildLinker, escapeHtml, type LinkEntry } from "./linker";
 import { readingMinutes } from "./renderBody";
 import type { SiteDoc } from "./site";
@@ -119,15 +126,23 @@ function renderTranscript(
  * + the player slug→name map.
  */
 /**
- * @param skipped session dates `sessions.kdl` marks `skip=#true` (`skippedKeys`): they
- *   match no campaign, so their pages stay in `Script/Unsorted/`.
+ * @param overrides `sessions.kdl`: a session marked `skip=#true` matches no campaign, so its
+ *   page stays in `Script/Unsorted/`; one with `campaign="<slug>"` is filed under that
+ *   campaign, billed from its roles, instead of `matchCampaign`'s guess. A slug being.kdl
+ *   does not list fails the build.
  */
 export function buildTranscripts(
   dataDir: string,
   corpus: SiteDoc[],
   being: Being,
-  skipped: ReadonlySet<string> = new Set(),
+  overrides: SessionOverrides = { sessions: [] },
 ): TranscriptBuild {
+  checkSessionCampaigns(
+    overrides,
+    being.campaigns.map((c) => c.slug),
+  );
+  const skipped = skippedKeys(overrides);
+  const filed = campaignOverrides(overrides);
   const nameBySlug = new Map(being.players.map((p) => [p.slug, p.name]));
 
   const entries: LinkEntry[] = [];
@@ -149,9 +164,12 @@ export function buildTranscripts(
   const meta: Record<string, TranscriptMeta> = {};
 
   for (const transcript of transcripts) {
+    const named = filed.get(transcript.date);
     const match = skipped.has(transcript.date)
       ? null
-      : matchCampaign(transcript, being.campaigns, nameBySlug);
+      : named !== undefined
+        ? namedCampaign(transcript, being.campaigns, named, nameBySlug)
+        : matchCampaign(transcript, being.campaigns, nameBySlug);
     const folder = match ? match.campaign.name : UNSORTED_FOLDER;
     const rel = transcriptRel(folder, transcript.date);
     const slug = slugifyFilePath(rel as FilePath);
