@@ -22,7 +22,8 @@ The Python [`astra-vellum-lang`](../../py/vellum-lang/README.md) extracts only t
   segments of letters, digits, `.`, `_` and `-`, ending in png, jpg, jpeg, webp or gif:
   `![Map of Althane](maps/althane.png "Optional caption")`. akasha-frontend serves those files
   from its own origin; anything else (an `https://` URL, `/x.png`, a missing file) is never
-  fetched.
+  fetched. Only the inline form works: a reference-style image (`![alt][ref]`) renders as
+  error chips, and the validator does not yet flag it.
 - Constructs: `parseFrontmatter`, `splitFrontmatter`, `CROSSREF_RE`, `collectCrossRefs`,
   `splitCrossRefs`, `transformCrossRefs` (cross-references are parsed, not resolved),
   `parseFields` (`:::fields`), `parseTimeline` (`:::timeline`), and the model types and

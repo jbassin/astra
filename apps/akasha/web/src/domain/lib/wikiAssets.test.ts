@@ -89,6 +89,19 @@ describe("scanAssets / writeAssets / imageResolver", () => {
     expect(resolve("https://i.imgur.com/x.png")).toBeNull();
   });
 
+  it("never follows a symlink, even one named like an image or one that loops", () => {
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), "wiki-assets-"));
+    const dir = path.join(tmp, "assets");
+    fs.mkdirSync(path.join(dir, "maps"), { recursive: true });
+    fs.writeFileSync(path.join(tmp, "secret.txt"), "not for the web");
+    fs.symlinkSync(path.join(tmp, "secret.txt"), path.join(dir, "leak.png"));
+    fs.symlinkSync("..", path.join(dir, "maps", "loop"));
+
+    const { assets, skipped } = scanAssets(dir);
+    expect(assets).toEqual([]);
+    expect(skipped).toEqual(["leak.png", "maps/loop"]);
+  });
+
   it("returns nothing when astra-data has no assets folder yet", () => {
     expect(scanAssets("/nonexistent/akasha/assets")).toEqual({ assets: [], skipped: [] });
   });

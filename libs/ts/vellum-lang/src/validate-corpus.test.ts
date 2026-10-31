@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -62,5 +62,15 @@ describe("validate-corpus images", () => {
     expect((await validate(["--dir", lone])).code).toBe(1);
     expect((await validate(["--dir", lone, "--assets", assets])).code).toBe(0);
     expect((await validate(["--dir", content, "--assets", lone])).code).toBe(1);
+  });
+
+  test("a symlinked image doesn't count, and a symlink loop doesn't crash the walk", async () => {
+    const { content, assets } = corpus("![Map](leak.png)\n", ["maps/real.png"]);
+    writeFileSync(join(root, "secret.txt"), "x");
+    symlinkSync(join(root, "secret.txt"), join(assets, "leak.png"));
+    symlinkSync("..", join(assets, "maps", "loop"));
+    const { code, out } = await validate(["--dir", content]);
+    expect(code).toBe(1);
+    expect(out).toContain("image leak.png: no such file");
   });
 });

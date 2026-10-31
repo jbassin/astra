@@ -146,13 +146,15 @@ function vellumFiles(dir: string, acc: string[] = []): string[] {
   return acc;
 }
 
-/** Every file under the assets folder, as `/`-separated paths relative to it. */
+/** Every regular file under the assets folder, as `/`-separated paths relative to it.
+ *  Symlinks are not followed (a loop would crash the walk) and don't count, matching
+ *  akasha's build, which never ships them. */
 function assetPaths(dir: string, prefix = "", acc = new Set<string>()): Set<string> {
   if (!existsSync(dir)) return acc;
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) assetPaths(full, `${prefix}${entry}/`, acc);
-    else acc.add(`${prefix}${entry}`);
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) assetPaths(full, `${prefix}${entry.name}/`, acc);
+    else if (entry.isFile()) acc.add(`${prefix}${entry.name}`);
   }
   return acc;
 }
