@@ -7,10 +7,14 @@ for the wiki and its images (`akasha/content/`, `akasha/assets/`), made in your 
 in the live clone at
 `/ruby/data/astra-state/astra-data` (an uncommitted edit there makes heartwood refuse to run).
 Pull first, keep the commit small, and push promptly, since a bot commit to the same lines
-makes the bots' rebase fail. A pushed edit goes live with the next heartwood publish or
-session, or with `just deploy akasha-frontend` once the linguist-commit timer has pulled it (it fetches
-every 15 minutes). Don't hand-edit the generated
-files; change the code in astra instead.
+makes the bots' rebase fail. akasha-frontend takes page bodies from `akasha/content/` but the page
+list, titles and links from `akasha/snapshot/akasha-snapshot.json`, so a page edit needs the snapshot (and, for a new or renamed page, the entity
+registry) regenerated in the same clone: from an astra checkout, run
+`ASTRA_CONTENT_ROOT=<your clone> uv run akasha-snapshot` and
+`ASTRA_CONTENT_ROOT=<your clone> uv run astra-ontology-entity-seed`, and commit both files. A
+pushed edit goes live with the next heartwood publish or session, or with `just deploy
+akasha-frontend` once the linguist-commit timer has pulled it (it fetches every 15 minutes).
+Don't hand-edit the generated files; change the code in astra instead.
 
 The history starts at a snapshot commit; older history of these files is in the astra repo,
 where they lived until October 2026.
@@ -29,6 +33,14 @@ where they lived until October 2026.
 | `heartwood/agent-runs.jsonl` | heartwood's run ledger, one line per published or reverted session | heartwood |
 | `entity/entity.kdl` | The in-world noun registry (seeded from the snapshot, defs and roster) | `astra-ontology-entity-seed` |
 
+## Who reads it
+
+astra's config (`ontology/ontology-config/config.kdl`, `data.content-root` and the `data.*`
+dataset paths) points at the live clone. The Dagster pipeline reads and writes it through
+bind mounts. The akasha and mouthpiece frontends bake it in at build time (`deploy.sh` passes
+the clone's committed HEAD as the `astra-data` Docker build context). The wiki's transcript
+pages, the podcast site and `api.akasha.iridi.cc/scripts/` all serve what is here.
+
 ## Inline images
 
 A page shows an image from `akasha/assets/` with plain Markdown, the path relative to that
@@ -38,10 +50,3 @@ an external URL is never shown (only its alt text), and astra's corpus validator
 missing file, or an image without alt text. Keep files small. An image goes live with the next
 `just deploy akasha-frontend`, like a page edit.
 
-## Who reads it
-
-astra's config (`ontology/ontology-config/config.kdl`, `data.content-root` and the `data.*`
-dataset paths) points at the live clone. The Dagster pipeline reads and writes it through
-bind mounts. The akasha and mouthpiece frontends bake it in at build time (`deploy.sh` passes
-the clone's committed HEAD as the `astra-data` Docker build context). The wiki's transcript
-pages, the podcast site and `api.akasha.iridi.cc/scripts/` all serve what is here.
