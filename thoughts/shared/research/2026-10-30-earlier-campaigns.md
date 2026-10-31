@@ -39,7 +39,7 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    `/Geography/F%C3%A6rrin/Calaria` serve; the old top-level ones 404. The Hellsmouth
    `defs.kdl` change makes `stored_corrections_sensor` rewrite stored text once; check its run
    in Dagster and that linguist-commit published it.
-2. **Urth content follow-up** (2026-9-3 was Noah's "sucked into the movie" one-shot, filed as
+2. **Done 2026-10-30.** Urth content follow-up (2026-9-3 was Noah's "sucked into the movie" one-shot, filed as
    campaign 3; its published podcast episode stays exactly as it is, Josh's call):
    a. In Dagster, materialize `session_transcripts` for partition `2026-9-3` (free, no LLM). It
       writes `linguist/transcripts/112.urth.2026-9-3.txt` (billed Hades = Jorge, Fulton = Josh,
@@ -59,6 +59,10 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
       `Bestiary/Fiends` (holds the Hellion) gains `urth`. Then validate, `akasha-snapshot`,
       `astra-ontology-entity-seed`, push, pull the live clone under the git-publish lock,
       `just deploy akasha-frontend` (the procedure is in 0.5).
+   Result: astra-data `515c96e` (rename), `ea8b830` (chronicle), `57dec9c` (stamps), `0bc667c`
+   (seasons). The regroup also retitled two seasons and merged Observatory, Slipped's two
+   seasons into one. `/chronicle/urth/2026-9-3` and `/Script/Urth/2026-9-3` serve. You don't
+   need to wait for the timer: `just linguist-commit --yes` publishes and redeploys at once.
 3. **Vault images.** Copy the vault's images from `/home/jbassin/campaign-2/content/Assets/`
    into astra-data `akasha/assets/` (path form and rules: `libs/ts/vellum-lang/README.md`,
    akasha README) and put `![alt](path "caption")` back where the vault embedded them. The
@@ -160,6 +164,9 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
   (`snapshot.validate_corpus`, `astra_ops.heartwood.validate_argv`) rely on the assets folder
   sitting beside the content folder instead of passing `--assets` from config. Fine with the
   live config.
+- **The entity seed merges `being` characters into pages by name alone.** Since #167, Mike's
+  Cagley character Chuck marks the Harlequin NPC page `Org/The Harlequins/People/Chuck` as
+  `being="mike"`. Nothing reads `being` yet; it's in the backlog.
 - **Pre-existing bug, untouched:** a link to the nonexistent `Divinity/Outer Gods/index`
   silently resolves to the wiki's root `index`.
 
@@ -306,7 +313,7 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 - [x] 4b. Geography nested by world (#166; astra-data `ccbc24e`); Hellsmith → Hellsmouth
 - [x] 4c. Urth registered as one show; `sessions.kdl` `campaign=` override (#167)
 - [x] Deploy #165 to #167 (`8650c097`, 2026-10-31)
-- [ ] Urth content follow-up (0.2 step 2)
+- [x] Urth content follow-up (0.2 step 2; astra-data `0bc667c`, 2026-10-30)
 - [ ] Vault images added (0.2 step 3)
 - [ ] 5. heartwood backfill (paid)
 - [ ] 6. Chronicle backfill (paid), Sessions label

@@ -9,9 +9,9 @@ Updated 2026-10-31.
   section 0. Campaign 2 (Deep Eyes, Althane), its Færrin one-shots, Risk of Ruin (campaign 1)
   and Noah's Urth one-shots are registered; heartwood takes any Astra-world campaign; wiki
   pages carry a `campaigns` list shown as "Known from"; Josh's campaign-2 vault is imported;
-  Geography is nested by world; akasha can show inline images it serves itself. Live:
-  astra-data `ccbc24e`. Deployed `8650c097`. Next (section 0.2): the Urth content follow-up,
-  the vault images, then the paid heartwood backfill of 27 sessions (ask Josh first).
+  Geography is nested by world; akasha can show inline images it serves itself. 2026-9-3
+  is refiled under Urth (transcript, chronicle, page stamps). Live: astra-data `0bc667c`.
+  Deployed `8650c097`. Next (section 0.2): the vault images, then the paid heartwood backfill of 27 sessions (ask Josh first).
 - **akasha redesign is live (2026-10-30, #154 to #157, deployed `c5021a72`).** The stakeholders
   asked for a complete redesign. akasha now has light and dark themes (following the system, with
   a switch), Literata and Archivo instead of Caslon Antique, one colour per wiki section, a new
