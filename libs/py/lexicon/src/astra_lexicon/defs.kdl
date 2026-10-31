@@ -1092,4 +1092,5 @@ entry "Toleros" {
 }
 entry "Ret" {
     variant "Rett"
+    variant "Rhett"
 }

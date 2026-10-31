@@ -1110,6 +1110,7 @@ entity "Renge" {
 }
 entity "Ret" {
     alias "Rett"
+    alias "Rhett"
     source "defs"
 }
 entity "Reverend" kind="person" being="noah" {
