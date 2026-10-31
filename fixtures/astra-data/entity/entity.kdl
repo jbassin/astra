@@ -588,6 +588,10 @@ entity "Heir of the Plague" kind="deity" page="Divinity/Outer Gods/Heir of the P
     alias "Heir"
     source "akasha"
 }
+entity "Hellsmouth" {
+    alias "Hellsmith"
+    source "defs"
+}
 entity "Helmyster" {
     alias "Hell?m[ie]ster"
     alias "Helmstier"

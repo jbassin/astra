@@ -1069,3 +1069,6 @@ entry "Aurthalaxus" ipa="ˈɔr.θə.læk.səs" {
 entry "Macharius" ipa="mə.ˈkɑ.ri.əs" {
     variant "Macarius"
 }
+entry "Hellsmouth" {
+    variant "Hellsmith"
+}
