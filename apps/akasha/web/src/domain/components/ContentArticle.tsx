@@ -24,7 +24,7 @@ export function ContentArticle({ view }: { view: ContentView }) {
       <header className="ak-article-head popover-hint">
         {view.showBreadcrumbs && <Breadcrumbs crumbs={view.crumbs} />}
         <ArticleTitle title={view.title} />
-        <ContentMeta tags={view.tags} date={view.date} />
+        <ContentMeta tags={view.tags} date={view.date} knownFrom={view.knownFrom} />
       </header>
       {/* The build-rendered vellum body (gothic DocumentView + resolved crossref hrefs,
           N3, decorated with link sections and heading ids). dangerouslySetInnerHTML: the

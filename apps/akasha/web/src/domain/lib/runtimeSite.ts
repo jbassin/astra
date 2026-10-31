@@ -13,7 +13,7 @@
  */
 import { BODIES } from "@/generated/bodies";
 import { SHOWS } from "@/generated/chronicle";
-import { ALIASES, type GeneratedPage, PAGES } from "@/generated/site";
+import { ALIASES, CAMPAIGN_NAMES, type GeneratedPage, PAGES } from "@/generated/site";
 import { TRANSCRIPT_MINUTES } from "@/generated/transcripts";
 
 import type { ChronicleEpisode, ChronicleShow } from "./chronicleTypes";
@@ -47,6 +47,7 @@ function reconstruct(pages: GeneratedPage[]): SiteData {
     img: p.img,
     links: p.links as SimpleSlug[],
     date: p.date ? new Date(p.date) : undefined,
+    campaigns: p.campaigns ?? [],
   }));
   return indexDocs(docs);
 }
@@ -101,6 +102,13 @@ export interface SessionsView {
   sessions: SessionLinkView[];
 }
 
+/** A campaign the page draws on, for its "Known from" line: the campaign's name, and its
+ *  Sessions page when the chronicle has the campaign (else null). */
+export interface CampaignView {
+  label: string;
+  href: string | null;
+}
+
 /** What the wiki page's right rail shows (WikiRail), for content pages and folder pages. */
 interface PageRail {
   /** Wiki pages that link here, by title ("Mentioned on"). Transcripts are in `sessions`. */
@@ -118,6 +126,8 @@ export interface ContentView extends PageRail {
   img?: string;
   /** the page's baked committer date (ISO), if any */
   date?: string;
+  /** the campaigns the page draws on, oldest first ("Known from") */
+  knownFrom: CampaignView[];
   /** approximate reading time (minutes); no longer shown on wiki pages */
   readingMinutes: number;
   /** build-rendered vellum body HTML (gothic + resolved crossrefs, N3). For a
@@ -138,9 +148,10 @@ export interface FolderView extends PageRail {
   crumbs: Crumb[];
   /** the folder index's own vellum body HTML (empty if the folder has no index page) */
   bodyHtml: string;
-  /** the folder index's tags and date, for the facts row (none without an index page) */
+  /** the folder index's tags, date and campaigns, for the facts row (none without an index) */
   tags: LinkView[];
   date?: string;
+  knownFrom: CampaignView[];
   itemsLabel: string;
   entries: PageEntryView[];
 }
@@ -287,6 +298,24 @@ export function sessionsView(
   return { strip, sessions };
 }
 
+// ── the "Known from" line ─────────────────────────────────────────────────────────
+/**
+ * The campaigns a page draws on (frontmatter slugs, oldest first) by their being.kdl names,
+ * each linked to its Sessions page (`/chronicle/<slug>`) when the chronicle has that show. A
+ * slug being.kdl doesn't know shows as itself.
+ */
+export function knownFromView(
+  campaigns: string[],
+  names: Record<string, string> = CAMPAIGN_NAMES,
+  shows: ChronicleShow[] = SHOWS,
+): CampaignView[] {
+  const chronicled = new Set(shows.map((s) => s.show));
+  return campaigns.map((slug) => ({
+    label: names[slug] ?? slug,
+    href: chronicled.has(slug) ? `/chronicle/${slug}` : null,
+  }));
+}
+
 // ── view builders ─────────────────────────────────────────────────────────────────
 /** The rail for a page (a content page or a folder's index): its backlinks split into wiki
  *  pages and transcripts, and its body's contents. */
@@ -316,6 +345,7 @@ export function contentView(slug: FullSlug): ContentView {
     tags: doc.tags.map((t) => tagsLink(slug, t)),
     img: doc.img,
     date: doc.date?.toISOString(),
+    knownFrom: knownFromView(doc.campaigns),
     // Transcript bodies are code-split + server-loaded by the route loader, so their
     // 115 MB of HTML never enters the BODIES bundle; minutes come from the small map.
     readingMinutes: isTranscript ? transcriptMinutes : (body?.minutes ?? 0),
@@ -343,6 +373,7 @@ export function folderView(folder: string): FolderView {
     bodyHtml: BODIES[slug]?.html ?? "",
     tags: idx ? idx.tags.map((t) => tagsLink(slug, t)) : [],
     date: idx?.date?.toISOString(),
+    knownFrom: knownFromView(idx?.campaigns ?? []),
     ...pageRail(slug),
     itemsLabel:
       children.length === 1

@@ -13,7 +13,8 @@ input is session audio: `/audio/<date>.mp3` is served from `/ruby/data/astra-sta
 
 `scripts/build-content.ts` runs at vite `buildStart` and writes `src/generated/`:
 
-- `site.ts`: the page index (slugs, folders, tags, backlinks, aliases) from `buildSite(snapshot)`.
+- `site.ts`: the page index (slugs, folders, tags, backlinks, aliases, campaign names) from
+  `buildSite(snapshot)`; the page record type is `GeneratedPage` (`generatedPage.ts`).
 - `bodies.ts`: every wiki page rendered once through gothic `DocumentView` to static HTML. Wiki
   links resolve through the snapshot's `edges` (`src/domain/lib/crossref.ts`); a dangling link
   stays gothic's placeholder span. `decorateBody` (`renderBody.tsx`) then adds, without changing
@@ -71,7 +72,8 @@ Node indexing API and writes `dist/client/pagefind/`.
 - **Error and 404 pages** (`RouteError.tsx`) render inside the shell. When the root loader
   itself failed, they render bare: the header and rails read its section counts.
 - **Wiki page.** `ContentArticle` renders the head (crumbs without Home, the top folder as its
-  section in its hue; the title; a facts row of tag chips and "Updated 5 June 2026"), the body,
+  section in its hue; the title; a facts row of tag chips, "Updated 5 June 2026" and "Known
+  from: The First Spark and Interred in Iomenei"), the body,
   and `WikiRail`: "On this page" (from two `toc` entries), "Sessions" (a tick per main-campaign
   chronicle episode, filled where its transcript links here, and a list of every linking
   session) and "Mentioned on" (wiki backlinks only). `contentView` (`runtimeSite.ts`) splits the
@@ -79,6 +81,11 @@ Node indexing API and writes `dist/client/pagefind/`.
   are ink with a 2 px underline in the target's hue: `a[data-section]` sets `--link-hue`
   (`wiki.css`) on any page, and the transcript linker (`linker.ts`) adds `data-section` too.
   gothic's blocks (cards, fields, timeline, tables, code) are styled in `wiki-blocks.css`.
+  "Known from" lists the page's frontmatter `campaigns` (oldest first; heartwood stamps them)
+  by their `being.kdl` names (`CAMPAIGN_NAMES` in the generated `site.ts`), joined with "and"
+  before the last because names hold commas. A name links to `/chronicle/<slug>` when the
+  chronicle has that show; an unknown slug shows as itself; no campaigns, no line
+  (`knownFromView`, `runtimeSite.ts`). A snapshot without the key reads as none.
   A folder below a section with an index page (`/Org/Iridescent-Church`) renders the same way
   in `FolderListing`, with its children under "In <title>" after the body; `folderView` reads
   the index page's tags, date and rail. A section's own folder (`/Org`) and a folder with no

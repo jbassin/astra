@@ -55,11 +55,15 @@ export interface Snapshot {
   unresolved: { source: string; target: string }[];
 }
 
-/** Read + parse the committed snapshot JSON. */
+/** Read + parse the committed snapshot JSON. A snapshot written before pages carried
+ *  `campaigns` reads as every page having none. */
 export function loadSnapshot(path: string): Snapshot {
   const raw = JSON.parse(readFileSync(path, "utf8")) as Snapshot;
   if (!Array.isArray(raw.pages) || !Array.isArray(raw.edges)) {
     throw new Error(`malformed akasha snapshot at ${path}: missing pages/edges`);
+  }
+  for (const page of raw.pages) {
+    page.frontmatter.campaigns ??= [];
   }
   return raw;
 }

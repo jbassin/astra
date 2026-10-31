@@ -66,15 +66,22 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 8px 16px; /* a gap, not margins: a wrapped item starts at the left edge */
   color: var(--ak-faint);
   font: 400 13px/1.4 var(--ak-sans);
 }
 .ak-facts > time {
   font-variant-numeric: tabular-nums;
 }
-.ak-facts > ul + time {
-  margin-left: 8px;
+/* "Known from: …": faint; a campaign with a Sessions page links there, underlined in its hue. */
+.ak-known-from a {
+  color: inherit;
+  text-decoration: underline 1px var(--link-hue, var(--ak-faint));
+  text-underline-offset: 3px;
+  transition: color var(--ak-ease);
+}
+.ak-known-from a:hover {
+  color: var(--ak-ink);
 }
 
 /* Tag chips in the facts row (TagList). */

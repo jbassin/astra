@@ -6,6 +6,7 @@ import type { ChronicleEpisode, ChronicleShow } from "./chronicleTypes";
 import {
   contentView,
   folderView,
+  knownFromView,
   resolvePath,
   sessionsView,
   tagExists,
@@ -116,6 +117,7 @@ describe("view builders", () => {
   it("folderView without an index page has no facts and no contents", () => {
     const v = folderView("Bestiary");
     expect(v.tags).toEqual([]);
+    expect(v.knownFrom).toEqual([]);
     expect(v.toc).toEqual([]);
   });
 
@@ -128,6 +130,23 @@ describe("view builders", () => {
     const idx = tagIndexView();
     expect(idx.sections.length).toBeGreaterThan(0);
     expect(idx.totalLabel).toMatch(/Found \d+ total tags/);
+  });
+});
+
+describe("view builders — the Known from line", () => {
+  it("contentView names the page's campaigns, linked to their Sessions page", () => {
+    expect(contentView(fullSlug("Divinity/Outer-Gods/Iridescent-Host")).knownFrom).toEqual([
+      { label: "Through a Song, Darkly", href: "/chronicle/through-a-song-darkly" },
+    ]);
+    expect(contentView(fullSlug("Timeline")).knownFrom).toEqual([]);
+  });
+
+  it("folderView names its index page's campaigns, oldest first", () => {
+    // The fixture chronicle has no Fae and Forest show, so that name is not a link.
+    expect(folderView("Org/Amber-Call").knownFrom).toEqual([
+      { label: "Fae and Forest", href: null },
+      { label: "Through a Song, Darkly", href: "/chronicle/through-a-song-darkly" },
+    ]);
   });
 });
 
@@ -172,6 +191,7 @@ function transcript(campaign: string, date: string): SiteDoc {
     aliases: [],
     links: [],
     date: new Date(Date.UTC(y, m - 1, d)),
+    campaigns: [],
   };
 }
 
@@ -187,6 +207,28 @@ const SHOWS = [
   ]),
 ];
 const CHURCH = fullSlug("Org/Iridescent-Church/index");
+
+describe("knownFromView — the campaigns a page draws on", () => {
+  const names = { main: "Through a Song, Darkly", spark: "The First Spark", deep: "Deep Eyes" };
+
+  it("keeps the frontmatter order and links only the chronicle's shows", () => {
+    expect(knownFromView(["deep", "spark", "main"], names, SHOWS)).toEqual([
+      { label: "Deep Eyes", href: null },
+      { label: "The First Spark", href: "/chronicle/spark" },
+      { label: "Through a Song, Darkly", href: "/chronicle/main" },
+    ]);
+  });
+
+  it("shows a slug being.kdl doesn't know as the slug", () => {
+    expect(knownFromView(["mystery-campaign"], names, SHOWS)).toEqual([
+      { label: "mystery-campaign", href: null },
+    ]);
+  });
+
+  it("is empty for a page with no campaigns", () => {
+    expect(knownFromView([], names, SHOWS)).toEqual([]);
+  });
+});
 
 describe("sessionsView — the main campaign strip", () => {
   it("is null when no transcript links to the page", () => {

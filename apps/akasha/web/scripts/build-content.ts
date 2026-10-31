@@ -32,6 +32,7 @@ import { type Being, defaultBeingFile, loadBeing, loadSkippedSessions } from "@a
 import { loadSiteConfig } from "@astra/site-kit";
 
 import { buildResolvers } from "../src/domain/lib/crossref";
+import { toGenerated } from "../src/domain/lib/generatedPage";
 import { decorateBody, readingMinutes, renderBody } from "../src/domain/lib/renderBody";
 import {
   type AliasRedirect,
@@ -76,31 +77,6 @@ const BEING = defaultBeingFile();
 const SITE_TITLE = "Akasha";
 const SITE_DESCRIPTION = "The Færrin wiki";
 
-/** Serializable page record (Date → ISO string) the runtime imports + reconstructs. */
-interface GeneratedPage {
-  rel: string;
-  slug: string;
-  simple: string;
-  title: string;
-  tags: string[];
-  aliases: string[];
-  img?: string;
-  links: string[];
-  date?: string;
-}
-
-const toGenerated = (d: SiteDoc): GeneratedPage => ({
-  rel: d.rel,
-  slug: d.slug,
-  simple: d.simple,
-  title: d.title,
-  tags: d.tags,
-  aliases: d.aliases,
-  ...(d.img ? { img: d.img } : {}),
-  links: d.links,
-  ...(d.date ? { date: d.date.toISOString() } : {}),
-});
-
 const toGeneratedAlias = (a: AliasRedirect) => ({
   slug: a.slug,
   redirUrl: a.redirUrl,
@@ -117,9 +93,11 @@ function bodyOf(doc: SiteDoc): string {
   }
 }
 
-/** The generated runtime module (slugs/backlinks/folders/tags/Explorer/aliases). */
-function emitGeneratedModule(site: SiteData, shows: ChronicleShowData[]): string {
+/** The generated runtime module (slugs/backlinks/folders/tags/Explorer/aliases, and the
+ *  campaign names for a page's "Known from" line). */
+function emitGeneratedModule(site: SiteData, shows: ChronicleShowData[], being: Being): string {
   const pages = site.docs.map(toGenerated);
+  const campaignNames = Object.fromEntries(being.campaigns.map((c) => [c.slug, c.name]));
   // The chronicle nests in the tree, and transcripts are labelled with their episode titles.
   const tree = [...buildExplorerTree(site), ...chronicleTree(shows)];
   labelScriptTree(tree, shows);
@@ -132,17 +110,9 @@ function emitGeneratedModule(site: SiteData, shows: ChronicleShowData[]): string
     " *  from the akasha-backend snapshot via the lifted slug.ts/site.ts (0011). The",
     " *  runtime reconstructs a queryable SiteData from PAGES (see runtimeSite.ts). */",
     "",
-    "export interface GeneratedPage {",
-    "  rel: string;",
-    "  slug: string;",
-    "  simple: string;",
-    "  title: string;",
-    "  tags: string[];",
-    "  aliases: string[];",
-    "  img?: string;",
-    "  links: string[];",
-    "  date?: string;",
-    "}",
+    'import type { GeneratedPage } from "../domain/lib/generatedPage";',
+    "",
+    'export type { GeneratedPage } from "../domain/lib/generatedPage";',
     "",
     "export interface TreeNode {",
     "  slug: string;",
@@ -164,6 +134,8 @@ function emitGeneratedModule(site: SiteData, shows: ChronicleShowData[]): string
     `export const ALL_TAGS: string[] = ${JSON.stringify(tags)};`,
     `export const ALL_FOLDERS: string[] = ${JSON.stringify(folders)};`,
     `export const ALIASES: AliasRedirect[] = ${JSON.stringify(aliases, null, 2)};`,
+    "/** Campaign slug → display name, from being.kdl. */",
+    `export const CAMPAIGN_NAMES: Record<string, string> = ${JSON.stringify(campaignNames, null, 2)};`,
     "",
   ].join("\n");
   emitModule(OUT_DIR, "site.ts", body);
@@ -480,7 +452,7 @@ const siteSource = defineContentSource({
       transcripts.docs.map((d) => [d.title, `/${encodeURI(simplifySlug(d.slug))}`]),
     );
     const chronicleShows = buildChronicleShows(hrefByDate);
-    const moduleSummary = emitGeneratedModule(site, chronicleShows);
+    const moduleSummary = emitGeneratedModule(site, chronicleShows, being);
     const bodiesSummary = emitBodies(site, snapshot, transcriptSlugs);
     const transcriptSummary = emitTranscriptBodies(transcripts.bodies, transcripts.meta);
     const speakersSummary = emitSpeakers(being);
