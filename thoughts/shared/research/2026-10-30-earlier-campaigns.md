@@ -1,8 +1,8 @@
 # Earlier campaigns in akasha
 
 - **Date:** 2026-10-30
-- **Status:** Handoff updated 2026-10-31 (section 0). Everything through the chronicle backfill
-  and the Sessions grouping is live. Next: the questionnaire (0.2 step 6), then wrap-up.
+- **Status:** Handoff updated 2026-10-31 (section 0). Everything through the questionnaire's
+  answers is live; three small questions remain (0.2 step 6). Next: those, then wrap-up.
 - **Goal:** the players carry knowledge from campaigns 1 and 2 that akasha doesn't have. Bring
   the recorded part of campaign 2 and its Færrin one-shots into akasha and the pipeline, mark
   which campaign each fact comes from, and fill the unrecorded gaps from Josh.
@@ -94,7 +94,15 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    Original: **Chronicle for the imported sessions, paid (cents each).** `uv run python
    apps/linguist/py/scripts/backfill_chronicle.py`, then materialize `campaign_timeline`. Label
    Deep Eyes "Campaign 2" on akasha's Sessions page rather than as a one-shot.
-6. **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
+6. **Mostly done 2026-10-31.** Josh answered the questionnaire; astra-data `9d4f848` writes it
+   in: 14 new pages (the Undermountain, Penthes, Sigil, Ushas's Far Realms, Dahl, Samael,
+   Sacrament, the False Hydra, the Locus, Mephistopheles, Uriel (alias Luce), Dragon, Formless,
+   Metals, Big Fish) and additions to about 25 more, all `risk-of-ruin` unless shared lore.
+   Corrections: the Broker is T3C (said "Tech", never spelled so; "he"), Rotok refused
+   immortality, Dawnmonger is "Dawn", Muriel is Uriel, SeRaan was the Sundom wreck's one
+   survivor. Still open: Josh's question 11 (he asked what Noah's 2025-5-12 recap covers, to
+   flesh out Deep Eyes before the recordings), SeRaan's orb colour (wiki orange, Josh said
+   yellow), and who "Big Fish's people" are. Original: **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
    below.
 7. **Wrap-up:** tick section 5, update `docs/now.md` and `docs/backlog.md`, remove the
    finished agent worktrees under `.claude/worktrees/` (`git worktree list`).
