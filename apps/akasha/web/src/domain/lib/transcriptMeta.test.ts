@@ -28,6 +28,7 @@ const MAIN: ChronicleShow = {
   show: "through-a-song-darkly",
   name: "Through a Song, Darkly",
   isMain: true,
+  campaignNumber: 3,
   seasonCount: 2,
   episodeCount: 5,
   seasons: [

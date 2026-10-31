@@ -14,6 +14,7 @@ const campA: Campaign = {
   name: "Alpha Quest",
   edition: "5e",
   main: true,
+  number: null,
   world: "faerrin",
   roles: [
     { player: "josh", character: "Gamemaster", character_class: "gm", descriptions: [] },
@@ -26,6 +27,7 @@ const campB: Campaign = {
   name: "Beta Tale",
   edition: "5e",
   main: false,
+  number: null,
   world: "faerrin",
   roles: [
     { player: "josh", character: "Gamemaster", character_class: "gm", descriptions: [] },

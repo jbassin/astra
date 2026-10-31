@@ -190,3 +190,28 @@ export function pagesUpdatedOn(pages: Iterable<DatedPage>, day: string): Updated
       a.title.localeCompare(b.title),
   );
 }
+
+/** "Campaign 3 · the main campaign", "Campaign 2", "The main campaign" or "" (a one-shot). */
+export function campaignLabel(show: ChronicleShow): string {
+  const parts = [
+    show.campaignNumber === null ? "" : `Campaign ${show.campaignNumber}`,
+    show.isMain ? "the main campaign" : "",
+  ].filter(Boolean);
+  const label = parts.join(" · ");
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+/** The Sessions page's groups: the main campaign, the earlier numbered campaigns (newest
+ *  first) and the one-shots (in their chronicle order). */
+export function groupShows(shows: ChronicleShow[]): {
+  main: ChronicleShow | undefined;
+  earlier: ChronicleShow[];
+  oneShots: ChronicleShow[];
+} {
+  const main = shows.find((s) => s.isMain);
+  const others = shows.filter((s) => s !== main);
+  const earlier = others
+    .filter((s) => s.campaignNumber !== null)
+    .toSorted((a, b) => (b.campaignNumber ?? 0) - (a.campaignNumber ?? 0));
+  return { main, earlier, oneShots: others.filter((s) => s.campaignNumber === null) };
+}

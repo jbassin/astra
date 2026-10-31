@@ -79,6 +79,7 @@ campaign "through-a-song-darkly" {
     name "Through a Song, Darkly"
     edition "pathfinder_2e"
     main #true
+    number 3
     world "faerrin"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Argyle" class="champion" {
@@ -195,6 +196,7 @@ campaign "deep-eyes" {
     name "Deep Eyes"
     edition "pathfinder_2e"
     main #false
+    number 2
     world "althane"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Lev" { desc "an adventurer in the GM's second campaign, set on Althane" }
@@ -234,6 +236,7 @@ campaign "risk-of-ruin" {
     name "Risk of Ruin"
     edition "dnd_5e"
     main #false
+    number 1
     world "ushas"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Zuggarian" class="wizard" {

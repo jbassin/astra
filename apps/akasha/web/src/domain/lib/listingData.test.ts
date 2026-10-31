@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import type { ChronicleEpisode, ChronicleShow } from "./chronicleTypes";
 import {
+  campaignLabel,
   descendantCounts,
   folderDisplayTitle,
+  groupShows,
   hrefPath,
   latestSession,
   listingRows,
@@ -30,6 +32,7 @@ const show = (slug: string, isMain: boolean, seasons: ChronicleEpisode[][]): Chr
   show: slug,
   name: slug.toUpperCase(),
   isMain,
+  campaignNumber: null,
   seasonCount: seasons.length,
   episodeCount: seasons.flat().length,
   seasons: seasons.map((episodes, i) => ({
@@ -235,5 +238,27 @@ describe("listing row order and folder titles", () => {
     expect(folderDisplayTitle("Folder: Script/Fey-in-the-Mists", "Script/Fey-in-the-Mists")).toBe(
       "Fey in the Mists",
     );
+  });
+});
+
+describe("sessions grouping", () => {
+  const song = { ...show("song", true, []), campaignNumber: 3 };
+  const deep = { ...show("deep", false, []), campaignNumber: 2 };
+  const ruin = { ...show("ruin", false, []), campaignNumber: 1 };
+  const spark = show("spark", false, []);
+  const heist = show("heist", false, []);
+
+  it("puts numbered campaigns newest first and keeps one-shots in chronicle order", () => {
+    const { main, earlier, oneShots } = groupShows([spark, ruin, song, deep, heist]);
+    expect(main?.show).toBe("song");
+    expect(earlier.map((s) => s.show)).toEqual(["deep", "ruin"]);
+    expect(oneShots.map((s) => s.show)).toEqual(["spark", "heist"]);
+  });
+
+  it("labels a show by its campaign number and main flag", () => {
+    expect(campaignLabel(song)).toBe("Campaign 3 · the main campaign");
+    expect(campaignLabel(deep)).toBe("Campaign 2");
+    expect(campaignLabel(show("plain-main", true, []))).toBe("The main campaign");
+    expect(campaignLabel(spark)).toBe("");
   });
 });
