@@ -170,9 +170,10 @@ Node indexing API and writes `dist/client/pagefind/`.
 - **Campaign routing is a heuristic.** `matchCampaign` (`campaigns.ts`) files a transcript under
   the first campaign, in `being.kdl` order, whose character names appear at least 15 times; else
   `Unsorted`. Reordering campaigns in `being.kdl` can move transcript URLs. The build also reads
-  `ontology/ontology-being/sessions.kdl` (`loadSkippedSessions` in `@astra/ontology`): a
-  session marked `skip=#true` matches no campaign and stays in `Unsorted`, which is the fix for
-  a false match. Both files are baked into the image at build time, so a `being.kdl` or
+  `ontology/ontology-being/sessions.kdl` (`loadSessionOverrides` in `@astra/ontology`): a
+  session marked `skip=#true` matches no campaign and stays in `Unsorted`, and one marked
+  `campaign="<slug>"` is filed under that campaign and billed from its roles; either is the fix
+  for a false match. An unknown slug fails the build. Both files are baked into the image at build time, so a `being.kdl` or
   `sessions.kdl` edit reaches the site only after `just deploy akasha-frontend`.
 - **Speaker colours come from `being.kdl`.** linguist writes `user.color` as a CSS variable name
   (`--textJorge`); build-content generates those variables from the player colours. They are

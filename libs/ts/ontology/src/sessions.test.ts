@@ -1,6 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { loadSessionOverrides, parseSessionOverrides, skippedKeys } from "./sessions";
+import { loadBeing } from "./index";
+import {
+  campaignOverrides,
+  loadSessionOverrides,
+  parseSessionOverrides,
+  skippedKeys,
+} from "./sessions";
 
 describe("sessions.kdl", () => {
   test("the checkout's file loads, and its skips are the excluded sessions", () => {
@@ -26,7 +32,28 @@ describe("sessions.kdl", () => {
     expect([...skippedKeys(o)]).toEqual(["2025-8-11"]);
   });
 
+  test("files a session under a campaign", () => {
+    const o = parseSessionOverrides('session "2026-9-3" campaign="urth" { note "Noah GMs" }');
+    expect(o.sessions).toEqual([
+      { key: "2026-9-3", skip: false, campaign: "urth", note: "Noah GMs" },
+    ]);
+    expect([...campaignOverrides(o)]).toEqual([["2026-9-3", "urth"]]);
+    expect(campaignOverrides(loadSessionOverrides()).get("2026-9-3")).toBe("urth");
+  });
+
+  test("an unknown campaign slug fails the load when the roster is given", () => {
+    const text = 'session "2026-9-3" campaign="urht"';
+    expect(parseSessionOverrides(text).sessions[0]?.campaign).toBe("urht");
+    expect(() => parseSessionOverrides(text, "sessions.kdl", ["urth"])).toThrow(/urht/);
+    const slugs = loadBeing().campaigns.map((c) => c.slug);
+    expect(() => loadSessionOverrides(undefined, slugs)).not.toThrow();
+  });
+
   test("rejects what the Python schema rejects", () => {
+    expect(() => parseSessionOverrides('session "2026-9-3" skip=#true campaign="urth"')).toThrow(
+      /skipped/,
+    );
+    expect(() => parseSessionOverrides('session "2026-9-3" campaign=" "')).toThrow(/empty/);
     expect(() => parseSessionOverrides('session "2025-08-11x"')).toThrow(/session key/);
     expect(() => parseSessionOverrides('session "2025-8-11" skipp=#true')).toThrow();
     expect(() => parseSessionOverrides('session "2025-8-11" kind="bonus"')).toThrow();

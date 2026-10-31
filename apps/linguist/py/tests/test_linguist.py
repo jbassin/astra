@@ -11,6 +11,7 @@ import json
 from dataclasses import replace
 from pathlib import Path
 
+import pytest
 from astra_lexicon import build_replacer, load_corrections
 from astra_linguist.ingest import format_transcript, to_json
 from astra_linguist.models import RawLine
@@ -120,6 +121,37 @@ def test_match_campaign_and_billing() -> None:
     assert match_campaign(transcript, [_CAMPAIGN], threshold=99) is None
 
 
+_OTHER = CampaignView(
+    name="Other Shot",
+    is_main=False,
+    slug="other-shot",
+    roles={
+        "Cara": [CharacterRole("Gamemaster", [])],
+        # Bob plays two one-shots here: billed as whichever the session names more.
+        "Bob": [CharacterRole("Pippin", ["a hobbit"]), CharacterRole("Merry", ["a hobbit"])],
+    },
+)
+
+
+def test_named_campaign_files_without_the_threshold_and_bills_the_most_named_role() -> None:
+    from astra_linguist.campaigns import named_campaign
+
+    transcript = Transcript(
+        date="2025-01-01",
+        audio="a",
+        script=[_line("Bob", "Gandolf casts"), _line("Bob", "Gandolf again, Merry")],
+    )
+    # The name match would pick the first campaign; the override files it under the second.
+    assert match_campaign(transcript, [_CAMPAIGN, _OTHER], threshold=1) is not None
+    named = named_campaign(transcript, [_CAMPAIGN, _OTHER], "other-shot")
+    assert named.campaign is _OTHER and named.idx == 1
+    assert named.billing["Bob"].name == "Merry"
+    assert named.billing["Cara"].name == "Gamemaster"
+    assert campaign_filename(named) == "101.other-shot"
+    with pytest.raises(ValueError, match="does not list"):
+        named_campaign(transcript, [_CAMPAIGN, _OTHER], "nowhere")
+
+
 def test_make_context_format() -> None:
     matched = match_campaign(
         Transcript(date="2025-01-01", audio="a", script=[_line("Bob", "Gandolf Frodo")]),
@@ -178,6 +210,21 @@ def test_process_session_end_to_end() -> None:
     assert artifacts.matched is not None  # "Gandolf" keyword present
     assert artifacts.canonical is not None
     assert artifacts.canonical.startswith("000001\tGandolf: Gandolf casts a spell.  ")
+
+    # A sessions.kdl campaign override files it elsewhere, even below the threshold.
+    filed = process_session(
+        "2025-01-01",
+        "/audio/2025-01-01.mp3",
+        raw,
+        replace=build_replacer({}),
+        resolver=SpeakerResolver({"jbassin": "Bob"}),
+        campaigns=[_CAMPAIGN, _OTHER],
+        threshold=99,
+        campaign="other-shot",
+    )
+    assert filed.matched is not None and filed.matched.campaign is _OTHER
+    assert filed.canonical is not None
+    assert filed.canonical.startswith("000001\tPippin: Gandolf casts a spell.  ")
 
 
 # ── real-data end-to-end parity ────────────────────────────────────────────

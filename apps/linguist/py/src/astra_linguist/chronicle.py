@@ -232,10 +232,11 @@ def show_for_date(
 
     Transcripts are named `<prefix>.<slug>.<date>.txt` (e.g.
     `000.through-a-song-darkly.2025-10-20.txt`), so the show slug is the segment
-    between the numeric prefix and the date. Returns ``None`` if no transcript for
-    that date exists, its slug is unknown, or `sessions.kdl` marks the date `skip=#true`
-    (a session the substring campaign match mislabeled, say). ``overrides`` defaults to
-    ontology-being's `sessions.kdl`.
+    between the numeric prefix and the date. A `sessions.kdl` `campaign=` wins over the
+    filename slug (the GM's word over linguist's name match). Returns ``None`` if no
+    transcript for that date exists, its slug is unknown, or `sessions.kdl` marks the date
+    `skip=#true` (a session the substring campaign match mislabeled, say). ``overrides``
+    defaults to ontology-being's `sessions.kdl`.
     """
     overrides = overrides if overrides is not None else session_overrides()
     if overrides.skipped(date):
@@ -248,4 +249,4 @@ def show_for_date(
         slug = parse_transcript_name(path).slug
     except ValueError:  # `date` is not a YYYY-M-D session key
         return None
-    return shows.get(slug)
+    return shows.get(overrides.campaign(date) or slug)

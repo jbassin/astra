@@ -55,7 +55,8 @@ describe("@astra/ontology", () => {
     expect(bySlug.get("observatory-slipped")?.world).toBe("ushas");
     expect(bySlug.get("deep-eyes")?.world).toBe("althane");
     expect(being.campaigns.filter((c) => c.world === "faerrin").length).toBe(7);
-    expect(being.astra_worlds).toEqual(["faerrin", "althane", "ushas"]);
+    expect(bySlug.get("urth")?.world).toBe("urth");
+    expect(being.astra_worlds).toEqual(["faerrin", "althane", "ushas", "urth"]);
   });
 
   test("the schema keeps every field of the generated JSON (py↔ts shape parity)", () => {

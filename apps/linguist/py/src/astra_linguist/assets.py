@@ -23,7 +23,7 @@ import dagster as dg
 from astra_lexicon import correct_file, defs_digest, load_corrections
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
-from astra_ontology_being import BEING_KDL_PATH
+from astra_ontology_being import BEING_KDL_PATH, session_overrides
 from astra_pipeline_resources import (
     EXTERNAL_API_RETRY,
     AstraConfig,
@@ -136,6 +136,7 @@ def session_transcripts(
         replace=load_corrections(),
         resolver=SpeakerResolver.from_being(BEING_KDL_PATH),
         campaigns=campaign_views(being),
+        campaign=session_overrides().campaign(date),
     )
 
     data_dir.mkdir(parents=True, exist_ok=True)
@@ -148,8 +149,10 @@ def session_transcripts(
         script_dir.mkdir(parents=True, exist_ok=True)
         transcript_dir.mkdir(parents=True, exist_ok=True)
         atomic_write_text(script_dir / f"{stem}.{date}.txt", artifacts.context)
+        _drop_other_stems(script_dir, date, stem)
         if artifacts.canonical is not None:
             atomic_write_text(transcript_dir / f"{stem}.{date}.txt", artifacts.canonical)
+            _drop_other_stems(transcript_dir, date, stem)
 
     _sessions_counter.add(1)
     _log.info(
@@ -161,6 +164,22 @@ def session_transcripts(
     return dg.MaterializeResult(
         metadata={"lines": len(artifacts.transcript.script), "campaign": matched_name}
     )
+
+
+def _drop_other_stems(directory: Path, date: str, stem: str) -> list[str]:
+    """Delete this session's files under any other campaign stem (`<other>.<date>.txt`).
+
+    A session re-filed by a `sessions.kdl` `campaign=` gets a new prefix and slug; the old
+    file would otherwise stay and win `find_transcript` (the first by name). Returns the
+    names removed."""
+    keep = f"{stem}.{date}.txt"
+    removed: list[str] = []
+    for path in sorted(directory.glob(f"*.{date}.txt")):
+        if path.name != keep:
+            path.unlink()
+            removed.append(path.name)
+            _log.warning("linguist removed %s: session %s is now %s", path.name, date, keep)
+    return removed
 
 
 @dg.asset(

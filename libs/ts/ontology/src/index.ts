@@ -30,6 +30,8 @@ export {
   type WealHost,
 } from "./models";
 export {
+  campaignOverrides,
+  checkSessionCampaigns,
   defaultSessionsFile,
   loadSessionOverrides,
   loadSkippedSessions,

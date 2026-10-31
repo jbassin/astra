@@ -24,7 +24,7 @@ from astra_ontology.sessions import SessionOverrides, load_session_overrides
 _DATA_DIR = Path(__file__).resolve().parents[2]
 BEING_KDL_PATH = (_DATA_DIR / "being.kdl").resolve()
 CANONICAL_JSON_PATH = (_DATA_DIR / "being.canonical.json").resolve()
-#: The per-session overrides (skip, kind, title); schema in `astra_ontology.sessions`.
+#: The per-session overrides (skip, kind, title, campaign); schema in `astra_ontology.sessions`.
 SESSIONS_KDL_PATH = (_DATA_DIR / "sessions.kdl").resolve()
 
 
@@ -35,5 +35,6 @@ def load() -> Being:
 
 @cache
 def session_overrides() -> SessionOverrides:
-    """This package's `sessions.kdl`, parsed once per process (it is baked into the image)."""
-    return load_session_overrides(SESSIONS_KDL_PATH)
+    """This package's `sessions.kdl`, parsed once per process (it is baked into the image).
+    A `campaign=` that `being.kdl` does not list fails the load."""
+    return load_session_overrides(SESSIONS_KDL_PATH, campaigns=[c.slug for c in load().campaigns])

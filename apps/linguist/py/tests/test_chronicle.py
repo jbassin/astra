@@ -104,6 +104,24 @@ def test_show_for_date_honours_a_sessions_kdl_skip(tmp_path: Path) -> None:
     assert show_for_date("2026-9-7", transcript_dir=tmp_path, overrides=skip) is None
 
 
+def test_a_sessions_kdl_campaign_wins_over_the_filename_slug(tmp_path: Path) -> None:
+    from astra_ontology.sessions import parse_session_overrides
+
+    (tmp_path / "000.through-a-song-darkly.2026-9-3.txt").write_text("x")
+    filed = parse_session_overrides('session "2026-9-3" campaign="urth"')
+    info = show_for_date("2026-9-3", transcript_dir=tmp_path, overrides=filed)
+    assert info is not None and info.slug == "urth" and info.name == "Urth"
+    # Still no show without a transcript for the date.
+    assert show_for_date("2026-9-4", transcript_dir=tmp_path, overrides=filed) is None
+
+
+def test_the_committed_overrides_file_2026_9_3_under_urth() -> None:
+    from astra_ontology_being import session_overrides
+
+    assert session_overrides().campaign("2026-9-3") == "urth"
+    assert session_overrides().campaign("2025-6-9") == "a-hunt-of-metal-and-vine"
+
+
 # ── artifact-model shapes round-trip ────────────────────────────────────────
 def test_episode_entry_round_trips() -> None:
     entry = EpisodeEntry(

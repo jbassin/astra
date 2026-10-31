@@ -2,7 +2,8 @@
   "astra_worlds": [
     "faerrin",
     "althane",
-    "ushas"
+    "ushas",
+    "urth"
   ],
   "campaigns": [
     {
@@ -552,6 +553,77 @@
       ],
       "slug": "risk-of-ruin",
       "world": "ushas"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "Urth",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "noah"
+        },
+        {
+          "character": "Hades",
+          "character_class": null,
+          "descriptions": [
+            "Hades from Hercules, a villain pulled into a movie on Urth; a god with a head of blue flame"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Fulton",
+          "character_class": null,
+          "descriptions": [
+            "Gaston's legally distinct cousin, a villain pulled into a movie on Urth; a muscled, handsome hunter"
+          ],
+          "player": "josh"
+        },
+        {
+          "character": "Runway Brian",
+          "character_class": null,
+          "descriptions": [
+            "a mouse from a forgotten Disney short, a villain pulled into a movie on Urth; usually called \"Brian\""
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Pete",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer from the town of Cagley"
+          ],
+          "player": "josh"
+        },
+        {
+          "character": "Ren",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer from the town of Cagley"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Chuck",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer from the town of Cagley"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Billy Pebbles",
+          "character_class": null,
+          "descriptions": [
+            "an adventurer from the town of Cagley; a bard, nicknamed \"Fruity Pebbles\""
+          ],
+          "player": "tanner"
+        }
+      ],
+      "slug": "urth",
+      "world": "urth"
     }
   ],
   "guest_color": "rgb(235,235,236)",

@@ -343,3 +343,42 @@ def test_corrections_sensor_waits_while_any_run_is_in_flight() -> None:
 def test_defs_bind_the_shared_resources() -> None:
     repo = assets.defs.get_repository_def()
     assert {"astra_config", "pipeline_paths", "llm"} <= set(repo.get_top_level_resources())
+
+
+def test_a_sessions_kdl_campaign_files_the_session_there_and_drops_the_old_stem(
+    tmp_path: Path,
+) -> None:
+    """2026-9-3 names campaign-3 characters in its table talk, but sessions.kdl files it
+    under Urth: the outputs take Urth's prefix, and the old campaign-3 files for that date
+    are removed so `find_transcript` cannot pick them. Other dates are left alone."""
+    date = "2026-9-3"
+    raw = [
+        {"start": float(i), "end": i + 0.5, "user": "someone", "text": " Argyle and Benny."}
+        for i in range(MIN_TRANSCRIPT_SEGMENTS)
+    ]
+    saved = tmp_path / "scribe" / "data" / "saved" / date
+    saved.mkdir(parents=True)
+    (saved / "script.json").write_text(json.dumps(raw))
+    transcripts = tmp_path / "linguist" / "transcripts"
+    script = tmp_path / "linguist" / "script"
+    for directory in (transcripts, script):
+        directory.mkdir(parents=True)
+        (directory / f"000.through-a-song-darkly.{date}.txt").write_text("old")
+        (directory / "000.through-a-song-darkly.2026-9-30.txt").write_text("keep")
+    resources, _llm, _config = _resources(tmp_path, _Client())
+
+    result = dg.materialize(
+        [assets.session_transcripts],
+        partition_key=date,
+        instance=_instance(date),
+        resources=resources,
+    )
+
+    assert result.success
+    stem = f"1{show_index()['urth'].order:02d}.urth"
+    for directory in (transcripts, script):
+        assert sorted(p.name for p in directory.iterdir()) == [
+            "000.through-a-song-darkly.2026-9-30.txt",
+            f"{stem}.{date}.txt",
+        ]
+    assert 'one-shot side story of the game, "Urth"' in (script / f"{stem}.{date}.txt").read_text()

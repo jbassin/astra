@@ -8,6 +8,7 @@ sessions, which the pipeline reads instead of guessing:
     }
     session "2026-10-19-recap-of-2025-8-28" kind="special"
     session "2026-9-7" title="The Night the Bell Rang Twice"
+    session "2026-9-3" campaign="urth"
 
 The argument is a session key (`YYYY-M-D`, not zero-padded) or, for a recap or special
 episode, the date token of its id (`<last>-recap-of-<first>`). Properties, all optional:
@@ -17,14 +18,22 @@ episode, the date token of its id (`<last>-recap-of-<first>`). Properties, all o
   an episode for it. Its transcripts are still written.
 * `kind`: the episode's kind (`session`, `recap` or `special`), over what its files say.
 * `title`: the podcast episode title the catalog publishes, over the generated one.
+* `campaign`: the `being.kdl` campaign slug the session belongs to. linguist files its
+  transcript under that campaign (and bills from its roles), the chronicle and heartwood
+  read it as the session's show, and akasha files the transcript page there, instead of
+  guessing from character names or the transcript filename. It cannot be combined with
+  `skip=#true`.
 
-A `note` child records why. An unknown property, a malformed key or a repeated key fails
-the load, so a typo cannot silently do nothing.
+A `note` child records why. An unknown property, a malformed key, a repeated key, a
+`campaign` that `being.kdl` does not list, or `skip` with `campaign` fails the load, so a
+typo cannot silently do nothing. The campaign check needs the roster: pass ``campaigns``
+to the loaders (ontology-being's `session_overrides()` does).
 """
 
 from __future__ import annotations
 
 import re
+from collections.abc import Collection
 from pathlib import Path
 from typing import Annotated, Literal
 
@@ -65,6 +74,7 @@ class SessionOverride(BaseModel):
     skip: Annotated[bool, Prop()] = False
     kind: Annotated[EpisodeKind | None, Prop()] = None
     title: Annotated[str | None, Prop()] = None
+    campaign: Annotated[str | None, Prop()] = None
     note: str | None = None
 
     @field_validator("key")
@@ -82,6 +92,22 @@ class SessionOverride(BaseModel):
         if title is not None and not title.strip():
             raise ValueError("title must not be empty")
         return title
+
+    @field_validator("campaign")
+    @classmethod
+    def _non_empty_campaign(cls, campaign: str | None) -> str | None:
+        if campaign is not None and not campaign.strip():
+            raise ValueError("campaign must not be empty")
+        return campaign
+
+    @model_validator(mode="after")
+    def _skip_or_campaign(self) -> SessionOverride:
+        if self.skip and self.campaign is not None:
+            raise ValueError(
+                f"session {self.key!r} is both skipped and filed under {self.campaign!r}: "
+                "a skipped session belongs to no campaign"
+            )
+        return self
 
 
 class SessionOverrides(BaseModel):
@@ -117,13 +143,37 @@ class SessionOverrides(BaseModel):
     def skipped_keys(self) -> frozenset[str]:
         return frozenset(s.key for s in self.sessions if s.skip)
 
+    def campaign(self, key: str) -> str | None:
+        """The campaign slug `sessions.kdl` files this session under, if any."""
+        entry = self.get(key)
+        return entry.campaign if entry is not None else None
 
-def parse_session_overrides(text: str, *, source: str = "sessions.kdl") -> SessionOverrides:
-    """Parse and validate `sessions.kdl` text (raises `KdlDecodeError` or `ValueError`)."""
-    return decode(SessionOverrides, parse_kdl(text, source=source))
+    def check_campaigns(self, campaigns: Collection[str]) -> SessionOverrides:
+        """Raise `ValueError` when a `campaign=` names a slug not in ``campaigns``."""
+        known = set(campaigns)
+        for entry in self.sessions:
+            if entry.campaign is not None and entry.campaign not in known:
+                raise ValueError(
+                    f"session {entry.key!r} names campaign {entry.campaign!r}, "
+                    f"which being.kdl does not list (known: {', '.join(sorted(known))})"
+                )
+        return self
 
 
-def load_session_overrides(path: str | Path) -> SessionOverrides:
+def parse_session_overrides(
+    text: str, *, source: str = "sessions.kdl", campaigns: Collection[str] | None = None
+) -> SessionOverrides:
+    """Parse and validate `sessions.kdl` text (raises `KdlDecodeError` or `ValueError`).
+    With ``campaigns`` (the `being.kdl` slugs), an unknown `campaign=` raises too."""
+    overrides = decode(SessionOverrides, parse_kdl(text, source=source))
+    return overrides if campaigns is None else overrides.check_campaigns(campaigns)
+
+
+def load_session_overrides(
+    path: str | Path, *, campaigns: Collection[str] | None = None
+) -> SessionOverrides:
     """Load `sessions.kdl`. A missing file raises: silently reading no overrides would
-    put a skipped session back into the chronicle."""
-    return decode(SessionOverrides, load_kdl(path))
+    put a skipped session back into the chronicle. With ``campaigns`` (the `being.kdl`
+    slugs), an unknown `campaign=` raises too."""
+    overrides = decode(SessionOverrides, load_kdl(path))
+    return overrides if campaigns is None else overrides.check_campaigns(campaigns)

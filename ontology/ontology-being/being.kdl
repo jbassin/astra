@@ -73,7 +73,7 @@ guest-color "rgb(235,235,236)"
 
 // The worlds of the Astra, the meta-setting the GM's campaigns share. heartwood ingests,
 // and the entity registry seeds player characters for, only campaigns set in these worlds.
-astra-worlds "faerrin" "althane" "ushas"
+astra-worlds "faerrin" "althane" "ushas" "urth"
 
 campaign "through-a-song-darkly" {
     name "Through a Song, Darkly"
@@ -249,6 +249,27 @@ campaign "risk-of-ruin" {
     role player="noah" character="Dorcan" class="druid" {
         desc "a firbolg druid; one of the founders of Sedecium"
     }
+}
+
+// Noah's one-shots, run in the GM's setting on Urth, a self-contained world of the Astra: one
+// show for all of them. Each player has one role per one-shot; linguist and akasha bill a
+// player as the role named most often in the session. sessions.kdl files a session here
+// (`campaign="urth"`) rather than leaving it to the name match.
+campaign "urth" {
+    name "Urth"
+    edition "pathfinder_2e"
+    main #false
+    world "urth"
+    role player="noah" character="Gamemaster" class="gm"
+    // 2026-9-3: pulled into a movie, the three players as Disney villains.
+    role player="jorge" character="Hades" { desc "Hades from Hercules, a villain pulled into a movie on Urth; a god with a head of blue flame" }
+    role player="josh" character="Fulton" { desc "Gaston's legally distinct cousin, a villain pulled into a movie on Urth; a muscled, handsome hunter" }
+    role player="mike" character="Runway Brian" { desc "a mouse from a forgotten Disney short, a villain pulled into a movie on Urth; usually called \"Brian\"" }
+    // 2025-6-9, first half: the end of the Cagley one-shot (the haunting of Mount Cagley).
+    role player="josh" character="Pete" { desc "an adventurer from the town of Cagley" }
+    role player="jorge" character="Ren" { desc "an adventurer from the town of Cagley" }
+    role player="mike" character="Chuck" { desc "an adventurer from the town of Cagley" }
+    role player="tanner" character="Billy Pebbles" { desc "an adventurer from the town of Cagley; a bard, nicknamed \"Fruity Pebbles\"" }
 }
 
 // --- weal-host: weal-bot Discord message-send identities (mouth/host.rs) --------------
