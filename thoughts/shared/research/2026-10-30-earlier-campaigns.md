@@ -123,10 +123,6 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
 - **Place-like pages outside Geography, not moved:** `Org/The Harlequins/Providence/`,
   `Org/The Harlequins/Harlequin Town`, and fixed-site businesses (`Org/Luxottica`, `Org/Maple
   Tree Farms`, `Org/Sableclutch Scrap`, `Org/Opaline Reserve`, `Org/Hallia Exchange`).
-- **Configuration Space looks like *Anathem*.** The page's dialogue (a fraa, Barb, the wine
-  bottle and the potato) and its eight plots, restored 2026-10-30, appear to come from Neal
-  Stephenson's novel. Josh cleared the whole vault for publishing; raised once in case the
-  public site matters.
 - **Lost registry names.** "Afro-China" and "Elephant Graveyard of Wonders" are no longer
   entity names; adding them as aliases on `Org/Bisney and Dixar/Arcane Intelligence` would
   restore them.
