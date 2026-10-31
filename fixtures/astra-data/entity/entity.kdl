@@ -1107,6 +1107,8 @@ entity "Roll an arcana check" {
     source "defs"
 }
 entity "Rotok" kind="person" being="tanner" {
+    alias "Rodic"
+    source "defs"
     source "being"
 }
 entity "Roundhat Gang" {

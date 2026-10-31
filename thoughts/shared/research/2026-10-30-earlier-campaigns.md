@@ -96,10 +96,7 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
 
 ### 0.3 Open questions for Josh
 
-- **Rodic or Rotok?** `being.kdl` names Tanner's campaign-1 cleric Rotok (from Josh,
-  2026-10-30). Every transcript spells him "Rodic" (five shows), and the backfill made
-  `People/Rodic` and names him so on `Org/Sedecium`. If Rotok is right, rename the page and
-  add a `defs.kdl` correction; if Rodic is right, fix `being.kdl`.
+- None.
 
 ### 0.4 Decisions and facts (Josh, 2026-10-30 and 31)
 
@@ -109,6 +106,9 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
   `Org/Sedecium`, `Geography/Ushas/index`, the Færrin Far Realms page, `Bestiary/Kaathe` and
   the Sundom page (astra-data `18c42ea`). Whisper sometimes writes "Kaathe" as "cave"
   (2026-5-21, Deep Eyes 2024-10-28); no lexicon rule, since "cave" is a common word.
+- Tanner's campaign-1 cleric is **Rotok**; speech-to-text writes "Rodic". `defs.kdl` corrects
+  it (stored corrections rewrite the transcripts), and the wiki page is `People/Rotok`
+  (astra-data `1587547`). One 2026-10-12 line says "Rodick" in an unclear context; left alone.
 - Holy Gold is not a contradiction. Sky Metal: "blessed by the Outer Gods" is Færrin's current
   belief, the disproof is Althane's; both stay.
 - The place-like `Org/` pages (the Providence, Harlequin Town, the fixed-site businesses) stay
