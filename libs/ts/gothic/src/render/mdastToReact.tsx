@@ -1,10 +1,11 @@
 /** @jsxRuntime automatic @jsxImportSource react */
 import type { CrossRef as CrossRefNode } from "@astra/vellum-lang";
-import type { Nodes } from "mdast";
+import type { Image, Nodes, Paragraph } from "mdast";
 import type { ReactNode } from "react";
 
 import { CrossRef } from "./components/CrossRef";
 import { ErrorChip } from "./components/ErrorChip";
+import { ImageFigure, InlineImage } from "./components/Image";
 import { Redaction } from "./components/Redaction";
 import { TraitPill } from "./components/TraitPill";
 import { ActionGlyph, normalizeActionCost } from "./glyphs/actions";
@@ -53,6 +54,13 @@ function renderDirective(
   return <ErrorChip message={`?${name}`} />;
 }
 
+/** The paragraph's one image when it holds nothing else (whitespace aside), else null. */
+function soleImage(node: Paragraph): Image | null {
+  const content = node.children.filter((c) => !(c.type === "text" && c.value.trim() === ""));
+  const [only] = content;
+  return content.length === 1 && only?.type === "image" ? only : null;
+}
+
 function renderNode(node: RenderableNode, key: number): ReactNode {
   switch (node.type) {
     case "crossref":
@@ -60,8 +68,12 @@ function renderNode(node: RenderableNode, key: number): ReactNode {
       return <CrossRef key={key} node={node} />;
     case "text":
       return node.value;
-    case "paragraph":
+    case "paragraph": {
+      // An image on its own line is a figure (its title is the caption).
+      const image = soleImage(node);
+      if (image) return <ImageFigure key={key} node={image} />;
       return <p key={key}>{renderNodes(node.children)}</p>;
+    }
     case "heading": {
       const depth = Math.min(node.depth, 6);
       const Tag = `h${depth}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -166,8 +178,9 @@ function renderNode(node: RenderableNode, key: number): ReactNode {
         </a>
       );
     case "image":
-      // No-SSRF rule: never emit an external fetch — render the alt text only.
-      return <span key={key}>{node.alt ?? ""}</span>;
+      // Same-origin rule: an <img> only for a file the app ships (`resolveImage`); any
+      // other source, external included, renders its alt text. Never a cross-origin fetch.
+      return <InlineImage key={key} node={node} />;
     case "html":
       // Security rule: never inject raw HTML. Render escaped as text.
       return <code key={key}>{node.value}</code>;

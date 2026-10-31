@@ -13,6 +13,7 @@ data {
     mouthpiece-snapshot "mouthpiece/snapshot"
     akasha-content "/elsewhere/content"
     akasha-snapshot "akasha/snapshot"
+    akasha-assets "akasha/assets"
     heartwood-ledger "heartwood/agent-runs.jsonl"
     entity-registry "entity/entity.kdl"
 }

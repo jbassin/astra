@@ -213,8 +213,14 @@ All standard CommonMark works both at the document top level and in a block body
 - `> blockquotes`
 - Ordered (`1.`) and unordered (`-`, `*`) lists
 - Links `[text](https://…)` and autolinks `<https://…>`
-- Images `![alt](url)` — **alt text only is rendered; the image is never fetched**
-  (a deliberate no-SSRF rule). Don't rely on external images.
+- Images `![alt](path "optional caption")` — **only files the site ships itself.** In the
+  akasha wiki, `path` names a file in astra-data's `akasha/assets/` folder, written relative to
+  that folder with no leading slash: `![Map of Althane](maps/althane.png)`. Allowed: png,
+  jpg/jpeg, webp, gif (no svg); path segments of letters, digits, `.`, `_`, `-`. An image alone on
+  its line becomes a figure, and the quoted title becomes its caption. Alt text is required.
+  Anything else (an `https://` URL, a missing file) renders as its alt text only, and the corpus
+  validator rejects it: a page never makes the reader's browser fetch from another origin.
+  Outside akasha (the vellum editor and render service) images always render as alt text.
 - Thematic breaks `---`, hard line breaks (two trailing spaces), entities `&amp;`
 
 ### 4.1 Columns — side-by-side layout
@@ -464,8 +470,9 @@ document's content, so the same text always exports the same image.
 - **Quote attribute values with spaces/commas** or parsing splits them.
 - **Error chips are intentional feedback** — if you see `?something`, fix that
   directive; the rest of the document is unaffected.
-- **No external assets.** Images and remote fonts/styles are not loaded; rely
-  only on text + the built-in glyphs/pills.
+- **No external assets.** Remote images, fonts and styles are not loaded. akasha shows
+  only images from its own `akasha/assets/` folder (section 4); elsewhere rely on text and
+  the built-in glyphs/pills.
 
 ---
 

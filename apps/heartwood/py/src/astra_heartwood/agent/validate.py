@@ -1,7 +1,8 @@
 """The per-write content rail: akasha's TS structural validator.
 
 ``write_page`` hands a private temp dir holding the one candidate page to a
-``Validator``. The real one shells out to ``validate-corpus.ts --dir <dir>`` under node
+``Validator``. The real one shells out to ``validate-corpus.ts --dir <dir>`` under node,
+with ``--assets`` pointing at the wiki's real image folder (the temp dir has none)
 (the same command ``astra_akasha_backend.snapshot.validate_corpus`` runs over the whole
 corpus): exit 0 → clean, exit 1 → error chips / sigil collisions printed. Unit tests
 inject a fake; CI's ``py-test`` lane has no node / pnpm install.
@@ -15,6 +16,7 @@ import subprocess
 from collections.abc import Callable
 from pathlib import Path
 
+from astra_akasha_backend.corpus import ASSETS_DIR
 from astra_akasha_backend.snapshot import TSX_LOADER, VALIDATOR
 
 #: ``validator(dir) -> None`` when clean, else the validator's report text.
@@ -43,8 +45,9 @@ def find_node() -> str:
     raise FileNotFoundError("node not found ($NODE, PATH, ~/.nvm) — the vellum validator needs it")
 
 
-def node_validator(directory: str) -> str | None:
-    """Run ``validate-corpus.ts --dir <directory>``; ``None`` on exit 0, else its output."""
+def node_validator(directory: str, assets_dir: Path = ASSETS_DIR) -> str | None:
+    """Run ``validate-corpus.ts --dir <directory> --assets <assets_dir>``; ``None`` on exit 0,
+    else its output. The images a page shows must exist in ``assets_dir``."""
     proc = subprocess.run(
         [
             find_node(),
@@ -53,6 +56,8 @@ def node_validator(directory: str) -> str | None:
             str(VALIDATOR),
             "--dir",
             directory,
+            "--assets",
+            str(assets_dir),
         ],
         capture_output=True,
         text=True,

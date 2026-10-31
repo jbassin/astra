@@ -16,6 +16,7 @@ export const Data = z
     mouthpieceSnapshot: contentPath(),
     akashaContent: contentPath(),
     akashaSnapshot: contentPath(),
+    akashaAssets: contentPath(),
     heartwoodLedger: contentPath(),
     entityRegistry: contentPath(),
   })

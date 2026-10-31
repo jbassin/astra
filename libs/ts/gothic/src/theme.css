@@ -217,6 +217,22 @@
     @apply my-[0.7rem] border-l-2 border-accent-amber py-[0.1rem] pl-[1rem] text-ink-dim italic;
   }
 
+  /* ── Images (only with an app's `resolveImage`; else alt text) ─────────
+     Never wider than the column; width/height attributes keep the aspect ratio.
+     An image alone on its line is a <figure>, with the Markdown title as caption. */
+  .gothic-content img {
+    @apply h-auto max-w-full align-middle;
+  }
+  .gothic-content .gothic-figure {
+    @apply mx-0 my-[0.8rem];
+  }
+  .gothic-figure img {
+    @apply block border border-rule;
+  }
+  .gothic-figure figcaption {
+    @apply mt-[0.35rem] font-display text-[0.82rem] text-ink-dim;
+  }
+
   /* ── Top-level prose: a real heading hierarchy (`#` largest → `######`) ── */
   .gothic-prose > :first-child {
     @apply mt-0;

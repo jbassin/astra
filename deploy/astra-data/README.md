@@ -3,7 +3,8 @@
 The published output of the [astra](https://github.com/jbassin/astra) campaign pipeline and
 the campaign wiki. **A bot writes this repo**: the pipeline produces the files, and astra's
 `linguist-commit` timer and heartwood recipes commit and push them. Hand edits are fine
-for the wiki (`akasha/content/`), made in your own clone, never in the live clone at
+for the wiki and its images (`akasha/content/`, `akasha/assets/`), made in your own clone, never
+in the live clone at
 `/ruby/data/astra-state/astra-data` (an uncommitted edit there makes heartwood refuse to run).
 Pull first, keep the commit small, and push promptly, since a bot commit to the same lines
 makes the bots' rebase fail. A pushed edit goes live with the next heartwood publish or
@@ -23,9 +24,19 @@ where they lived until October 2026.
 | `linguist/timeline/` | Chronicle: per-episode summaries and the season plan | linguist (Dagster) |
 | `mouthpiece/snapshot/` | The podcast episode catalog (`episodes-index.json`) | `just mouthpiece-publish` |
 | `akasha/content/` | The wiki pages (`.vellum`) | heartwood agent, or by hand here |
+| `akasha/assets/` | Images the wiki pages show inline (png, jpg/jpeg, webp, gif; no svg) | by hand here |
 | `akasha/snapshot/` | The wiki graph snapshot (`akasha-snapshot.json`) | `akasha-snapshot` |
 | `heartwood/agent-runs.jsonl` | heartwood's run ledger, one line per published or reverted session | heartwood |
 | `entity/entity.kdl` | The in-world noun registry (seeded from the snapshot, defs and roster) | `astra-ontology-entity-seed` |
+
+## Inline images
+
+A page shows an image from `akasha/assets/` with plain Markdown, the path relative to that
+folder and without a leading slash: `![Map of Althane](maps/althane.png "Optional caption")`.
+Names use letters, digits, `.`, `_` and `-`. The site serves the file from its own domain;
+an external URL is never shown (only its alt text), and astra's corpus validator rejects it, a
+missing file, or an image without alt text. Keep files small. An image goes live with the next
+`just deploy akasha-frontend`, like a page edit.
 
 ## Who reads it
 

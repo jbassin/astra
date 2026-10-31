@@ -3,6 +3,7 @@ import type { VellumBlock, VellumDocument, VellumNode } from "@astra/vellum-lang
 import type { CSSProperties, ReactElement, ReactNode } from "react";
 
 import { type CrossRefResolver, CrossRefResolverContext } from "../crossrefResolver";
+import { type ImageResolver, ImageResolverContext } from "../imageResolver";
 import { renderNodes } from "../mdastToReact";
 import { DeityCard } from "./DeityCard";
 import { Fields } from "./Fields";
@@ -72,13 +73,18 @@ function Node({ node }: { node: VellumNode }): ReactNode {
  * `resolveCrossref` (optional) lets a consuming app (akasha-frontend 0011) turn
  * `[[crossref]]` placeholders into real `<a href>` links; omitted, crossrefs stay
  * unresolved placeholders (gothic's L6 default — render service / Storybook).
+ *
+ * `resolveImage` (optional) maps a Markdown image's path to the same-origin URL the app
+ * serves it at (akasha-frontend's `akasha/assets/`); omitted, images render their alt text.
  */
 export function DocumentView({
   document,
   resolveCrossref,
+  resolveImage,
 }: {
   document: VellumDocument;
   resolveCrossref?: CrossRefResolver;
+  resolveImage?: ImageResolver;
 }): ReactElement {
   const article = (
     <article
@@ -93,11 +99,16 @@ export function DocumentView({
       ))}
     </article>
   );
-  return resolveCrossref ? (
-    <CrossRefResolverContext.Provider value={resolveCrossref}>
-      {article}
-    </CrossRefResolverContext.Provider>
+  const withImages = resolveImage ? (
+    <ImageResolverContext.Provider value={resolveImage}>{article}</ImageResolverContext.Provider>
   ) : (
     article
+  );
+  return resolveCrossref ? (
+    <CrossRefResolverContext.Provider value={resolveCrossref}>
+      {withImages}
+    </CrossRefResolverContext.Provider>
+  ) : (
+    withImages
   );
 }

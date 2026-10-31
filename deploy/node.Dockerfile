@@ -97,11 +97,11 @@ RUN pnpm install --offline --frozen-lockfile --prod --filter "./apps/${APP}"
 # build context (compose additional_contexts), not a stage.
 FROM scratch AS content-none
 FROM scratch AS content-akasha
-# The akasha snapshot and corpus, the linguist session JSONs and the chronicle timeline.
+# The akasha snapshot, corpus and inline images (akasha/assets, which may not exist yet; the
+# whole folder is copied so a missing one isn't an error), the linguist session JSONs and the
+# chronicle timeline.
 # hadolint ignore=DL3022
-COPY --from=astra-data akasha/snapshot /akasha/snapshot
-# hadolint ignore=DL3022
-COPY --from=astra-data akasha/content /akasha/content
+COPY --from=astra-data akasha /akasha
 # hadolint ignore=DL3022
 COPY --from=astra-data linguist/data /linguist/data
 # hadolint ignore=DL3022
