@@ -1,18 +1,17 @@
 # Now
 
-Updated 2026-10-30.
+Updated 2026-10-31.
 
 ## In flight
 
-- **Earlier campaigns into akasha (2026-10-30, #159 to #162).** Campaign 2 (Deep Eyes, on
-  Althane), its two Færrin one-shots and Risk of Ruin (campaign 1, unrecorded) are registered;
-  heartwood now takes any Astra-world campaign (Færrin, Althane, Ushas); akasha files the 25
-  quartz-era transcript pages under their campaigns and follows `sessions.kdl` skips; every
-  heartwood page carries a `campaigns` list (315 pages backfilled). Live: Dagster and
-  akasha-frontend `ca0ba766`, astra-data `a52aadb`. Next: the "Known from" line and the import
-  of Josh's campaign-2 vault (Josh reviews it first), then the paid heartwood backfill of the
-  27 pending sessions. Plan and checklist:
-  [`thoughts/shared/research/2026-10-30-earlier-campaigns.md`](../thoughts/shared/research/2026-10-30-earlier-campaigns.md).
+- **Earlier campaigns into akasha (2026-10-30 to 31, #159 to #167). Handoff:**
+  [`thoughts/shared/research/2026-10-30-earlier-campaigns.md`](../thoughts/shared/research/2026-10-30-earlier-campaigns.md),
+  section 0. Campaign 2 (Deep Eyes, Althane), its Færrin one-shots, Risk of Ruin (campaign 1)
+  and Noah's Urth one-shots are registered; heartwood takes any Astra-world campaign; wiki
+  pages carry a `campaigns` list shown as "Known from"; Josh's campaign-2 vault is imported;
+  Geography is nested by world; akasha can show inline images it serves itself. Live:
+  astra-data `ccbc24e`. Deployed `8650c097`. Next (section 0.2): the Urth content follow-up,
+  the vault images, then the paid heartwood backfill of 27 sessions (ask Josh first).
 - **akasha redesign is live (2026-10-30, #154 to #157, deployed `c5021a72`).** The stakeholders
   asked for a complete redesign. akasha now has light and dark themes (following the system, with
   a switch), Literata and Archivo instead of Caslon Antique, one colour per wiki section, a new

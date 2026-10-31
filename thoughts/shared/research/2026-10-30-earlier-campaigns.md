@@ -1,10 +1,167 @@
 # Earlier campaigns in akasha
 
 - **Date:** 2026-10-30
-- **Status:** Slices 1, 2 and 3a are live (2026-10-30). Next: 3b (the "Known from" line) and 4 (the vault import, reviewed by Josh before it ships), then the paid heartwood backfill.
+- **Status:** Handoff written 2026-10-31 (section 0). Slices 1 to 4 and three added slices
+  (inline images, geography by world, the Urth show) are merged and published. Next: the
+  Urth content follow-up, the vault images, then the paid heartwood backfill.
 - **Goal:** the players carry knowledge from campaigns 1 and 2 that akasha doesn't have. Bring
   the recorded part of campaign 2 and its Færrin one-shots into akasha and the pipeline, mark
   which campaign each fact comes from, and fill the unrecorded gaps from Josh.
+
+## 0. Handoff (2026-10-31)
+
+Read this section first; sections 1 to 3 are the original plan and are partly superseded.
+
+### 0.1 What is live
+
+astra pull requests, all merged: #159 (this plan), #160 (`campaigns` frontmatter, publish
+stamping, backfill script), #161 (campaigns registered, Astra-worlds filter, akasha follows
+`sessions.kdl` skips), #162 (quartz importer), #163 (docs), #164 ("Known from" line), #165
+(inline images served by akasha), #166 (heartwood files places by world; `Hellsmith` →
+`Hellsmouth` lexicon entry), #167 (the Urth show and the `sessions.kdl` `campaign=` override;
+merged).
+
+astra-data `main`, in order: `9c0e18e` the 25 quartz transcripts; `a52aadb` the `campaigns`
+backfill (315 pages; Timeline has none); `f25fcd9` the campaign-2 vault import (169 new pages,
+8 merged; Josh reviewed it on the live site); `ccbc24e` geography nested by world. The live
+clone is at `ccbc24e`.
+
+`being.kdl` now holds, appended in this order after the existing eight: `deep-eyes` (campaign
+2, Althane), `the-midnight-sun` and `hildebrandt-heist` (Færrin one-shots, Josh GM),
+`risk-of-ruin` (campaign 1, D&D 5e, Ushas, never recorded), `urth` (Noah's one-shots, one show,
+PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Slipped is world
+`ushas`. heartwood ingests any campaign in an Astra world.
+
+### 0.2 Do next, in order
+
+1. **Done 2026-10-31:** #167 merged; `just deploy akasha-frontend dagster-code dagster-daemon`
+   deployed `8650c097` (images code, world folders, Hellsmouth, Urth). Nested URLs such as
+   `/Geography/F%C3%A6rrin/Calaria` serve; the old top-level ones 404. The Hellsmouth
+   `defs.kdl` change makes `stored_corrections_sensor` rewrite stored text once; check its run
+   in Dagster and that linguist-commit published it.
+2. **Urth content follow-up** (2026-9-3 was Noah's "sucked into the movie" one-shot, filed as
+   campaign 3; its published podcast episode stays exactly as it is, Josh's call):
+   a. In Dagster, materialize `session_transcripts` for partition `2026-9-3` (free, no LLM). It
+      writes `linguist/transcripts/112.urth.2026-9-3.txt` (billed Hades = Jorge, Fulton = Josh,
+      Runway Brian = Mike, Gamemaster = Noah), deletes the `000.through-a-song-darkly` copies,
+      and linguist-commit publishes the rename.
+   b. Chronicle: edit `linguist/timeline/episodes/2026-9-3.json` `"show"` to `"urth"` in your
+      own astra-data clone, push, then materialize `campaign_timeline` by hand (a paid GLM
+      grouping call, cents; flag it in one line). Through a Song, Darkly's season URLs may
+      renumber; Josh accepted that behaviour earlier.
+   c. Restamp `campaigns` to `urth` (replace the old slug) on the pages the 2026-9-3 heartwood
+      run created, at their new paths: `Geography/Urth/index`, `Geography/Urth/Los Diablos`,
+      `Org/Bisney and Dixar/index`, `Org/Bisney and Dixar/Arcane Intelligence` (now also holds
+      the film's settings, Afro-China and the Elephant Graveyard of Wonders), `People/Fulton`,
+      `People/Hades`, `People/Jaskar`, `People/Runway Brian`, `Phenomena/Enchanted Mirror`.
+      Also Noah's Cagley one-shot (the first half of 2025-6-9, filed as A Hunt of Metal and
+      Vine): `Geography/Urth/Cagley` and `Bestiary/Terror of Cagley` become `[urth]`;
+      `Bestiary/Fiends` (holds the Hellion) gains `urth`. Then validate, `akasha-snapshot`,
+      `astra-ontology-entity-seed`, push, pull the live clone under the git-publish lock,
+      `just deploy akasha-frontend` (the procedure is in 0.5).
+3. **Vault images.** Copy the vault's images from `/home/jbassin/campaign-2/content/Assets/`
+   into astra-data `akasha/assets/` (path form and rules: `libs/ts/vellum-lang/README.md`,
+   akasha README) and put `![alt](path "caption")` back where the vault embedded them. The
+   ones that matter most are the eight Configuration Space plots (`wick/00009`–`00028`), whose
+   dialogue says "like this:" with nothing after it. The others are maps (`althane.jpeg`,
+   `athrea.jpg`, `badlands.jpg`, `haven.png`, `illyara.jpg`, `occident.jpeg`, `qor-bahi.jpg`,
+   `thyropae.jpg`, `toleros.jpeg`, `astra.jpg`; `remnant-map.jpg` was never embedded). The vault
+   page that embedded each file shows where it goes. The conversion script from the import,
+   which knows the vault-to-akasha path mapping, was at
+   `/tmp/claude-1000/-ruby-data-experiments-astra/20b37ef6-060c-4b4d-9409-962c48349ea9/scratchpad/convert/convert.py`
+   (scratch; may be gone). Also add the "Inline images" paragraph to the live astra-data repo's
+   `README.md` (the seed copy `deploy/astra-data/README.md` in astra already has it).
+4. **heartwood backfill, paid and live.** Ask Josh first. `uv run astra-heartwood-agent
+   sessions --from 2024-10-21` listed 27 dates on 2026-10-30 (the 25 imported plus
+   Observatory, Slipped's 2026-4-6 and 2026-4-27); re-check before running. Dry-run the first
+   date (`just -f /ruby/data/astra-deploy/justfile heartwood-agent 2024-10-21 --dry-run`) and
+   read the diff, then `just -f /ruby/data/astra-deploy/justfile heartwood-backfill
+   2024-10-21`. Estimate about $12, at most about $24, against $76 left of the $100
+   `heartwood.backfill-budget-usd`. The runs stamp `campaigns` themselves.
+5. **Chronicle for the imported sessions, paid (cents each).** `uv run python
+   apps/linguist/py/scripts/backfill_chronicle.py`, then materialize `campaign_timeline`. Label
+   Deep Eyes "Campaign 2" on akasha's Sessions page rather than as a one-shot.
+6. **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
+   below.
+7. **Wrap-up:** tick section 5, update `docs/now.md` and `docs/backlog.md`, remove the
+   finished agent worktrees under `.claude/worktrees/` (`git worktree list`).
+
+### 0.3 Open questions for Josh
+
+- **Far Realms and Sedecium.** On 2026-5-21 the GM says the Sundom ship crashed in the Far
+  Realms and Sedecium "started out of their wreckage". The new `Geography/Færrin/Infinite
+  Horizon/Far Realms/index` page leaves that out in case it's a reveal. Ask before adding it.
+- **Two tensions left in place on purpose.** Holy Gold: the vault says it's found everywhere in
+  the Astra in tiny amounts; Sedecium says growths appear perhaps once in three or four worlds.
+  The page gives Sedecium's figure as Sedecium's claim. Sky Metal: the page says it's believed
+  to be blessed by the Outer Gods; the vault says the celestial-origin belief was disproven.
+  Both sentences kept.
+- **Place-like pages outside Geography, not moved:** `Org/The Harlequins/Providence/`,
+  `Org/The Harlequins/Harlequin Town`, and fixed-site businesses (`Org/Luxottica`, `Org/Maple
+  Tree Farms`, `Org/Sableclutch Scrap`, `Org/Opaline Reserve`, `Org/Hallia Exchange`).
+- **Lost registry names.** "Afro-China" and "Elephant Graveyard of Wonders" are no longer
+  entity names; adding them as aliases on `Org/Bisney and Dixar/Arcane Intelligence` would
+  restore them.
+
+### 0.4 Decisions and facts (Josh, 2026-10-30)
+
+- Campaign 1 is Risk of Ruin (5e, Ushas): Jorge was Zuggarian "Zugg" (merfolk wizard), Tanner
+  Rotok (half-orc cleric of Tempus), Mike T3C (warforged Seeker, homebrew), Noah Dorcan (firbolg
+  druid). They founded Sedecium; the players came up with it. Player-known lore for slice 7 is
+  listed there.
+- Deep Eyes roster: Jorge Lev, Noah Dawnmonger ("Dawn" or "Don"; his earlier character Big
+  Fish died at the night market before the recordings began), Mike Divex, Tanner Henrik.
+  T3C is the Broker; the Deep Eyes party knows it.
+- One-shots in Færrin during campaign 2: The Midnight Sun (2024-10-21: Noah Banyan, Tanner
+  Giancarlo, Mike Crindle Vilksnake) and Hildebrandt Heist (2024-11-20: Noah Adzuki, Tanner
+  Mika, Mike Chris Gangle, Jorge Vint Cerf). The first Færrin one-shot predates the recordings.
+- Not the Astra, kept out: Jorge's Starfinder (2025-6-30, 2025-7-7; skipped in `sessions.kdl`),
+  Tanner's The Blue Remains (2025-7-14 to 2025-8-11; 2025-8-11 skipped) and 2025-10-8, Fey in
+  the Mists, Chuul Hunt.
+- Urth is in the Astra but self-contained: the world Noah uses for his one-shots. One show,
+  `urth`. 2026-5-21 is a real campaign-3 session (an earlier guess said otherwise).
+- Geography is nested by world. The Infinite Horizon's Joker Worlds (Far Realms, the Quorum at
+  Star 221,325, the Menagerie, Glacier, Hellsmouth) sit under `Geography/Færrin/Infinite
+  Horizon/`; Hesperid and Hesperid 3 are in the Far Realms. The Black and White and the Godhome
+  are Færrin's alternate planes. Færrin is near the Astra's core.
+- The campaign-2 vault was shown to the players: all of it may be published. Its quoted
+  passages are diegetic. The vault's front page (Aut's greeting) is not imported. YuDaan's
+  treatise is converted faithfully and otherwise left alone. Rules text on ancestries is
+  dropped. Althane's Deep is campaign 3's Deep. Earth is Urth. Starmetal is Sky Metal. Campaign
+  3's rare gold spikes are Holy Gold.
+- APEX: portfolios are game classes, not lore; only three general facts went onto the
+  Thessians page. Josh's full Thessian list is GM-only and must never reach the repo, the wiki
+  or heartwood's inputs (this repo is public).
+- "Known from" is a per-page list set in code, never by the model. Pinned-roster tests are
+  replaced by invariant tests; don't reintroduce tests that pin the campaign list.
+
+### 0.5 Procedures and traps learned this session
+
+- **Publishing a hand edit to astra-data:** work in your own clone (never the live one at
+  `/ruby/data/astra-state/astra-data`), validate with `node --import
+  ./libs/ts/vellum-lang/node_modules/tsx/dist/loader.mjs
+  libs/ts/vellum-lang/scripts/validate-corpus.ts --dir <clone>/akasha/content`, then
+  `ASTRA_CONTENT_ROOT=<clone> uv run akasha-snapshot` and `... uv run
+  astra-ontology-entity-seed`, commit, push, then `flock -w 600
+  /ruby/data/astra-state/locks/git-publish.lock git -C /ruby/data/astra-state/astra-data pull
+  --ff-only` and `just deploy akasha-frontend`.
+- **akasha URLs use hyphens for spaces** (`Phenomena/Sky-Metal`); a 404 on a spaced URL is not a
+  missing page.
+- **Auto-merge did not always stick.** Verify with `gh api graphql -f
+  query='{repository(owner:"jbassin",name:"astra"){pullRequest(number:N){autoMergeRequest{enabledAt}}}}'`.
+- **Long compound commands that push get denied** by the permission layer; run `git push` on
+  its own. Force pushes are denied; a never-pushed branch needs no `-f`.
+- **The system `python3` doesn't run in worktrees** (pyenv wants 3.12); use `uv run
+  --no-project python -I`.
+- **A local `just ci` can pass while CI's ratchet fails** on knip, because generated files
+  (akasha's `site.ts`) exist locally and hide an unused export.
+- **Agent worktrees share the scratchpad**, so parallel agents' CI logs can interleave.
+- **Not done from the images review (informational):** the corpus-wide validator callers
+  (`snapshot.validate_corpus`, `astra_ops.heartwood.validate_argv`) rely on the assets folder
+  sitting beside the content folder instead of passing `--assets` from config. Fine with the
+  live config.
+- **Pre-existing bug, untouched:** a link to the nonexistent `Divinity/Outer Gods/index`
+  silently resolves to the wiki's root `index`.
 
 ## 1. What exists
 
@@ -142,8 +299,15 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
   new. heartwood now lists 27 pending dates (these plus Observatory, Slipped's two).
 - [x] 3a. `campaigns` frontmatter, publish stamping, migration, instructions (#160; migration
   astra-data `a52aadb`, akasha deployed `ca0ba766`: 315 pages listed, Timeline excluded)
-- [ ] 3b. akasha "Known from" line
-- [ ] 4. Archive imported and reviewed
+- [x] 3b. akasha "Known from" line (#164, deployed `96d1ff67`; it shows on every page with a
+  non-empty list, campaign names joined with "and")
+- [x] 4. Vault imported and reviewed (astra-data `f25fcd9`; the vault replaced the archive repo)
+- [x] 4a. Inline images served by akasha (#165, reviewed independently; symlinks never followed)
+- [x] 4b. Geography nested by world (#166; astra-data `ccbc24e`); Hellsmith → Hellsmouth
+- [x] 4c. Urth registered as one show; `sessions.kdl` `campaign=` override (#167)
+- [x] Deploy #165 to #167 (`8650c097`, 2026-10-31)
+- [ ] Urth content follow-up (0.2 step 2)
+- [ ] Vault images added (0.2 step 3)
 - [ ] 5. heartwood backfill (paid)
 - [ ] 6. Chronicle backfill (paid), Sessions label
 - [ ] 7. Questionnaire answered and written up
