@@ -39,6 +39,8 @@ export interface SiteDoc {
   links: SimpleSlug[];
   /** baked git "modified" date (snapshot frontmatter, committer date), if any */
   date?: Date;
+  /** the campaign slugs the page draws on, oldest first (snapshot frontmatter) */
+  campaigns: string[];
 }
 
 /** Pure basename-without-`.md` (was `path.basename(rel, ".md")`). Kept node-free so
@@ -103,6 +105,7 @@ export function buildSite(snapshot: Snapshot): SiteData {
       img: fm.img ?? undefined,
       links: [...(edgesBySource.get(p.path) ?? [])],
       date: p.date ? new Date(p.date) : undefined,
+      campaigns: fm.campaigns,
     };
   });
 

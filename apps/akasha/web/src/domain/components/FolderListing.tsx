@@ -39,7 +39,7 @@ function WikiFolder({ view }: { view: ListingFolderView }) {
       <header className="ak-article-head popover-hint">
         <Breadcrumbs crumbs={view.crumbs} />
         <ArticleTitle title={view.title} />
-        <ContentMeta tags={view.tags} date={view.date} />
+        <ContentMeta tags={view.tags} date={view.date} knownFrom={view.knownFrom} />
       </header>
       <RenderedBody className="ak-article" html={view.bodyHtml} />
       {view.entries.length > 0 && (

@@ -166,6 +166,7 @@ export function buildTranscripts(
       aliases: [],
       links,
       date: new Date(transcript.date),
+      campaigns: [],
     });
     bodies[slug] = { html, minutes };
     meta[slug] = {
