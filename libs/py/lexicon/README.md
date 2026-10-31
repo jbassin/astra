@@ -53,5 +53,11 @@ uv run pytest libs/py/lexicon
   fixture registry (`just ontology-check` fails until you do); the real registry in astra-data
   is reseeded on the next heartwood run (see
   [`ontology/ontology-entity`](../../../ontology/ontology-entity/README.md)).
+- **Never make a common word a variant.** Matching ignores case, so a `Tech` variant for T3C
+  would rewrite every "tech", a `Don` variant would hit every "Don't", and a `cave` variant for
+  Kaathe would rewrite every real cave. Check a variant's hits across
+  `linguist/transcripts/` first (`grep -o -i -w`), and fix the few real mis-hearings on the
+  wiki by hand instead. A deployed `defs.kdl` change makes `stored_corrections` rewrite every
+  stored transcript, so a bad variant reaches published text within minutes.
 - **Folding is for comparison only.** Keep the original glyphs (Færrin, Anaïs) in any text you
   write back.

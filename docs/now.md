@@ -4,20 +4,15 @@ Updated 2026-10-31.
 
 ## In flight
 
-- **Earlier campaigns into akasha (2026-10-30 to 31, #159 to #167). Handoff:**
-  [`thoughts/shared/research/2026-10-30-earlier-campaigns.md`](../thoughts/shared/research/2026-10-30-earlier-campaigns.md),
-  section 0. Campaign 2 (Deep Eyes, Althane), its Færrin one-shots, Risk of Ruin (campaign 1)
-  and Noah's Urth one-shots are registered; heartwood takes any Astra-world campaign; wiki
-  pages carry a `campaigns` list shown as "Known from"; Josh's campaign-2 vault is imported;
-  Geography is nested by world; akasha can show inline images it serves itself. 2026-9-3
-  is refiled under Urth (transcript, chronicle, page stamps). The vault's maps and plots are
-  back. heartwood stamps only pages a run creates or that already list a campaign
-  (#171, deployed `90a37e0f`). The heartwood backfill
-  published all 27 sessions (2026-10-31, $9.74; wiki 531 to 640 pages). Sedecium's origin in
-  Ushas's Far Realms is written in (astra-data `18c42ea`). The chronicle covers the
-  imported sessions, and the Sessions page groups Deep Eyes under "Earlier campaigns" (#176).
-  Josh's questionnaire answers on campaign 1, Deep Eyes and the Thessians are written in
-  (astra-data `9d4f848`, `e331647`). Next: wrap-up, section 0.2 step 7.
+- **Earlier campaigns are in akasha (closed 2026-10-31, #159 to #180).** Campaign 1 (Risk of
+  Ruin, Ushas), campaign 2 (Deep Eyes, Althane), the Færrin one-shots and Noah's Urth one-shots
+  are registered; heartwood ingests any Astra-world campaign and has read all 27 earlier
+  sessions ($9.74); pages carry a `campaigns` list shown as "Known from"; the Sessions page
+  lists Deep Eyes under "Earlier campaigns" as "Campaign 2". Josh's campaign-2 vault and his
+  answers on campaign 1, Deep Eyes and the Thessians are written in (wiki 531 to 660 pages,
+  live astra-data `2a61402`). Plan and record:
+  [`thoughts/shared/research/2026-10-30-earlier-campaigns.md`](../thoughts/shared/research/2026-10-30-earlier-campaigns.md).
+  Leftovers are in the backlog.
 - **akasha redesign is live (2026-10-30, #154 to #157, deployed `c5021a72`).** The stakeholders
   asked for a complete redesign. akasha now has light and dark themes (following the system, with
   a switch), Literata and Archivo instead of Caslon Antique, one colour per wiki section, a new

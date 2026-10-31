@@ -1,8 +1,8 @@
 # Earlier campaigns in akasha
 
 - **Date:** 2026-10-30
-- **Status:** Handoff updated 2026-10-31 (section 0). Everything through the questionnaire and
-  Josh's account of Deep Eyes before the recordings is live. Next: wrap-up (0.2 step 7).
+- **Status:** Closed 2026-10-31. Every step in section 0.2 is done and live; leftovers are in
+  `docs/backlog.md`. Section 0 is the record.
 - **Goal:** the players carry knowledge from campaigns 1 and 2 that akasha doesn't have. Bring
   the recorded part of campaign 2 and its Færrin one-shots into akasha and the pipeline, mark
   which campaign each fact comes from, and fill the unrecorded gaps from Josh.
@@ -113,7 +113,7 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    `Ret` also takes "Rhett"; the one other hit, "Thanks, Rhett" (2026-3-30), names no one Josh
    knows, so it is a mis-transcription either way. Original: **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
    below.
-7. **Wrap-up:** tick section 5, update `docs/now.md` and `docs/backlog.md`, remove the
+7. **Done 2026-10-31.** Wrap-up: tick section 5, update `docs/now.md` and `docs/backlog.md`, remove the
    finished agent worktrees under `.claude/worktrees/` (`git worktree list`).
 
 ### 0.3 Open questions for Josh
@@ -346,4 +346,4 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 - [x] 5. heartwood backfill (27 sessions, $9.74, 2026-10-31; #171 stamping rule first)
 - [x] 6. Chronicle backfill (paid), Sessions label (astra-data `a41f60a`, #176, 2026-10-31)
 - [x] 7. Questionnaire answered and written up (astra-data `9d4f848`, `e331647`, 2026-10-31)
-- [ ] Wrap-up: now.md, backlog, heartwood, linguist and ontology READMEs
+- [x] Wrap-up: now.md, backlog, heartwood, linguist and lexicon READMEs (2026-10-31)
