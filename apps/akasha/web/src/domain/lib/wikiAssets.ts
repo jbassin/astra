@@ -96,7 +96,8 @@ function hashedUrl(rel: string, bytes: Buffer): string {
 
 /**
  * Every shippable image under `dir` (none when the folder doesn't exist yet), sorted by
- * path. Files not in the asset path form (an svg, a README) are returned in `skipped`.
+ * path. Files not in the asset path form (an svg, a README) and anything that isn't a regular
+ * file (a symlink) are returned in `skipped`.
  */
 export function scanAssets(dir: string): { assets: WikiAsset[]; skipped: string[] } {
   const assets: WikiAsset[] = [];
@@ -104,12 +105,13 @@ export function scanAssets(dir: string): { assets: WikiAsset[]; skipped: string[
   const walk = (sub: string) => {
     for (const entry of fs.readdirSync(path.join(dir, sub), { withFileTypes: true })) {
       const rel = sub ? `${sub}/${entry.name}` : entry.name;
+      // Symlinks, FIFOs and the like are never followed or read, only skipped: a symlinked
+      // "image" could otherwise publish a file from outside the folder.
       if (entry.isDirectory()) walk(rel);
-      else if (!isAssetPath(rel)) skipped.push(rel);
-      else {
+      else if (entry.isFile() && isAssetPath(rel)) {
         const bytes = fs.readFileSync(path.join(dir, rel));
         assets.push({ path: rel, url: hashedUrl(rel, bytes), bytes, ...imageSize(bytes) });
-      }
+      } else skipped.push(rel);
     }
   };
   if (fs.existsSync(dir)) walk("");
