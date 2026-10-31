@@ -17,7 +17,7 @@ Updated 2026-10-31.
   Ushas's Far Realms is written in (astra-data `18c42ea`). The chronicle covers the
   imported sessions, and the Sessions page groups Deep Eyes under "Earlier campaigns" (#176).
   Josh's questionnaire answers on campaign 1, Deep Eyes and the Thessians are written in
-  (astra-data `9d4f848`). Next: the three open follow-ups in section 0.2 step 6, then wrap-up.
+  (astra-data `9d4f848`, `e331647`). Next: wrap-up, section 0.2 step 7.
 - **akasha redesign is live (2026-10-30, #154 to #157, deployed `c5021a72`).** The stakeholders
   asked for a complete redesign. akasha now has light and dark themes (following the system, with
   a switch), Literata and Archivo instead of Caslon Antique, one colour per wiki section, a new

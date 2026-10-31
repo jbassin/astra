@@ -1,8 +1,8 @@
 # Earlier campaigns in akasha
 
 - **Date:** 2026-10-30
-- **Status:** Handoff updated 2026-10-31 (section 0). Everything through the questionnaire's
-  answers is live; three small questions remain (0.2 step 6). Next: those, then wrap-up.
+- **Status:** Handoff updated 2026-10-31 (section 0). Everything through the questionnaire and
+  Josh's account of Deep Eyes before the recordings is live. Next: wrap-up (0.2 step 7).
 - **Goal:** the players carry knowledge from campaigns 1 and 2 that akasha doesn't have. Bring
   the recorded part of campaign 2 and its Færrin one-shots into akasha and the pipeline, mark
   which campaign each fact comes from, and fill the unrecorded gaps from Josh.
@@ -94,15 +94,24 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    Original: **Chronicle for the imported sessions, paid (cents each).** `uv run python
    apps/linguist/py/scripts/backfill_chronicle.py`, then materialize `campaign_timeline`. Label
    Deep Eyes "Campaign 2" on akasha's Sessions page rather than as a one-shot.
-6. **Mostly done 2026-10-31.** Josh answered the questionnaire; astra-data `9d4f848` writes it
+6. **Done 2026-10-31.** Josh answered the questionnaire; astra-data `9d4f848` writes it
    in: 14 new pages (the Undermountain, Penthes, Sigil, Ushas's Far Realms, Dahl, Samael,
    Sacrament, the False Hydra, the Locus, Mephistopheles, Uriel (alias Luce), Dragon, Formless,
    Metals, Big Fish) and additions to about 25 more, all `risk-of-ruin` unless shared lore.
    Corrections: the Broker is T3C (said "Tech", never spelled so; "he"), Rotok refused
    immortality, Dawnmonger is "Dawn", Muriel is Uriel, SeRaan was the Sundom wreck's one
-   survivor. Still open: Josh's question 11 (he asked what Noah's 2025-5-12 recap covers, to
-   flesh out Deep Eyes before the recordings), SeRaan's orb colour (wiki orange, Josh said
-   yellow), and who "Big Fish's people" are. Original: **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
+   survivor. Then Josh gave Deep Eyes before the recordings (astra-data `e331647`): the
+   train to Toleros, Hali and Tenno, Grimm and the Beast's dream, the Trip the Light Fantastic,
+   the Lighthouse's real origin and the Sundom's betrayal, the Wick, Luce, Oxas's job. Fixes:
+   Oxus is Oxas (also Oxide), Karkov never Kharkov, Lev's full name Lev'Myr, the Sundom wreck
+   held the crew's regressed descendants with SeRaan (orange) deactivated, Big Fish was one of
+   the nomadic Descendants. "The great ship Shoa" was heartwood misreading "the big Sundom
+   ship, so…" (2025-5-5) and is gone. `defs.kdl` gains Karkov, Oxas, Lev'Myr, Toleros, Ret
+   (variant "Rett"), and Imex and Sondheim variants. Also fixed: KiRiin is Immix's Kaathe aide,
+   not a Ki-Rin (void-touched chitinous unicorns, campaigns 1 and 3), and Immix is "he"; Syrin's
+   dream is the Ret, short for reticulum, never "Rhett" (astra-data `12ae48c`, `7964ad6`).
+   Three Deep Eyes lines still say "Rhett": a `Rhett` rule would also rewrite "Thanks, Rhett"
+   (2026-3-30), which is not the Ret. Original: **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
    below.
 7. **Wrap-up:** tick section 5, update `docs/now.md` and `docs/backlog.md`, remove the
    finished agent worktrees under `.claude/worktrees/` (`git worktree list`).
@@ -336,5 +345,5 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 - [x] Vault images added (0.2 step 3; astra-data `7fbb152`, 2026-10-30)
 - [x] 5. heartwood backfill (27 sessions, $9.74, 2026-10-31; #171 stamping rule first)
 - [x] 6. Chronicle backfill (paid), Sessions label (astra-data `a41f60a`, #176, 2026-10-31)
-- [ ] 7. Questionnaire answered and written up
+- [x] 7. Questionnaire answered and written up (astra-data `9d4f848`, `e331647`, 2026-10-31)
 - [ ] Wrap-up: now.md, backlog, heartwood, linguist and ontology READMEs

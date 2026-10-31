@@ -32,6 +32,7 @@ entry "Jorge" ipa="ˈdʒɔrdʒ" {
 }
 entry "Immix" {
     variant "[IE]mix"
+    variant "Imex"
 }
 entry "Althane" {
     variant "Ulthane"
@@ -45,6 +46,8 @@ entry "Feep" {
 }
 entry "Sundom" {
     variant "Sundump"
+    variant "Sondheim"
+    variant "Santham"
     variant "Sun Doom"
     variant "Sundum"
     variant "Sendum"
@@ -1074,4 +1077,19 @@ entry "Hellsmouth" {
 }
 entry "Rotok" {
     variant "Rodic"
+}
+entry "Karkov" {
+    variant "Kharkov"
+}
+entry "Oxas" {
+    variant "Oxus"
+}
+entry "Lev'Myr" {
+    variant "Levmir"
+}
+entry "Toleros" {
+    variant "Poleros"
+}
+entry "Ret" {
+    variant "Rett"
 }
