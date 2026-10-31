@@ -1,7 +1,7 @@
 # Earlier campaigns in akasha
 
 - **Date:** 2026-10-30
-- **Status:** Plan written; waiting for Josh's go-ahead.
+- **Status:** Slices 1, 2 and 3a are live (2026-10-30). Next: 3b (the "Known from" line) and 4 (the vault import, reviewed by Josh before it ships), then the paid heartwood backfill.
 - **Goal:** the players carry knowledge from campaigns 1 and 2 that akasha doesn't have. Bring
   the recorded part of campaign 2 and its Færrin one-shots into akasha and the pipeline, mark
   which campaign each fact comes from, and fill the unrecorded gaps from Josh.
@@ -94,7 +94,15 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
    instructions gain a paragraph naming the campaigns, their worlds and their order, and saying
    that player characters from an earlier campaign are described as they were when it ended.
    Two pull requests: the pipeline and migration, then the frontend.
-4. **Import the archive.** Convert the archive pages to vellum: Althane under
+4. **Import the archive.** *Superseded source (2026-10-30):* Josh found a newer campaign-2
+   Obsidian vault, `/home/jbassin/campaign-2/content` (about 25,600 words: Althane, Astra
+   cosmology, stubs for Færrin, Ushas, Urth and Syrin; narrated in-world by Aut). It was shown
+   to the players, so all of it may go in, and it replaces the archive repo as the source. Also
+   in this slice: convert YuDaan's treatise faithfully and otherwise leave it alone (its quotes
+   are diegetic); add three player-known APEX facts to the Thessians page (apex of life in the
+   Astra; named for their theme; information density and coherence), nothing else from APEX.
+   GM-only Thessian reference material never goes into the repo, the wiki or heartwood's
+   inputs. Original text: convert the archive pages to vellum: Althane under
    `Geography/Althane/`, cosmology merged into the existing Astra-related pages, with
    `campaigns: [deep-eyes]` or no campaign for meta-setting pages. This happens on a branch of
    astra-data, and Josh reviews it before it ships, because it **changes published pages**. It
@@ -110,6 +118,13 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 7. **Fill the gaps from Josh.** I read the wiki and transcripts for references to Ushas,
    campaign 1 and unexplained Deep Eyes events, and turn them into a short questionnaire. Josh
    answers, and I write the answers into pages marked with their campaign.
+   Known so far (player-known, 2026-10-30): in Risk of Ruin the party (Zuggarian "Zugg",
+   Rotok, T3C, Dorcan) met the Thessians Uriel (a staunch ally), Mephistopheles "Mephi" (the
+   main antagonist), Dragon, Archive and Leitmotif, and encountered the Menhir; the players
+   came up with Sedecium, which their characters founded. T3C returns in Deep Eyes as the
+   Broker; that party knows it, and late in the campaign went with him off-world to
+   Sedecium's headquarters. Questions to ask: what each encounter established, and how the
+   campaign-1 Menhir connects to campaign 3's.
 
 ## 4. Open questions
 
@@ -117,10 +132,16 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 
 ## 5. Checklist
 
-- [ ] Josh approves the plan
-- [ ] 1. Campaigns registered, Astra-worlds filter
-- [ ] 2. Transcripts imported
-- [ ] 3a. `campaigns` frontmatter, publish stamping, migration, instructions
+- [x] Josh approves the plan (2026-10-30, #159)
+- [x] 1. Campaigns registered, Astra-worlds filter (#161, deployed `17efd7cd`). Also: Risk of
+  Ruin (campaign 1, 5e, Ushas, no recordings) registered; Noah is Dawnmonger only (Big Fish
+  died before the recordings); akasha follows `sessions.kdl` skips (Starfinder 2025-6-30 and
+  2025-7-7 skipped; The Blue Remains moved to Unsorted).
+- [x] 2. Transcripts imported (#162; astra-data `9c0e18e`). 25 sessions, not 26: their data
+  files were already published as `Script/Unsorted` pages, so only the `.txt` transcripts were
+  new. heartwood now lists 27 pending dates (these plus Observatory, Slipped's two).
+- [x] 3a. `campaigns` frontmatter, publish stamping, migration, instructions (#160; migration
+  astra-data `a52aadb`, akasha deployed `ca0ba766`: 315 pages listed, Timeline excluded)
 - [ ] 3b. akasha "Known from" line
 - [ ] 4. Archive imported and reviewed
 - [ ] 5. heartwood backfill (paid)
