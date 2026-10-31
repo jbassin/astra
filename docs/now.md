@@ -11,8 +11,10 @@ Updated 2026-10-31.
   pages carry a `campaigns` list shown as "Known from"; Josh's campaign-2 vault is imported;
   Geography is nested by world; akasha can show inline images it serves itself. 2026-9-3
   is refiled under Urth (transcript, chronicle, page stamps). The vault's maps and plots are
-  back. Live: astra-data `7fbb152`. Next (section 0.2): the paid heartwood backfill of 27
-  sessions (ask Josh first).
+  back. heartwood stamps only pages a run creates or that already list a campaign
+  (#171, deployed `90a37e0f`). **The heartwood backfill of 27 sessions is running** (Josh
+  approved; unit `heartwood-backfill`, started 2026-10-31 03:06 UTC, 24 done at 14:55):
+  check it first, per section 0.2 step 4. Then step 5, the chronicle backfill.
 - **akasha redesign is live (2026-10-30, #154 to #157, deployed `c5021a72`).** The stakeholders
   asked for a complete redesign. akasha now has light and dark themes (following the system, with
   a switch), Literata and Archivo instead of Caslon Antique, one colour per wiki section, a new

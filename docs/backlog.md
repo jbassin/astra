@@ -123,6 +123,9 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   "Thoughts"); older than the redesign, now more visible with section-coloured underlines — agent.
 - gothic still generates `graph-palette.css` and lists akasha as its user; akasha owns its graph
   palette since the redesign. Drop the file and its README row — agent.
+- `defs.kdl` entries `Scale`, `Fane` and `Giant` capitalize the everyday words too ("on that
+  Scale", "god-Scale"); the 2026-10-30 mouthpiece catalog refresh showed it. Narrow them or
+  leave them — Josh.
 - The entity seed (`astra_ontology/entity.py`) merges a `being` character into any page of the
   same name: Urth's Chuck (Mike, Cagley one-shot) marks the Harlequin NPC
   `Org/The Harlequins/People/Chuck` as `being="mike"`. Harmless until something reads `being`;
