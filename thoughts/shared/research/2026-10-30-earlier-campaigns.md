@@ -1,9 +1,9 @@
 # Earlier campaigns in akasha
 
 - **Date:** 2026-10-30
-- **Status:** Handoff updated 2026-10-31 15:00 UTC (section 0). Slices 1 to 4, three added
-  slices, the Urth follow-up and the vault images are live. The heartwood backfill (0.2 step
-  4) is running; check it first. Then the chronicle backfill, the questionnaire, wrap-up.
+- **Status:** Handoff updated 2026-10-31 (section 0). Slices 1 to 4, three added slices, the
+  Urth follow-up, the vault images and the heartwood backfill are live. Next: the chronicle
+  backfill (0.2 step 5), the questionnaire, wrap-up.
 - **Goal:** the players carry knowledge from campaigns 1 and 2 that akasha doesn't have. Bring
   the recorded part of campaign 2 and its Færrin one-shots into akasha and the pipeline, mark
   which campaign each fact comes from, and fill the unrecorded gaps from Josh.
@@ -79,29 +79,13 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    1600 px, JPEG quality 75: 0.3 to 0.8 MB each; the originals ran to 62 MB) and eight plots
    under `akasha/assets/configuration-space/`. `00009.jpg` and `remnant-map.jpg` were never
    embedded and stay out. The seed README now matches the live one.
-4. **Running since 2026-10-31 03:06 UTC (Josh approved).** Check this first. State at 14:55
-   UTC: 24 of 27 sessions ok, no failures, $8.79 spent (ledger $32.33 of $100), wiki 531 to
-   619+ pages; about 30 to 60 min per session, so it should end near 16:00 to 17:00 UTC.
-   It runs as the user unit `heartwood-backfill` and logs to
-   `/ruby/data/astra-state/heartwood/backfill.log`. It publishes nothing until the end: then
-   it pushes astra-data once, redeploys akasha and re-arms linguist-commit and the request
-   runner (paused while it runs). To check: `systemctl --user is-active heartwood-backfill`,
-   then the log's last `=== heartwood backfill end` block. If it stopped early (exit 1:
-   budget or an agent failure), the log prints the resume command; a re-run skips published
-   dates. If the unit was hard-killed, run `just heartwood-backfill-reset` first. After it
-   ends: confirm the astra-data push and the live clone is clean, spot-check a few Deep Eyes
-   pages on akasha ("Known from: Deep Eyes"), and check that no page that lacked a
-   `campaigns` list gained one from an update (the rule from #171: heartwood stamps pages a
-   run creates, and updated or moved pages only if they already list a campaign; pages with
-   no list are shared lore). The 2024-10-21 dry run (`heartwood/2024-10-21/20261031T021415Z`)
-   was read and approved before #171; it predates the rule. Original instructions:
-   **heartwood backfill, paid and live.** Ask Josh first. `uv run astra-heartwood-agent
-   sessions --from 2024-10-21` listed 27 dates on 2026-10-30 (the 25 imported plus
-   Observatory, Slipped's 2026-4-6 and 2026-4-27); re-check before running. Dry-run the first
-   date (`just -f /ruby/data/astra-deploy/justfile heartwood-agent 2024-10-21 --dry-run`) and
-   read the diff, then `just -f /ruby/data/astra-deploy/justfile heartwood-backfill
-   2024-10-21`. Estimate about $12, at most about $24, against $76 left of the $100
-   `heartwood.backfill-budget-usd`. The runs stamp `campaigns` themselves.
+4. **Done 2026-10-31.** heartwood backfill: all 27 sessions published (03:06 to 16:55 UTC,
+   no failures, $9.74; ledger about $33.6 of $100). The wiki went from 531 to 640 pages;
+   akasha redeployed by the backfill. #171 landed first: heartwood stamps pages a run creates,
+   and updated or moved pages only if they already list a campaign. Checked afterwards: no page
+   that had no list gained one. The backfill reorganized Ushas into `Geography/Ushas/index`
+   plus `Geography/Ushas/New Volcantum`, and filed the Deep Eyes characters under
+   `People/Althane/`.
 5. **Chronicle for the imported sessions, paid (cents each).** `uv run python
    apps/linguist/py/scripts/backfill_chronicle.py`, then materialize `campaign_timeline`. Label
    Deep Eyes "Campaign 2" on akasha's Sessions page rather than as a one-shot.
@@ -112,23 +96,25 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
 
 ### 0.3 Open questions for Josh
 
-- **Far Realms and Sedecium.** On 2026-5-21 the GM says the Sundom ship crashed in the Far
-  Realms and Sedecium "started out of their wreckage". The new `Geography/Færrin/Infinite
-  Horizon/Far Realms/index` page leaves that out in case it's a reveal. Ask before adding it.
-- **Two tensions left in place on purpose.** Holy Gold: the vault says it's found everywhere in
-  the Astra in tiny amounts; Sedecium says growths appear perhaps once in three or four worlds.
-  The page gives Sedecium's figure as Sedecium's claim. Sky Metal: the page says it's believed
-  to be blessed by the Outer Gods; the vault says the celestial-origin belief was disproven.
-  Both sentences kept.
-- **Place-like pages outside Geography, not moved:** `Org/The Harlequins/Providence/`,
-  `Org/The Harlequins/Harlequin Town`, and fixed-site businesses (`Org/Luxottica`, `Org/Maple
-  Tree Farms`, `Org/Sableclutch Scrap`, `Org/Opaline Reserve`, `Org/Hallia Exchange`).
-- **Lost registry names.** "Afro-China" and "Elephant Graveyard of Wonders" are no longer
-  entity names; adding them as aliases on `Org/Bisney and Dixar/Arcane Intelligence` would
-  restore them.
+- **Rodic or Rotok?** `being.kdl` names Tanner's campaign-1 cleric Rotok (from Josh,
+  2026-10-30). Every transcript spells him "Rodic" (five shows), and the backfill made
+  `People/Rodic` and names him so on `Org/Sedecium`. If Rotok is right, rename the page and
+  add a `defs.kdl` correction; if Rodic is right, fix `being.kdl`.
 
-### 0.4 Decisions and facts (Josh, 2026-10-30)
+### 0.4 Decisions and facts (Josh, 2026-10-30 and 31)
 
+- Sedecium began when the campaign-1 party found a Kaathe construct in the wreck of a Fifth
+  Sundom starship in the Far Realms of **Ushas**, which is not Færrin's Far Realms on the
+  Infinite Horizon (Sedecium's people were later wrecked there: the Hesperid). Written into
+  `Org/Sedecium`, `Geography/Ushas/index`, the Færrin Far Realms page, `Bestiary/Kaathe` and
+  the Sundom page (astra-data `18c42ea`). Whisper sometimes writes "Kaathe" as "cave"
+  (2026-5-21, Deep Eyes 2024-10-28); no lexicon rule, since "cave" is a common word.
+- Holy Gold is not a contradiction. Sky Metal: "blessed by the Outer Gods" is Færrin's current
+  belief, the disproof is Althane's; both stay.
+- The place-like `Org/` pages (the Providence, Harlequin Town, the fixed-site businesses) stay
+  where they are.
+- "Afro-China" and "Elephant Graveyard of Wonders" are aliases of `Org/Bisney and Dixar/Arcane
+  Intelligence` again (astra-data `18c42ea`).
 - Campaign 1 is Risk of Ruin (5e, Ushas): Jorge was Zuggarian "Zugg" (merfolk wizard), Tanner
   Rotok (half-orc cleric of Tempus), Mike T3C (warforged Seeker, homebrew), Noah Dorcan (firbolg
   druid). They founded Sedecium; the players came up with it. Player-known lore for slice 7 is
@@ -335,7 +321,7 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 - [x] Deploy #165 to #167 (`8650c097`, 2026-10-31)
 - [x] Urth content follow-up (0.2 step 2; astra-data `0bc667c`, 2026-10-30)
 - [x] Vault images added (0.2 step 3; astra-data `7fbb152`, 2026-10-30)
-- [ ] 5. heartwood backfill (paid; running since 2026-10-31 03:06 UTC, #171 stamping rule first)
+- [x] 5. heartwood backfill (27 sessions, $9.74, 2026-10-31; #171 stamping rule first)
 - [ ] 6. Chronicle backfill (paid), Sessions label
 - [ ] 7. Questionnaire answered and written up
 - [ ] Wrap-up: now.md, backlog, heartwood, linguist and ontology READMEs
