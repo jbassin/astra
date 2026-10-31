@@ -4,6 +4,15 @@ Updated 2026-10-30.
 
 ## In flight
 
+- **Earlier campaigns into akasha (2026-10-30, #159 to #162).** Campaign 2 (Deep Eyes, on
+  Althane), its two Færrin one-shots and Risk of Ruin (campaign 1, unrecorded) are registered;
+  heartwood now takes any Astra-world campaign (Færrin, Althane, Ushas); akasha files the 25
+  quartz-era transcript pages under their campaigns and follows `sessions.kdl` skips; every
+  heartwood page carries a `campaigns` list (315 pages backfilled). Live: Dagster and
+  akasha-frontend `ca0ba766`, astra-data `a52aadb`. Next: the "Known from" line and the import
+  of Josh's campaign-2 vault (Josh reviews it first), then the paid heartwood backfill of the
+  27 pending sessions. Plan and checklist:
+  [`thoughts/shared/research/2026-10-30-earlier-campaigns.md`](../thoughts/shared/research/2026-10-30-earlier-campaigns.md).
 - **akasha redesign is live (2026-10-30, #154 to #157, deployed `c5021a72`).** The stakeholders
   asked for a complete redesign. akasha now has light and dark themes (following the system, with
   a switch), Literata and Archivo instead of Caslon Antique, one colour per wiki section, a new
