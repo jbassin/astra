@@ -93,6 +93,7 @@ class DataConfig(_Base):
     mouthpiece_snapshot: ContentPath
     akasha_content: ContentPath
     akasha_snapshot: ContentPath
+    akasha_assets: ContentPath
     heartwood_ledger: ContentPath
     entity_registry: ContentPath
 

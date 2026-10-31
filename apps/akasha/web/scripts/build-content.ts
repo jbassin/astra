@@ -7,7 +7,7 @@
 //   - src/generated/site.ts — the page index (the runtime imports it, never the
 //     snapshot/fs — so the production bundle has no build-time data dependency);
 //   - src/generated/bodies.ts — each page's vellum body rendered through gothic
-//     (DocumentView + the resolveCrossref seam) to static HTML;
+//     (DocumentView + resolveCrossref + resolveImage, wikiAssets.ts) to static HTML;
 //   - src/generated/transcripts*, speakers.ts and chronicle.ts — the session
 //     transcript pages, the speaker colours and the campaign chronicle;
 //   - the static endpoints into public/ (RSS index.xml, sitemap.xml,
@@ -57,6 +57,7 @@ import {
 } from "../src/domain/lib/staticEmit";
 import { buildTranscripts } from "../src/domain/lib/transcriptBuild";
 import { labelScriptTree, type TranscriptMeta } from "../src/domain/lib/transcriptMeta";
+import { shipWikiAssets } from "../src/domain/lib/wikiAssets";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(HERE, "../src/generated");
@@ -66,6 +67,7 @@ const PUBLIC_DIR = path.resolve(HERE, "../public");
 const CONTENT_ROOT = astraContentRoot(HERE);
 const SNAPSHOT = path.join(CONTENT_ROOT, "akasha/snapshot/akasha-snapshot.json");
 const CORPUS_DIR = path.join(CONTENT_ROOT, "akasha/content");
+const ASSETS_DIR = path.join(CONTENT_ROOT, "akasha/assets");
 const DATA_DIR = path.join(CONTENT_ROOT, "linguist/data");
 const TIMELINE_DIR = path.join(CONTENT_ROOT, "linguist/timeline");
 // The roster comes from @astra/ontology, which finds being.canonical.json (generated from
@@ -143,24 +145,22 @@ function emitGeneratedModule(site: SiteData, shows: ChronicleShowData[], being: 
 }
 
 /**
- * Render every page's `.vellum` body through gothic (DocumentView + the
- * resolveCrossref seam) to a static HTML string, baked by FullSlug. The route
- * injects it (dangerouslySetInnerHTML) — build-only render keeps react-dom/server +
- * gothic's renderer + vellum-lang out of the client bundle. Covers content pages AND
- * folder-index pages (a folder's own body renders above its listing).
+ * Render every page's `.vellum` body (content and folder-index pages) through gothic to a
+ * static HTML string by FullSlug, with crossrefs and inline images resolved; the route
+ * injects it, which keeps react-dom/server, gothic and vellum-lang out of the client bundle.
  */
 function emitBodies(site: SiteData, snapshot: Snapshot, skip: Set<string>): string {
   const resolvers = buildResolvers(snapshot);
   const noResolver: CrossRefResolver = () => null;
+  const images = shipWikiAssets(ASSETS_DIR, PUBLIC_DIR);
   const bodies: Record<string, ReturnType<typeof decorateBody> & { minutes: number }> = {};
   for (const d of site.docs) {
-    // Transcript pages are code-split + server-loaded (emitTranscriptBodies), NOT
-    // baked here — 76 × ~1 MB would blow up the BODIES bundle (+ client/SSR builds).
+    // Transcript pages (~1 MB each) are code-split + server-loaded (emitTranscriptBodies).
     if (skip.has(d.slug)) continue;
     const src = bodyOf(d);
     const pagePath = d.rel.replace(/\.md$/, "");
     // decorateBody: link sections, heading and block ids, and the contents list (toc).
-    const html = renderBody(src, resolvers.get(pagePath) ?? noResolver);
+    const html = renderBody(src, resolvers.get(pagePath) ?? noResolver, images.resolveImage);
     bodies[d.slug] = { ...decorateBody(html, d.slug), minutes: readingMinutes(src) };
   }
   emitModule(
@@ -179,7 +179,7 @@ function emitBodies(site: SiteData, snapshot: Snapshot, skip: Set<string>): stri
       "",
     ].join("\n"),
   );
-  return `bodies: ${Object.keys(bodies).length} rendered`;
+  return `bodies: ${Object.keys(bodies).length} rendered, ${images.summary}`;
 }
 
 /**

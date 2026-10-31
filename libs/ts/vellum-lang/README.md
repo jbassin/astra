@@ -16,6 +16,13 @@ The Python [`astra-vellum-lang`](../../py/vellum-lang/README.md) extracts only t
 - `extractMetadata(source)` and `canonicalMetaJson(source)`: the `{frontmatter, crossrefs}`
   subset and its byte-stable JSON, the parity surface with Python. `canonicalAstJson(doc)`
   serializes the full AST without positions, for the `.ast.json` fixtures.
+- Images: `collectImages(doc)` (every Markdown image in a document), `isAssetPath`,
+  `imageSrcProblem(src, assets)` and `IMAGE_EXTENSIONS` (`images.ts`). They define the one
+  path form a wiki image may use: relative to astra-data's `akasha/assets/`, no leading slash,
+  segments of letters, digits, `.`, `_` and `-`, ending in png, jpg, jpeg, webp or gif:
+  `![Map of Althane](maps/althane.png "Optional caption")`. akasha-frontend serves those files
+  from its own origin; anything else (an `https://` URL, `/x.png`, a missing file) is never
+  fetched.
 - Constructs: `parseFrontmatter`, `splitFrontmatter`, `CROSSREF_RE`, `collectCrossRefs`,
   `splitCrossRefs`, `transformCrossRefs` (cross-references are parsed, not resolved),
   `parseFields` (`:::fields`), `parseTimeline` (`:::timeline`), and the model types and
@@ -25,9 +32,14 @@ The Python [`astra-vellum-lang`](../../py/vellum-lang/README.md) extracts only t
 
 Run from the repo root with `node --import tsx libs/ts/vellum-lang/scripts/<name>.ts`.
 
-- `validate-corpus.ts --dir <corpus> [--allow-sigils]`: parses every `.vellum` page and fails
-  on error chips (where gothic would render a visible `?`) and on accidental sigil collisions
-  in prose. `just corpus-validate` (a CI job) runs it over the fixture wiki; heartwood's
+- `validate-corpus.ts --dir <corpus> [--assets <dir>] [--allow-sigils]`: parses every
+  `.vellum` page and fails on error chips (where gothic would render a visible `?`), on bad
+  images and on accidental sigil collisions in prose. A bad image is external, not in the asset
+  path form, missing from the assets folder or without alt text; it fails like an error chip
+  because the reader would see a hole and the files alone show the fix. (Unresolved wiki links
+  are not checked here: their resolution needs the whole snapshot.) `--assets` defaults to the
+  `assets` folder beside the corpus; heartwood's per-page check, which runs in a temp dir,
+  passes the real one (config `data.akasha-assets`). `just corpus-validate` (a CI job) runs it over the fixture wiki; heartwood's
   `write_page` and `akasha-snapshot` run it over the real wiki.
 - `gen-fixtures.ts`: regenerates `fixtures/vellum/<name>.ast.json` and `.meta.json` from the
   `.vellum` files. Run it after an intentional grammar or AST change and review the diff.

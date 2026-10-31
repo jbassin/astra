@@ -11,16 +11,25 @@
  * union — handout/edict/fields/timeline/columns/GFM — so this is ~0 renderer code).
  */
 
-import type { CrossRefResolver } from "@astra/gothic";
+import type { CrossRefResolver, ImageResolver } from "@astra/gothic";
 import { DocumentView } from "@astra/gothic";
 import { parseDocument } from "@astra/vellum-lang";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { linkSection } from "./crossref";
 
-export function renderBody(source: string, resolveCrossref: CrossRefResolver): string {
+/** `resolveImage` maps an inline image to its shipped URL (`wikiAssets.ts`); omitted, alt text. */
+export function renderBody(
+  source: string,
+  resolveCrossref: CrossRefResolver,
+  resolveImage?: ImageResolver,
+): string {
   return renderToStaticMarkup(
-    <DocumentView document={parseDocument(source)} resolveCrossref={resolveCrossref} />,
+    <DocumentView
+      document={parseDocument(source)}
+      resolveCrossref={resolveCrossref}
+      resolveImage={resolveImage}
+    />,
   );
 }
 

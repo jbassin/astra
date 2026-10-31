@@ -4,8 +4,8 @@ akasha-frontend serves the Færrin wiki, the session transcripts and the chronic
 `https://akasha.iridi.cc` (alias `heart.iridi.cc`). It is a TanStack Start SSR app on the strider
 template (see `apps/strider/web/README.md`): Compose service `akasha-frontend`, port 10365,
 `service.name=astra.akasha-frontend`. Everything on a page is baked in at build time from the
-astra-data clone: the akasha snapshot and vellum corpus (`akasha/snapshot`, `akasha/content`), the
-linguist session JSONs (`linguist/data`) and the timeline (`linguist/timeline`). The one runtime
+astra-data clone: the akasha snapshot, vellum corpus and inline images (`akasha/snapshot`,
+`akasha/content`, `akasha/assets`), the linguist session JSONs (`linguist/data`) and the timeline (`linguist/timeline`). The one runtime
 input is session audio: `/audio/<date>.mp3` is served from `/ruby/data/astra-state/audio/akasha`
 (config `akasha-frontend.audio-dir`, mounted at `/audio`).
 
@@ -26,6 +26,13 @@ input is session audio: `/audio/<date>.mp3` is served from `/ruby/data/astra-sta
 - `speakers.ts`: `SPEAKER_CSS`, the speaker colours and per-speaker transcript rules
   (`speakerColour.ts`).
 - `public/` endpoints: RSS `index.xml`, `sitemap.xml`, `static/contentIndex.json`.
+- `public/assets/wiki/`: the inline images (`wikiAssets.ts`). Every png, jpg/jpeg, webp or gif
+  in astra-data's `akasha/assets/` is copied to a content-hashed name
+  (`/assets/wiki/maps/althane.<hash>.png`), and the bodies render with gothic's `resolveImage`
+  so `![alt](maps/althane.png)` becomes an `<img>` with that URL, its width and height,
+  `loading="lazy"` and `decoding="async"`. Other files there (svg, notes) are skipped and named
+  in the build log. Under `/assets/` the SSR server sends `Cache-Control: immutable` for a year,
+  which the hash makes safe.
 
 Route loaders get their page data from the server functions in `src/domain/lib/pageDataFns.ts`
 (the logic is in `pageData.ts`). SSR runs them inline; a client navigation fetches them. Only
@@ -108,6 +115,12 @@ Node indexing API and writes `dist/client/pagefind/`.
 
 ## Operations
 
+- **Add an inline image**: put the file in astra-data's `akasha/assets/` (png, jpg/jpeg, webp or
+  gif; no svg; names of letters, digits, `.`, `_`, `-`; subfolders allowed), reference it from a
+  page as `![Alt text](maps/althane.png "Optional caption")` (relative to `akasha/assets/`, no
+  leading slash), run the corpus validator, commit both, then `just deploy akasha-frontend`.
+  Images are baked into the image like the pages, so nothing shows until that deploy. Keep files
+  small (a few hundred KB): they ship in the frontend image and every visitor downloads them.
 - Redeploy after content changes: `just deploy akasha-frontend`. linguist-commit and the heartwood
   recipes already do this after they push to astra-data. The deploy bakes the clone's committed
   HEAD, so uncommitted edits in the clone don't ship.
@@ -120,6 +133,10 @@ Node indexing API and writes `dist/client/pagefind/`.
 
 - **A plain `docker compose build akasha-frontend` fails on purpose.** The build needs the
   `astra-data` build context, which only `deploy/deploy.sh` supplies. Use `just deploy`.
+- **Images are same-origin only.** A page never makes the browser fetch from another origin.
+  gothic renders an `<img>` only for a path `wikiAssets.ts` resolved (and only for a `/…` URL);
+  an external or unknown source renders its alt text, and `validate-corpus.ts` fails the page.
+  The `img:` frontmatter sidebar image is the one exception and still points at imgur.
 - **URLs are a public contract.** `src/domain/lib/slug.ts` and `site.ts` are verbatim lifts of the
   old Quartz site. Don't "improve" them: any slug change renames pages and breaks bookmarks.
   Slugs keep commas (`Script/Through-a-Song,-Darkly/2025-10-20`) and unpadded dates.

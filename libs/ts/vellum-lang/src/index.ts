@@ -10,6 +10,7 @@
 export { CROSSREF_RE, collectCrossRefs, splitCrossRefs, transformCrossRefs } from "./crossref";
 export { parseFieldItems, parseFields } from "./fields";
 export { EMPTY_FRONTMATTER, parseFrontmatter, splitFrontmatter } from "./frontmatter";
+export { collectImages, IMAGE_EXTENSIONS, imageSrcProblem, isAssetPath } from "./images";
 export { canonicalAstJson, canonicalMetaJson, extractMetadata, type Metadata } from "./metadata";
 export * from "./model";
 export { parseDocument, parseMarkdown } from "./parse";

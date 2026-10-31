@@ -17,6 +17,8 @@ from pydantic import BaseModel
 
 #: The wiki corpus (config `data.akasha-content`).
 CONTENT_DIR = Path(load_config().data.akasha_content)
+#: The images pages show inline (config `data.akasha-assets`); akasha-frontend ships them.
+ASSETS_DIR = Path(load_config().data.akasha_assets)
 
 
 class Page(BaseModel):

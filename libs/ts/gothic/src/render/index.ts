@@ -12,6 +12,7 @@ export { DocumentView } from "./components/DocumentView";
 export { ErrorChip } from "./components/ErrorChip";
 export { Fields } from "./components/Fields";
 export { Frontmatter, hasFrontmatterHeader } from "./components/Frontmatter";
+export { ImageFigure, InlineImage } from "./components/Image";
 export { ProseCard } from "./components/ProseCard";
 export { Redaction } from "./components/Redaction";
 export { StatCard } from "./components/StatCard";
@@ -22,6 +23,12 @@ export {
   type CrossRefResolver,
   CrossRefResolverContext,
 } from "./crossrefResolver";
+export {
+  type ImageResolution,
+  type ImageResolver,
+  ImageResolverContext,
+  isSameOriginPath,
+} from "./imageResolver";
 export { type ActionCost, ActionGlyph, normalizeActionCost } from "./glyphs/actions";
 export { grimeStyle } from "./grimeStyle";
 export { collectText, type RenderableNode, renderNodes } from "./mdastToReact";

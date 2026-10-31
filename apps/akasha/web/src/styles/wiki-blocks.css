@@ -209,6 +209,26 @@ ol.gothic-content > li > span:first-child {
   border-left: 2px solid var(--ak-rule);
   color: var(--ak-muted);
 }
+/* Inline images (akasha/assets/, wikiAssets.ts): the column's width at most, a hairline frame
+   on the sunk surface so a light image keeps an edge on the light page and a dark one on dark. */
+.gothic-content img {
+  max-width: 100%;
+  height: auto;
+}
+.gothic-content .gothic-figure {
+  margin: 1.6em 0;
+}
+.gothic-figure img {
+  display: block;
+  border: 1px solid var(--ak-rule);
+  border-radius: 6px;
+  background: var(--ak-sunk);
+}
+.gothic-figure figcaption {
+  margin-top: 8px;
+  color: var(--ak-muted);
+  font: 400 13px/1.5 var(--ak-sans);
+}
 .gothic-content hr {
   margin: 2em 0;
   border: 0;

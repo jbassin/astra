@@ -19,7 +19,13 @@ primitives and vellum fixtures.
 - Per-entity colours (players, factions, decks) are not tokens: spread `identityStyle(color)` on
   the element, which sets `--identity-color`, and style with `var(--identity-color)`.
 - `DocumentView` takes an optional `resolveCrossref`; without it, `[[wiki links]]` render as
-  placeholder spans. Apps that render vellum at build time call
+  placeholder spans. It also takes an optional `resolveImage` (`imageResolver.ts`): it maps a
+  Markdown image's path to `{ src, width?, height? }` for a file the app itself serves, or null.
+  Only a hit with a same-origin `src` (`/…`, never `//host`) renders, as a lazy `<img>`; an
+  image alone on its line becomes `<figure class="gothic-figure">` with the Markdown title as
+  `<figcaption>`. Without a resolver, or on a miss, an image renders its alt text: gothic never
+  makes the browser fetch from another origin. akasha-frontend is the only app that passes one
+  (its `akasha/assets/` folder). Apps that render vellum at build time call
   `renderToStaticMarkup(<DocumentView …/>)` in their build script and inject the HTML, which keeps
   the renderer out of the client bundle (akasha-frontend, strider factions).
 

@@ -37,6 +37,14 @@ describe("build-content", () => {
     expect(out).toContain("data-vellum-export");
   });
 
+  it("ships the fixture's inline image and points the page's <img> at the copy", () => {
+    const out = readFileSync(path.resolve(HERE, "../src/generated/bodies.ts"), "utf8");
+    const src = /src=\\"(\/assets\/wiki\/maps\/calaria-coast\.[0-9a-f]{10}\.png)\\"/.exec(out)?.[1];
+    expect(src).toBeDefined();
+    expect(existsSync(path.join(PUBLIC, src ?? ""))).toBe(true);
+    expect(out).toContain("<figcaption>The coast near Hallia");
+  });
+
   it("emits the chronicle module (Show → Season → Episode) with the main show first", () => {
     const chronicle = path.resolve(HERE, "../src/generated/chronicle.ts");
     expect(existsSync(chronicle)).toBe(true);

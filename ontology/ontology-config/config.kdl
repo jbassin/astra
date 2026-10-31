@@ -48,7 +48,7 @@ data {
     root "/ruby/data/astra-state"
     // The astra-data clone (github jbassin/astra-data): the pipeline's published
     // datasets, committed and pushed by the bots (linguist-commit, heartwood) — the code
-    // repo tracks none of them. A relative value is under `root`. The eight datasets
+    // repo tracks none of them. A relative value is under `root`. The nine datasets
     // below are relative to THIS root, in the astra-data layout. ASTRA_CONTENT_ROOT
     // overrides it (the same variable the frontends' build-content reads).
     content-root "astra-data"
@@ -58,6 +58,7 @@ data {
     mouthpiece-snapshot "mouthpiece/snapshot"
     akasha-content "akasha/content"
     akasha-snapshot "akasha/snapshot"
+    akasha-assets "akasha/assets"
     heartwood-ledger "heartwood/agent-runs.jsonl"
     entity-registry "entity/entity.kdl"
 }
