@@ -26,8 +26,9 @@ mouthpiece; neither waits for the other.
 
 **Campaigns.** Each page's `campaigns` frontmatter lists the campaign slugs (`being.kdl`) its
 content came from, oldest first. Code sets it, never the model: `write_page` keeps the list
-the page already had, and when the agent finishes, every page the run created, updated or
-moved gains the run's campaign (`agent/campaigns.py`), before `changeset.json` and
+the page already had, and when the agent finishes, every page the run created gains the run's
+campaign, and so does every page it updated or moved that already lists one
+(`agent/campaigns.py`); a page with no list stays unmarked. This happens before `changeset.json` and
 `diff.patch` are written. The agent gets a `campaign_context` input (the session's campaign,
 its world, and the current main campaign) and is told never to mention campaigns in prose.
 
@@ -146,6 +147,11 @@ checkout -- akasha/content akasha/snapshot heartwood/agent-runs.jsonl entity/ent
 - **A move usually edits the page.** The end-of-run stamp adds the run's campaign to a moved
   page that already lists a campaign, so `changeset.json` reports that move as `edited: true`
   unless the list already held this campaign.
+- **The agent writes what the players say.** Transcripts carry spoken forms, and heartwood
+  copies them into pages: it wrote the Broker's name as "Tech" (he is T3C; "Tech" stays as an
+  alias), the Ret as "Rhett", and turned a mumbled "so" into "the great ship Shoa". When Josh
+  corrects a name, fix the wiki by hand, and add a `defs.kdl` variant only if it is not a
+  common word (see the lexicon README).
 - **Pages with no `campaigns` list stay unmarked.** The stamp marks every page a run creates,
   but an updated or moved page only if it already lists a campaign. The 62 unmarked pages
   (2026-10-30) are shared lore: older Færrin world-building and the meta-setting. Stamping

@@ -85,6 +85,15 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 - Renaming Ocelith and Macarius Vesper (2026-10-28) broke their old akasha URLs, which now 404;
   akasha has no redirects — agent, only if someone hits them.
 
+- Earlier-campaigns leftovers (2026-10-31) — agent unless noted:
+  - Watch the next heartwood runs for spoken forms creeping back into pages ("Tech" for T3C,
+    "Rhett" for the Ret, invented names like "the great ship Shoa"); fix by hand.
+  - The 2024-12-9 Deep Eyes transcript says "Muriel" for Uriel once; the wiki is fixed. A
+    `defs.kdl` variant would fix the stored line.
+  - Two finished agent worktrees (`.claude/worktrees/agent-ae4d…`, `agent-afff…`, #166 and
+    #167, merged) are locked by another Claude session (pid 452076); remove them with `git
+    worktree remove` once it ends.
+
 ## Deploy and ops
 
 - 2026-9-26 had two real recordings. The session was transcribed from

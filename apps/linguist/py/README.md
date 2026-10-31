@@ -33,8 +33,9 @@ mouthpiece waits for a session's `session_episode_summary` to be materialized be
   a `note` to `ontology/ontology-being/sessions.kdl`, then deploy Dagster (see
   `docs/runbook.md`, "Correct one session"). `show_for_date` returns no show for it.
 - **Chronicle backfill** (resumable; skips episode files that exist):
-  `uv run python apps/linguist/py/scripts/backfill_chronicle.py` on the host, then
-  materialize `campaign_timeline` by hand.
+  `uv run python apps/linguist/py/scripts/backfill_chronicle.py` on the host. It writes into
+  the live clone and regroups `seasons.json` itself, so no separate `campaign_timeline` run is
+  needed; linguist-commit publishes the result (`just linguist-commit --yes` does it at once).
 - **Earlier campaigns** (one-off): `uv run python apps/linguist/py/scripts/import_quartz.py
   <astra-data root>` converts the 25 Deep Eyes and Færrin one-shot transcripts from the old
   quartz site into `linguist/transcripts/`. It keeps any `linguist/data/<date>.json` already
