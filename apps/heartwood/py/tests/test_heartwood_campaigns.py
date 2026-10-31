@@ -93,13 +93,15 @@ def _workspace(tmp_path: Path, pages: dict[str, str]) -> Workspace:
     return Workspace.create(TARGET, content_dir=live, artifacts_root=tmp_path / "art", run_id="r")
 
 
-def test_stamp_campaign_marks_created_updated_and_moved_pages_only(tmp_path: Path) -> None:
+def test_stamp_campaign_marks_new_pages_and_listed_pages_it_touched(tmp_path: Path) -> None:
     ws = _workspace(
         tmp_path,
         {
             "A/Edited": "---\ncampaigns: [old]\n---\nA.\n",
             "A/Same": "---\n---\nSame.\n",
             "A/Moved": "---\ncampaigns: [old]\n---\nM.\n",
+            "A/Lore": "---\n---\nL.\n",
+            "A/LoreMoved": "---\n---\nLM.\n",
             "A/Gone": "---\n---\nG.\n",
             "A/Untouched": "---\n---\nU.\n",
         },
@@ -107,21 +109,28 @@ def test_stamp_campaign_marks_created_updated_and_moved_pages_only(tmp_path: Pat
     ws.write("A/Edited", "---\ncampaigns: [old]\n---\nA, revised.\n")
     ws.write("A/Same", "---\n---\nSame.\n")  # identical bytes: no change, no stamp
     ws.write("A/New", "---\n---\nN.\n")
+    ws.write("A/Lore", "---\n---\nL, revised.\n")  # shared lore: edited, never stamped
     ws.move("A/Moved", "B/Moved")
+    ws.move("A/LoreMoved", "B/LoreMoved")
     ws.delete("A/Gone")
 
     assert stamp_campaign(ws, "song") == ["A/Edited", "A/New", "B/Moved"]
     read = {p: page_campaigns(ws.file(p).read_text()) for p in ws.pages()}
     assert read == {
         "A/Edited": ["old", "song"],
+        "A/Lore": [],
         "A/New": ["song"],
         "A/Same": [],
         "A/Untouched": [],
+        "B/LoreMoved": [],
         "B/Moved": ["old", "song"],
     }
     cs = ws.changeset()
-    assert (cs.created, cs.updated, cs.deleted) == (["A/New"], ["A/Edited"], ["A/Gone"])
-    assert [(m.src, m.dst, m.edited) for m in cs.moved] == [("A/Moved", "B/Moved", True)]
+    assert (cs.created, cs.updated, cs.deleted) == (["A/New"], ["A/Edited", "A/Lore"], ["A/Gone"])
+    assert [(m.src, m.dst, m.edited) for m in cs.moved] == [
+        ("A/LoreMoved", "B/LoreMoved", False),
+        ("A/Moved", "B/Moved", True),
+    ]
     assert stamp_campaign(ws, "song") == []  # a second stamp changes nothing
 
 

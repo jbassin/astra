@@ -6,8 +6,11 @@ repeats (vellum-lang parses it as a first-class field). Code sets it, never the 
 - ``write_page`` replaces whatever ``campaigns`` the agent wrote with the list the page
   already had (``set_campaigns``), so a rewrite can neither drop nor invent one;
 - ``stamp_campaign`` runs once the agent has finished, before the change-set and
-  ``diff.patch`` are written: every page the run created, updated or moved gains the run's
-  campaign. The diff, the publish commit and a revert all carry the stamp with the edit.
+  ``diff.patch`` are written: every page the run created gains the run's campaign, and so
+  does every page it updated or moved that already lists one. A page with no list is shared
+  lore (the older Færrin and meta-setting pages) and stays unmarked, so it never reads as
+  known only from the campaign that last touched it. The diff, the publish commit and a
+  revert all carry the stamp with the edit.
 
 ``campaign_context`` is the agent's ``campaign_context`` input: the session's campaign,
 its world, and the current main campaign, read straight from ``being.kdl``.
@@ -90,13 +93,18 @@ def add_campaign(text: str, slug: str) -> str:
 
 
 def stamp_campaign(ws: Workspace, campaign: str) -> list[str]:
-    """Add ``campaign`` to every page the run created, updated or moved; return the paths
-    whose bytes changed. Each write goes through the journal, so the change-set's
-    categories hold (a write on an existing path keeps its origin)."""
+    """Add ``campaign`` to every page the run created, and to every page it updated or moved
+    that already lists a campaign; return the paths whose bytes changed. ``write_page``
+    keeps an existing page's list, so the list read here is the one the page started with.
+    Each write goes through the journal, so the change-set's categories hold (a write on an
+    existing path keeps its origin)."""
     cs = ws.changeset()
+    created = set(cs.created)
     stamped: list[str] = []
     for path in sorted({*cs.created, *cs.updated, *(m.dst for m in cs.moved)}):
         text = ws.file(path).read_text(encoding="utf-8")
+        if path not in created and not page_campaigns(text):
+            continue
         new = add_campaign(text, campaign)
         if new != text:
             ws.write(path, new)
