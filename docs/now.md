@@ -14,8 +14,9 @@ Updated 2026-10-31.
   back. heartwood stamps only pages a run creates or that already list a campaign
   (#171, deployed `90a37e0f`). The heartwood backfill
   published all 27 sessions (2026-10-31, $9.74; wiki 531 to 640 pages). Sedecium's origin in
-  Ushas's Far Realms is written in (astra-data `18c42ea`). Next: section 0.2 step 5, the
-  chronicle backfill.
+  Ushas's Far Realms is written in (astra-data `18c42ea`). The chronicle covers the
+  imported sessions, and the Sessions page groups Deep Eyes under "Earlier campaigns" (#176).
+  Next: section 0.2 step 6, the questionnaire for Josh.
 - **akasha redesign is live (2026-10-30, #154 to #157, deployed `c5021a72`).** The stakeholders
   asked for a complete redesign. akasha now has light and dark themes (following the system, with
   a switch), Literata and Archivo instead of Caslon Antique, one colour per wiki section, a new

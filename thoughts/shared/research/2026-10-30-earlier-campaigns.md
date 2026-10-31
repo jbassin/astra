@@ -1,9 +1,8 @@
 # Earlier campaigns in akasha
 
 - **Date:** 2026-10-30
-- **Status:** Handoff updated 2026-10-31 (section 0). Slices 1 to 4, three added slices, the
-  Urth follow-up, the vault images and the heartwood backfill are live. Next: the chronicle
-  backfill (0.2 step 5), the questionnaire, wrap-up.
+- **Status:** Handoff updated 2026-10-31 (section 0). Everything through the chronicle backfill
+  and the Sessions grouping is live. Next: the questionnaire (0.2 step 6), then wrap-up.
 - **Goal:** the players carry knowledge from campaigns 1 and 2 that akasha doesn't have. Bring
   the recorded part of campaign 2 and its Færrin one-shots into akasha and the pipeline, mark
   which campaign each fact comes from, and fill the unrecorded gaps from Josh.
@@ -86,7 +85,13 @@ PF2e; from #167). `astra-worlds`: faerrin, althane, ushas, urth. Observatory, Sl
    that had no list gained one. The backfill reorganized Ushas into `Geography/Ushas/index`
    plus `Geography/Ushas/New Volcantum`, and filed the Deep Eyes characters under
    `People/Althane/`.
-5. **Chronicle for the imported sessions, paid (cents each).** `uv run python
+5. **Done 2026-10-31.** Chronicle entries for the 25 imported sessions (astra-data `a41f60a`;
+   the script regroups the seasons itself, so no separate `campaign_timeline` run). Deep Eyes is
+   one season of 23 episodes. The regroup split Through a Song, Darkly into 7 seasons ("The End
+   of the Menhir" carved out of "Aboard the Strider") and moved some boundaries. The Sessions
+   page (#176) labels the main campaign "Campaign 3", lists Deep Eyes under "Earlier campaigns"
+   as "Campaign 2" and the rest under "One-shots", from a new `being.kdl` campaign `number`.
+   Original: **Chronicle for the imported sessions, paid (cents each).** `uv run python
    apps/linguist/py/scripts/backfill_chronicle.py`, then materialize `campaign_timeline`. Label
    Deep Eyes "Campaign 2" on akasha's Sessions page rather than as a one-shot.
 6. **Slice 7, the questionnaire** for Josh (campaign 1 and Deep Eyes gaps); seeds in slice 7
@@ -322,6 +327,6 @@ Each slice is one pull request unless noted. Paid or live-content steps are flag
 - [x] Urth content follow-up (0.2 step 2; astra-data `0bc667c`, 2026-10-30)
 - [x] Vault images added (0.2 step 3; astra-data `7fbb152`, 2026-10-30)
 - [x] 5. heartwood backfill (27 sessions, $9.74, 2026-10-31; #171 stamping rule first)
-- [ ] 6. Chronicle backfill (paid), Sessions label
+- [x] 6. Chronicle backfill (paid), Sessions label (astra-data `a41f60a`, #176, 2026-10-31)
 - [ ] 7. Questionnaire answered and written up
 - [ ] Wrap-up: now.md, backlog, heartwood, linguist and ontology READMEs
