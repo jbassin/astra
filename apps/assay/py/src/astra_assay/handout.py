@@ -15,8 +15,10 @@ the Homebrewery dialect he used for Vol.1, and the source is accepted as written
 - Inline: ``{{divine x}}``, ``{{mortal x}}``, ``{{joined x}}``, ``{{f,...}}`` (the free-action
   glyph), ``**bold**``, ``*italic*``, ``_italic_``, ``<br>`` and markdown backslash escapes.
 
-Homebrewery positioning payloads (``{top:..}``, ``--maskHeight``, class lists after the block
-name), ``{{resetCounting}}`` and HTML comments are ignored, not emulated. A line of colons is
+The art crop follows Homebrewery's placement: the imageWrapper's mask class and
+``--maskHeight`` and the borderImage's ``{top:..,left:..,width:..}`` payload (see
+``handout_art``). Other positioning payloads and class lists (captions, the header),
+``{{resetCounting}}`` and HTML comments are ignored, not emulated. A line of colons is
 a spacer; one at the top of column two is the Homebrewery reservation for the art and is
 dropped, because the layout reserves the art itself. Any other ``{{...}}`` block fails the
 parse with its name and line, so nothing is dropped silently. ``handout_latex`` turns the
@@ -101,6 +103,10 @@ class Art:
     caption: list[str]  # caption lines, inline markup still raw
     caption_align: str  # "l" | "r"
     line: int
+    #: The imageWrapper's class list (it names the mask window) and the borderImage's
+    #: ``{top:..,left:..,width:..}`` payload, raw; ``handout_art`` reads them.
+    wrapper_classes: list[str] = field(default_factory=list)
+    placement: str = ""
 
 
 @dataclass
@@ -341,18 +347,28 @@ def _on_footnote(parser: _FlowParser, b: _Block) -> None:
 def _on_image_wrapper(parser: _FlowParser, b: _Block) -> None:
     caption: list[str] = []
     align = "r"
+    placement = ""
     for line_no, item in _segments(b.content, b.line):
         if isinstance(item, str):
             if item.strip():
                 raise HandoutError(f"line {line_no}: unexpected text in {{{{imageWrapper}}}}")
             continue
         if item.name == "borderImage":
-            continue  # the image is the folder's art.* file; the URL and payload are ignored
+            # The image is the folder's art.* file, never the URL; the payload sets the crop.
+            m = re.search(r"\{([^{}]*)\}", item.content)
+            placement = m.group(1) if m else ""
+            continue
         if item.name != "caption":
             raise HandoutError(f"line {item.opened}: unknown block {{{{{item.name}}}}}")
         align = "l" if "leftCaption" in item.classes else "r"
         caption = [ln.strip() for ln in item.content.split("\n") if ln.strip()]
-    parser.handout.art = Art(caption=caption, caption_align=align, line=b.line)
+    parser.handout.art = Art(
+        caption=caption,
+        caption_align=align,
+        line=b.line,
+        wrapper_classes=b.classes,
+        placement=placement,
+    )
 
 
 def _on_right_aligned(parser: _FlowParser, b: _Block) -> None:
