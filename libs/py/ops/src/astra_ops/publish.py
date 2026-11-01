@@ -19,7 +19,11 @@ itself: its callers hold it, and a second flock on a fresh descriptor would dead
    run's commits, or any difference between HEAD and the data_sha the frontend was last
    deployed with (``<data root>/deploy/history.jsonl``). ``deploy.sh --skip-failed`` exits 11
    without building when this exact code and data already failed, so a broken build is not
-   rebuilt and re-paged every run.
+   rebuilt and re-paged every run. It also passes ``HOST_TOOLING_LOCK_TIMEOUT=0``: when a
+   heartwood run holds the host-tooling lock (for its whole run, so waiting never helps),
+   deploy.sh exits 14 at once and the redeploy is deferred, not failed. The next run finds the
+   frontend stale against history.jsonl and redeploys; heartwood's own redeploy usually gets
+   there first.
 
 deploy.sh bakes the clone's committed HEAD, so a failed push still redeploys; the command
 then exits 1 (the unit's OnFailure pages) and the next run retries the push.
@@ -31,7 +35,10 @@ import json
 from collections.abc import Callable
 from pathlib import Path
 
-from .context import Ctx, Fail, deploy
+from .context import Ctx, Fail, deploy_argv
+
+#: deploy.sh's exit code when the host-tooling lock is busy (a heartwood run holds it).
+DEPLOY_TOOLING_BUSY = 14
 
 #: The seven config keys linguist-commit reads, in order.
 LINGUIST_KEYS = (
@@ -323,12 +330,19 @@ def _commit_snapshot(ctx: Ctx, git: list[str], mp_snapshot: str) -> bool:
 
 def _seed_and_redeploy(ctx: Ctx, seed: Callable[[Ctx], int], seed_name: str, service: str) -> bool:
     """Seed the audio (a failure is reported, not fatal), then ``deploy.sh --skip-failed``.
-    False only when the redeploy really failed (exit 11 = already failed here, no page)."""
+    False only when the redeploy really failed (exit 11 = already failed here, exit 14 = a
+    heartwood run holds the host-tooling lock; neither pages)."""
     if ctx.sub(seed, ctx) != 0:
         ctx.err(f"linguist-commit: {seed_name} FAILED (rerun: just {seed_name})")
-    rc = ctx.sub(deploy, ctx, "--skip-failed", service)
+    argv, env = deploy_argv(ctx, "--skip-failed", service)
+    rc = ctx.run(argv, env={**env, "HOST_TOOLING_LOCK_TIMEOUT": "0"})
     if rc == 0:
         ctx.out(f"linguist-commit: {service} redeployed")
+    elif rc == DEPLOY_TOOLING_BUSY:
+        ctx.out(
+            f"linguist-commit: {service} redeploy deferred — a heartwood run holds the "
+            "host-tooling lock; the next run redeploys it if heartwood's own redeploy has not"
+        )
     elif rc == 11:
         ctx.err(
             f"linguist-commit: {service} not rebuilt — it already failed at this code and "

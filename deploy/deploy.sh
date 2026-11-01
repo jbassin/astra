@@ -38,7 +38,7 @@
 #      sync run under an exclusive flock on $DATA_ROOT/locks/host-tooling.lock; the
 #      heartwood recipes hold it shared while they run, so a deploy never changes the
 #      source, venv or validator deps under a running agent (waits up to
-#      HOST_TOOLING_LOCK_TIMEOUT s, default 600, then exits 9 with nothing changed). A
+#      HOST_TOOLING_LOCK_TIMEOUT s, default 600, then exits 14 with nothing changed). A
 #      deploy at the checkout's current sha with an in-sync venv takes no lock.
 #   4. decrypt SOPS on the host and export each secret UPPER_CASED (the
 #      compose `environment:` blocks pass the keys each service needs, and @astra/config's
@@ -91,7 +91,9 @@
 # 10 started, but a container did not become healthy (the new containers keep running) ·
 # 11 --skip-failed: this build already failed at this code and data, nothing done ·
 # 12 codex is in scope but <data root>/codex/data/releases/current is missing (nothing done) ·
-# 13 a Dagster service is in scope and a Dagster run is in flight (nothing done; --force).
+# 13 a Dagster service is in scope and a Dagster run is in flight (nothing done; --force) ·
+# 14 the host-tooling lock stayed busy (a heartwood run; nothing changed — linguist-commit
+# passes HOST_TOOLING_LOCK_TIMEOUT=0 and defers its redeploy to its next run on this code).
 #
 # history.jsonl is read leniently: a line that is not a JSON object is skipped, never fatal.
 #
@@ -304,7 +306,7 @@ while [ "$#" -gt 0 ]; do
       # The deploy checkout as it stands (no fetch, no checkout, no deploy lock): for a first
       # install of the bot units before their next deploy.
       resolve_uv || die 9 "host tooling sync failed"
-      if ! venv_in_sync; then take_tooling_lock || die 9 "nothing synced"; fi
+      if ! venv_in_sync; then take_tooling_lock || die 14 "nothing synced"; fi
       sync_host_tooling || die 9 "host tooling sync failed in $DEPLOY_ROOT"
       exit 0
       ;;
@@ -543,7 +545,7 @@ fi
 # 3b. Nothing under a running heartwood agent changes until it finishes.
 resolve_uv || die 9 "nothing changed"
 if [ "$(dgit rev-parse HEAD)" != "$sha" ] || ! venv_in_sync; then
-  take_tooling_lock || die 9 "nothing changed — re-run the deploy when the heartwood run finishes"
+  take_tooling_lock || die 14 "nothing changed — re-run the deploy when the heartwood run finishes"
 fi
 dgit checkout -q --detach "$sha"
 log "deploy checkout at ${sha:0:12} ($(dgit log -1 --format=%s "$sha"))"

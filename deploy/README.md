@@ -86,7 +86,7 @@ them (`uv sync --frozen`, and `pnpm install --frozen-lockfile --filter @astra/ve
 heartwood's validator); both are no-ops when nothing changed. `deploy.sh --host-tooling` runs just
 that step. The heartwood recipes hold `/ruby/data/astra-state/locks/host-tooling.lock` shared while
 they run. A deploy that will move the checkout or sync the venv takes it exclusively **before**
-`git checkout` (waiting up to 600 s, `HOST_TOOLING_LOCK_TIMEOUT`, then exit 9 with nothing
+`git checkout` (waiting up to 600 s, `HOST_TOOLING_LOCK_TIMEOUT`, then exit 14 with nothing
 changed), so a running agent's source, venv and validator never change under it. Every host recipe
 runs `uv run --frozen --no-sync`, so nothing rewrites `uv.lock` and nothing but that locked step
 syncs the deploy checkout's venv (in a dev tree, run `uv sync` yourself).
@@ -98,6 +98,10 @@ It deploys with `--skip-failed`: a redeploy that failed to build or come up (exi
 same code sha and astra-data HEAD is not rebuilt (exit 11). A real failure makes linguist-commit
 exit non-zero, so its OnFailure alert pages once; the skips that follow do not page. A new code or
 data commit, or a manual `just deploy <service>`, retries.
+linguist-commit also passes `HOST_TOOLING_LOCK_TIMEOUT=0`: heartwood holds the host-tooling lock
+for its whole run, so on a session night waiting never helps. deploy.sh exits 14 at once, and
+linguist-commit reports the redeploy as deferred and exits 0 (no page); heartwood's own redeploy,
+or linguist-commit's next run (the frontend is stale against `data_sha`), deploys it.
 
 ## Data root
 
