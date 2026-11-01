@@ -16,10 +16,22 @@ fi
 # a test runs back at this repo. Clear them; git finds the repo from the cwd as usual.
 for var in $(env | sed -n 's/^\(GIT_[A-Z_]*\)=.*/\1/p'); do unset "$var"; done
 
+# Every run's full output also goes to <git dir>/ci-last.log (one per worktree), so a
+# failure can be read after the fact without rerunning the suite. POSIX sh has no
+# pipefail, so the exit status travels through a file.
+git_dir=$(git rev-parse --absolute-git-dir)
+log="$git_dir/ci-last.log"
+status_file="$git_dir/ci-last.status"
+
 # git feeds the pushed refs on stdin; `just ci` doesn't read them.
-if ! just ci </dev/null; then
+{
+  just ci </dev/null 2>&1
+  echo $? >"$status_file"
+} | tee "$log"
+
+if [ "$(cat "$status_file")" != 0 ]; then
   echo "" >&2
-  echo "push blocked: 'just ci' failed (see the summary above)." >&2
+  echo "push blocked: 'just ci' failed. Full output: $log" >&2
   echo "(emergency bypass: git push --no-verify)" >&2
   exit 1
 fi
