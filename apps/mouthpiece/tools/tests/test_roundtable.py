@@ -10,11 +10,13 @@ from astra_mouthpiece.episodes_index import is_recap, parse_id
 from astra_mouthpiece.hosts import load_hosts
 from astra_mouthpiece_tools.roundtable import cli
 from astra_mouthpiece_tools.roundtable.agent import cutoff_after
+from astra_mouthpiece_tools.roundtable.astra import build_astra_block
 from astra_mouthpiece_tools.roundtable.dossier import Dossier, render_dossier
 from astra_mouthpiece_tools.roundtable.script import (
     build_roundtable_system_prompt,
     build_roundtable_user_content,
 )
+from astra_ontology_being import BEING_KDL_PATH, load_being
 
 
 def clue(cid: str, **kw: Any) -> dict[str, Any]:
@@ -66,7 +68,7 @@ def test_dossier_schema_bounds() -> None:
             {"mysteries": [{**mystery("q", [hyp(["c1"])]), "clues": [clue("c1", page="p")]}] * 3}
         )
     with pytest.raises(ValueError):
-        Dossier.model_validate({"mysteries": [mystery("q", [hyp(["c1"])])] * 17})
+        Dossier.model_validate({"mysteries": [mystery("q", [hyp(["c1"])])] * 19})
 
 
 def test_cutoff_after_rolls_months_and_years() -> None:
@@ -86,9 +88,49 @@ def test_roundtable_prompt_carries_the_rules() -> None:
     hosts = load_hosts()
     system = build_roundtable_system_prompt(hosts)
     assert hosts.c is not None and f"{hosts.c.name}: " in system
-    assert "BREADCRUMBS FIRST, THEN SPECULATE" in system and "outside this campaign" in system
+    assert "BREADCRUMBS FIRST, THEN SPECULATE" in system and "the Astra" in system
     assert "never invent an event" in system and "lightning round" in system
     assert "7,000 to 8,000 words" in system
     user = build_roundtable_user_content("ep", "SEASONS", "THE TABLE: x", "MYSTERY 1: q")
     assert user.index("SEASON OVERVIEW") < user.index("MYSTERY FILE")
     assert "THE TABLE: x" in user
+    assert "finally" not in system  # a second special must not claim to be the first
+    with_astra = build_roundtable_user_content("ep", "SEASONS", "", "MYSTERY 1: q", "THE ASTRA: y")
+    assert with_astra.index("THE ASTRA: y") < with_astra.index("SEASON OVERVIEW")
+
+
+def test_render_carries_the_setting_background_and_connections() -> None:
+    base = mystery("Who is she?", [hyp(["c1"])])
+    d = Dossier.model_validate(
+        {
+            "setting": [{"topic": "The Thessians", "pages": ["Divinity/Thessians"], "note": "N."}],
+            "mysteries": [
+                {**base, "background": "B.", "connections": [{"to": 2, "how": "H."}]},
+                mystery("Why the mask?", [hyp(["c1"])]),
+                mystery("Where next?", [hyp(["w1"])]),
+            ],
+        }
+    )
+    text = render_dossier(d, episode_label=lambda d: d)
+    assert text.startswith("THE WIDER SETTING")
+    assert "- The Thessians (wiki: Divinity/Thessians): N." in text
+    assert "What we know: B." in text and "Connects to:\n- Mystery 2: H." in text
+    assert "What we know" not in text.split("MYSTERY 2")[1]
+
+
+def test_a_dossier_without_the_new_fields_still_loads() -> None:
+    d = Dossier.model_validate({"mysteries": [mystery("q", [hyp(["c1"])])] * 3})
+    assert d.setting == [] and d.mysteries[0].background == ""
+    assert not render_dossier(d, episode_label=lambda d: d).startswith("THE WIDER")
+
+
+def test_astra_block_lists_the_other_astra_games_only() -> None:
+    being = load_being(BEING_KDL_PATH)
+    main = next(c for c in being.campaigns if c.main)
+    block = build_astra_block(main.slug)
+    assert block.startswith(f"THE ASTRA: {main.name} is set on")
+    for c in being.campaigns:
+        listed = f"(wiki tag `{c.slug}`)" in block
+        assert listed == (c.slug != main.slug and c.world in being.astra_worlds), c.slug
+    assert "Gamemaster" not in block  # the GM is named as "run by", never as a character
+    assert build_astra_block("no-such-show") == ""
