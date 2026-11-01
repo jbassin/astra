@@ -359,6 +359,9 @@ class AssayConfig(_Base):
     # assay's book build (`assay export-book`). book_out_path is the dir the compiled
     # Liturgy PDF is written to: a build output under data.root, never in a checkout.
     book_out_path: DataPath
+    # handouts_path holds one folder per player handout (`assay handout`): the source, its
+    # art and the built PDF. Spoilers until handed out, so runtime data, never in git.
+    handouts_path: DataPath
 
 
 class OpsConfig(_Base):

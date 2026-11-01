@@ -710,6 +710,28 @@ book *flags:
     fi
     OTEL_SDK_DISABLED=true {{uv_bin}} run --frozen assay export-book "$@"
 
+# Builds <assay.handouts-path>/<name>/<name>.pdf from that folder's handout.md (Homebrewery-style
+# Markdown) and art.*, in the book's style (books/liturgy_vol2/handout.sty). The handout sources
+# are spoilers, so they live under data.root, never in the repo. Same tectonic pin as `book`.
+# Build one player handout PDF (`--no-compile` writes <name>.tex instead; `--dir` overrides).
+handout name *flags:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    want="0.17.0"
+    if [[ " $* " != *" --no-compile "* ]]; then
+      if ! command -v tectonic >/dev/null; then
+        echo "handout: tectonic is not on PATH (want $want; cargo install tectonic --version $want)" >&2
+        exit 1
+      fi
+      have="$(tectonic --version | awk '{print $2}')"
+      if [ "$have" != "$want" ]; then
+        echo "handout: tectonic $have found, want $want" >&2
+        exit 1
+      fi
+    fi
+    OTEL_SDK_DISABLED=true {{uv_bin}} run --frozen assay handout "$@"
+
 # Rebuild the committed @astra/weal-engine wasm artifact from
 # libs/rust/weal-engine: cargo (wasm32 release; the 8 MiB stack flag lives in
 # the crate's .cargo/config.toml, target-scoped) → wasm-bindgen --target

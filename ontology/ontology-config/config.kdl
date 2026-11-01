@@ -38,6 +38,7 @@ data {
     //   menhir/                  menhir results.jsonl
     //   assay/books/             the Liturgy PDF (`just book` creates it on the host; no
     //                            container uses it, so init_artifacts leaves it alone)
+    //   handouts/                player handout sources and PDFs (`just handout`; host only)
     //   audio/{akasha,mouthpiece,orator}/  audio the frontends and orator serve
     //   postgres/{dagster,orator,weal}/    PGDATA (uid 70, mode 0700, set by the postgres entrypoint)
     //   portal-oauth/            portal's OAuth state
@@ -425,6 +426,10 @@ assay {
     // the compiled Liturgy PDF is written to, under data.root: a build output, never in a
     // checkout. The book sources and the committed .tex stay in apps/assay/py/books/.
     book-out-path "assay/books"
+    // `just handout <name>` (apps/assay/py/README.md): one folder per player handout under
+    // data.root, holding handout.md (Homebrewery-style source, a spoiler until handed out, so
+    // never in the public repo), art.* and the built <name>.pdf.
+    handouts-path "handouts"
 }
 
 menhir {
