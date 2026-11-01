@@ -48,7 +48,8 @@ Dockerfile ones the same way (`# hadolint ignore=DLxxxx` under a comment that sa
 - **pre-commit** checks only the staged content: oxlint (`--type-aware --deny-warnings
   --report-unused-disable-directives`) and oxfmt `--check` for TypeScript, `ruff check` and
   `ruff format --check` for Python. It never edits files; fix with `just fix` and stage the result.
-- **pre-push** runs `just ci`.
+- **pre-push** runs `just ci` and saves the full output to `<git dir>/ci-last.log` (per worktree),
+  so a blocked push can be read back without a rerun.
 - **GitHub** then gates `main` with the ruleset `main`: changes arrive only through pull requests
   that pass `ci-ok`, merged by rebase, with no force pushes or deletion. Branches don't need to be
   current with `main`. Only admins can bypass it, and only by merging a pull request
