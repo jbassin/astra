@@ -231,6 +231,10 @@ campaign "hildebrandt-heist" {
     role player="jorge" character="Vint Cerf" { desc "an employee of Hildebrandt Corporation, a military contractor" }
 }
 
+// APEX, a game in which the players played Thessians, is deliberately not a campaign here:
+// nothing was recorded and no wiki page is tagged with it, and its roster would draw on the
+// GM-only Thessian list. Only three general facts from it are on the Thessians page.
+
 // The GM's first campaign. Nothing was recorded; it is here for the roster and the world.
 campaign "risk-of-ruin" {
     name "Risk of Ruin"
