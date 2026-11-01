@@ -7,6 +7,7 @@ pin, the lenient history.jsonl reads, --skip-failed and the in-flight Dagster ru
 
 from __future__ import annotations
 
+import fcntl
 import json
 import os
 import shutil
@@ -339,3 +340,31 @@ def test_the_api_alone_is_enough_without_docker(rig: Rig, graphql: type[_GraphQL
     r = rig.run("--dry-run", "dagster-code")
     assert r.returncode == 0, r.stderr
     assert "could not list the Dagster run containers" in r.stderr
+
+
+def test_a_busy_host_tooling_lock_exits_14_at_once(rig: Rig) -> None:
+    """A heartwood run holds the host-tooling lock shared; with HOST_TOOLING_LOCK_TIMEOUT=0
+    (linguist-commit's setting) a sync that needs it exits 14 at once, nothing changed."""
+    uv = rig.bin_dir / "uv"
+    uv.write_text('#!/usr/bin/env bash\necho synced >> "$0.log"\nexit 1\n')  # never in sync
+    uv.chmod(0o755)
+    lock = rig.data_root / "locks" / "host-tooling.lock"
+    lock.parent.mkdir(parents=True)
+    with lock.open("w") as held:
+        fcntl.flock(held.fileno(), fcntl.LOCK_SH)
+        r = subprocess.run(
+            [str(rig.deploy_root / "deploy" / "deploy.sh"), "--host-tooling"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            env=_env(
+                ASTRA_DEPLOY_ROOT=str(rig.deploy_root),
+                ASTRA_DATA_ROOT=str(rig.data_root),
+                UV_BIN=str(uv),
+                HOST_TOOLING_LOCK_TIMEOUT="0",
+            ),
+        )
+    assert r.returncode == 14, r.stderr
+    assert "nothing synced" in r.stderr
+    assert (rig.bin_dir / "uv.log").read_text().count("synced") == 1  # only the --check

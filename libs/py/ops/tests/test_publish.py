@@ -273,9 +273,9 @@ def test_linguist_commit_full_run(tmp_path: Path, capsys: pytest.CaptureFixture[
         ),
         *push_steps(repo),
         seed_call(tmp_path, "akasha"),
-        deploy_call(tmp_path, "--skip-failed", "akasha-frontend"),
+        deploy_call(tmp_path, "--skip-failed", "akasha-frontend", no_tooling_wait=True),
         seed_call(tmp_path, "mouthpiece"),
-        deploy_call(tmp_path, "--skip-failed", "mouthpiece-frontend"),
+        deploy_call(tmp_path, "--skip-failed", "mouthpiece-frontend", no_tooling_wait=True),
         ("unlock", "git-publish"),
     ]
     ctx, r = make_ctx(tmp_path, steps, config=linguist_config(repo))
@@ -317,7 +317,7 @@ def test_linguist_commit_nothing_new_checks_staleness(
         *push_steps(repo, ahead=False),
         Call([*g, "diff", "--quiet", "d1", "HEAD", "--", *baked], rc=1),
         seed_call(tmp_path, "akasha"),
-        deploy_call(tmp_path, "--skip-failed", "akasha-frontend", rc=11),
+        deploy_call(tmp_path, "--skip-failed", "akasha-frontend", rc=11, no_tooling_wait=True),
         ("unlock", "git-publish"),
     ]
     ctx, r = make_ctx(tmp_path, steps, config=linguist_config(repo))
@@ -379,12 +379,77 @@ def test_linguist_commit_redeploy_failure_exits_1(tmp_path: Path) -> None:
         Call(uv("python", "-m", "astra_mouthpiece.publish"), rc=1),
         *push_steps(repo),
         seed_call(tmp_path, "akasha"),
-        deploy_call(tmp_path, "--skip-failed", "akasha-frontend", rc=7),
+        deploy_call(tmp_path, "--skip-failed", "akasha-frontend", rc=7, no_tooling_wait=True),
         ("unlock", "git-publish"),
     ]
     ctx, r = make_ctx(tmp_path, steps, config=linguist_config(repo))
     assert publish.linguist_commit(ctx) == 1
     r.assert_done()
+
+
+def test_linguist_commit_tooling_lock_busy_defers_without_paging(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A heartwood run holds the host-tooling lock: deploy.sh (told not to wait) exits 14 at
+    once; both redeploys are deferred, not failed, so the run exits 0 and nothing pages."""
+    repo = clone(tmp_path)
+    g = ["git", "-C", repo]
+    lp = [f"{repo}/linguist/transcripts", f"{repo}/linguist/data", f"{repo}/linguist/timeline"]
+    snap = f"{repo}/mouthpiece/snapshot/episodes-index.json"
+    steps: list[Step] = [
+        *lc_head(repo),
+        Call([*g, "add", *lp]),
+        Call([*g, "diff", "--cached", "--quiet", "--", *lp], rc=1),
+        Call([*g, "diff", "--cached", "--name-only", "--no-renames", "--", *lp], stdout="a\n"),
+        Call(
+            [*g, "diff", "--cached", "--name-only", "--no-renames", "-z", "--", *lp], stdout=b"a\0"
+        ),
+        Call(
+            [
+                *g,
+                "commit",
+                "--no-verify",
+                "-q",
+                "--only",
+                "--pathspec-from-file=-",
+                "--pathspec-file-nul",
+                "-m",
+                "chore(content): add 1 linguist transcript/data file(s)",
+                "-m",
+                "Pipeline-generated source-of-record, committed by the linguist-commit timer.",
+            ]
+        ),
+        Call(uv("python", "-m", "astra_mouthpiece.publish")),
+        Call([*g, "add", snap]),
+        Call([*g, "diff", "--cached", "--quiet", "--", snap], rc=1),
+        Call(
+            [
+                *g,
+                "commit",
+                "--no-verify",
+                "-q",
+                "--only",
+                "-m",
+                "chore(content): refresh the mouthpiece episode catalog",
+                "-m",
+                "Regenerated from the live corpus by the linguist-commit timer.",
+                "--",
+                snap,
+            ]
+        ),
+        *push_steps(repo),
+        seed_call(tmp_path, "akasha"),
+        deploy_call(tmp_path, "--skip-failed", "akasha-frontend", rc=14, no_tooling_wait=True),
+        seed_call(tmp_path, "mouthpiece"),
+        deploy_call(tmp_path, "--skip-failed", "mouthpiece-frontend", rc=14, no_tooling_wait=True),
+        ("unlock", "git-publish"),
+    ]
+    ctx, r = make_ctx(tmp_path, steps, config=linguist_config(repo))
+    assert publish.linguist_commit(ctx) == 0
+    r.assert_done()
+    out = capsys.readouterr().out
+    assert "akasha-frontend redeploy deferred" in out
+    assert "mouthpiece-frontend redeploy deferred" in out
 
 
 def test_linguist_commit_failing_git_add_exits_with_gits_code(tmp_path: Path) -> None:
@@ -457,9 +522,9 @@ def test_linguist_commit_against_a_real_clone(tmp_path: Path) -> None:
         ("lock", "git-publish", "ex"),
         Call(uv("python", "-m", "astra_mouthpiece.publish")),
         seed_call(tmp_path, "akasha"),
-        deploy_call(tmp_path, "--skip-failed", "akasha-frontend"),
+        deploy_call(tmp_path, "--skip-failed", "akasha-frontend", no_tooling_wait=True),
         seed_call(tmp_path, "mouthpiece"),
-        deploy_call(tmp_path, "--skip-failed", "mouthpiece-frontend"),
+        deploy_call(tmp_path, "--skip-failed", "mouthpiece-frontend", no_tooling_wait=True),
         ("unlock", "git-publish"),
     ]
     ctx, r = make_ctx(tmp_path, steps, config=cfg, passthrough=frozenset({"git"}))

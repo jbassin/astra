@@ -70,10 +70,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   normal size and a fresh run passed. Automation never re-requests a stage, so a failure like
   this blocks mouthpiece until someone re-executes from failure — agent; consider moving the
   summary to GLM 5.3 or retrying a validation failure once more at the run level.
-- linguist-commit's akasha-frontend redeploy waits 600 s for the host-tooling lock, but heartwood
-  holds it for its whole run and always starts on the same transcript, so on every session night
-  linguist-commit fails and pages (2026-10-29: exit 9 at 23:55; its next run redeployed). Skip
-  or defer the redeploy while a heartwood run holds the lock — agent.
 - The SigNoz counters read with `increase` undercount on Dagster steps: 2026-10-29 showed 0 Pass A
   misses, 21 clip misses for 23 clips and $0 for Kimi, while the `astra.llm.call` spans showed the
   real values. Read cost from the spans; find why the counters drop values — agent.

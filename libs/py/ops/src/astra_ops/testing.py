@@ -194,10 +194,10 @@ def push_steps(repo: str, *, ahead: bool = True, moved: bool = False) -> list[St
     return steps
 
 
-def deploy_call(tmp: Path, *args: str, rc: int = 0) -> Call:
-    """``just deploy <args>``: make_ctx's deploy.sh with the justfile's ASTRA_DATA_ROOT."""
-    return Call(
-        [f"{tmp}/repo/deploy/deploy.sh", *args],
-        rc=rc,
-        env={"ASTRA_DATA_ROOT": f"{tmp}/state"},
-    )
+def deploy_call(tmp: Path, *args: str, rc: int = 0, no_tooling_wait: bool = False) -> Call:
+    """``just deploy <args>``: make_ctx's deploy.sh with the justfile's ASTRA_DATA_ROOT;
+    ``no_tooling_wait`` adds linguist-commit's ``HOST_TOOLING_LOCK_TIMEOUT=0``."""
+    env = {"ASTRA_DATA_ROOT": f"{tmp}/state"}
+    if no_tooling_wait:
+        env["HOST_TOOLING_LOCK_TIMEOUT"] = "0"
+    return Call([f"{tmp}/repo/deploy/deploy.sh", *args], rc=rc, env=env)

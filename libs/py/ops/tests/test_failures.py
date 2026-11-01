@@ -72,7 +72,7 @@ def test_seed_dir_failure_is_reported_and_the_redeploy_still_runs(
     (tmp_path / "state" / "audio").write_text("a file where the audio dir should be")
     deploy = Call(
         [f"{tmp_path}/repo/deploy/deploy.sh", "--skip-failed", "akasha-frontend"],
-        env={"ASTRA_DATA_ROOT": f"{tmp_path}/state"},
+        env={"ASTRA_DATA_ROOT": f"{tmp_path}/state", "HOST_TOOLING_LOCK_TIMEOUT": "0"},
     )
     steps = [*head_with_new_files(repo), *push_steps(repo), deploy, ("unlock", "git-publish")]
     ctx, r = make_ctx(tmp_path, steps, config=linguist_config(repo))
