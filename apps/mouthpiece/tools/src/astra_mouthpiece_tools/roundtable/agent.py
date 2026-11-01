@@ -6,7 +6,7 @@ immutable values only (0033 gotcha). The run mirrors ``producer.run.run_producer
 metered LMs, sandbox, telemetry seams and artifact set. The dossier is used as submitted
 (the stakeholder chose speculation over an evidence gate).
 
-Artifacts in ``run_dir``: ``overview.md``, ``dossier.json`` + ``dossier.md``,
+Artifacts in ``run_dir``: ``overview.md``, ``astra.md``, ``dossier.json`` + ``dossier.md``,
 ``trajectory.json``, ``summary.json``.
 """
 
@@ -54,6 +54,7 @@ from astra_sessions import format_date, to_date
 from opentelemetry import trace
 from opentelemetry.trace import Status, StatusCode
 
+from .astra import build_astra_block
 from .dossier import Dossier, render_dossier
 
 #: A campaign-wide survey reads far more than one session's brief: triple the producer's caps.
@@ -71,8 +72,13 @@ class MapMysteries(dspy.Signature):
 
     `campaign_overview` lists every season and session of `show` (dates, titles,
     synopses, cliffhangers) through `latest_date`. `roster` maps players to their
-    characters, with each character's background. The tools read every session
-    transcript, every chronicle entry, earlier podcast scripts, and the campaign wiki.
+    characters, with each character's background. `astra` lists the GM's other games
+    set in the same meta-setting, the Astra (earlier campaigns and one-shots, mostly
+    with the same players). The tools read every session transcript of `show`, every
+    chronicle entry, earlier podcast scripts, and the whole wiki, which covers those
+    other games too: a page's front matter `campaigns: [<tag>]` says which game it is
+    known from. Their gods, cosmic powers, organizations and history belong to this
+    campaign's world, and the deepest mysteries often run through them.
 
     Work in this order:
 
@@ -82,10 +88,12 @@ class MapMysteries(dspy.Signature):
        - questions CLOSE TO THE PARTY: the player characters' own pasts, bodies, bargains
          and patrons, the people who matter to them, what was done to them and why.
        Skip small local puzzles that do not touch either. Prefer mysteries with
-       breadcrumbs scattered across several sessions.
+       breadcrumbs scattered across several sessions. Look for where this campaign's
+       threads meet the wider Astra: a power, place or name the party met that the
+       earlier games' pages also describe.
     2. Still open? For each candidate, search the LATER sessions (`search_transcripts`,
        `read_episode`) to make sure it was not already answered on screen. Drop anything
-       resolved. Keep 8 to 14 mysteries, biggest and most personal first. Err on the side
+       resolved. Keep 10 to 16 mysteries, biggest and most personal first. Err on the side
        of more: the writer will pick the strongest for the episode, so surface options.
     3. Clues. For each mystery, gather 3 to 8 clues: words copied from a tool result,
        either a transcript line (give `date` and `line`, the number at the start of that
@@ -93,15 +101,27 @@ class MapMysteries(dspy.Signature):
        `shows`. Copy, do not paraphrase. The best clues are what the players were shown:
        the Gamemaster's narration and descriptions, what NPCs said (the Gamemaster voices
        them), and the wiki. A player character's own theorizing at the table is worth
-       including as what the table already suspects.
-    4. Hypotheses. For each mystery write 2 to 5 competing explanations, from safe to
+       including as what the table already suspects. Wiki pages from the earlier
+       games are good clues when they bear on this campaign's mystery.
+    4. Background and connections. For each mystery write `background`: 3 to 6
+       sentences of what is established (who and what is involved, what the party has
+       seen and been told, the world context a listener needs), so the hosts can explain
+       the mystery before they theorize. In `connections`, note each other mystery in
+       the file it ties to (by its 1-based number) and how.
+    5. Hypotheses. For each mystery write 2 to 6 competing explanations, from safe to
        bold. Each starts from clue ids in that mystery (`supported_by`; clues that cut
        against it go in `complicated_by`). Combine clues, and then go further: if the
-       theory steps beyond what the clues show, say what that step is in `leap`. Avoid
-       lore from outside this campaign (the world is homebrew; published Pathfinder
-       setting lore does not apply). Grade honestly: "strong" when several clues point the
+       theory steps beyond what the clues show, say what that step is in `leap`. Use
+       only lore from the GM's own world, the Astra (this campaign and the games in
+       `astra`); the world is homebrew, and published Pathfinder setting lore does not
+       apply. Grade honestly: "strong" when several clues point the
        same way, "long shot" for a fun leap the clues merely allow. In `would_confirm`,
        say what in-world event would settle it.
+    6. The wider setting. In `setting`, write 6 to 12 notes on the cosmology, powers,
+       organizations and history the theories lean on (for example the gods and what
+       they want, how the worlds of the Astra relate, what the earlier campaigns
+       revealed), each naming its wiki pages and the mysteries it bears on. This is
+       the writer's background reading, so make it accurate and specific.
 
     Leave out rules mechanics and dice. Use `llm_query` sparingly (for example to skim a
     long transcript for one topic); prefer the search tools, and read the lines around a
@@ -112,6 +132,7 @@ class MapMysteries(dspy.Signature):
     latest_date: str = dspy.InputField(desc="the most recent session, YYYY-M-D")
     campaign_overview: str = dspy.InputField(desc="every season and session, in order")
     roster: str = dspy.InputField(desc="players and their characters")
+    astra: str = dspy.InputField(desc="the GM's other games in the same meta-setting")
     dossier: Dossier = dspy.OutputField(desc="the evidence file")
 
 
@@ -230,6 +251,8 @@ def run_dossier(
     out.mkdir(parents=True, exist_ok=True)
     overview = build_overview(tools_impl, show, seasons_path)
     (out / "overview.md").write_text(overview + "\n", encoding="utf-8")
+    astra = build_astra_block(show, content_dir=content_dir)
+    (out / "astra.md").write_text(astra + "\n", encoding="utf-8")
     head_start = wiki_head()
 
     parent = RunParent()
@@ -272,6 +295,7 @@ def run_dossier(
                     latest_date=latest,
                     campaign_overview=overview,
                     roster=build_roster_block(show),
+                    astra=astra,
                 )
         except BaseException as exc:  # noqa: BLE001 -- recorded below; non-Exceptions re-raised after artifacts
             error = exc

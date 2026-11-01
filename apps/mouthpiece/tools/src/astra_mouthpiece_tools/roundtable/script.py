@@ -9,6 +9,40 @@ from astra_mouthpiece.models import HostConfig, Script
 from astra_mouthpiece.script import DEFAULT_SCRIPT_MAX_TOKENS, dress_transcript
 
 
+def _evidence_rules(a: str, b: str, c: str) -> str:
+    """The prompt's evidence section: what the file and THE ASTRA hold, and where the hosts
+    may and may not speculate."""
+    return f"""BREADCRUMBS FIRST, THEN SPECULATE:
+- Below is a MYSTERY FILE. It opens with THE WIDER SETTING: notes on the cosmology, powers
+  and history the theories lean on. Then come the open questions, each with what is
+  already known, clues (moments from the sessions or lines from the wiki), candidate
+  theories from safe to bold, and how it connects to other mysteries. Use "what we know"
+  to set a mystery up before the theorizing, so a listener can follow it.
+- THE ASTRA, also below, lists the GM's other games set in the same meta-setting: earlier
+  campaigns and one-shots, mostly with these same players. What happened in them is part
+  of this world, and the deepest theories often run through it. {a} and {b} bring it up
+  the way fans of a long series bring up an earlier season; {c} asks plainly when a
+  name from those games is new to her.
+- Every theory starts from something that really happened: the hosts name the moment
+  ("when Anzu told us...", "that bit on the wiki about...", "back in the Ragged Roost
+  arc...") by its story and season, never by a clue number or a date.
+- From there they are free to SPECULATE. Predictions need leaps, and the fun of the episode
+  is watching them stack clues and jump. They can invent their own theories beyond the
+  file's, as long as each one grows from a real moment and the host owns it as a guess
+  ("okay, this is pure gut, but..."). Bold and wrong is fine; confidently presented as fact
+  is not.
+- What really happened in the campaign stays fixed: they never invent an event, a scene,
+  or something a character said. Speculation is about what it MEANS and what comes NEXT.
+- Use only lore from the GM's own world, the Astra: this campaign and the games in THE
+  ASTRA. The world is homebrew; published Pathfinder setting lore does not apply, and
+  {c}'s Pathfinder experience shows up as reading the game and the table, not as
+  setting facts.
+- When a clue cuts against a favourite theory, someone brings it up and they wrestle
+  with it.
+
+"""
+
+
 def build_roundtable_system_prompt(hosts: HostConfig) -> str:
     """Pass A for the prediction special. Same hosts, voices, format and mechanics rules
     as the recap; the material is a mystery file instead of a session transcript."""
@@ -21,8 +55,9 @@ campaign: a prediction roundtable. Three co-hosts — {a}, {b}, and {c.name} —
 recapping a session this time. They are sitting down to work out what is REALLY going on:
 the campaign's biggest open mysteries, the who-was-that and why-did-they, the threads
 closest to the party. This is a TRANSCRIPT of what was actually said. {a} and {b} are two
-old friends who have followed this campaign from the start; {c.name} joined this season,
-has played a LOT of Pathfinder, and has heard the recent episodes.
+old friends who have followed this campaign from the start and know the GM's earlier games
+in the same world; {c.name} joined this season, has played a LOT of Pathfinder, and has
+heard the recent episodes.
 
 The three co-hosts:
 - {a}: {hosts.a.persona}. He makes the big intuitive leaps and falls in love with them.
@@ -40,33 +75,15 @@ Format: plain text, one line per turn, as
 Use the hosts' names as the speaker labels. NOTHING else — no headings, no audio tags,
 no stage directions, no markdown. Ordinary spoken punctuation only.
 
-BREADCRUMBS FIRST, THEN SPECULATE:
-- Below is a MYSTERY FILE: open questions, each with clues (moments from the sessions or
-  lines from the campaign wiki) and candidate theories from safe to bold. Every theory
-  starts from something that really happened: the hosts name the moment ("when Anzu told
-  us...", "that bit on the wiki about...", "back in the Ragged Roost arc...") by its story
-  and season, never by a clue number or a date.
-- From there they are free to SPECULATE. Predictions need leaps, and the fun of the episode
-  is watching them stack clues and jump. They can invent their own theories beyond the
-  file's, as long as each one grows from a real moment and the host owns it as a guess
-  ("okay, this is pure gut, but..."). Bold and wrong is fine; confidently presented as fact
-  is not.
-- What really happened in the campaign stays fixed: they never invent an event, a scene,
-  or something a character said. Speculation is about what it MEANS and what comes NEXT.
-- Avoid lore from outside this campaign. The world is homebrew; published Pathfinder
-  setting lore does not apply, and {c.name}'s Pathfinder experience shows up as reading the
-  game and the table, not as setting facts.
-- When a clue cuts against a favourite theory, someone brings it up and they wrestle
-  with it.
-
-How the conversation runs:
-- Start mid-conversation with the premise: no session to recap, so they are finally doing
-  the theory episode. No "welcome to the show".
+{_evidence_rules(a, b, c.name)}How the conversation runs:
+- Start mid-conversation with the premise: no session to recap, so it is a theory episode.
+  No "welcome to the show".
 - The file has more mysteries than one episode can hold. CHOOSE: go deep on the biggest
   and most personal to the party (roughly seven to nine), and let smaller ones come up only
   when they connect. Let one theory lead naturally into the next mystery. For each: what
   they actually know, the breadcrumbs, two or three competing reads, and where each host
-  lands. The best moments are when two mysteries turn out to connect.
+  lands. The best moments are when two mysteries turn out to connect: the file's
+  connections and the wider setting are there to help them find those links.
 - They BUILD on each other ("yes, and"), get excited, talk each other into and out of
   things. Real disagreement is welcome here, as competing theories, but never a pattern
   where one proposes and the other objects every time.
@@ -89,12 +106,13 @@ Write the transcript now, and nothing else."""
 
 
 def build_roundtable_user_content(
-    episode_id: str, overview: str, roster: str, dossier_block: str
+    episode_id: str, overview: str, roster: str, dossier_block: str, astra: str = ""
 ) -> str:
     roster_part = f"{roster.strip()}\n\n" if roster.strip() else ""
+    astra_part = f"{astra.strip()}\n\n" if astra.strip() else ""
     return f"""SPECIAL EPISODE — {episode_id}
 
-{roster_part}SEASON OVERVIEW (what the hosts already know about the story so far):
+{roster_part}{astra_part}SEASON OVERVIEW (what the hosts already know about the story so far):
 
 {overview.strip()}
 
@@ -113,16 +131,22 @@ def generate_roundtable_script(
     dossier_block: str,
     hosts: HostConfig,
     *,
+    astra: str = "",
     model: str | None = None,
+    dress_model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
 ) -> tuple[str, Script]:
-    """Pass A (roundtable) → Pass B (unchanged dressing). Returns (raw Pass A, script)."""
+    """Pass A (roundtable, on ``model``) → Pass B (unchanged dressing, on ``dress_model``,
+    else ``model``). Returns (raw Pass A, script)."""
     req = TextRequest(
-        user_content=build_roundtable_user_content(episode_id, overview, roster, dossier_block),
+        user_content=build_roundtable_user_content(
+            episode_id, overview, roster, dossier_block, astra
+        ),
         system=build_roundtable_system_prompt(hosts),
         max_tokens=max_tokens,
     )
     if model is not None:
         req.model = model
     raw = client.call_text(req)
-    return raw, dress_transcript(client, raw, episode_id, hosts, model=model, max_tokens=max_tokens)
+    dress = dress_model or model
+    return raw, dress_transcript(client, raw, episode_id, hosts, model=dress, max_tokens=max_tokens)
