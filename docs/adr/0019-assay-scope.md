@@ -12,6 +12,9 @@ assay grew a scoring model, a canonical homebrew store, a book exporter and a la
 
 Keep the scorer, the homebrew store and the book export. Archive the workshop, including the review UI source.
 
+**Amended 2026-11-01:** assay also builds player handouts (`just handout`), because they share
+the book's style, fonts and tectonic build. Handout sources stay outside the repo.
+
 ## Consequences
 
 The assay track in Phase 2 splits the product and moves books out of codex.

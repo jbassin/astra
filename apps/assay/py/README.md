@@ -260,6 +260,19 @@ color-graded finish of the raw generations in `preprocessed/`, which is local-on
 git-ignored, and no script derives one from the other. Josh holds the licence for the fonts and
 permission to distribute the PDF with them, so distribution needs no font check.
 
+**Write a new handout.**
+
+1. Make a folder `/ruby/data/astra-state/handouts/<name>/`. Copying an existing one (for example
+   `project-iron-seraph/`) is the quickest start: it has the header, art, caption and rule-block card.
+2. Edit `handout.md` and drop the image in as `art.png` or `art.jpg`. To move the crop, change
+   the `{top,left,width}` numbers on the `{{borderImage}}` line, as in Homebrewery.
+3. `just handout <name>`, then open `<name>/<name>.pdf`. A block the builder doesn't know stops
+   the build and names the block and line; a second page means the text overflowed (it warns).
+
+The six Vol.1 addenda are already there: project-iron-seraph, ghosts-of-raelion, belvedere,
+the-scale-timekeeper, the-scale-slayer and hearts-and-you. The folders have no git history; the
+original text is in `books/liturgy_vol1/liturgy_of_the_iridite_vol1.md`.
+
 **Build a player handout.** A handout is one "Addendum" page in the book's look, written in
 the Homebrewery-style Markdown of Vol.1. Each lives in its own folder under
 `assay.handouts-path` (`/ruby/data/astra-state/handouts/<name>/`): `handout.md`, `art.png` or
