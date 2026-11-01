@@ -1,9 +1,14 @@
 # Now
 
-Updated 2026-10-31.
+Updated 2026-11-01.
 
 ## In flight
 
+- **Player handouts build from Markdown (2026-11-01, #188 and the art-crop PR).** `just handout
+  <name>` turns a Homebrewery-style `handout.md` plus `art.*` into a one-page PDF in the Liturgy
+  book's look. Sources live outside the repo in `/ruby/data/astra-state/handouts/` (spoilers; the
+  repo is public). The six Vol.1 addenda are ported there and build; the art crop follows each
+  file's Homebrewery positioning. How to write one: the assay README, "Write a new handout".
 - **Second prediction roundtable is live (2026-10-31, #184).** A Claude Code subagent wrote the
   dossier in place of the DeepSeek loop (16 mysteries, 128 clues, 12 wider-setting notes, 10 of
   them drawing on the earlier campaigns' pages; no API spend); Kimi wrote the dialogue and GLM

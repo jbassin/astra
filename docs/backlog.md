@@ -55,6 +55,9 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       agent-written dossier should replace the DeepSeek loop for future specials.
 
 ### Smaller calls (Josh)
+- [ ] Handouts: say whether any remaining differences from the Homebrewery look matter. They are
+      justified, hyphenated text (Homebrewery was ragged), a flat drop cap without its backing box,
+      the rule-block card sitting about 20pt lower, and copied text repeating the coloured words.
 - [ ] Create a SigNoz service-account key (Editor role) and add it:
       `sops set deploy/sops/secrets.enc.yaml '["signoz_api_key"]' '"<key>"'` (merge in a PR), then
       `just signoz-rules-apply` (expect 8 new rules, 1 updated), `--yes`, `just signoz-rules-check`.
