@@ -187,7 +187,7 @@ def test_partition_hard_fails_on_leftovers() -> None:
 
 
 def test_latex_escaping_special_chars() -> None:
-    escaped = book._latex_escape_text("A & B % C $ D # E _ F { G } H ~ I ^ J \\ K")
+    escaped = book.latex_escape_text("A & B % C $ D # E _ F { G } H ~ I ^ J \\ K")
     assert escaped == (
         "A \\& B \\% C \\$ D \\# E \\_ F \\{ G \\} H \\textasciitilde{} I "
         "\\textasciicircum{} J \\textbackslash{} K"
@@ -198,7 +198,7 @@ def test_latex_escaping_unicode_passthrough() -> None:
     # The store's real unicode set (—, Æ, æ, ×, smart quotes) passes through
     # untouched — XeTeX/fontspec handles it natively.
     text = "Færrin — Æ æ × “smart quotes”"
-    assert book._latex_escape_text(text) == text
+    assert book.latex_escape_text(text) == text
 
 
 def test_latex_escaping_normalizes_uncovered_dash_glyphs() -> None:
@@ -206,12 +206,12 @@ def test_latex_escaping_normalizes_uncovered_dash_glyphs() -> None:
     # glyphs (fontTools cmap inspection + a live tectonic missing-character
     # warning) — "--"/"---" runs and stray literal en-dash/minus characters
     # normalize to a glyph the fonts DO have.
-    assert book._latex_escape_text("turned against magic -- the art") == (
+    assert book.latex_escape_text("turned against magic -- the art") == (
         "turned against magic — the art"
     )
-    assert book._latex_escape_text("magic---the art") == "magic—the art"
-    assert book._latex_escape_text("a level \u2212 1 creature") == "a level - 1 creature"
-    assert book._latex_escape_text("en dash \u2013 too") == "en dash — too"
+    assert book.latex_escape_text("magic---the art") == "magic—the art"
+    assert book.latex_escape_text("a level \u2212 1 creature") == "a level - 1 creature"
+    assert book.latex_escape_text("en dash \u2013 too") == "en dash — too"
 
 
 # ---------------------------------------------------------------------------

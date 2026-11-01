@@ -1,0 +1,247 @@
+% handout.sty --- one-page player handouts ("Addendum" pages) in the Liturgy look
+% Built on liturgy.sty: same fonts, parchment, header and spell-block plumbing.
+% `assay handout` (astra_assay/handout.py) writes the document; it defines
+% \liturgyroot (this directory, absolute) before loading this package.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{handout}[2026/11/01 Liturgy handout layout]
+\RequirePackage{liturgy}
+
+% ---------------------------------------------------------------- colors
+% Vol.1 CSS (.divine, .mortal, .monster.frame).
+\definecolor{DivineGold}{HTML}{CA9703}
+\definecolor{MortalBlue}{HTML}{265999}
+\definecolor{CardBack}{HTML}{F4F0EC}
+\definecolor{CardFrame}{HTML}{888888}
+
+% ---------------------------------------------------------------- body
+% Homebrewery paragraphs: no gap, a 1em first-line indent (none after a
+% heading, which titlesec already handles).
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{1em}
+\setlength{\columnsep}{0.9cm}
+
+% ---------------------------------------------------------------- header
+% The book's \chapternum/\chaptertitle faces and sizes, but in the source's
+% own case: both faces are small caps, so "Project Iron Seraph" reads with
+% tall initials, as the Homebrewery print does. \chapterrule follows.
+\newcommand{\hoeyebrow}[1]{{\mreaves\fontsize{0.74cm}{0.85cm}\selectfont\color{DarkRed}#1\par}}
+\newcommand{\hotitle}[1]{{\wolpe\fontsize{1.4cm}{1.5cm}\selectfont\color{ChapterTitle}#1\par}}
+% Wolpe Pegasus has real lowercase, so the print's small caps are faked:
+% handout.py sets each run of lowercase letters as \hosc{RUN} (capitals at 80%).
+\newlength{\ho@sclen}
+\newcommand{\hosc}[1]{{\setlength{\ho@sclen}{0.8\dimexpr\f@size pt\relax}%
+  \fontsize{\ho@sclen}{\ho@sclen}\selectfont #1}}
+
+% ---------------------------------------------------------------- glyph fallback
+% The book faces cover Latin text only. handout.py wraps every non-ASCII
+% character in \hochar, which keeps the current font when it has the glyph
+% and otherwise tries FreeSerif (symbols, Thai, math letters), then IPAex
+% Gothic (CJK). Both ship in the tectonic bundle.
+\newfontfamily\hofallbackserif{FreeSerif.otf}
+\newfontfamily\hofallbackcjk{ipaexg.ttf}
+\newcommand{\hochar}[1]{%
+  \iffontchar\font`#1\relax #1%
+  \else{\hofallbackserif\iffontchar\font`#1\relax #1\else\hofallbackcjk #1\fi}%
+  \fi}
+
+% ---------------------------------------------------------------- inline spans
+\newcommand{\hodivine}[1]{{\scalycapsbold\color{DivineGold}#1}}
+\newcommand{\homortal}[1]{{\scalycapsbold\color{MortalBlue}#1}}
+% .joined: the CSS clips a diagonal blue/gold gradient to the text. Drawn
+% here as the word in blue with a gold copy clipped to its lower-right half.
+\newsavebox{\ho@joinedbox}
+\newcommand{\hojoined}[1]{%
+  \begingroup
+  \sbox{\ho@joinedbox}{\scalycapsbold #1}%
+  \begin{tikzpicture}[baseline=(ho@j.base)]
+    \node[inner sep=0pt, text=MortalBlue] (ho@j) {\usebox{\ho@joinedbox}};
+    \begin{scope}
+      \clip (ho@j.north east) -- (ho@j.south east) -- (ho@j.south west) -- cycle;
+      \node[inner sep=0pt, text=DivineGold] at (ho@j) {\usebox{\ho@joinedbox}};
+    \end{scope}
+  \end{tikzpicture}%
+  \endgroup}
+
+% ---------------------------------------------------------------- transcript
+% .transcript p: monospace at 82%. The source ends each paragraph with <br><br>
+% (a blank line); a 0.7-line gap keeps the hearts fax on one page.
+\newfontfamily\hotranscriptfont{DejaVuSansMono.ttf}
+\newenvironment{hotranscript}{%
+  \par\hotranscriptfont\fontsize{7.9pt}{9.6pt}\selectfont
+  \setlength{\parindent}{0pt}\setlength{\parskip}{0.7\baselineskip}%
+  \raggedright
+}{\par}
+
+% ---------------------------------------------------------------- rule-block card
+% .monster.frame: #f4f0ec fill, 3.5px double #888 border, 10px radius, a soft
+% drop shadow, and 105% of the column width (it overhangs both edges).
+\newtcolorbox{hocard}{enhanced, breakable=false,
+  colback=CardBack, frame hidden, arc=6pt,
+  borderline={0.6pt}{0pt}{CardFrame},
+  borderline={0.6pt}{1.6pt}{CardFrame},
+  drop fuzzy shadow={black!45},
+  grow to left by=5pt, grow to right by=5pt,
+  left=6pt, right=6pt, top=6pt, bottom=6pt,
+  before skip=6pt, after skip=4pt,
+  before upper={\setlength{\parindent}{1em}},
+  fontupper=\scaly\fontsize{8.8pt}{10.8pt}\selectfont}
+% the trait-pill row under the title rule
+\newcommand{\hotraits}[1]{\par\noindent #1\par\vspace{2pt}}
+% the rule under the definition rows (.definitions border-bottom)
+\newcommand{\hocardrule}{\par\vspace{2pt}\hrule height 0.5pt\vspace{3pt}}
+
+% ---------------------------------------------------------------- page layout
+% A handout is a full-width header, then two columns. Column one is set
+% first; whatever does not fit its height continues at the top of column
+% two's text, below the framed art, followed by column two's own content.
+% The art takes whatever height column two's text leaves free, clamped to
+% [\hoartmin, \hoartmax] of the column height. Text that still does not fit
+% continues on a second page (and handout.py warns: "HANDOUT-OVERFLOW").
+\newlength{\ho@colw}
+\setlength{\ho@colw}{\dimexpr(\textwidth-\columnsep)/2\relax}
+\newlength{\ho@H}
+\newlength{\ho@art}
+\newlength{\ho@room}
+\newlength{\hoheadgap}\setlength{\hoheadgap}{0.25cm}
+\newlength{\hoartgap}\setlength{\hoartgap}{0.45cm}
+\newcommand{\hoartmin}{0.30}
+\newcommand{\hoartmax}{0.70}
+\newsavebox{\ho@head}
+\newsavebox{\ho@one}
+\newsavebox{\ho@two}
+\newsavebox{\ho@left}
+\newsavebox{\ho@rest}
+\newsavebox{\ho@right}
+\newsavebox{\ho@img}
+
+\def\ho@colsetup{%
+  \hsize\ho@colw \linewidth\hsize \columnwidth\hsize
+  \parskip=0pt \parindent=1em
+  \everypar{}}
+
+\newenvironment{handouthead}{%
+  \global\setbox\ho@head\vbox\bgroup
+  \hsize\textwidth \linewidth\hsize \centering
+}{\par\egroup}
+\newenvironment{handoutcolumnone}{%
+  \global\setbox\ho@one\vbox\bgroup\ho@colsetup
+}{\par\egroup}
+\newenvironment{handoutcolumntwo}{%
+  \global\setbox\ho@two\vbox\bgroup\ho@colsetup
+}{\par\egroup}
+
+% \handoutart{image path}{caption, lines split by \\}{l or r}
+\newif\ifho@art
+\newcommand{\ho@artpath}{}
+\newcommand{\ho@caption}{}
+\newcommand{\ho@captionalign}{r}
+\newcommand{\handoutart}[3]{%
+  \ho@arttrue
+  \renewcommand{\ho@artpath}{#1}%
+  \renewcommand{\ho@caption}{#2}%
+  \renewcommand{\ho@captionalign}{#3}}
+
+% The caption: white small caps over a soft dark halo (the CSS stacks
+% drop-shadows; drawn as offset translucent copies).
+\newcommand{\ho@captiontext}[1]{%
+  \mreaves\fontsize{10pt}{11.5pt}\selectfont
+  \if r\ho@captionalign
+    \begin{tabular}{@{}r@{}}#1\end{tabular}%
+  \else
+    \begin{tabular}{@{}l@{}}#1\end{tabular}%
+  \fi}
+\newcommand{\ho@drawcaption}{%
+  \foreach \ho@dx/\ho@dy in {0.7/0, -0.7/0, 0/0.7, 0/-0.7, 0.5/0.5, -0.5/0.5, 0.5/-0.5, -0.5/-0.5, 1.4/0, -1.4/0, 0/1.4, 0/-1.4} {
+    \node[anchor=south east, inner sep=0pt, text=black, opacity=0.35]
+      at ($(owSE) + (-9pt, 12pt) + (\ho@dx pt, \ho@dy pt)$) {\ho@captiontext{\ho@caption}};
+  }
+  \node[anchor=south east, inner sep=0pt, text=white]
+    at ($(owSE) + (-9pt, 12pt)$) {\ho@captiontext{\ho@caption}};
+}
+
+% The framed window: the art cover-fills it (centered), clipped to the
+% book's chamfer and framed with the book's gold 9-patch.
+\newcommand{\ho@drawart}{%
+  \sbox{\ho@img}{\includegraphics[width=100pt]{\ho@artpath}}%
+  \pgfmathsetmacro{\ho@tall}{(\ht\ho@img/100pt) > (\ho@art/\ho@colw) ? 1 : 0}%
+  \hbox to \ho@colw{%
+    \begin{tikzpicture}
+      \setlength{\openerwindowwidth}{\ho@colw}%
+      \setlength{\openerwindowheight}{\ho@art}%
+      \coordinate (owSW) at (0pt, 0pt);
+      \coordinate (owSE) at (\ho@colw, 0pt);
+      \coordinate (owNW) at (0pt, \ho@art);
+      \coordinate (owNE) at (\ho@colw, \ho@art);
+      \begin{scope}
+        \openerartclip
+        \node[inner sep=0pt] at ($(owSW)!0.5!(owNE)$) {%
+          \ifnum\ho@tall=1
+            \includegraphics[width=\ho@colw]{\ho@artpath}%
+          \else
+            \includegraphics[height=\ho@art]{\ho@artpath}%
+          \fi};
+      \end{scope}
+      \openerdrawframe
+      \ifx\ho@caption\@empty\else\ho@drawcaption\fi
+      \pgfresetboundingbox
+      \useasboundingbox (owSW) rectangle (owNE);
+    \end{tikzpicture}\hss}}
+
+\newcommand{\handoutpage}{%
+  \par
+  \setlength{\ho@H}{\dimexpr\textheight-\ht\ho@head-\dp\ho@head-\hoheadgap-2pt\relax}%
+  \vbadness=10000 \vfuzz=\maxdimen
+  \splittopskip=0pt \splitmaxdepth=\maxdimen
+  % column one: as much as fits; the rest joins column two
+  \ifdim\dimexpr\ht\ho@one+\dp\ho@one\relax>\ho@H
+    \setbox\ho@left=\vsplit\ho@one to \ho@H
+  \else
+    \setbox\ho@left=\box\ho@one
+  \fi
+  \setbox\ho@left=\vbox to \ho@H{\unvbox\ho@left\vss}%
+  \setbox\ho@rest=\vbox{\ho@colsetup
+    \ifvoid\ho@one\else\unvbox\ho@one\fi
+    \ifvoid\ho@one\ifvoid\ho@two\else\ifdim\ht\ho@two>0pt\vskip 0.5\baselineskip\fi\fi\fi
+    \ifvoid\ho@two\else\unvbox\ho@two\fi}%
+  % the art takes what column two's text leaves free
+  \ifho@art
+    \setlength{\ho@art}{\dimexpr\ho@H-\ht\ho@rest-\dp\ho@rest-\hoartgap\relax}%
+    \ifdim\ho@art<\hoartmin\ho@H \setlength{\ho@art}{\hoartmin\ho@H}\fi
+    \ifdim\ho@art>\hoartmax\ho@H \setlength{\ho@art}{\hoartmax\ho@H}\fi
+    \setlength{\ho@room}{\dimexpr\ho@H-\ho@art-\hoartgap\relax}%
+  \else
+    \setlength{\ho@art}{0pt}%
+    \setlength{\ho@room}{\ho@H}%
+  \fi
+  \ifdim\dimexpr\ht\ho@rest+\dp\ho@rest\relax>\ho@room
+    \setbox\ho@right=\vsplit\ho@rest to \ho@room
+  \else
+    \setbox\ho@right=\box\ho@rest
+  \fi
+  \setbox\ho@right=\vbox to \ho@H{%
+    \ifho@art\ho@drawart\nointerlineskip\vskip\hoartgap\fi
+    \unvbox\ho@right\vss}%
+  \noindent\box\ho@head\par
+  \nointerlineskip\vskip\hoheadgap
+  \noindent\hbox to \textwidth{\box\ho@left\hfill\box\ho@right}\par
+  \ifvoid\ho@rest\else
+    \typeout{HANDOUT-OVERFLOW: content continues on a second page}%
+    \newpage
+    \begin{multicols}{2}\unvbox\ho@rest\end{multicols}%
+  \fi}
+
+% ---------------------------------------------------------------- footer
+% The book's footer furniture minus the page number (the handout sources
+% comment it out), with the footnote label on the outer (right) side.
+\renewcommand{\liturgyfurnituredraw}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[opacity=0.6]
+      \node[anchor=south west, inner sep=0pt] at (current page.south west)
+        {\liturgyfooterart};
+    \end{scope}
+    \node[anchor=south east, xshift=-1.9cm, yshift=0.6cm] at (current page.south east)
+      {\wolpe\fontsize{0.37cm}{0.45cm}\selectfont\color{DarkRed}\liturgyfootnotelabel};
+  \end{tikzpicture}%
+}
+
+\endinput

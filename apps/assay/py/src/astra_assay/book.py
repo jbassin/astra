@@ -366,7 +366,7 @@ _UNSAFE_GLYPH_MAP: dict[str, str] = {
 _UNSAFE_GLYPH_RE = re.compile("|".join(re.escape(c) for c in _UNSAFE_GLYPH_MAP))
 
 
-def _latex_escape_text(text: str) -> str:
+def latex_escape_text(text: str) -> str:
     """Escape LaTeX-special characters in a plain-text run. Most Unicode
     (—, Æ, æ, ×, smart quotes, ...) passes through untouched — XeTeX/fontspec
     handles it natively (verified against the compiled PDF) — except the
@@ -401,11 +401,11 @@ def _render_inline(text: str, warnings: list[str]) -> str:
             glyph = SPAN_GLYPHS.get(content)
             if glyph is None:
                 warnings.append(f"unknown action-glyph span content {content!r} kept as text")
-                out.append(_latex_escape_text(content))
+                out.append(latex_escape_text(content))
             else:
                 out.append(f"\\actglyph{{{glyph}}}")
         else:
-            out.append(_latex_escape_text(piece))
+            out.append(latex_escape_text(piece))
     return "".join(out)
 
 
@@ -798,7 +798,7 @@ def _emit_spell_list_latex(
         if actions_char:
             actions_tex = f"{{\\actionfont {actions_char}}}"
         else:
-            actions_tex = f"{{\\scaly {_latex_escape_text(sp.time_value)}}}"
+            actions_tex = f"{{\\scaly {latex_escape_text(sp.time_value)}}}"
         name_tex = _render_inline(sp.name, warnings)
         summary_tex = _render_inline(summaries.get(sp.slug, ""), warnings)
         # Matches the prior \rowcolors{2}{TableBlue}{TableWhite} parity
@@ -1499,6 +1499,27 @@ def default_pdf_dir() -> Path:
     return Path(load_config().assay.book_out_path)
 
 
+def run_tectonic(
+    tectonic: str,
+    tex_name: str,
+    cwd: Path,
+    out_dir: Path,
+    extra_args: list[str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    """Compile ``cwd/tex_name`` into ``out_dir`` with ``SOURCE_DATE_EPOCH=0``, so the PDF is
+    byte-deterministic. The handouts compile through here too."""
+    env = dict(os.environ)
+    env["SOURCE_DATE_EPOCH"] = "0"
+    return subprocess.run(
+        [tectonic, *(extra_args or []), "--outdir", str(out_dir), tex_name],
+        cwd=cwd,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
 def cmd_export_book(args: argparse.Namespace) -> None:
     """Build the Vol.2 LaTeX book from the canonical store, write the committed
     ``.tex`` into ``BOOK_SRC_DIR``, then compile it with ``tectonic`` (skip via
@@ -1530,16 +1551,7 @@ def cmd_export_book(args: argparse.Namespace) -> None:
         # art resolve; `--outdir` puts the PDF in the runtime dir, out of the checkout.
         out_dir = Path(args.out).resolve() if args.out else default_pdf_dir()
         out_dir.mkdir(parents=True, exist_ok=True)
-        env = dict(os.environ)
-        env["SOURCE_DATE_EPOCH"] = "0"
-        proc = subprocess.run(
-            [tectonic, "--outdir", str(out_dir), tex_path.name],
-            cwd=src_dir,
-            env=env,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        proc = run_tectonic(tectonic, tex_path.name, cwd=src_dir, out_dir=out_dir)
         if proc.stdout:
             print(proc.stdout)  # noqa: T201 -- command-line output
         if proc.stderr:

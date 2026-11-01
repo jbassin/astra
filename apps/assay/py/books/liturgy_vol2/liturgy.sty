@@ -3,6 +3,14 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{liturgy}[2026/07/31 Liturgy of the Iridite book style]
 
+% ---------------------------------------------------------------- asset root
+% Every font and image path below is prefixed with \liturgyroot. Empty (the
+% default) resolves them against the compile directory, which is how the book
+% builds in books/liturgy_vol2/. A document compiled elsewhere (the handouts,
+% handout.sty) defines it first as this directory's absolute path, with a
+% trailing slash.
+\providecommand{\liturgyroot}{}
+
 % ---------------------------------------------------------------- geometry
 \RequirePackage[letterpaper,top=1.4cm,left=1.9cm,right=1.9cm,bottom=1.7cm]{geometry}
 
@@ -10,21 +18,21 @@
 \RequirePackage{fontspec}
 \defaultfontfeatures{Ligatures=TeX}
 \setmainfont{Bookinsanity.ttf}[
-  Path = ./assets/fonts/,
+  Path=\liturgyroot ./assets/fonts/,
   BoldFont = Bookinsanity_Bold.ttf,
   ItalicFont = Bookinsanity_Italic.ttf,
   BoldItalicFont = Bookinsanity_Bold_Italic.ttf]
 
-\newfontfamily\scaly{Scaly_Sans.ttf}[Path=./assets/fonts/,
+\newfontfamily\scaly{Scaly_Sans.ttf}[Path=\liturgyroot ./assets/fonts/,
   BoldFont=Scaly_Sans_Bold.ttf, ItalicFont=Scaly_Sans_Italic.ttf]
 % Scaly Sans Small Caps has no shipped bold face -- FakeBold synthesizes one
 % (approximation: not a true bold-weight small-caps design).
-\newfontfamily\scalycaps{Scaly_Sans_Caps.ttf}[Path=./assets/fonts/]
-\newfontfamily\scalycapsbold{Scaly_Sans_Caps.ttf}[Path=./assets/fonts/, FakeBold=2.2]
-\newfontfamily\mreaves{Mr_Eaves_Small_Caps.ttf}[Path=./assets/fonts/]
-\newfontfamily\wolpe{WolpePegasus.ttf}[Path=./assets/fonts/]
-\newfontfamily\optipegasus{OPTIPegasus.ttf}[Path=./assets/fonts/]
-\newfontfamily\actionfont{Pathfinder2eActions.ttf}[Path=./assets/fonts/]
+\newfontfamily\scalycaps{Scaly_Sans_Caps.ttf}[Path=\liturgyroot ./assets/fonts/]
+\newfontfamily\scalycapsbold{Scaly_Sans_Caps.ttf}[Path=\liturgyroot ./assets/fonts/, FakeBold=2.2]
+\newfontfamily\mreaves{Mr_Eaves_Small_Caps.ttf}[Path=\liturgyroot ./assets/fonts/]
+\newfontfamily\wolpe{WolpePegasus.ttf}[Path=\liturgyroot ./assets/fonts/]
+\newfontfamily\optipegasus{OPTIPegasus.ttf}[Path=\liturgyroot ./assets/fonts/]
+\newfontfamily\actionfont{Pathfinder2eActions.ttf}[Path=\liturgyroot ./assets/fonts/]
 
 % body: BookInsanityRemake ~9.6pt / 1.25 leading; 0.325cm paragraph spacing
 \renewcommand{\normalsize}{\fontsize{9.6pt}{12pt}\selectfont}
@@ -98,9 +106,9 @@
 % halves at asset-prep time (more robust than in-TeX viewport arithmetic).
 \newcommand{\liturgyparchment}{%
   \ifodd\value{page}
-    \AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{assets/img/parchment-left.jpg}}%
+    \AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{\liturgyroot assets/img/parchment-left.jpg}}%
   \else
-    \AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{assets/img/parchment-right.jpg}}%
+    \AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{\liturgyroot assets/img/parchment-right.jpg}}%
   \fi
 }
 \AddToShipoutPictureBG{\liturgyparchment}
@@ -118,9 +126,9 @@
 \newcommand{\liturgyfootnotelabel}{Liturgy of the Iridite \textbar\ Volume II}
 \newcommand{\liturgyfooterart}{%
   \ifodd\value{page}
-    \includegraphics[width=\paperwidth]{assets/img/vLDUmXL.png}%
+    \includegraphics[width=\paperwidth]{\liturgyroot assets/img/vLDUmXL.png}%
   \else
-    \reflectbox{\includegraphics[width=\paperwidth]{assets/img/vLDUmXL.png}}%
+    \reflectbox{\includegraphics[width=\paperwidth]{\liturgyroot assets/img/vLDUmXL.png}}%
   \fi
 }
 % One-shot furniture suppression: over full-bleed cover art the footer
@@ -168,7 +176,7 @@
 % Wolpe Pegasus small-caps title; gradient fill approximated as solid ChapterTitle.
 \newcommand{\chapternum}[1]{{\mreaves\fontsize{0.74cm}{0.85cm}\selectfont\color{DarkRed}\MakeUppercase{#1}\par}}
 \newcommand{\chaptertitle}[1]{{\wolpe\fontsize{1.4cm}{1.5cm}\selectfont\color{ChapterTitle}\MakeUppercase{#1}\par}}
-\newcommand{\chapterrule}{\vspace{-2pt}\includegraphics[width=\textwidth]{assets/img/w1Yiycy.png}\vspace{4pt}}
+\newcommand{\chapterrule}{\vspace{-2pt}\includegraphics[width=\textwidth]{\liturgyroot assets/img/w1Yiycy.png}\vspace{4pt}}
 
 % Chapter openers reserve their RIGHT column for the future ART SLOT image
 % (ART-SLOTS.md) instead of flowing opener prose through both multicols
@@ -332,31 +340,31 @@
   % source (slice=270, mid-strip boundary=292 == 562-270)
   \node[anchor=north west, inner sep=0pt] at (ofNW)
     {\includegraphics[trim=0bp 292bp 292bp 0bp,clip,
-      width=\openerframecorner,height=\openerframecorner]{assets/img/frame-gold.png}};
+      width=\openerframecorner,height=\openerframecorner]{\liturgyroot assets/img/frame-gold.png}};
   \node[anchor=north east, inner sep=0pt] at (ofNE)
     {\includegraphics[trim=292bp 292bp 0bp 0bp,clip,
-      width=\openerframecorner,height=\openerframecorner]{assets/img/frame-gold.png}};
+      width=\openerframecorner,height=\openerframecorner]{\liturgyroot assets/img/frame-gold.png}};
   \node[anchor=south west, inner sep=0pt] at (ofSW)
     {\includegraphics[trim=0bp 0bp 292bp 292bp,clip,
-      width=\openerframecorner,height=\openerframecorner]{assets/img/frame-gold.png}};
+      width=\openerframecorner,height=\openerframecorner]{\liturgyroot assets/img/frame-gold.png}};
   \node[anchor=south east, inner sep=0pt] at (ofSE)
     {\includegraphics[trim=292bp 0bp 0bp 292bp,clip,
-      width=\openerframecorner,height=\openerframecorner]{assets/img/frame-gold.png}};
+      width=\openerframecorner,height=\openerframecorner]{\liturgyroot assets/img/frame-gold.png}};
   % edges -- stretched to span between the corners along each run
   \pgfmathsetlengthmacro{\openeredgeh}{\openerwindowwidth+2\openerframebleed-2\openerframecorner}
   \pgfmathsetlengthmacro{\openeredgev}{\openerwindowheight+2\openerframebleed-2\openerframecorner}
   \node[anchor=north, inner sep=0pt] at ($(ofNW)!0.5!(ofNE)$)
     {\includegraphics[trim=270bp 292bp 270bp 0bp,clip,
-      width=\openeredgeh,height=\openerframeband]{assets/img/frame-gold.png}};
+      width=\openeredgeh,height=\openerframeband]{\liturgyroot assets/img/frame-gold.png}};
   \node[anchor=south, inner sep=0pt] at ($(ofSW)!0.5!(ofSE)$)
     {\includegraphics[trim=270bp 0bp 270bp 292bp,clip,
-      width=\openeredgeh,height=\openerframeband]{assets/img/frame-gold.png}};
+      width=\openeredgeh,height=\openerframeband]{\liturgyroot assets/img/frame-gold.png}};
   \node[anchor=west, inner sep=0pt] at ($(ofNW)!0.5!(ofSW)$)
     {\includegraphics[trim=0bp 270bp 292bp 270bp,clip,
-      width=\openerframeband,height=\openeredgev]{assets/img/frame-gold.png}};
+      width=\openerframeband,height=\openeredgev]{\liturgyroot assets/img/frame-gold.png}};
   \node[anchor=east, inner sep=0pt] at ($(ofNE)!0.5!(ofSE)$)
     {\includegraphics[trim=292bp 270bp 0bp 270bp,clip,
-      width=\openerframeband,height=\openeredgev]{assets/img/frame-gold.png}};
+      width=\openerframeband,height=\openeredgev]{\liturgyroot assets/img/frame-gold.png}};
 }
 
 % Placeholder frame for the reserved column, drawn independently of text
@@ -464,7 +472,7 @@
 
 % body hr: a low-opacity decorative texture strip
 \newcommand{\bodyhr}{\par\vspace{3pt}{\begin{tikzpicture}\begin{scope}[opacity=0.45]
-  \node[inner sep=0pt]{\includegraphics[width=\linewidth,height=2.5mm]{assets/img/RhYXAkP.png}};
+  \node[inner sep=0pt]{\includegraphics[width=\linewidth,height=2.5mm]{\liturgyroot assets/img/RhYXAkP.png}};
   \end{scope}\end{tikzpicture}}\vspace{3pt}\par}
 
 % ---------------------------------------------------------------- note box
