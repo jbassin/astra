@@ -4,6 +4,20 @@ Updated 2026-10-31.
 
 ## In flight
 
+- **Second prediction roundtable is live (2026-10-31, #184).** A Claude Code subagent wrote the
+  dossier in place of the DeepSeek loop (16 mysteries, 128 clues, 12 wider-setting notes, 10 of
+  them drawing on the earlier campaigns' pages; no API spend); Kimi wrote the dialogue and GLM
+  formatted it ($0.41): 9,578 words, 56.8 min, 33 clips, published as
+  `000.through-a-song-darkly.2026-10-29-recap-of-2025-8-28`. #184 gave the roundtable the
+  dossier's background, connections and setting notes, the `astra.md` block of the GM's other
+  Astra games, Kimi for Pass A, and a freshness check that refuses stale inputs. Run folder:
+  `mouthpiece/experiments/roundtable-2026-10-29/20261101T010044Z-agent` (the GM must not read
+  it). The dossier agent's brief and validator are not in the repo; `just mouthpiece-roundtable
+  dossier` still runs the DeepSeek loop.
+- **linguist-commit no longer pages while heartwood runs (2026-10-31, #183).** deploy.sh exits
+  14 when the host-tooling lock is busy; linguist-commit passes `HOST_TOOLING_LOCK_TIMEOUT=0`
+  and defers the redeploy instead of failing. It takes effect when the deploy checkout next
+  moves (any linguist-commit redeploy does that).
 - **Earlier campaigns are in akasha (closed 2026-10-31, #159 to #180).** Campaign 1 (Risk of
   Ruin, Ushas), campaign 2 (Deep Eyes, Althane), the Færrin one-shots and Noah's Urth one-shots
   are registered; heartwood ingests any Astra-world campaign and has read all 27 earlier

@@ -50,7 +50,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       and 2026-10-19 (re-rendered again 2026-10-29 as "No, Actually, Six", 55 MB). The pre-render
       versions are in `mouthpiece/experiments/backup-2026-{10-12,10-19}-pre-spoken/`.
 - [ ] Decide whether to trim the 5,500-6,500-word target: Kimi lands at or over the top
-      (6,549 words in the last test; 2026-10-12 rendered at 41 min).
+      (6,549 words in the last test; 2026-10-12 rendered at 41 min). The second roundtable
+      overshot its 8,500-word ceiling too (9,578 words, 56.8 min).
+- [ ] Listen to the second prediction roundtable (2026-10-31) and say whether the
+      agent-written dossier should replace the DeepSeek loop for future specials.
 
 ### Smaller calls (Josh)
 - [ ] Create a SigNoz service-account key (Editor role) and add it:
@@ -82,9 +85,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
     "Rhett" for the Ret, invented names like "the great ship Shoa"); fix by hand.
   - The 2024-12-9 Deep Eyes transcript says "Muriel" for Uriel once; the wiki is fixed. A
     `defs.kdl` variant would fix the stored line.
-  - Two finished agent worktrees (`.claude/worktrees/agent-ae4d…`, `agent-afff…`, #166 and
-    #167, merged) are locked by another Claude session (pid 452076); remove them with `git
-    worktree remove` once it ends.
+  - The GM mentions, in a campaign-3 transcript, an earlier game where the players played
+    Thessians; it is not a campaign in `being.kdl` (perhaps APEX, or a listed game under
+    another name) — Josh: register it or say which it is.
+  - `Phenomena/Stillness` is an empty page that other pages link to — agent or Josh.
 
 ## Deploy and ops
 
