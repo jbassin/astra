@@ -32,7 +32,6 @@ Pointer: checklist in [`thoughts/archive/RESUME.md`](../thoughts/archive/RESUME.
 ### Liturgy Vol.2 book: content review (opened 2026-08-01, Josh and the stakeholder)
 Pointer: [`apps/assay/py/README.md`](../apps/assay/py/README.md).
 - [ ] Review the 6 trimmed chapter openers, the chapter-intro liberties and the 23 trimmed summaries.
-- [ ] Before any distribution, note that the book's fonts are licensed for personal use only.
 
 ### assay: Foundry compendium module and joint review (opened 2026-07-22, Josh)
 - [ ] Decide whether the Foundry module is still wanted (no code exists; the paydown keeps scorer,
