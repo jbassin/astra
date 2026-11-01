@@ -478,7 +478,7 @@ These items are live exposures or live hazards. Each is small and independent. I
 | 8 | **Known-vulnerable dependencies.** The deployed TanStack Start version carries a reflected-XSS advisory that affects every public SSR frontend. `pnpm audit --prod` reports 4 critical and 33 high; `pip-audit` reports 26. Dependabot is off. One upgrade pass, then automation. | Public-facing advisories | M | SEC-7 |
 | 9 | **One weal macro can break every roll for every player.** `save(:adv, \|\| 2d20kh1)` is accepted, passes the boot check, and then makes every later roll fail, across restarts; re-saving does not fix it and recovery needs hand SQL. A bot-side guard (dry-run a save before persisting it) can ship today, ahead of the engine fix. | Any player can take the dice bot down by accident | S | WEAL-2, WEAL-1 |
 | 10 | **No backups** of anything outside git: three Postgres databases, the orator music library (not re-seedable), OAuth state, SigNoz alert rules, and the only copy of the SOPS age key. The "backup" volumes in memory no longer exist. | One disk failure loses irreplaceable data and every secret | M | OPS-6 |
-| 11 | **Public repo exposure.** The repo is public (verified). It commits fonts that its own notes call personal-use commercial, plus session transcripts that contain players' names, verbatim table talk and Discord IDs. **Needs Josh:** a stakeholder decision (section 6). | Licensing and player privacy | S | ASY-2, SEC-18 |
+| 11 | **Public repo exposure.** The repo is public (verified). It commits session transcripts that contain players' names, verbatim table talk and Discord IDs. **Needs Josh:** a stakeholder decision (section 6). | Licensing and player privacy | S | ASY-2, SEC-18 |
 | 12 | **Disk.** The Dagster image is 25.7 GB because `.dockerignore` does not exclude 22 GB of Craig recordings and episodes. Docker holds about 455 GB (287 GB reclaimable images plus 112 GB of build cache) on the disk that filled in July. Fix `.dockerignore`, then prune once. | Disk-full incident class | S | OPS-1, OPS-22, PIPE-5 |
 | 13 | **CI is red** (verified): `ty` fails on an `icepool` import in a Rust-crate helper script, and a mouthpiece-frontend test asserts a live episode count that the publishing timer changed. | Every "green slice" since August was unverified | S | REPO-1, TEST-1, PROC-3 |
 | 14 | **Pipeline step failures never page.** Dagster logs step failures on its own logger, which is not exported; SigNoz shows 0 ERROR logs for the pipeline in 30 days. Add a run-failure sensor. | A failed paid step is found only when an episode is missing | S | PIPE-2 |
@@ -1163,9 +1163,9 @@ spec.
    `gh pr merge --auto` and branch protection on `ci-ok`. **Recommendation:** pull requests with
    auto-merge, once bots no longer commit to the code repo.
 4. **Repo visibility.** The repo is public and contains player transcripts, players' Discord IDs,
-   personal-use fonts and memory notes that describe security gaps. Option A: make it private now
+   and memory notes that describe security gaps. Option A: make it private now
    (cheap and immediate; GitHub Actions minutes are ample at this volume). Option B: stay public and
-   scrub (move transcripts and fonts out, write security notes privately). **Recommendation: A**, then
+   scrub (move transcripts out, write security notes privately). **Recommendation: A**, then
    revisit after the paydown. Rewriting history to drop the 40 MB of book binaries is optional
    either way; **recommendation:** do not rewrite, just stop the growth.
 5. **Rust CI lane.** This reverses the 0032 "no Rust CI lane" charter. **Recommendation:** add a

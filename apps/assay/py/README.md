@@ -256,8 +256,8 @@ the PDF are byte-deterministic. The style is the committed `liturgy.sty`. School
 `books/liturgy_vol2/assets/img/processed/<school>.{png,jpg}` (cover: `fm-cover`); missing art
 becomes a placeholder. The `processed/` art is committed source: it is the hand-cropped,
 color-graded finish of the raw generations in `preprocessed/`, which is local-only and
-git-ignored, and no script derives one from the other. The fonts are licensed for personal use
-only: flag this before distributing the PDF.
+git-ignored, and no script derives one from the other. Josh holds the licence for the fonts and
+permission to distribute the PDF with them, so distribution needs no font check.
 
 **The archived review workshop.** The workshop files live under
 `thoughts/archive/assay-workshop/`: the scriptorium review UI source (`review-ui/`) and the

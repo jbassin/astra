@@ -16,3 +16,4 @@ Start with `docs/now.md` and `docs/backlog.md`; app facts are in each app's READ
 - [SigNoz MCP](signoz-mcp.md) — read for any observability question: use the signoz_* tools, not curl.
 - [Verify rules against corpus](verify-rules-against-corpus.md) — read before any PF2e rules claim: grep the codex corpus and quote it.
 - [Frontend work](tanstack-start-skill.md) — read when touching a TanStack Start frontend: site-kit and gothic READMEs, bundled skills.
+- [Book fonts licensed](book-fonts-licensed.md) — read before flagging any font or book-distribution risk: licensed, cleared, never ask.
