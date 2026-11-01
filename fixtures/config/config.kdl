@@ -80,6 +80,7 @@ codex {
 }
 assay {
     book-out-path "assay/books"
+    handouts-path "handouts"
 }
 weal {
     service-name "astra.weal-bot"

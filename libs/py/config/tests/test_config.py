@@ -175,6 +175,7 @@ def test_data_paths_resolve_against_the_root(monkeypatch: pytest.MonkeyPatch) ->
     assert cfg.scribe.data_path == "/srv/state/scribe/data"  # relative → under root
     assert cfg.codex.data_path == "/srv/state/codex/data"
     assert cfg.assay.book_out_path == "/srv/state/assay/books"
+    assert cfg.assay.handouts_path == "/srv/state/handouts"
     assert cfg.data.akasha_content == "/elsewhere/content"  # absolute → as-is
     assert cfg.scribe.incoming_path == ""  # empty → unset, not the root
     # A relative dataset resolves under the content root (`astra-data` under root).

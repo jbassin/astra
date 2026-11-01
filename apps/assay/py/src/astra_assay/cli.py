@@ -1,5 +1,5 @@
 """``assay`` console script — price / score / export-codex / score-homebrew /
-homebrew-revisions / export-book / store check / store fmt.
+homebrew-revisions / export-book / handout / store check / store fmt.
 
     uv run assay price [--data-root PATH]     # ladder + Stage A + comparables + priors → results/
     uv run assay score --spell PATH           # score one spell JSON (a store file works)
@@ -41,6 +41,7 @@ from . import (
     buffs,
     comparables,
     export,
+    handout_latex,
     homebrew,
     ledger,
     pricing,
@@ -1208,6 +1209,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     homebrew.register_subparsers(sub)
     book.register_subparsers(sub)
+    handout_latex.register_subparsers(sub)
     store.register_subparsers(sub)
 
     return parser

@@ -28,6 +28,7 @@ All commands run from the repo root. Telemetry goes to SigNoz as `astra.assay`; 
 | `uv run assay store check` / `store fmt` | Validates the store against its model and format / rewrites it canonically. |
 | `uv run assay export-codex [--data-root PATH]` | Rebuilds `out/spell-power.json` alone from the snapshot and the committed `results/`, without refitting. |
 | `just book [--no-compile] [--out DIR]` | Runs `assay export-book`: the committed `.tex` and, unless `--no-compile`, the PDF into `assay.book-out-path` (or `DIR`). |
+| `just handout <name> [--no-compile] [--dir DIR]` | Runs `assay handout`: a one-page player handout PDF from `<assay.handouts-path>/<name>/handout.md` (below). |
 | `just assay-store-check` | `assay store check` with telemetry off; part of `just check` and CI. |
 
 Tests: `uv run pytest apps/assay/py`. They never touch the Foundry snapshot: they run off the
@@ -258,6 +259,25 @@ becomes a placeholder. The `processed/` art is committed source: it is the hand-
 color-graded finish of the raw generations in `preprocessed/`, which is local-only and
 git-ignored, and no script derives one from the other. Josh holds the licence for the fonts and
 permission to distribute the PDF with them, so distribution needs no font check.
+
+**Build a player handout.** A handout is one "Addendum" page in the book's look, written in
+the Homebrewery-style Markdown of Vol.1. Each lives in its own folder under
+`assay.handouts-path` (`/ruby/data/astra-state/handouts/<name>/`): `handout.md`, `art.png` or
+`art.jpg`/`art.jpeg` when it has art, and the built `<name>.pdf`. The sources are spoilers
+until handed out, so they never enter the repo. `just handout <name>` compiles in a temporary
+directory with `books/liturgy_vol2/` on tectonic's search path; only the PDF lands in the
+folder. `handout.py` parses, `handout_latex.py` emits against `handout.sty` (which loads
+`liturgy.sty` with `\liturgyroot` set to that directory).
+
+Supported: the `{{chapter}}` header (`## eyebrow`, `# Title`, `___`), a drop cap on the first
+paragraph, `#`–`#####` headings, `\column`, colon spacer lines, `{{divine}}`, `{{mortal}}`,
+`{{joined}}`, `{{f}}` (free-action glyph), `**bold**`, `*italic*`, `_italic_`, `<br>`,
+backslash escapes, tables, `**Key** :: value` rows, `{{imageWrapper}}` with `{{borderImage}}`
+and `{{caption}}` (the local `art.*`, cover-fit and centered), `{{ruleBlock}}` with
+`{{preamble}}`, `{{traits}}`/`{{trait}}` and `{{definitions}}`, `{{transcript}}`,
+`{{rightAligned}}` and `{{footnote A | B}}`. Positioning payloads, class lists,
+`{{resetCounting}}` and comments are ignored; any other block fails the build with its name
+and line. Text that does not fit one page continues on a second, with a warning.
 
 **The archived review workshop.** The workshop files live under
 `thoughts/archive/assay-workshop/`: the scriptorium review UI source (`review-ui/`) and the
