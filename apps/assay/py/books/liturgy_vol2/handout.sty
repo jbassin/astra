@@ -140,6 +140,27 @@
   \renewcommand{\ho@artpath}{#1}%
   \renewcommand{\ho@caption}{#2}%
   \renewcommand{\ho@captionalign}{#3}}
+% \handoutartcrop{x}{y}{width}{height}{image height/width}: the rectangle of
+% the image Homebrewery's mask window showed, in image-width units
+% (handout_art.mask_crop). Without it the art cover-fills the frame, centred.
+\newif\ifho@crop
+\newcommand{\handoutartcrop}[5]{%
+  \ho@croptrue
+  \def\ho@cx{#1}\def\ho@cy{#2}\def\ho@cw{#3}\def\ho@ch{#4}\def\ho@ir{#5}}
+% The frame's aspect differs from the mask's, so fit, don't stretch: the
+% smallest crop of the frame's aspect holding that rectangle, centred on it,
+% shrunk to the image and slid inside it (handout_art.fit_crop, the same sums).
+% Sets \ho@D (the image's drawn width) and \ho@x/\ho@y (the crop's corner).
+\newcommand{\ho@fitcrop}{%
+  \pgfmathsetmacro{\ho@fa}{\ho@art/\ho@colw}%
+  \pgfmathsetmacro{\ho@w}{(\ho@ch/\ho@cw > \ho@fa) ? \ho@ch/\ho@fa : \ho@cw}%
+  \pgfmathsetmacro{\ho@h}{\ho@w*\ho@fa}%
+  \pgfmathsetmacro{\ho@s}{min(1, 1/\ho@w, \ho@ir/\ho@h)}%
+  \pgfmathsetmacro{\ho@w}{\ho@w*\ho@s}%
+  \pgfmathsetmacro{\ho@h}{\ho@h*\ho@s}%
+  \pgfmathsetmacro{\ho@x}{min(max(\ho@cx+\ho@cw/2-\ho@w/2, 0), 1-\ho@w)}%
+  \pgfmathsetmacro{\ho@y}{min(max(\ho@cy+\ho@ch/2-\ho@h/2, 0), \ho@ir-\ho@h)}%
+  \pgfmathsetlengthmacro{\ho@D}{\ho@colw/\ho@w}}
 
 % The caption: white small caps over a soft dark halo (the CSS stacks
 % drop-shadows; drawn as offset translucent copies).
@@ -159,7 +180,8 @@
     at ($(owSE) + (-9pt, 12pt)$) {\ho@captiontext{\ho@caption}};
 }
 
-% The framed window: the art cover-fills it (centered), clipped to the
+% The framed window: the art fills it (the payload's crop, else cover-fit and
+% centred), clipped to the
 % book's chamfer and framed with the book's gold 9-patch.
 \newcommand{\ho@drawart}{%
   \sbox{\ho@img}{\includegraphics[width=100pt]{\ho@artpath}}%
@@ -174,12 +196,19 @@
       \coordinate (owNE) at (\ho@colw, \ho@art);
       \begin{scope}
         \openerartclip
-        \node[inner sep=0pt] at ($(owSW)!0.5!(owNE)$) {%
-          \ifnum\ho@tall=1
-            \includegraphics[width=\ho@colw]{\ho@artpath}%
-          \else
-            \includegraphics[height=\ho@art]{\ho@artpath}%
-          \fi};
+        \ifho@crop
+          \ho@fitcrop
+          \node[inner sep=0pt, anchor=north west]
+            at ($(owNW) + (-\ho@x*\ho@D, \ho@y*\ho@D)$)
+            {\includegraphics[width=\ho@D]{\ho@artpath}};
+        \else
+          \node[inner sep=0pt] at ($(owSW)!0.5!(owNE)$) {%
+            \ifnum\ho@tall=1
+              \includegraphics[width=\ho@colw]{\ho@artpath}%
+            \else
+              \includegraphics[height=\ho@art]{\ho@artpath}%
+            \fi};
+        \fi
       \end{scope}
       \openerdrawframe
       \ifx\ho@caption\@empty\else\ho@drawcaption\fi

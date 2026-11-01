@@ -19,9 +19,11 @@ from pathlib import Path
 
 from astra_observe import get_tracer
 
+from . import handout_art
 from .book import BOOK_SRC_DIR, latex_escape_text, run_tectonic
 from .handout import (
     INLINE_SPAN_RE,
+    Art,
     DefRow,
     Element,
     Handout,
@@ -247,10 +249,10 @@ def find_art(handout_dir: Path) -> Path | None:
     return None
 
 
-def build_handout_tex(handout: Handout, art_name: str | None, source_label: str = "") -> str:
-    """The full ``.tex`` for a parsed handout. ``art_name`` is the image's file name in the
-    compile directory, or ``None`` to build without art."""
-    if handout.art is not None and art_name is None:
+def build_handout_tex(handout: Handout, art: Path | None, source_label: str = "") -> str:
+    """The full ``.tex`` for a parsed handout. ``art`` is the image (compiled under its own
+    file name, next to the ``.tex``), or ``None`` to build without art."""
+    if handout.art is not None and art is None:
         raise HandoutError(
             f"line {handout.art.line}: the handout has an {{{{imageWrapper}}}} but its folder "
             f"has no {' / '.join(ART_NAMES)}"
@@ -280,11 +282,30 @@ def build_handout_tex(handout: Handout, art_name: str | None, source_label: str 
         _flow(two),
         "\\end{handoutcolumntwo}",
     ]
-    if handout.art is not None and art_name is not None:
+    if handout.art is not None and art is not None:
         caption = "\\\\".join(render_inline(c, handout.art.line) for c in handout.art.caption)
-        lines.append(f"\\handoutart{{{art_name}}}{{{caption}}}{{{handout.art.caption_align}}}")
+        lines.append(f"\\handoutart{{{art.name}}}{{{caption}}}{{{handout.art.caption_align}}}")
+        lines.append(_art_crop(handout.art, art))
     lines += ["\\handoutpage", "\\end{document}", ""]
     return "\n".join(line for line in lines if line != "")
+
+
+def _art_crop(spec: Art, art: Path) -> str:
+    """``\\handoutartcrop`` from the borderImage payload, or "" (cover-fit) without one."""
+    try:
+        width, height = handout_art.image_size(art)
+        aspect = height / width
+        crop = handout_art.mask_crop(
+            handout_art.parse_placement(spec.placement),
+            handout_art.mask_size(spec.wrapper_classes),
+            aspect,
+        )
+    except handout_art.ArtError as e:
+        raise HandoutError(f"line {spec.line}: {e}") from e
+    if crop is None:
+        return ""
+    nums = (crop.x, crop.y, crop.width, crop.height, aspect)
+    return "\\handoutartcrop" + "".join(f"{{{n:.5f}}}" for n in nums)
 
 
 def _tex_path(path: Path) -> str:
@@ -341,7 +362,7 @@ def build_handout(
         raise HandoutError(f"no {source}")
     handout = parse_handout(source.read_text(encoding="utf-8"))
     art = find_art(handout_dir) if handout.art is not None else None
-    tex = build_handout_tex(handout, art.name if art else None, f" from {name}")
+    tex = build_handout_tex(handout, art, f" from {name}")
     if no_compile:
         tex_path = handout_dir / f"{name}.tex"
         tex_path.write_text(tex, encoding="utf-8")

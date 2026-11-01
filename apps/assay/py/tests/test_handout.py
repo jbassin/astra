@@ -34,7 +34,7 @@ def _source() -> str:
 
 
 def _tex() -> str:
-    return handout_latex.build_handout_tex(parse_handout(_source()), "art.png")
+    return handout_latex.build_handout_tex(parse_handout(_source()), FIXTURE / "art.png")
 
 
 def test_header_footer_and_art_are_lifted_out_of_the_flow() -> None:

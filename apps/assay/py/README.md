@@ -273,11 +273,13 @@ Supported: the `{{chapter}}` header (`## eyebrow`, `# Title`, `___`), a drop cap
 paragraph, `#`–`#####` headings, `\column`, colon spacer lines, `{{divine}}`, `{{mortal}}`,
 `{{joined}}`, `{{f}}` (free-action glyph), `**bold**`, `*italic*`, `_italic_`, `<br>`,
 backslash escapes, tables, `**Key** :: value` rows, `{{imageWrapper}}` with `{{borderImage}}`
-and `{{caption}}` (the local `art.*`, cover-fit and centered), `{{ruleBlock}}` with
+and `{{caption}}` (the local `art.*`), `{{ruleBlock}}` with
 `{{preamble}}`, `{{traits}}`/`{{trait}}` and `{{definitions}}`, `{{transcript}}`,
-`{{rightAligned}}` and `{{footnote A | B}}`. Positioning payloads, class lists,
-`{{resetCounting}}` and comments are ignored; any other block fails the build with its name
-and line. Text that does not fit one page continues on a second, with a warning.
+`{{rightAligned}}` and `{{footnote A | B}}`. The art crop follows the borderImage's
+`{top,left,width}` payload inside the imageWrapper's mask window (`handout_art.py`), fitted to
+the frame's aspect without stretching; with no payload the art is cover-fit and centred. Other
+payloads, class lists, `{{resetCounting}}` and comments are ignored; any other block fails the
+build with its name and line. Text that does not fit one page continues on a second, with a warning.
 
 **The archived review workshop.** The workshop files live under
 `thoughts/archive/assay-workshop/`: the scriptorium review UI source (`review-ui/`) and the
