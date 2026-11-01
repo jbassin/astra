@@ -85,9 +85,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
     "Rhett" for the Ret, invented names like "the great ship Shoa"); fix by hand.
   - The 2024-12-9 Deep Eyes transcript says "Muriel" for Uriel once; the wiki is fixed. A
     `defs.kdl` variant would fix the stored line.
-  - The GM mentions, in a campaign-3 transcript, an earlier game where the players played
-    Thessians; it is not a campaign in `being.kdl` (perhaps APEX, or a listed game under
-    another name) — Josh: register it or say which it is.
   - `Phenomena/Stillness` is an empty page that other pages link to — agent or Josh.
 
 ## Deploy and ops
