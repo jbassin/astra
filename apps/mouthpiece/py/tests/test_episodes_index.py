@@ -26,6 +26,7 @@ from astra_mouthpiece.episodes_index import (
     parse_id,
     strip_audio_tags,
 )
+from astra_sessions import date_sort_key
 
 GOLDEN = Path(__file__).parent / "fixtures" / "golden"
 SCRIPTS = sorted(GOLDEN.glob("*.script.json"))
@@ -62,6 +63,12 @@ def test_parse_id_regular() -> None:
 
 def test_parse_id_mega_keeps_recap_token_as_date() -> None:
     assert parse_id(MEGA_ID) == (0, "through-a-song-darkly", "2026-6-8-recap-of-2026-5-7")
+
+
+def test_parse_id_keeps_special_token_as_date() -> None:
+    sid = "000.through-a-song-darkly.2026-10-29-special-tier-list"
+    assert parse_id(sid) == (0, "through-a-song-darkly", "2026-10-29-special-tier-list")
+    assert date_sort_key(parse_id(sid)[2]) == 20261029
 
 
 def test_is_recap() -> None:

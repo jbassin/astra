@@ -39,8 +39,8 @@ from astra_ontology_entity import resolve
 from astra_sessions import date_key, find_transcript, transcript_dates
 from astra_sessions.tools import MAX_RESULTS, SessionToolsMixin
 
-from ..episodes_index import is_recap, parse_id
-from ..models import stored_kind
+from ..episodes_index import parse_id
+from ..models import kind_from_id, stored_kind
 
 
 def permitted_dates(
@@ -69,7 +69,8 @@ def permitted_dates(
 def _script_files(scripts_root: Path, show: str, permitted: set[str]) -> dict[str, Path]:
     """``{date: script.json}`` for permitted dates. Episode dirs are keyed two ways (the live
     ``<date>/`` and the legacy ``000.<slug>.<date>/``), so identity comes from the script's
-    own id (``session_id`` or ``sessionId``, else the dir name); recaps are skipped."""
+    own id (``session_id`` or ``sessionId``, else the dir name); recap and special dirs are
+    skipped, by their dir name's id form and by their stored kind."""
     found: dict[str, Path] = {}
     for file in sorted(scripts_root.glob("*/script.json")):
         try:
@@ -77,7 +78,7 @@ def _script_files(scripts_root: Path, show: str, permitted: set[str]) -> dict[st
         except (OSError, json.JSONDecodeError):
             continue
         sid = raw.get("session_id") or raw.get("sessionId") or file.parent.name
-        if not isinstance(sid, str) or is_recap(file.parent.name):
+        if not isinstance(sid, str) or kind_from_id(file.parent.name) != "session":
             continue
         if stored_kind(raw, sid, session_overrides()) != "session":
             continue

@@ -22,10 +22,11 @@ describe("build-content (reads the committed episodes-index.json)", () => {
     const keys = EPISODES.map((e) => e.dateSortKey);
     expect([...keys]).toEqual([...keys].sort((a, b) => a - b));
     // The catalog is live data, so assert its shape, not its counts: recaps and
-    // specials carry episodeNo 0 and a "-recap-of-" id; every session is numbered.
+    // specials carry episodeNo 0 and a "-recap-of-" or "-special-" id; every session is
+    // numbered.
     for (const e of EPISODES) {
       expect(Number.isInteger(e.episodeNo) && e.episodeNo >= 0).toBe(true);
-      expect(e.episodeNo === 0).toBe(e.id.includes("-recap-of-"));
+      expect(e.episodeNo === 0).toBe(/-(recap-of|special)-/.test(e.id.split(".").at(-1) ?? ""));
     }
   });
 

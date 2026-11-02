@@ -76,7 +76,8 @@ def parse_id(session_id: str) -> tuple[int, str, str]:
     """Split "NNN.arc-slug.YYYY-M-D" → (arc_no, slug, date) (port of `parseId`).
 
     The slug may not contain dots; the date is the final dotted segment (for a
-    recap that final segment is the whole "<lastDate>-recap-of-<firstDate>" token).
+    recap that final segment is the whole "<lastDate>-recap-of-<firstDate>" token, for a
+    special "<latestDate>-special-<slug>"; `date_sort_key` reads only its leading date).
     """
     parts = session_id.split(".")
     arc_part = parts[0] if parts else ""
@@ -257,7 +258,8 @@ def build_index(
     fallback for any episode whose script omits its own hosts (each episode prefers
     its OWN stored block via `SessionInput.hosts`, so the two-host roster change
     leaves the legacy three-host episodes untouched). Sort: arc asc, then date asc,
-    then the recap capstone last within a tie. Duplicate ids (historical seed ∪ live)
+    then the recap capstone or special after the session within a tie, then the id (so two
+    specials on one date sort the same way every build). Duplicate ids (historical seed ∪ live)
     collapse to the most complete entry first.
     """
     sessions = _dedup_by_id(sessions)
@@ -298,7 +300,7 @@ def build_index(
                 transcript=transcript,
             )
         )
-    entries.sort(key=lambda e: (e.arc_no, e.date_sort_key, e.kind != "session"))
+    entries.sort(key=lambda e: (e.arc_no, e.date_sort_key, e.kind != "session", e.id))
     return EpisodesIndex(episodes=entries)
 
 

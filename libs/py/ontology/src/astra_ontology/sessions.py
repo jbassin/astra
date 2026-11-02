@@ -7,11 +7,14 @@ sessions, which the pipeline reads instead of guessing:
         note "The Blue Remains: a different campaign with the same players."
     }
     session "2026-10-19-recap-of-2025-8-28" kind="special"
+    session "2026-10-29-special-tier-list" kind="special"
     session "2026-9-7" title="The Night the Bell Rang Twice"
     session "2026-9-3" campaign="urth"
 
 The argument is a session key (`YYYY-M-D`, not zero-padded) or, for a recap or special
-episode, the date token of its id (`<last>-recap-of-<first>`). Properties, all optional:
+episode, the date token of its id: `<last>-recap-of-<first>`, or `<latest>-special-<slug>`
+(slug `[a-z0-9]+(-[a-z0-9]+)*`) for a special, so two specials after the same session get
+distinct ids. Properties, all optional:
 
 * `skip=#true`: the session is not part of any show. The chronicle leaves it out (no
   episode summary, no season), heartwood never ingests it, and mouthpiece does not launch
@@ -56,7 +59,10 @@ __all__ = [
 EpisodeKind = Literal["session", "recap", "special"]
 
 _DATE = r"\d{4}-\d{1,2}-\d{1,2}"
-_KEY = re.compile(rf"^{_DATE}(-recap-of-{_DATE})?$")
+_SLUG = r"[a-z0-9]+(?:-[a-z0-9]+)*"
+#: A session date, a recap token (``<last>-recap-of-<first>``) or a special token
+#: (``<latest>-special-<slug>``).
+_KEY = re.compile(rf"^{_DATE}(?:-recap-of-{_DATE}|-special-{_SLUG})?$")
 
 
 def episode_key(episode_id: str) -> str:
@@ -82,7 +88,8 @@ class SessionOverride(BaseModel):
     def _session_key(cls, key: str) -> str:
         if not _KEY.match(key):
             raise ValueError(
-                f"{key!r} is not a session key (YYYY-M-D) or a recap token (<date>-recap-of-<date>)"
+                f"{key!r} is not a session key (YYYY-M-D), a recap token"
+                " (<date>-recap-of-<date>) or a special token (<date>-special-<slug>)"
             )
         return key
 

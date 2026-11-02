@@ -90,6 +90,11 @@ def tree(tmp_path: Path) -> dict[str, Any]:
         "000.show-a.2026-1-1-recap-of-2025-12-1": _script(
             "sessionId", "000.show-a.2026-1-1-recap-of-2025-12-1", "upper", "recap Galzu"
         ),
+        # A special whose script was stamped with a session's id: its dir name's id form
+        # alone keeps it out (it sorts after "2026-1-1", so it would win that date).
+        "2026-1-1-special-tier-list": _script(
+            "session_id", "000.show-a.2026-1-1", "lower", "special Galzu"
+        ),
         "2026-1-15": _script("session_id", "000.show-a.2026-1-15", "lower", "future Galzu"),
         "2026-1-8": _script("session_id", "000.show-a.2026-1-8", "lower", "target Galzu"),
     }
@@ -155,6 +160,7 @@ def test_transcript_tools_refuse_target_future_other_show_and_excluded(tree) -> 
 def test_scripts_skip_recaps_find_legacy_dirs_and_name_hosts(tree) -> None:
     t = make(tree)
     assert sorted(t.scripts) == ["2025-12-1", "2026-1-1"]
+    assert t.scripts["2026-1-1"].parent.name == "2026-1-1"  # not the special-form dir
     assert t.read_script("2025-12-1") == "Bram: legacy\nMaeve: and the Herald"
     assert t.read_script("2026-1-1").startswith("Bram: Galzu ran")
     hits = t.search_scripts("galzu")

@@ -10,18 +10,27 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Literal, get_args
 
-from astra_ontology.sessions import EpisodeKind, SessionOverrides
+from astra_ontology.sessions import EpisodeKind, SessionOverrides, episode_key
 from pydantic import BaseModel, model_validator
 
 #: A capstone's id embeds this marker (``…<lastDate>-recap-of-<firstDate>``). Before
 #: ``kind`` was stored, the marker was the only sign of a non-session episode.
 RECAP_MARKER = "-recap-of-"
+#: A special's id embeds this marker (``…<latestDate>-special-<slug>``), so two specials
+#: after the same session get distinct ids. The prediction roundtable predates it and
+#: keeps its recap-form id; its stored ``kind`` says ``special``.
+SPECIAL_MARKER = "-special-"
 
 
 def kind_from_id(session_id: str) -> EpisodeKind:
-    """The kind an episode file without a ``kind`` field has: ``recap`` for a recap-form
-    id, else ``session``. Files written before episode kinds were stored carry no ``kind``."""
-    return "recap" if RECAP_MARKER in session_id else "session"
+    """The kind an episode file without a ``kind`` field has: ``special`` for a
+    special-form id, ``recap`` for a recap-form id, else ``session``. Files written before
+    episode kinds were stored carry no ``kind``. Only the id's last dotted segment (its
+    date token) is read, so an arc slug containing a marker can't change the kind."""
+    token = episode_key(session_id)
+    if SPECIAL_MARKER in token:
+        return "special"
+    return "recap" if RECAP_MARKER in token else "session"
 
 
 def stored_kind(
