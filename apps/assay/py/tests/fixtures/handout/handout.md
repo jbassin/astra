@@ -11,6 +11,19 @@ The quick brown fox is a placeholder. {{divine You}} are gold, {{mortal you}} ar
 
 Second paragraph of invented text, indented. Færrin is spelled with an ash.
 
+:
+
+{{transcript
+hi hi :D<br><br>
+
+a fax line<br>
+and a forced break ¯\\_(ツ)_/¯<br><br>
+
+{{rightAligned
+-- the sender
+}}
+}}
+
 \column
 
 :::::::::::::::::::::::::::::::
@@ -38,19 +51,6 @@ You gain an invented benefit.
 **Option A** :: *Named Thing*. A definition row in the body.
 
 **Reroll!** {{f,transform:translateY(3px)}} (_divine, fortune_) **Trigger** Something happens.
-}}
-
-:
-
-{{transcript
-hi hi :D<br><br>
-
-a fax line<br>
-and a forced break ¯\\_(ツ)_/¯<br><br>
-
-{{rightAligned
--- the sender
-}}
 }}
 
 \column

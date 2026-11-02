@@ -102,6 +102,8 @@ class Header:
     eyebrow: str
     title: str
     line: int
+    #: The block's class list: ``gradient`` and ``--color:#rrggbb`` set the header's colours.
+    classes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -115,6 +117,9 @@ class Art:
     placement: str = ""
     #: The ``![](...)`` target, raw: a bare file name in the handout folder, or a URL.
     src: str = ""
+    #: The caption's class list: ``leftCaption``/``rightCaption`` and its ``top:``/``left:``
+    #: (or ``right:``/``bottom:``) position, raw; ``handout_art.caption_place`` reads them.
+    caption_classes: list[str] = field(default_factory=list)
 
 
 #: One item of the parsed flow, before ``handout_pages`` splits it into pages.

@@ -5,6 +5,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{handout}[2026/11/01 Liturgy handout layout]
 \RequirePackage{liturgy}
+\usetikzlibrary{fadings}
 
 % ---------------------------------------------------------------- colors
 % Vol.1 CSS (.divine, .mortal, .monster.frame).
@@ -16,26 +17,219 @@
 % ---------------------------------------------------------------- body
 % Homebrewery paragraphs: no gap, a 1em first-line indent (none after a
 % heading, which titlesec already handles).
+% The PHB theme's body text is 0.34cm (the book rounds it to 9.6pt), on the
+% same 12pt leading.
+\renewcommand{\normalsize}{\fontsize{0.34cm}{12pt}\selectfont}
+\normalsize
 \setlength{\parskip}{0pt}
 \setlength{\parindent}{1em}
 \setlength{\columnsep}{0.9cm}
-% Handout columns are narrow and justified, so the default \tolerance (200)
-% leaves some lines Overfull and sticking past the column edge. Same escape
-% valve as the book's chapter openers (liturgy.sty, openerbody): it only
-% loosens the spacing of a paragraph that would otherwise overflow.
-
-\emergencystretch=3em
+% Ragged right with no hyphenation, as Homebrewery sets it (the Vol.1 CSS
+% and its PHB2024 import set neither text-align: justify nor hyphens).
+% \ho@ragged is LaTeX's \raggedright without its \parindent=0: every line
+% fits with badness 0, so TeX never needs a hyphen, and \hyphenpenalty 9999
+% leaves hyphenation only as the last resort for a word longer than the
+% column, which would otherwise stick out of it (still overfull, and
+% reported, if the word has no hyphenation point).
+% A browser never stretches or shrinks a ragged line's spaces, so the body
+% faces get rigid word spaces (their own 0.25em), or TeX would squeeze in
+% words that Homebrewery puts on the next line.
+\setmainfont{Bookinsanity.ttf}[Path=\liturgyroot ./assets/fonts/,
+  BoldFont=Bookinsanity_Bold.ttf, ItalicFont=Bookinsanity_Italic.ttf,
+  BoldItalicFont=Bookinsanity_Bold_Italic.ttf, WordSpace={1,0,0}]
+\renewfontfamily\scaly{Scaly_Sans.ttf}[Path=\liturgyroot ./assets/fonts/,
+  BoldFont=Scaly_Sans_Bold.ttf, ItalicFont=Scaly_Sans_Italic.ttf, WordSpace={1,0,0}]
+% and one space after a full stop, not TeX's wider sentence space
+\frenchspacing
+\newcommand{\ho@ragged}{\rightskip=0pt plus 4em\relax \parfillskip=0pt plus 1fil\relax
+  \tolerance=9999 \linepenalty=1000 \hyphenpenalty=9999 \hbadness=10000 }
+\ho@ragged
 
 % ---------------------------------------------------------------- header
-% The book's \chapternum/\chaptertitle faces and sizes, but in the source's
-% own case: both faces are small caps, so "Project Iron Seraph" reads with
-% tall initials, as the Homebrewery print does. \chapterrule follows.
-\newcommand{\hoeyebrow}[1]{{\mreaves\fontsize{0.74cm}{0.85cm}\selectfont\color{DarkRed}#1\par}}
-\newcommand{\hotitle}[1]{{\wolpe\fontsize{1.4cm}{1.5cm}\selectfont\color{ChapterTitle}#1\par}}
-% Wolpe Pegasus has real lowercase, so the print's small caps are faked:
-% handout.py sets each run of lowercase letters as \hosc{RUN} (capitals at 80%).
+% Vol.1 CSS .chapter, scaled from Homebrewery's 816px page (1px = 0.75pt):
+% the eyebrow (h2) is Wolpe Pegasus 28px small caps with 2px tracking,
+% between two 118x38px ornaments, coloured from the chapter's --color; the
+% title (h1) is Wolpe Pegasus 54px small caps with 2px tracking, filled with
+% linear-gradient(#610500 25%, #be897e) over its 1em line box; with the
+% `gradient` class a 20% glow (the CSS's X4dbBP0 mask, 90% wide) sits behind
+% it; the rule (hr) is w1Yiycy. Wolpe Pegasus has a real smcp feature, which
+% the browser uses for font-variant: small-caps. The baselines are measured
+% from Josh's Homebrewery print of Project Iron Seraph (reference.pdf): the
+% eyebrow 5.8pt below the text block's top, the title 45.5pt below it, the
+% rule image's top 11.5pt below the title's baseline.
+\newfontfamily\hosmcp{WolpePegasus.ttf}[Path=\liturgyroot ./assets/fonts/,
+  Letters=SmallCaps]
+\definecolor{HoEyebrow}{HTML}{814B4B}
+\definecolor{HoGlow}{HTML}{633636}
+\definecolor{HoTitleTop}{HTML}{610500}
+\definecolor{HoTitleBottom}{HTML}{BE897E}
+\newif\ifho@glow
+% \hochaptercolors{eyebrow hex}{glow hex, or empty for no glow}: handout.py
+% derives both from the {{chapter}} block's --color, as the CSS's hsl(from ...)
+% does, and passes an empty glow without the `gradient` class.
+\newcommand{\hochaptercolors}[2]{%
+  \definecolor{HoEyebrow}{HTML}{#1}%
+  \if\relax\detokenize{#2}\relax\ho@glowfalse\else
+    \ho@glowtrue\definecolor{HoGlow}{HTML}{#2}\fi}
+% LetterSpace is a percentage of the font size: 2px (1.5pt) is 7.1% of the
+% eyebrow's 21pt and 3.7% of the title's 40.5pt.
+\newcommand{\hoeyebrowfont}{\hosmcp\fontsize{21pt}{21pt}\selectfont
+  \addfontfeature{LetterSpace=7.1}}
+\newcommand{\hotitlefont}{\hosmcp\fontsize{40.5pt}{40.5pt}\selectfont
+  \addfontfeature{LetterSpace=3.7}}
+\newsavebox{\ho@gbox}
+\newcount\ho@fadeid
+% \ho@gradbox{top colour}{bottom colour}{solid fraction}{extra depth}{text}:
+% the text in the current font, filled with a vertical gradient over its CSS
+% line box (background-clip: text): with line-height 1em that box runs from
+% 0.859em above the baseline to 0.141em below (Wolpe Pegasus's ascent 1.004,
+% descent 0.286), plus the extra depth (padding-bottom). The top colour is
+% solid over the box's first fraction. The result has the text's own size.
+% The fading (the text as a mask) and the shaded rectangle share one centre
+% (fit fading=false), so the rectangle is symmetric about the baseline and the
+% shading's stops are placed at the line box's edges within it.
+\newcommand{\ho@gradbox}[5]{%
+  \sbox{\ho@gbox}{#5}%
+  \global\advance\ho@fadeid 1
+  \edef\ho@fadename{hofade\the\ho@fadeid}%
+  \edef\ho@shadename{hoshade\the\ho@fadeid}%
+  \pgfmathsetmacro{\ho@gtop}{0.859*\f@size}%
+  \pgfmathsetmacro{\ho@gbot}{0.141*\f@size + #4}%
+  \pgfmathsetmacro{\ho@gh}{max(\ho@gtop, \ho@gbot, \ht\ho@gbox/1pt, \dp\ho@gbox/1pt) + 2}%
+  \pgfmathsetlengthmacro{\ho@gw}{\wd\ho@gbox/2 + 2pt}%
+  \pgfmathsetmacro{\ho@sb}{50*(\ho@gh-\ho@gbot)/\ho@gh}%
+  \pgfmathsetmacro{\ho@st}{50*(\ho@gh+\ho@gtop)/\ho@gh}%
+  \pgfmathsetmacro{\ho@ss}{\ho@sb + (1-#3)*(\ho@st-\ho@sb)}%
+  \pgfdeclareverticalshading{\ho@shadename}{100bp}{%
+    color(0bp)=(#2); color(\ho@sb bp)=(#2); color(\ho@ss bp)=(#1);
+    color(100bp)=(#1)}%
+  \begin{tikzfadingfrompicture}[name=\ho@fadename]
+    \path (-\ho@gw, -\ho@gh pt) rectangle (\ho@gw, \ho@gh pt);
+    \node[inner sep=0pt, anchor=base west, text=transparent!0]
+      at (-\wd\ho@gbox/2, 0pt) {\color{white}#5};
+  \end{tikzfadingfrompicture}%
+  \begin{tikzpicture}[baseline=0pt]
+    \shade[path fading=\ho@fadename, fit fading=false, shading=\ho@shadename]
+      (-\ho@gw, -\ho@gh pt) rectangle (\ho@gw, \ho@gh pt);
+    \pgfresetboundingbox
+    \useasboundingbox (-\wd\ho@gbox/2, -\dp\ho@gbox)
+      rectangle (\wd\ho@gbox/2, \ht\ho@gbox);
+  \end{tikzpicture}}
+\newcommand{\ho@ornament}[1]{\raisebox{-7.8pt}{%
+  \includegraphics[width=88.5pt,height=28.5pt]{\liturgyroot assets/img/#1}}}
+% .chapter's filter: drop-shadow(0 0 5px white) drop-shadow(0 0 3px white),
+% a soft white halo around the eyebrow and title, drawn as faint white
+% copies of the text in two rings behind it (\ho@halo{text}, no width).
+\newcommand{\ho@halo}[1]{\hbox to 0pt{\begin{tikzpicture}[overlay, baseline=0pt]
+    \foreach \ho@r/\ho@o in {1.2/0.16, 2.6/0.10} {
+      \foreach \ho@a in {0, 45, ..., 315} {
+        \node[inner sep=0pt, anchor=base west, text=white, opacity=\ho@o]
+          at (\ho@a:\ho@r pt) {#1};
+      }}
+  \end{tikzpicture}\hss}}
+% \handouthead{eyebrow}{title}: the header box, \ho@head. Each line is a
+% zero-height box, so the skips between them are baseline distances.
+\newcommand{\handouthead}[2]{%
+  \global\setbox\ho@head\vbox{\offinterlineskip\hsize\textwidth
+    \vskip 5.8pt
+    \hbox to \textwidth{\hss\smash{\if\relax\detokenize{#1}\relax\else
+      \ho@ornament{BRYhmdx.png}\hskip 3pt
+      {\hoeyebrowfont\ho@halo{#1}\color{HoEyebrow}#1}%
+      \hskip 3pt\ho@ornament{OKvFuZW.png}\fi}\hss}%
+    \vskip 45.5pt
+    \ifho@glow\hbox to \textwidth{\hss\ho@drawglow\hss}\fi
+    \hbox to \textwidth{\hss\smash{\hotitlefont\ho@fittitle{%
+      \ho@halo{#2}\ho@gradbox{HoTitleTop}{HoTitleBottom}{0.25}{0pt}{#2}}}\hss}%
+    \vskip 11.5pt
+    \hbox{\includegraphics[width=\textwidth]{\liturgyroot assets/img/w1Yiycy.png}}%
+    \vskip 4pt}}
+% a title wider than the text block shrinks to fit it
+\newcommand{\ho@fittitle}[1]{\sbox{\ho@gbox}{#1}%
+  \ifdim\wd\ho@gbox>\textwidth\resizebox{\textwidth}{!}{\usebox{\ho@gbox}}%
+  \else\usebox{\ho@gbox}\fi}
+% .chapter.gradient hr::after: the X4dbBP0 mask, 90% of the header's width,
+% filled with the glow colour at 20%. Which box the CSS's height: 100% and
+% bottom: 7.8mm resolve against is unclear, so the band is measured from the
+% print instead: from 13.5pt above the title's baseline down to the rule's
+% top, 12.5pt below it. Drawn centred, behind the title, taking no room.
+\newcommand{\ho@drawglow}{%
+  \global\advance\ho@fadeid 1
+  \edef\ho@fadename{hofade\the\ho@fadeid}%
+  \begin{tikzfadingfrompicture}[name=\ho@fadename]
+    \node[inner sep=0pt] at (0,0)
+      {\includegraphics[width=0.9\textwidth,height=26pt]{\liturgyroot assets/img/X4dbBP0-mask.png}};
+  \end{tikzfadingfrompicture}%
+  \hbox to 0pt{\hss\begin{tikzpicture}[overlay]
+    \fill[HoGlow, opacity=0.2, path fading=\ho@fadename, fit fading=false]
+      (-0.45\textwidth, -12.5pt) rectangle (0.45\textwidth, 13.5pt);
+  \end{tikzpicture}\hss}}
+% h3: the book's face, size, colour and 1.5pt gold rule, but bold, as the
+% print shows it (Mr Eaves has no bold face, so the browser synthesizes one;
+% FakeBold does the same here). Measured in the print: the baseline sits
+% 20.7pt below the line before, the rule 4.3pt below the baseline, and the
+% next baseline 12.2pt below the rule.
+\newfontfamily\homreavesbold{Mr_Eaves_Small_Caps.ttf}[Path=\liturgyroot ./assets/fonts/,
+  FakeBold=2.5]
+\titleformat{\subsubsection}{\homreavesbold\fontsize{0.575cm}{0.7cm}\selectfont
+  \color{DarkRed}}{}{0pt}{}[{\vspace{-1.7pt}\color{Gold}\titlerule[1.5pt]}]
+\titlespacing*{\subsubsection}{0pt}{1pt}{5.95pt}
+% ---------------------------------------------------------------- drop cap
+% .chapter + p::first-letter: Wolpe Pegasus 61px (45.75pt), floated over
+% three lines, filled with linear-gradient(#b89956, #d8cdb6) over its 1em
+% line box and 2px bottom padding, with 6px after it; .chapter::after puts
+% the 55x57px symbol 6tnz3j7 behind it at 70% opacity (placed as in the
+% print: 24.7pt left of the letter, its top 7.6pt above the letter's cap
+% height). .chapter + p::first-line: the rest of the first line in small
+% caps at 116%, 0.05mm tracking.
+%
+% handout.py writes \hodropcap{letter}, then one \hoflw{small caps}{plain}
+% per word of the paragraph, then \hoflstop. Words go into the first line,
+% in small caps, while they fit (as a browser breaks the line); the first
+% that does not starts the second line, and it and the rest are set plain.
+\definecolor{HoDropTop}{HTML}{B89956}
+\definecolor{HoDropBottom}{HTML}{D8CDB6}
+\newsavebox{\ho@dcbox}
+\newsavebox{\ho@flbox}
+\newsavebox{\ho@fltry}
+\newlength{\ho@dcw}
+\newlength{\ho@flavail}
+\newif\ifho@flfull
+\newif\ifho@flfirst
+\newcommand{\ho@flfont}{\setlength{\ho@sclen}{1.16\dimexpr\f@size pt\relax}%
+  \fontsize{\ho@sclen}{\f@baselineskip}\selectfont\addfontfeature{LetterSpace=1.3}}
+\newcommand{\hodropcap}[1]{%
+  \sbox{\ho@dcbox}{\wolpe\fontsize{45.75pt}{45.75pt}\selectfont
+    \hbox to 0pt{\begin{tikzpicture}[overlay, baseline=0pt]
+      \node[anchor=north west, inner sep=0pt, opacity=0.7]
+        at (-24.7pt, 39.35pt)
+        {\includegraphics[width=41.25pt,height=42.75pt]{\liturgyroot assets/img/6tnz3j7.png}};
+    \end{tikzpicture}\hss}%
+    \ho@gradbox{HoDropTop}{HoDropBottom}{0}{1.5pt}{#1}}%
+  \setlength{\ho@dcw}{\dimexpr\wd\ho@dcbox+4.5pt\relax}%
+  \setlength{\ho@flavail}{\dimexpr\linewidth-\ho@dcw\relax}%
+  \parshape 4 \ho@dcw \ho@flavail \ho@dcw \ho@flavail \ho@dcw \ho@flavail 0pt \linewidth
+  \noindent\llap{\smash{\lower\dimexpr2\baselineskip+1pt\relax
+    \hbox to \ho@dcw{\usebox{\ho@dcbox}\hss}}}%
+  \ho@flfullfalse\ho@flfirsttrue
+  \setbox\ho@flbox\hbox{}}
+\newcommand{\hoflw}[2]{%
+  \ifho@flfull\space#2\else
+    \setbox\ho@fltry\hbox{\ho@flfont\unhcopy\ho@flbox\ifho@flfirst\else\space\fi#1}%
+    \ifdim\wd\ho@fltry>\ho@flavail
+      % the glue before #2 lets TeX hyphenate a word too long for a line
+      \ho@flfulltrue
+      \ifho@flfirst\else\box\ho@flbox\break\fi
+      \hskip\z@skip#2%
+    \else
+      \setbox\ho@flbox\box\ho@fltry\ho@flfirstfalse
+    \fi
+  \fi}
+\newcommand{\hoflstop}{\ifho@flfull\else\box\ho@flbox\fi}
+% First-line small caps in a face without them (Bookinsanity): the browser
+% synthesizes them as capitals at 70% of the size. handout.py sets each run
+% of lowercase letters as \hosc{RUN}.
 \newlength{\ho@sclen}
-\newcommand{\hosc}[1]{{\setlength{\ho@sclen}{0.8\dimexpr\f@size pt\relax}%
+\newcommand{\hosc}[1]{{\setlength{\ho@sclen}{0.7\dimexpr\f@size pt\relax}%
   \fontsize{\ho@sclen}{\ho@sclen}\selectfont #1}}
 
 % ---------------------------------------------------------------- glyph fallback
@@ -55,15 +249,15 @@
 \newcommand{\homortal}[1]{{\scalycapsbold\color{MortalBlue}#1}}
 % .joined: the CSS clips a diagonal blue/gold gradient to the text. Drawn
 % here as the word in blue with a gold copy clipped to its lower-right half.
-\newsavebox{\ho@joinedbox}
+% The text is set inside each node, not saved in a box first: a saved box
+% keeps the colour it was set in and ignores the node's.
 \newcommand{\hojoined}[1]{%
   \begingroup
-  \sbox{\ho@joinedbox}{\scalycapsbold #1}%
   \begin{tikzpicture}[baseline=(ho@j.base)]
-    \node[inner sep=0pt, text=MortalBlue] (ho@j) {\usebox{\ho@joinedbox}};
+    \node[inner sep=0pt, text=MortalBlue] (ho@j) {\scalycapsbold #1};
     \begin{scope}
       \clip (ho@j.north east) -- (ho@j.south east) -- (ho@j.south west) -- cycle;
-      \node[inner sep=0pt, text=DivineGold] at (ho@j) {\usebox{\ho@joinedbox}};
+      \node[inner sep=0pt, text=DivineGold] at (ho@j) {\scalycapsbold #1};
     \end{scope}
   \end{tikzpicture}%
   \endgroup}
@@ -79,22 +273,40 @@
 }{\par}
 
 % ---------------------------------------------------------------- rule-block card
-% .monster.frame: #f4f0ec fill, 3.5px double #888 border, 10px radius, a soft
-% drop shadow, and 105% of the column width (it overhangs both edges).
+% .monster.frame: #f4f0ec fill, a 3.5px double #888 border, 10px radius, a
+% soft drop shadow, padding 10px 8px, margin 0 -8px (it overhangs both column
+% edges); .ruleBlock's margin is 5px; the text is 12px Scaly Sans, 1.2em
+% leading. Paragraphs inside have no gap (Homebrewery's p + p margin is 0).
 \newtcolorbox{hocard}{enhanced, breakable=false,
-  colback=CardBack, frame hidden, arc=6pt,
-  borderline={0.6pt}{0pt}{CardFrame},
-  borderline={0.6pt}{1.6pt}{CardFrame},
+  colback=CardBack, frame hidden, arc=7.5pt, boxrule=2.6pt,
+  borderline={0.87pt}{0pt}{CardFrame},
+  borderline={0.87pt}{1.73pt}{CardFrame},
   drop fuzzy shadow={black!45},
-  grow to left by=5pt, grow to right by=5pt,
-  left=6pt, right=6pt, top=6pt, bottom=6pt,
-  before skip=6pt, after skip=4pt,
-  before upper={\setlength{\parindent}{1em}},
-  fontupper=\scaly\fontsize{8.8pt}{10.8pt}\selectfont}
-% the trait-pill row under the title rule
-\newcommand{\hotraits}[1]{\par\noindent #1\par\vspace{2pt}}
-% the rule under the definition rows (.definitions border-bottom)
-\newcommand{\hocardrule}{\par\vspace{2pt}\hrule height 0.5pt\vspace{3pt}}
+  grow to left by=6pt, grow to right by=6pt,
+  boxsep=0pt, left=5.6pt, right=5.75pt, top=7.5pt, bottom=7.5pt,
+  before skip=3.75pt, after skip=3.75pt,
+  before upper={\setlength{\parindent}{1em}\ho@ragged},
+  fontupper=\scaly\fontsize{9pt}{10.8pt}\selectfont}
+% .preamble: title, action glyph, kind and level in 0.4cm bold Scaly Sans
+% small caps, upper case, over a 1px black rule (\spelltitle's layout).
+\newcommand{\hocardtitle}[3]{%
+  \hbox to \linewidth{%
+    \scalycapsbold\fontsize{0.4cm}{0.45cm}\selectfont\color{black}\MakeUppercase{#1}%
+    \if\relax\detokenize{#2}\relax\else
+      \hspace{3pt}{\actionfont\fontsize{0.4cm}{0.45cm}\selectfont#2}\fi
+    \hfil
+    \scalycapsbold\fontsize{0.4cm}{0.45cm}\selectfont\MakeUppercase{#3}}\par
+  \nointerlineskip\vspace{4pt}\hrule height 0.75pt}
+% .trait: white 0.95em Scaly Sans small caps in the source's case on dark
+% red, a 2px double #d5c489 border, padding 3px 3px 0, side by side.
+\newcommand{\hopill}[1]{\tcbox[enhanced, on line, colback=DarkRed, frame hidden,
+  boxrule=1.5pt, borderline={0.5pt}{0pt}{PillGold}, borderline={0.5pt}{1pt}{PillGold},
+  arc=0pt, left=2.25pt, right=2.25pt, top=2.25pt, bottom=0pt, boxsep=0pt,
+  fontupper=\scalycaps\fontsize{8.55pt}{10.26pt}\selectfont\color{white}]{\strut#1}}
+% the trait-pill row under the title rule (.traits: margin 1px 0 5px)
+\newcommand{\hotraits}[1]{\par\noindent #1\par\vspace{3.5pt}}
+% the 1px black rule under the definition rows (.definitions border-bottom)
+\newcommand{\hocardrule}{\par\vspace{1.4pt}\hrule height 0.75pt\vspace{1.1pt}}
 
 % ---------------------------------------------------------------- page layout
 % A handout is a run of pages. handout.py writes one \hopagebegin ...
@@ -107,10 +319,11 @@
 % (and handout.py warns: "HANDOUT-OVERFLOW"). The columns are \vsplit by
 % hand, never multicols, which balances columns and overrides breaks; a
 % card is one unbreakable box, so it never splits across columns or pages.
-% A half-column art takes whatever height its column's text leaves free,
-% clamped to [\hoartmin, \hoartmax] of the column height; a full-column art
-% takes the whole column. A band is as tall as its mask's aspect makes it,
-% at most \hobandmax of the height below the header.
+% An art window is its mask's size (\handoutart); see \ho@fill for the
+% fallback when that does not fit. The gaps below the header and between an
+% art window and the text are measured from the Iron Seraph print: its body
+% text starts 11.6pt below the header's box, and its card 18.8pt below the
+% art window's bottom edge.
 \newlength{\ho@colw}
 \setlength{\ho@colw}{\dimexpr(\textwidth-\columnsep)/2\relax}
 \newlength{\ho@H}
@@ -118,8 +331,8 @@
 \newlength{\ho@aw}
 \newlength{\ho@room}
 \newlength{\ho@band}
-\newlength{\hoheadgap}\setlength{\hoheadgap}{0.25cm}
-\newlength{\hoartgap}\setlength{\hoartgap}{0.45cm}
+\newlength{\hoheadgap}\setlength{\hoheadgap}{11.6pt}
+\newlength{\hoartgap}\setlength{\hoartgap}{18.8pt}
 \newcommand{\hoartmin}{0.30}
 \newcommand{\hoartmax}{0.70}
 \newcommand{\hobandmax}{0.60}
@@ -138,10 +351,6 @@
   \parskip=0pt \parindent=1em
   \everypar{}}
 
-\newenvironment{handouthead}{%
-  \global\setbox\ho@head\vbox\bgroup
-  \hsize\textwidth \linewidth\hsize \centering
-}{\par\egroup}
 \newenvironment{handoutcolumnone}{%
   \global\setbox\ho@one\vbox\bgroup\ho@colsetup
 }{\par\egroup}
@@ -149,16 +358,30 @@
   \global\setbox\ho@two\vbox\bgroup\ho@colsetup
 }{\par\egroup}
 
-% \handoutart{slot}{image}{caption, lines split by \\}{l or r}{t or b}{size}
-% slot: one or two (a column) or band. size: a band's height/width; for a
-% column art, 1 (it fills the column) or 0 (it takes what the text leaves).
-\newcommand{\handoutart}[6]{%
+% \handoutart{slot}{image}{caption, lines split by \\}{l or r}{t or b}
+%   {width}{height}{kind}
+% slot: one or two (a column) or band. width and height: the mask window,
+% scaled from Homebrewery's page (handout_art.window_size_pt); the window is
+% at most as wide as its slot. kind: how a window taller than its slot's
+% room falls back: full (the whole column), half (what the column's text
+% leaves, within [\hoartmin, \hoartmax] of it) or band (at most \hobandmax
+% of the height below the header).
+\newcommand{\handoutart}[8]{%
   \@namedef{ho@has@#1}{}%
   \@namedef{ho@path@#1}{#2}%
   \@namedef{ho@cap@#1}{#3}%
   \@namedef{ho@capal@#1}{#4}%
   \@namedef{ho@pos@#1}{#5}%
-  \@namedef{ho@size@#1}{#6}}
+  \@namedef{ho@w@#1}{#6}%
+  \@namedef{ho@h@#1}{#7}%
+  \@namedef{ho@kind@#1}{#8}}
+% \handoutartcaption{slot}{l, r or empty}{x}{t, b or empty}{y}: where the
+% caption's left (l) or right (r) edge and top (t) or bottom (b) edge sit,
+% as fractions of the window's width and height from its top-left corner
+% (handout_art.caption_place). An empty side keeps the default: the window's
+% bottom corner on the caption's alignment side.
+\newcommand{\handoutartcaption}[5]{%
+  \@namedef{ho@cpos@#1}{\def\ho@cxs{#2}\def\ho@cxf{#3}\def\ho@cys{#4}\def\ho@cyf{#5}}}
 % \handoutartcrop{slot}{x}{y}{width}{height}{image height/width}: the
 % rectangle of the image Homebrewery's mask window showed, in image-width
 % units (handout_art.mask_crop). Without it the art cover-fills the frame.
@@ -177,12 +400,14 @@
   \edef\ho@artpath{\@nameuse{ho@path@#1}}%
   \expandafter\let\expandafter\ho@caption\csname ho@cap@#1\endcsname
   \edef\ho@captionalign{\@nameuse{ho@capal@#1}}%
+  \def\ho@cxs{}\def\ho@cys{}\@nameuse{ho@cpos@#1}%
   \ho@cropfalse\@nameuse{ho@crop@#1}}
 % each page starts with no header and no art
 \newcommand{\hopagebegin}{%
   \global\setbox\ho@head\box\voidb@x
   \@for\ho@s:=one,two,band\do{%
     \expandafter\let\csname ho@has@\ho@s\endcsname\relax
+    \expandafter\let\csname ho@cpos@\ho@s\endcsname\relax
     \expandafter\let\csname ho@crop@\ho@s\endcsname\relax}}
 
 % The frame's aspect differs from the mask's, so fit, don't stretch: the
@@ -201,21 +426,56 @@
   \pgfmathsetlengthmacro{\ho@D}{\ho@aw/\ho@w}}
 
 % The caption: white small caps over a soft dark halo (the CSS stacks
-% drop-shadows; drawn as offset translucent copies).
+% drop-shadows; drawn as offset translucent copies), lines aligned to the
+% leftCaption/rightCaption side.
 \newcommand{\ho@captiontext}[1]{%
-  \mreaves\fontsize{10pt}{11.5pt}\selectfont
+  \mreaves\fontsize{10pt}{12.5pt}\selectfont
   \if r\ho@captionalign
     \begin{tabular}{@{}r@{}}#1\end{tabular}%
   \else
     \begin{tabular}{@{}l@{}}#1\end{tabular}%
   \fi}
+% \ho@captionat: the caption's anchor and point (\ho@canchor, \ho@capx/\ho@capy
+% from the window's bottom-left corner) from its position, else the window's
+% bottom corner on its alignment side, 9pt in and 12pt up. In the Iron
+% Seraph print a placed caption's first baseline sits 17.5pt below its top, and its
+% lines are 12.5pt apart.
+\newcommand{\ho@captionat}{%
+  \if\relax\ho@cys\relax
+    \def\ho@cav{south}\pgfmathsetlengthmacro{\ho@capy}{12pt}%
+  \else\if t\ho@cys
+    \def\ho@cav{north}\pgfmathsetlengthmacro{\ho@capy}{\ho@art*(1-\ho@cyf)-15pt}%
+  \else
+    \def\ho@cav{south}\pgfmathsetlengthmacro{\ho@capy}{\ho@art*(1-\ho@cyf)}%
+  \fi\fi
+  \if\relax\ho@cxs\relax
+    \if r\ho@captionalign
+      \def\ho@cah{east}\pgfmathsetlengthmacro{\ho@capx}{\ho@aw-9pt}%
+    \else
+      \def\ho@cah{west}\pgfmathsetlengthmacro{\ho@capx}{9pt}%
+    \fi
+  \else\if l\ho@cxs
+    \def\ho@cah{west}\pgfmathsetlengthmacro{\ho@capx}{\ho@aw*\ho@cxf}%
+  \else
+    \def\ho@cah{east}\pgfmathsetlengthmacro{\ho@capx}{\ho@aw*\ho@cxf}%
+  \fi\fi
+  % keep it inside the window (6pt in): ours is narrower than Homebrewery's
+  \sbox{\ho@gbox}{\ho@captiontext{\ho@caption}}%
+  \def\ho@east{east}%
+  \ifx\ho@cah\ho@east
+    \pgfmathsetlengthmacro{\ho@capx}{max(min(\ho@capx, \ho@aw-6pt), \wd\ho@gbox+6pt)}%
+  \else
+    \pgfmathsetlengthmacro{\ho@capx}{min(max(\ho@capx, 6pt), \ho@aw-\wd\ho@gbox-6pt)}%
+  \fi
+  \edef\ho@canchor{\ho@cav\space\ho@cah}}
 \newcommand{\ho@drawcaption}{%
+  \ho@captionat
   \foreach \ho@dx/\ho@dy in {0.7/0, -0.7/0, 0/0.7, 0/-0.7, 0.5/0.5, -0.5/0.5, 0.5/-0.5, -0.5/-0.5, 1.4/0, -1.4/0, 0/1.4, 0/-1.4} {
-    \node[anchor=south east, inner sep=0pt, text=black, opacity=0.35]
-      at ($(owSE) + (-9pt, 12pt) + (\ho@dx pt, \ho@dy pt)$) {\ho@captiontext{\ho@caption}};
+    \node[anchor=\ho@canchor, inner sep=0pt, text=black, opacity=0.35]
+      at ($(owSW) + (\ho@capx, \ho@capy) + (\ho@dx pt, \ho@dy pt)$) {\ho@captiontext{\ho@caption}};
   }
-  \node[anchor=south east, inner sep=0pt, text=white]
-    at ($(owSE) + (-9pt, 12pt)$) {\ho@captiontext{\ho@caption}};
+  \node[anchor=\ho@canchor, inner sep=0pt, text=white]
+    at ($(owSW) + (\ho@capx, \ho@capy)$) {\ho@captiontext{\ho@caption}};
 }
 
 % The framed window, \ho@aw by \ho@art: the loaded art fills it (the
@@ -255,21 +515,32 @@
     \end{tikzpicture}\hss}}
 
 % \ho@fill{slot}{text box}{column box}: set the column box, \ho@H tall, from
-% the text box, with the slot's art at its top or bottom. What does not fit
-% stays in the text box.
+% the text box, with the slot's art at its top or bottom. The art window is
+% its mask's size, at most the column wide; when the mask is taller than
+% the column (or leaves less than a line of room), a full window takes the
+% whole column and a half one what the text leaves, as before. What does
+% not fit stays in the text box.
 \newif\ifho@full
+\def\ho@halfkind{half}
 \newcommand{\ho@fill}[3]{%
   \setlength{\ho@aw}{\ho@colw}%
   \ho@fullfalse
   \ho@ifart{#1}{%
-    \ifdim\@nameuse{ho@size@#1}pt>0pt
-      \ho@fulltrue
-      \setlength{\ho@art}{\ho@H}%
-    \else
-      \setlength{\ho@art}{\dimexpr\ho@H-\ht#2-\dp#2-\hoartgap\relax}%
-      \ifdim\ho@art<\hoartmin\ho@H \setlength{\ho@art}{\hoartmin\ho@H}\fi
-      \ifdim\ho@art>\hoartmax\ho@H \setlength{\ho@art}{\hoartmax\ho@H}\fi
-      \setlength{\ho@room}{\dimexpr\ho@H-\ho@art-\hoartgap\relax}%
+    \setlength{\ho@aw}{\@nameuse{ho@w@#1}}%
+    \ifdim\ho@aw>\ho@colw \setlength{\ho@aw}{\ho@colw}\fi
+    \setlength{\ho@art}{\@nameuse{ho@h@#1}}%
+    \setlength{\ho@room}{\dimexpr\ho@H-\ho@art-\hoartgap\relax}%
+    \ifdim\ho@room<\baselineskip
+      \edef\ho@kind{\@nameuse{ho@kind@#1}}%
+      \ifx\ho@kind\ho@halfkind
+        \setlength{\ho@art}{\dimexpr\ho@H-\ht#2-\dp#2-\hoartgap\relax}%
+        \ifdim\ho@art<\hoartmin\ho@H \setlength{\ho@art}{\hoartmin\ho@H}\fi
+        \ifdim\ho@art>\hoartmax\ho@H \setlength{\ho@art}{\hoartmax\ho@H}\fi
+        \setlength{\ho@room}{\dimexpr\ho@H-\ho@art-\hoartgap\relax}%
+      \else
+        \ho@fulltrue
+        \setlength{\ho@art}{\ho@H}%
+      \fi
     \fi}{\setlength{\ho@room}{\ho@H}}%
   \ifho@full
     \setbox#3=\box\voidb@x
@@ -286,8 +557,10 @@
       \ho@loadart{#1}\ho@drawart}{}}{}}}
 
 \newcommand{\ho@drawband}{%
-  \setlength{\ho@aw}{\textwidth}\setlength{\ho@art}{\ho@band}%
-  \ho@loadart{band}\noindent\ho@drawart\par}
+  \setlength{\ho@aw}{\@nameuse{ho@w@band}}%
+  \ifdim\ho@aw>\textwidth \setlength{\ho@aw}{\textwidth}\fi
+  \setlength{\ho@art}{\ho@band}%
+  \ho@loadart{band}\noindent\hbox to \textwidth{\hss\ho@drawart\hss}\par}
 
 \newcommand{\handoutpage}{%
   \par
@@ -299,7 +572,7 @@
     \setlength{\ho@H}{\dimexpr\textheight-\ht\ho@head-\dp\ho@head-\hoheadgap-2pt\relax}%
   \fi
   \ho@ifart{band}{%
-    \setlength{\ho@band}{\@nameuse{ho@size@band}\textwidth}%
+    \setlength{\ho@band}{\@nameuse{ho@h@band}}%
     \ifdim\ho@band>\hobandmax\ho@H \setlength{\ho@band}{\hobandmax\ho@H}\fi
     \addtolength{\ho@H}{-\ho@band}\addtolength{\ho@H}{-\hoartgap}}{}%
   % the text carried from the last page comes first in column one
@@ -354,7 +627,7 @@
         {\liturgyfooterart};
     \end{scope}
     \node[anchor=south east, xshift=-1.9cm, yshift=0.6cm] at (current page.south east)
-      {\wolpe\fontsize{0.37cm}{0.45cm}\selectfont\color{DarkRed}\liturgyfootnotelabel};
+      {\hosmcp\fontsize{0.37cm}{0.45cm}\selectfont\color{DarkRed}\liturgyfootnotelabel};
   \end{tikzpicture}%
 }
 

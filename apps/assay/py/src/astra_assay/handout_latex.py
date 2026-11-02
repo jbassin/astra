@@ -10,7 +10,6 @@ path, so the only file written next to the handout source is ``<name>.pdf`` (or
 from __future__ import annotations
 
 import argparse
-import itertools
 import re
 import shutil
 import sys
@@ -20,11 +19,10 @@ from pathlib import Path
 from astra_observe import get_tracer
 
 from . import handout_art
-from .book import BOOK_SRC_DIR, latex_escape_text, run_tectonic
+from .book import BOOK_SRC_DIR, run_tectonic
 from .handout import parse_handout
+from .handout_inline import chapter_colors, first_line_words, render_inline
 from .handout_model import (
-    ACTION_GLYPHS,
-    INLINE_SPAN_RE,
     Art,
     DefRow,
     Element,
@@ -50,92 +48,14 @@ _HEADING_CMD = {
     4: "paragraph",
     5: "subparagraph",
 }
-_SPAN_CMD = {"divine": "\\hodivine", "mortal": "\\homortal", "joined": "\\hojoined"}
 _ALIGN_COL = {
     "l": r">{\raggedright\arraybackslash}X",
     "c": r">{\centering\arraybackslash}X",
     "r": r">{\raggedleft\arraybackslash}X",
 }
 
-# ---------------------------------------------------------------------------
-# Inline markup.
-# ---------------------------------------------------------------------------
-
-#: Markdown backslash escapes. Each escaped character is parked in the Private Use Area
-#: while emphasis is parsed, then restored as a literal.
-_ESCAPABLE = "\\`*_{}[]()#+-.!|<>~"
-_PUA = 0xE000
-_ESCAPE_RE = re.compile(r"\\([" + re.escape(_ESCAPABLE) + r"])")
-#: ``_italic_``: opens before a word character, closes after a non-space.
-_UNDERSCORE_EM_RE = re.compile(r"(?<![\w\\])_(?=\w)(.+?)(?<=\S)_(?!\w)")
-_INLINE_RE = re.compile(
-    r"(?P<span>" + INLINE_SPAN_RE.pattern + r")|(?P<bold>\*\*)|(?P<ital>\*)|(?P<br><br\s*/?>)",
-    re.DOTALL,
-)
 _TRAILING_BR_RE = re.compile(r"(?:\s*<br\s*/?>)+\s*$")
-_DROPCAP_WORD_RE = re.compile(r"^([A-Za-z])([A-Za-z]*)")
-
-
-def _text(raw: str) -> str:
-    """A plain run: LaTeX-escaped, non-ASCII glyphs wrapped for font fallback."""
-    out: list[str] = []
-    for ch in latex_escape_text(raw):
-        code = ord(ch)
-        if _PUA <= code < _PUA + len(_ESCAPABLE):
-            out.append(latex_escape_text(_ESCAPABLE[code - _PUA]))
-        elif code > 0x7F:
-            out.append(f"\\hochar{{{ch}}}")
-        else:
-            out.append(ch)
-    return "".join(out)
-
-
-def render_inline(text: str, line: int = 0) -> str:
-    """Homebrewery inline markup -> LaTeX: spans, ``**``/``*``/``_`` emphasis, ``<br>``."""
-    text = _ESCAPE_RE.sub(lambda m: chr(_PUA + _ESCAPABLE.index(m.group(1))), text)
-    text = _UNDERSCORE_EM_RE.sub(r"*\1*", text)
-    out: list[str] = []
-    open_cmds: list[str] = []  # "**" / "*" currently open
-    pos = 0
-    for m in _INLINE_RE.finditer(text):
-        out.append(_text(text[pos : m.start()]))
-        pos = m.end()
-        if m.group("span"):
-            out.append(_render_span(m.group("name"), m.group("body") or "", line))
-        elif m.group("br"):
-            out.append("\\newline{}")
-        else:
-            marker = "**" if m.group("bold") else "*"
-            if marker in open_cmds:
-                while open_cmds and open_cmds.pop() != marker:
-                    out.append("}")
-                out.append("}")
-            else:
-                open_cmds.append(marker)
-                out.append("\\textbf{" if marker == "**" else "\\textit{")
-    out.append(_text(text[pos:]))
-    out.append("}" * len(open_cmds))
-    return "".join(out)
-
-
-def small_caps(text: str) -> str:
-    """Plain text -> LaTeX with each lowercase run set as ``\\hosc{RUN}``: small caps for
-    the face (Wolpe Pegasus) that has real lowercase."""
-    out: list[str] = []
-    for lower, chars in itertools.groupby(text, key=str.islower):
-        piece = "".join(chars)
-        out.append(f"\\hosc{{{render_inline(piece.upper())}}}" if lower else render_inline(piece))
-    return "".join(out)
-
-
-def _render_span(name: str, body: str, line: int) -> str:
-    if name in ACTION_GLYPHS:
-        return f"\\actglyph{{{name}}}"
-    cmd = _SPAN_CMD.get(name)
-    if cmd is None:
-        where = f"line {line}: " if line else ""
-        raise HandoutError(f"{where}unknown block {{{{{name}}}}}")
-    return f"{cmd}{{{render_inline(body.strip(), line)}}}"
+_DROPCAP_RE = re.compile(r"^[A-Za-z]")
 
 
 # ---------------------------------------------------------------------------
@@ -144,11 +64,14 @@ def _render_span(name: str, body: str, line: int) -> str:
 
 
 def _paragraph(el: Paragraph, dropcap: bool) -> str:
-    m = _DROPCAP_WORD_RE.match(el.text)
-    if not dropcap or not m:
+    """A paragraph; with ``dropcap``, its first letter is handout.sty's drop cap and the rest
+    of its first line is small caps (``\\hodropcap``, ``\\hoflw`` per word, ``\\hoflstop``)."""
+    if not dropcap or not _DROPCAP_RE.match(el.text):
         return render_inline(el.text, el.line)
-    rest = render_inline(el.text[m.end() :], el.line)
-    return f"\\noindent\\liturgydropcap{{{m.group(1)}}}{{{m.group(2)}}}{rest}"
+    pairs, after = first_line_words(el.text[1:], el.line)
+    words = "".join(f"\\hoflw{{{sc}}}{{{plain}}}" for sc, plain in pairs)
+    tail = f" {after}" if after else ""
+    return f"\\hodropcap{{{el.text[0]}}}{words}\\hoflstop{tail}"
 
 
 def _table(el: Table) -> str:
@@ -190,11 +113,10 @@ def _card(el: RuleBlock) -> str:
     title = render_inline(el.title, el.line)
     parts = [
         "\\begin{hocard}",
-        f"\\spelltitle{{\\MakeUppercase{{{title}}}}}{{{el.glyph}}}"
-        f"{{{render_inline(el.kind, el.line)}}}",
+        f"\\hocardtitle{{{title}}}{{{el.glyph}}}{{{render_inline(el.kind, el.line)}}}",
     ]
     if el.traits:
-        pills = " ".join(f"\\pill{{{render_inline(t, el.line)}}}" for t in el.traits)
+        pills = "".join(f"\\hopill{{{render_inline(t, el.line)}}}" for t in el.traits)
         parts.append(f"\\hotraits{{{pills}}}")
     if el.definitions:
         rows = [
@@ -232,7 +154,9 @@ def _flow(elements: list[Element], dropcap: bool = False, first_noindent: bool =
     for idx, el in enumerate(elements):
         if idx == 0 and isinstance(el, Paragraph) and (dropcap or first_noindent):
             tex = _paragraph(el, dropcap=dropcap)
-            parts.append(tex if tex.startswith("\\noindent") else "\\noindent " + tex)
+            if not tex.startswith(("\\noindent", "\\hodropcap")):
+                tex = "\\noindent " + tex
+            parts.append(tex)
         else:
             parts.append(_element(el))
     return "\n\n".join(parts)
@@ -256,7 +180,9 @@ def build_handout_tex(handout: Handout, handout_dir: Path | None, source_label: 
     compiled under its own file name, next to the ``.tex``); ``None`` builds without a folder,
     which fails if the handout has art."""
     images = iter(handout_images(handout, handout_dir))
-    footer = " \\textbar\\ ".join(small_caps(p.strip()) for p in handout.footer.split("|"))
+    # .footnote: text-transform: lowercase, font-variant: small-caps (handout.sty's face).
+    labels = (render_inline(p.strip().lower()) for p in handout.footer.split("|"))
+    footer = " \\textbar\\ ".join(labels)
     lines = [
         f"% Generated by `assay handout`{source_label} — DO NOT EDIT BY HAND.",
         "\\documentclass[10pt,letterpaper]{article}",
@@ -277,12 +203,11 @@ def _page(page: Page, images: list[Path]) -> list[str]:
     first = page.number == 1
     lines = ["\\hopagebegin"]
     if page.header is not None:
+        eyebrow_color, glow_color = chapter_colors(page.header.classes)
         lines += [
-            "\\begin{handouthead}",
-            f"\\hoeyebrow{{{render_inline(page.header.eyebrow)}}}" if page.header.eyebrow else "",
-            f"\\hotitle{{{small_caps(page.header.title)}}}",
-            "\\chapterrule",
-            "\\end{handouthead}",
+            f"\\hochaptercolors{{{eyebrow_color}}}{{{glow_color}}}",
+            f"\\handouthead{{{render_inline(page.header.eyebrow)}}}"
+            f"{{{render_inline(page.header.title)}}}",
         ]
     one, two = [*page.columns, []][:2]
     slots = {handout_art.slot_of(a.wrapper_classes)[:2] for a in page.arts}
@@ -306,8 +231,10 @@ def _page(page: Page, images: list[Path]) -> list[str]:
 
 
 def _art(spec: Art, path: Path) -> list[str]:
-    """``\\handoutart{slot}{file}{caption}{align}{t|b}{size}`` and its crop, if any. The size
-    is a band's height/width (its mask's aspect), 1 for a full column, 0 for a half one."""
+    """``\\handoutart{slot}{file}{caption}{align}{t|b}{width}{height}{kind}``, then its caption
+    position and crop, if any. Width and height are the mask window in points
+    (``handout_art.window_size_pt``); the kind (``full``, ``half``, ``band``) says how
+    handout.sty falls back when the window is taller than the room in its slot."""
     slot, pos, kind = handout_art.slot_of(spec.wrapper_classes)
     try:
         mask = handout_art.mask_size(spec.wrapper_classes)
@@ -316,12 +243,18 @@ def _art(spec: Art, path: Path) -> list[str]:
         crop = handout_art.mask_crop(handout_art.parse_placement(spec.placement), mask, aspect)
     except handout_art.ArtError as e:
         raise HandoutError(f"line {spec.line}: {e}") from e
-    size = {"band": f"{mask[1] / mask[0]:.5f}", "full": "1", "half": "0"}[kind]
+    win_w, win_h = handout_art.window_size_pt(spec.wrapper_classes)
     caption = "\\\\".join(render_inline(c, spec.line) for c in spec.caption)
     lines = [
         f"\\handoutart{{{slot}}}{{{path.name}}}{{{caption}}}{{{spec.caption_align}}}"
-        f"{{{pos}}}{{{size}}}"
+        f"{{{pos}}}{{{win_w:.3f}pt}}{{{win_h:.3f}pt}}{{{kind}}}"
     ]
+    place = handout_art.caption_place(spec.caption_classes, spec.wrapper_classes)
+    if spec.caption and (place.x_side or place.y_side):
+        lines.append(
+            f"\\handoutartcaption{{{slot}}}{{{place.x_side}}}{{{place.x:.5f}}}"
+            f"{{{place.y_side}}}{{{place.y:.5f}}}"
+        )
     if crop is not None:
         nums = (crop.x, crop.y, crop.width, crop.height, aspect)
         lines.append(f"\\handoutartcrop{{{slot}}}" + "".join(f"{{{n:.5f}}}" for n in nums))
