@@ -1,8 +1,19 @@
 # Now
 
-Updated 2026-11-01.
+Updated 2026-11-02.
 
 ## In flight
+
+- **Villain and NPC tier-list special is live (2026-11-02, #200, #201).** A second special format:
+  the hosts rank the Astra's villains by danger, then its NPCs by affection, on two S-to-D boards.
+  `just mouthpiece-tierlist prepare` makes a run dir with the committed `tierlist/brief.md`; a
+  Claude Code subagent wrote the cast file from it (13 villains, 22 NPCs, 135 quotes all checked
+  against their sources, 13 setting notes; no API spend); `validate` checks it and prints counts
+  only. Kimi and GLM wrote the script ($0.29): 5,899 words, published as
+  `000.through-a-song-darkly.2026-10-29-special-tier-list` (34.7 min, 20 clips). #200 added
+  that id form, `<latest>-special-<slug>`, so two specials after one session no longer collide;
+  #201 moved the roundtable's render into a shared `special.render_special`. Run folder:
+  `mouthpiece/experiments/tierlist-2026-10-29/20261102T040007Z` (the GM must not read it).
 
 - **akasha pages are consolidated instead of piling up (2026-11-01, #197, astra-data
   `f5c8d81`, deployed).** Pages grew one appended paragraph per edit, so they repeated and

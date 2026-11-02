@@ -53,6 +53,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       overshot its 8,500-word ceiling too (9,578 words, 56.8 min).
 - [ ] Listen to the second prediction roundtable (2026-10-31) and say whether the
       agent-written dossier should replace the DeepSeek loop for future specials.
+- [ ] Listen to the villain and NPC tier-list special (2026-11-02,
+      `000.through-a-song-darkly.2026-10-29-special-tier-list`) and say whether to make it a
+      recurring format. Its cast file came from a subagent following the committed
+      `tierlist/brief.md`, which a roundtable dossier brief could copy.
 
 ### Smaller calls (Josh)
 - [ ] Handouts: say whether any remaining differences from the Homebrewery look matter. They are
