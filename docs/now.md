@@ -11,7 +11,7 @@ Updated 2026-11-01.
   pages; `apps/heartwood/py/consolidate.md` is the brief for rewriting them. Subagents
   consolidated the 25 listed pages plus The Broker (Althane's index needed nothing), two
   independent reviews checked every page for lost or invented facts, and their fixes are in.
-  Open canon questions are in the backlog.
+  Josh's canon answers on the open calls are written in (astra-data `eeac120`, deployed).
 - **Player handouts build from Markdown (2026-11-01, #188, #189, #191, #193).** `just handout
   <name>` turns a Homebrewery-style `handout.md` plus its images into a PDF in the Liturgy
   book's look: several pages, several named images (column art or full-width bands), action
