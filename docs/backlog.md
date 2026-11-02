@@ -134,13 +134,9 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   same name: Urth's Chuck (Mike, Cagley one-shot) marks the Harlequin NPC
   `Org/The Harlequins/People/Chuck` as `being="mike"`. Harmless until something reads `being`;
   scope the merge by campaign or world — agent.
-- Canon calls left open by the 2026-11-01 page consolidation, each kept as both readings or
-  decided by the later-edit rule — Josh: the Thirteenth Realm *is* Althane's moon, or has one
-  that fell on the City of Yellow; how the Deep ended (Renge's help, the Weft destroying it,
-  "could not be killed when the Beast was"); whether Thessians "seek to end all life" or only to
-  reverse entropy; Providence on "eight legs" or eight to a side (page now says eight to a
-  side); the Weft as "four" adventurers (was "four to six"); the Sundom page's "The Sundom
-  before it built stations…".
+- The Sundom page names the empire that ran Althane's experiment the Fifth Prosperous Empire,
+  but in the 2026-4-6 session the GM called Sedecium's growing coalition "the fifth Sundom"
+  ("there was already a fourth"). Which one is the fifth — Josh.
 - Re-run `just heartwood-layered` after a few more heartwood sessions to see whether the new
   integrate rule holds; consolidate whatever it lists (brief: `apps/heartwood/py/consolidate.md`)
   — agent.
