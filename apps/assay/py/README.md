@@ -295,20 +295,34 @@ three actions, reaction, free; inline or after a card's `{{title}}`), `**bold**`
 `{{traits}}`/`{{trait}}` and `{{definitions}}`, `{{transcript}}`, `{{rightAligned}}` and
 `{{footnote A | B}}`. The art crop follows the borderImage's `{top,left,width}` payload inside
 the imageWrapper's mask window (`handout_art.py`), fitted to the frame's aspect without
-stretching. Other payloads, class lists, `{{resetCounting}}` and comments are ignored; any other
-block fails the build with its name and line.
+stretching. A caption's `top:`/`left:` (or `right:`/`bottom:`) payload places it, read as
+Homebrewery page px and kept at the same spot relative to the image window; without one it sits
+in the window's bottom corner on its `leftCaption`/`rightCaption` side. The chapter's
+`--color` colours the eyebrow, and `gradient` adds the glow behind the title. Other payloads,
+class lists, `{{resetCounting}}` and comments are ignored; any other block fails the build with
+its name and line.
+
+The look follows the Vol.1 CSS and Josh's Homebrewery print of Project Iron Seraph
+(`reference.pdf` in its folder): ragged-right text with no hyphenation (TeX hyphenates only a
+word longer than its column), "--" as an en dash, the title in Wolpe Pegasus's small caps with
+its gradient, the drop cap's gradient letter on the gold symbol, the rest of the first line in
+small caps (the words that fit, as a browser breaks the line), bold h3 headings and the PHB
+0.34cm body text. The measured gaps and offsets are noted in `handout.sty`.
 
 Pages and placement: `\page` starts a page, and each page may have one `\column`. Text flows
 from column one to column two, then on to the next page's column one, ahead of that page's own
 text; a card never splits. Page one shows the first `{{chapter}}` header; a later page shows
 one only if it has its own. An image sits on the page where its imageWrapper appears, placed by
 its class, at most one per slot per page: `chapterSidebarRight`/`Left` (and the `fullSidebar`
-and `leftSide`/`rightSide` columns) fill the right or left column; the `HalfTop`/`HalfBottom`
-variants sit at that column's top or bottom and take what its text leaves (30–70% of it);
-`fullSidebarTop`, `fullSidebarBottom` and `narrowSidebarBottom` are a band across both columns
-at the page's top or bottom, as tall as the class's mask aspect (at most 60% of the page). No
-class means the right column's top. A colon spacer at the top of a column that holds art is
-dropped.
+and `leftSide`/`rightSide` columns) sit in the right or left column; the `HalfTop`/`HalfBottom`
+variants at that column's top or bottom; `fullSidebarTop`, `fullSidebarBottom` and
+`narrowSidebarBottom` are a band across both columns at the page's top or bottom. No class
+means the right column's top. The window is the class's mask (`--maskHeight` overrides it),
+scaled from Homebrewery's 816px page to the PDF's 612pt (0.75pt per px) and at most as wide as
+its column or band. When the mask is taller than the column (less than a line of text would
+fit), a full-column class fills the column, a half one takes what its text leaves (30–70% of
+it), and a band stops at 60% of the page. A colon spacer at the top of a column that holds art
+is dropped.
 
 **The archived review workshop.** The workshop files live under
 `thoughts/archive/assay-workshop/`: the scriptorium review UI source (`review-ui/`) and the

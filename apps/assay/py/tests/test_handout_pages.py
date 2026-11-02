@@ -61,28 +61,30 @@ def test_glyphs_emit_action_font_characters() -> None:
     tex = _tex()
     for glyph in "adtrf":
         assert f"\\actglyph{{{glyph}}}" in tex
-    assert "\\spelltitle{\\MakeUppercase{Quick Reply}}{t}{Faction 2}" in tex
-    assert "\\spelltitle{\\MakeUppercase{Unbroken Card}}{a}{Faction 3}" in tex
+    assert "\\hocardtitle{Quick Reply}{t}{Faction 2}" in tex
+    assert "\\hocardtitle{Unbroken Card}{a}{Faction 3}" in tex
 
 
 def test_placements_emit_slots() -> None:
     tex = _tex()
-    assert "\\handoutart{two}{tall.png}{A tall image}{r}{t}{0}" in tex
-    assert "\\handoutart{band}{band.png}{A wide band}{r}{t}{0.66527}" in tex
+    # Each window is its mask, scaled from Homebrewery's 816px page to 612pt.
+    assert "\\handoutart{two}{tall.png}{A tall image}{r}{t}{249.000pt}{300.750pt}{half}" in tex
+    assert "\\handoutart{band}{band.png}{A wide band}{r}{t}{535.500pt}{356.250pt}{band}" in tex
+    assert "\\handoutartcaption" not in tex  # no caption position: the default corner
     assert "\\handoutartcrop{band}{0.02500}{0.01250}{0.89250}" in tex
     assert "\\handoutartcrop{two}" not in tex  # no payload: cover-fit
     assert tex.count("\\hopagebegin") == 2
     assert tex.count("\\handoutpage") == 2
-    assert tex.count("\\begin{handouthead}") == 1
-    assert tex.count("\\liturgydropcap") == 1
+    assert tex.count("\\handouthead{") == 1
+    assert tex.count("\\hodropcap") == 1
     assert tex.index("\\handoutfinish") > tex.rindex("\\handoutpage")
 
 
 def test_a_later_page_shows_its_own_header() -> None:
     source = HEAD + "a\n\n\\page\n\n{{chapter\n## Part Two\n# U\n}}\n\nb\n\n\\page\n\nc\n"
     tex = handout_latex.build_handout_tex(parse_handout(source), None)
-    assert tex.count("\\begin{handouthead}") == 2
-    assert "\\hotitle{U}" in tex
+    assert tex.count("\\handouthead{") == 2
+    assert "\\handouthead{Part Two}{U}" in tex
 
 
 def test_slot_of() -> None:

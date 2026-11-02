@@ -22,7 +22,8 @@ Homebrewery dialect he used for Vol.1, and the source is accepted as written:
 
 The art crop follows Homebrewery's placement: the imageWrapper's mask class and
 ``--maskHeight`` and the borderImage's ``{top:..,left:..,width:..}`` payload (see
-``handout_art``). Other positioning payloads and class lists (captions, the header),
+``handout_art``), and a caption's ``top:``/``left:`` payload places it. The header's
+``gradient`` and ``--color`` classes colour it. Other payloads and classes,
 ``{{resetCounting}}`` and HTML comments are ignored, not emulated. A line of colons is
 a spacer; one at the top of a column that holds art is the Homebrewery reservation for the
 art and is dropped, because the layout reserves the art itself. Any other ``{{...}}`` block
@@ -266,7 +267,7 @@ def _parse_inner(
 
 
 def _on_chapter(parser: _FlowParser, b: _Block) -> None:
-    header = Header(eyebrow="", title="", line=b.opened)
+    header = Header(eyebrow="", title="", line=b.opened, classes=b.classes)
     for offset, raw in enumerate(b.content.split("\n")):
         stripped = raw.strip()
         if not stripped or _RULE_RE.match(stripped):
@@ -288,6 +289,7 @@ def _on_footnote(parser: _FlowParser, b: _Block) -> None:
 def _on_image_wrapper(parser: _FlowParser, b: _Block) -> None:
     caption: list[str] = []
     align = "r"
+    caption_classes: list[str] = []
     placement = ""
     src = ""
     for line_no, item in _segments(b.content, b.line):
@@ -306,8 +308,17 @@ def _on_image_wrapper(parser: _FlowParser, b: _Block) -> None:
         if item.name != "caption":
             raise HandoutError(f"line {item.opened}: unknown block {{{{{item.name}}}}}")
         align = "l" if "leftCaption" in item.classes else "r"
+        caption_classes = item.classes
         caption = [ln.strip() for ln in item.content.split("\n") if ln.strip()]
-    art = Art(caption, align, b.line, wrapper_classes=b.classes, placement=placement, src=src)
+    art = Art(
+        caption,
+        align,
+        b.line,
+        wrapper_classes=b.classes,
+        placement=placement,
+        src=src,
+        caption_classes=caption_classes,
+    )
     parser.out.append(art)
 
 

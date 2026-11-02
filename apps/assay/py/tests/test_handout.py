@@ -52,7 +52,7 @@ def test_header_footer_and_art_are_lifted_out_of_the_flow() -> None:
 
 def test_column_one_holds_the_prose() -> None:
     one = parse_handout(_source()).pages[0].columns[0]
-    assert [type(el) for el in one] == [Paragraph, Heading, Paragraph]
+    assert [type(el) for el in one] == [Paragraph, Heading, Paragraph, Spacer, Transcript]
     assert isinstance(one[1], Heading)
     assert one[1].level == 3
     assert one[1].text == "A {{joined Heading}}"
@@ -80,10 +80,10 @@ def test_rule_block_card() -> None:
 
 
 def test_transcript_and_right_aligned() -> None:
-    two = parse_handout(_source()).pages[0].columns[1]
-    assert isinstance(two[2], Spacer)
-    assert two[2].lines == 1
-    transcript = two[3]
+    one = parse_handout(_source()).pages[0].columns[0]
+    assert isinstance(one[3], Spacer)
+    assert one[3].lines == 1
+    transcript = one[4]
     assert isinstance(transcript, Transcript)
     assert len(transcript.children) == 3
     fax = transcript.children[1]
@@ -95,10 +95,14 @@ def test_latex_emission() -> None:
     tex = _tex()
     assert "\\newcommand{\\liturgyroot}{" in tex
     assert "\\usepackage{handout}" in tex
-    assert "\\hoeyebrow{Addendum}" in tex
-    assert "\\hotitle{T\\hosc{EST} P\\hosc{ATTERN} \\hochar{Æ}\\hosc{THER}}" in tex
-    assert "\\renewcommand{\\liturgyfootnotelabel}{A\\hosc{DDENDUM} \\textbar\\ " in tex
-    assert "\\noindent\\liturgydropcap{T}{he} quick brown fox" in tex
+    # The header in the source's case (handout.sty sets it in Wolpe Pegasus's real small
+    # caps), coloured from the chapter's --color; the footer lower-cased, as the CSS does.
+    assert "\\hochaptercolors{814B4B}{633636}" in tex
+    assert "\\handouthead{Addendum}{Test Pattern \\hochar{Æ}ther}" in tex
+    assert "\\renewcommand{\\liturgyfootnotelabel}{addendum \\textbar\\ test pattern}" in tex
+    # The drop cap, then each word as (first-line small caps, plain).
+    assert "\\hodropcap{T}\\hoflw{\\hosc{HE}}{he}\\hoflw{\\hosc{QUICK}}{quick}" in tex
+    assert "\\hoflw{\\hodivine{You}}{\\hodivine{You}}" in tex
     assert "\\hodivine{You}" in tex
     assert "\\homortal{you}" in tex
     assert "\\hojoined{you}" in tex
@@ -106,12 +110,15 @@ def test_latex_emission() -> None:
     assert "\\textit{underscored}" in tex
     assert "\\textit{starred}" in tex
     assert "\\textbf{bold}" in tex
-    assert "escaped *asterisk*" in tex  # a markdown escape is a literal
-    assert "a dash \\hochar{—} here" in tex
+    assert "{escaped}\\hoflw{*\\hosc{ASTERISK}*,}{*asterisk*,}" in tex  # an escape is literal
+    assert "\\hoflw{\\hochar{–}}{\\hochar{–}}" in tex  # "--" is an en dash, as in Homebrewery
     assert "F\\hochar{æ}rrin" in tex
-    assert "\\handoutart{two}{art.png}{Line one\\\\Line two}{l}{t}{0}" in tex
+    assert (
+        "\\handoutart{two}{art.png}{Line one\\\\Line two}{l}{t}{249.000pt}{390.000pt}{half}" in tex
+    )
+    assert "\\handoutartcaption{two}{l}{0.74288}{t}{0.84738}" in tex
     assert "\\handoutpage" in tex
-    assert tex.count("\\begin{handouthead}") == 1
+    assert tex.count("\\handouthead{") == 1
     assert "\\handoutfinish" in tex
     assert "\\begin{document}" in tex
 
@@ -119,8 +126,8 @@ def test_latex_emission() -> None:
 def test_card_emission() -> None:
     tex = _tex()
     assert "\\begin{hocard}" in tex
-    assert "\\spelltitle{\\MakeUppercase{Placeholder Feat}}{}{Faction 1}" in tex
-    assert "\\hotraits{\\pill{Divine} \\pill{Fortune}}" in tex
+    assert "\\hocardtitle{Placeholder Feat}{}{Faction 1}" in tex
+    assert "\\hotraits{\\hopill{Divine}\\hopill{Fortune}}" in tex
     assert "\\textbf{Faction} The Test Org\\\\\n\\textbf{Cost} Nothing" in tex
     assert "\\noindent\\textbf{Option A} \\textit{Named Thing}." in tex
     assert "\\textbf{Reroll!} \\actglyph{f} (\\textit{divine, fortune})" in tex
@@ -133,14 +140,15 @@ def test_transcript_emission() -> None:
     assert "\\begin{hotranscript}\nhi hi :D\n\na fax line\\newline{} and a forced break" in tex
     # ¯\\_(ツ)_/¯: the escaped backslash is a literal and the underscores stay underscores.
     assert "\\hochar{¯}\\textbackslash{}\\_(\\hochar{ツ})\\_/\\hochar{¯}" in tex
-    assert "\\begin{flushright}\n\\hochar{—} the sender\n\\end{flushright}" in tex
+    assert "\\begin{flushright}\n\\hochar{–} the sender\n\\end{flushright}" in tex
 
 
 def test_art_spacer_is_dropped_but_others_stay() -> None:
     tex = _tex()
     column_two = tex.split("\\begin{handoutcolumntwo}")[1]
     assert column_two.lstrip().startswith("\\begin{hocard}")
-    assert "\\vspace{1\\baselineskip}" in column_two
+    column_one = tex.split("\\begin{handoutcolumnone}")[1].split("\\end{handoutcolumnone}")[0]
+    assert "\\vspace{1\\baselineskip}" in column_one
 
 
 def test_no_homebrewery_markup_leaks() -> None:
@@ -210,6 +218,31 @@ def test_fixture_compiles_to_one_page(tmp_path: Path) -> None:
         text = subprocess.run(
             ["pdftotext", str(pdf), "-"], capture_output=True, text=True, check=True
         ).stdout
-        assert "quick brown fox" in text
+        assert "QUICK BROWN FOX" in text  # the first line, in small caps
         assert "Placeholder Feat".upper() in text
         assert "forced break" in text
+
+
+def test_chapter_colors_follow_the_css() -> None:
+    """hsl(from --color ...): eyebrow h s clamp(40, l, 60); glow h max(s/2, 30)
+    clamp(30, l*0.75, 70), only with the gradient class."""
+    assert handout_latex.chapter_colors(["gradient", "--color:#7c4848"]) == ("814B4B", "633636")
+    assert handout_latex.chapter_colors(["--color:#7c4848"]) == ("814B4B", "")
+    assert handout_latex.chapter_colors([]) == ("BC9E5C", "")  # .chapter's default --color
+
+
+def test_first_line_words_carry_emphasis_and_spans() -> None:
+    pairs, after = handout_latex.first_line_words("ne **two words** {{divine You}}, _x y_ z")
+    assert pairs == [
+        ("\\hosc{NE}", "ne"),
+        ("\\textbf{\\hosc{TWO}}", "\\textbf{two}"),
+        ("\\textbf{\\hosc{WORDS}}", "\\textbf{words}"),
+        ("\\hodivine{You},", "\\hodivine{You},"),
+        ("\\textit{\\hosc{X}}", "\\textit{x}"),
+        ("\\textit{\\hosc{Y}}", "\\textit{y}"),
+        ("\\hosc{Z}", "z"),
+    ]
+    assert after == ""
+    pairs, after = handout_latex.first_line_words("a *b<br>c* d")
+    assert pairs == [("\\hosc{A}", "a")]
+    assert after == "\\textit{b\\newline{}c} d"

@@ -105,3 +105,54 @@ def test_no_payload_keeps_cover_fit() -> None:
     tex = handout_latex.build_handout_tex(parse_handout(source), FIXTURE)
     assert "\\handoutart{two}{art.png}" in tex
     assert "\\handoutartcrop" not in tex
+
+
+def test_window_size_scales_the_mask_to_the_pdf_page() -> None:
+    """816 CSS px across Homebrewery's page are 612pt: 0.75pt per px."""
+    assert handout_art.window_size_pt(["chapterSidebarRightHalfTop"]) == (249.0, 300.75)
+    assert handout_art.window_size_pt(["chapterSidebarRightHalfTop", "--maskHeight:520px"]) == (
+        249.0,
+        390.0,
+    )
+    assert handout_art.window_size_pt(["narrowSidebarBottom"]) == (535.5, 297.75)
+    assert handout_art.window_size_pt([]) == (249.0, 705.0)  # .imageWrapper's default
+
+
+def test_mask_origin_from_the_class_list() -> None:
+    assert handout_art.mask_origin([]) == handout_art.DEFAULT_ORIGIN
+    assert handout_art.mask_origin(["chapterSidebarRightHalfTop"]) == (419, 175)
+    assert handout_art.mask_origin(["fullSidebarLeft", "--maskLeft:50px", "--maskTop:60px"]) == (
+        50,
+        60,
+    )
+
+
+def test_caption_place_left_top() -> None:
+    """Page px, relative to the image window (the frame's corner plus the 3.8mm inset)."""
+    wrapper = ["chapterSidebarRightHalfTop", "--maskHeight:520px"]
+    place = handout_art.caption_place(["leftCaption", "top:630px", "left:680px"], wrapper)
+    inset = handout_art.WINDOW_INSET_PX
+    assert place.x_side == "l"
+    assert place.y_side == "t"
+    assert place.x == pytest.approx((680 - 419 - inset) / 332)
+    assert place.y == pytest.approx((630 - 175 - inset) / 520)
+
+
+def test_caption_place_right_bottom_and_none() -> None:
+    wrapper = ["chapterSidebarRightHalfTop"]
+    inset = handout_art.WINDOW_INSET_PX
+    place = handout_art.caption_place(["rightCaption", "bottom:300px", "right:60px"], wrapper)
+    assert place.x_side == "r"
+    assert place.x == pytest.approx((816 - 60 - 419 - inset) / 332)
+    assert place.y_side == "b"
+    assert place.y == pytest.approx((1056 - 300 - 175 - inset) / 401)
+    assert handout_art.caption_place(["rightCaption"], wrapper) == handout_art.CaptionPlace()
+
+
+def test_caption_position_emission() -> None:
+    source = (FIXTURE / "handout.md").read_text(encoding="utf-8")
+    tex = handout_latex.build_handout_tex(parse_handout(source), FIXTURE)
+    assert "\\handoutartcaption{two}{l}{0.74288}{t}{0.84738}" in tex
+    source = source.replace(",top:630px,left:680px", ",top:500px")
+    tex = handout_latex.build_handout_tex(parse_handout(source), FIXTURE)
+    assert "\\handoutartcaption{two}{}{0.00000}{t}{0.59738}" in tex
