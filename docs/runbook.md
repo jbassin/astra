@@ -289,8 +289,10 @@ Exactly one campaign in `ontology/ontology-being/being.kdl` has `main #true`.
 
 The GM's per-session corrections live in `ontology/ontology-being/sessions.kdl`, beside
 `being.kdl`; the schema and the full rules are in `astra_ontology.sessions`. One node per
-session, keyed by its date (or a recap or special episode's `<last>-recap-of-<first>` token),
-with a `note` that says why:
+session, keyed by its date, or by the date token of a recap or special episode's id: a recap's
+`<last>-recap-of-<first>`, or a special's `<latest>-special-<slug>` (the two prediction
+roundtables predate the special form and keep recap-form ids). Each node has a `note` that says
+why:
 
 ```kdl
 session "2025-8-11" skip=#true { note "a different campaign; the campaign match got it wrong" }
