@@ -4,6 +4,14 @@ Updated 2026-11-01.
 
 ## In flight
 
+- **akasha pages are consolidated instead of piling up (2026-11-01, #197, astra-data
+  `f5c8d81`, deployed).** Pages grew one appended paragraph per edit, so they repeated and
+  contradicted themselves (Thessians: paragraphs from 8 commits). heartwood's instructions now
+  require each edit to fold new facts into the page; `just heartwood-layered` lists layered
+  pages; `apps/heartwood/py/consolidate.md` is the brief for rewriting them. Subagents
+  consolidated the 25 listed pages plus The Broker (Althane's index needed nothing), two
+  independent reviews checked every page for lost or invented facts, and their fixes are in.
+  Open canon questions are in the backlog.
 - **Player handouts build from Markdown (2026-11-01, #188, #189, #191, #193).** `just handout
   <name>` turns a Homebrewery-style `handout.md` plus its images into a PDF in the Liturgy
   book's look: several pages, several named images (column art or full-width bands), action
