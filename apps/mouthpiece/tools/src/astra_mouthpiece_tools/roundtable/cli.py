@@ -39,14 +39,13 @@ from astra_config import load_config
 from astra_llm import LiteLLMClient, ensure_openrouter_env
 from astra_llm.rlm import deno_available
 from astra_mouthpiece.hosts import load_hosts
-from astra_mouthpiece.inputs import episodes_root
 from astra_mouthpiece.lint import score_script
-from astra_mouthpiece.models import Script, SessionDigest
 from astra_mouthpiece.producer.tools import permitted_dates
 from astra_mouthpiece.roster import build_roster_block
 from astra_ontology_being import BEING_KDL_PATH, load_being
 
 from ..producer.experiment import host_shares, script_words
+from ..special import render_special
 from .agent import cutoff_after, run_dossier
 from .astra import build_astra_block
 from .fresh import stale_reasons
@@ -152,30 +151,7 @@ def _cmd_script(args: argparse.Namespace) -> int:
 
 
 def _cmd_render(args: argparse.Namespace) -> int:
-    # The Dagster module owns the provider/voice resolution; reuse it rather than fork it.
-    from astra_mouthpiece.assemble import assemble_episode
-    from astra_mouthpiece.assets import _voices
-    from astra_mouthpiece.resources import default_tts
-    from astra_mouthpiece.tts.synth import synthesize_script
-    from astra_sessions import atomic_write_text
-
-    run = Path(args.run_dir)
-    script = Script.model_validate_json((run / "script.json").read_text(encoding="utf-8"))
-    script = script.model_copy(update={"kind": "special"})
-    sid = script.session_id
-    out = episodes_root() / sid
-    out.mkdir(parents=True, exist_ok=True)
-    atomic_write_text(out / "script.json", script.model_dump_json(indent=2))
-    # No clean pass, so no stats: a special's digest is its id, synopsis and kind.
-    digest = SessionDigest(session_id=sid, synopsis=SYNOPSIS, kind="special")
-    atomic_write_text(out / "digest.json", digest.model_dump_json(indent=2, exclude_none=True))
-    manifest = synthesize_script(
-        script, provider=default_tts().build(), voices=_voices(load_hosts()), out_dir=out
-    )
-    atomic_write_text(out / "manifest.json", manifest.model_dump_json(indent=2))
-    episode, _transcript = assemble_episode(manifest, script, out_dir=out)
-    atomic_write_text(episodes_root() / ".last-rendered", sid)
-    print(f"rendered {episode} ({len(manifest.clips)} clips, {manifest.mode})")
+    print(render_special(Path(args.run_dir), SYNOPSIS))
     return 0
 
 
