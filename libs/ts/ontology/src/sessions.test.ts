@@ -63,3 +63,31 @@ describe("sessions.kdl", () => {
     );
   });
 });
+
+describe("sessions.kdl keys", () => {
+  test("accepts session dates, recap tokens and special tokens", () => {
+    for (const key of [
+      "2026-10-29",
+      "2026-10-29-recap-of-2025-8-28",
+      "2026-10-29-special-tier-list",
+      "2026-1-2-special-q4",
+    ]) {
+      expect(parseSessionOverrides(`session "${key}" kind="special"`).sessions[0]?.key).toBe(key);
+    }
+  });
+
+  test("rejects a malformed special or recap token", () => {
+    for (const key of [
+      "2026-10-29-special-",
+      "2026-10-29-special-Tier-List",
+      "2026-10-29-special-tier--list",
+      "2026-10-29-special-tier-list-",
+      "2026-10-29-special-tier_list",
+      "special-tier-list",
+      "2026-10-29-bonus-tier-list",
+      "2026-10-29-recap-of-tier-list",
+    ]) {
+      expect(() => parseSessionOverrides(`session "${key}"`)).toThrow(/special token/);
+    }
+  });
+});

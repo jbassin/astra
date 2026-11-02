@@ -59,6 +59,43 @@ def test_a_stored_kind_wins_over_the_id() -> None:
     assert kind_from_id(f"{SHOW}.2026-10-5") == "session"
 
 
+def test_a_special_form_id_reads_as_special() -> None:
+    assert kind_from_id(f"{SHOW}.2026-10-29-special-tier-list") == "special"
+    assert kind_from_id("2026-10-29-special-tier-list") == "special"  # a live <token>/ dir
+    assert kind_from_id(f"{SHOW}.2026-10-29-recap-of-2025-8-28") == "recap"
+    # Only the date token counts: a marker inside the arc slug changes nothing.
+    assert kind_from_id("000.a-special-show.2026-10-29") == "session"
+    assert kind_from_id("000.a-recap-of-show.2026-10-29") == "session"
+    old = Script.model_validate(_script(f"{SHOW}.2026-10-29-special-tier-list"))
+    assert old.kind == "special"
+
+
+def test_specials_on_one_date_sort_after_the_session_and_by_id() -> None:
+    """Two specials after the same session sort after it, in id order, whatever the input
+    order: the roundtable (recap-form id) before the tier list (special-form id)."""
+    roundtable = f"{SHOW}.2026-10-29-recap-of-2025-8-28"
+    tier_list = f"{SHOW}.2026-10-29-special-tier-list"
+    session = f"{SHOW}.2026-10-29"
+
+    def entry(sid: str, kind: EpisodeKind | None) -> SessionInput:
+        return SessionInput(
+            id=sid, title="T", synopsis="s", duration_ms=0, has_audio=False,
+            has_transcript=False, audio_version="", kind=kind,
+        )  # fmt: skip
+
+    for order in ([tier_list, roundtable, session], [session, tier_list, roundtable]):
+        kinds: dict[str, EpisodeKind | None] = {roundtable: "special", tier_list: None}
+        index = build_index(
+            [entry(sid, kinds.get(sid)) for sid in order], arc_titles={}, arc_main={}, hosts={}
+        )
+        assert [(e.id, e.kind, e.episode_no) for e in index.episodes] == [
+            (session, "session", 1),
+            (roundtable, "special", 0),
+            (tier_list, "special", 0),
+        ]
+        assert len({e.date_sort_key for e in index.episodes}) == 1
+
+
 def test_a_session_digest_needs_stats_and_a_special_does_not() -> None:
     with pytest.raises(ValidationError):
         SessionDigest.model_validate({"session_id": f"{SHOW}.2026-10-5", "synopsis": "s"})

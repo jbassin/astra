@@ -4,6 +4,7 @@
  *
  *   session "2025-8-11" skip=#true { note "The Blue Remains: a different campaign." }
  *   session "2026-10-19-recap-of-2025-8-28" kind="special"
+ *   session "2026-10-29-special-tier-list" kind="special"
  *   session "2026-9-3" campaign="urth"
  *
  * Unlike being.kdl (read through the generated JSON), this file is small and hand-edited,
@@ -20,14 +21,21 @@ import { decodeKdl, findRepoRoot, kdl, loadKdl, parseKdl } from "@astra/config";
 import { z } from "zod";
 
 const DATE = String.raw`\d{4}-\d{1,2}-\d{1,2}`;
-const KEY = new RegExp(`^${DATE}(-recap-of-${DATE})?$`);
+const SLUG = String.raw`[a-z0-9]+(?:-[a-z0-9]+)*`;
+/** A session date, a recap token (`<last>-recap-of-<first>`) or a special token
+ *  (`<latest>-special-<slug>`). */
+const KEY = new RegExp(`^${DATE}(?:-recap-of-${DATE}|-special-${SLUG})?$`);
 
 export const SessionOverrideSchema = z
   .object({
     key: kdl.arg(
       z
         .string()
-        .regex(KEY, "not a session key (YYYY-M-D) or a recap token (<date>-recap-of-<date>)"),
+        .regex(
+          KEY,
+          "not a session key (YYYY-M-D), a recap token (<date>-recap-of-<date>) or a special" +
+            " token (<date>-special-<slug>)",
+        ),
     ),
     skip: kdl.prop(z.boolean().default(false)),
     kind: kdl.prop(z.enum(["session", "recap", "special"]).optional()),

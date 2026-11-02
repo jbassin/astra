@@ -125,9 +125,13 @@ producer went live.
 **Producer experiment** (paid; writes only under `mouthpiece/experiments/`):
 `just mouthpiece-experiment <date>`. **Prediction roundtable special:**
 `just mouthpiece-roundtable dossier`, then `script <run-dir>`, then `render <run-dir>` (render
-is LIVE). The special's script and digest carry `kind: "special"`; its id keeps the recap form
-`<latest>-recap-of-<first>` so it stays unique and sorts as its arc's capstone, and its digest
-is `{session_id, synopsis, kind}` with no `stats`. Never show the dossier or script to the GM; report stats
+is LIVE). The special's script and digest carry `kind: "special"`, and its digest is
+`{session_id, synopsis, kind}` with no `stats`. A special's id token is
+`<latest>-special-<slug>` (slug `[a-z0-9]+(-[a-z0-9]+)*`, e.g.
+`000.through-a-song-darkly.2026-10-29-special-tier-list`), so two specials after the same
+session get distinct ids. It sorts on its latest date, after that session, then by id. The
+published roundtable predates the form and keeps its recap-form id
+(`<latest>-recap-of-<first>`); never rename a published id. Never show the dossier or script to the GM; report stats
 only. Both live in `apps/mouthpiece/tools` (`astra-mouthpiece-tools`, ADR 0023), which runs
 from a host checkout and is not in the Dagster image. Its roundtable `render` imports this
 package's private `assets._voices` and `resources.default_tts`, so keep their signatures.

@@ -55,6 +55,38 @@ def test_a_mistake_fails_the_load(text: str) -> None:
         parse_session_overrides(text)
 
 
+@pytest.mark.parametrize(
+    "key",
+    [
+        "2026-10-29",
+        "2026-10-29-recap-of-2025-8-28",
+        "2026-10-29-special-tier-list",
+        "2026-1-2-special-q4",
+    ],
+)
+def test_session_recap_and_special_keys_parse(key: str) -> None:
+    o = parse_session_overrides(f'session "{key}" kind="special"')
+    assert o.for_episode(f"000.through-a-song-darkly.{key}") is not None
+
+
+@pytest.mark.parametrize(
+    "key",
+    [
+        "2026-10-29-special-",  # no slug
+        "2026-10-29-special-Tier-List",  # upper case
+        "2026-10-29-special-tier--list",  # empty slug word
+        "2026-10-29-special-tier-list-",  # trailing hyphen
+        "2026-10-29-special-tier_list",  # underscore
+        "special-tier-list",  # no date
+        "2026-10-29-bonus-tier-list",  # unknown token
+        "2026-10-29-recap-of-tier-list",  # recap without a first date
+    ],
+)
+def test_a_malformed_token_fails_the_load(key: str) -> None:
+    with pytest.raises((KdlDecodeError, ValueError), match="special token"):
+        parse_session_overrides(f'session "{key}"')
+
+
 def test_a_missing_file_fails_rather_than_reading_no_overrides(tmp_path: Path) -> None:
     with pytest.raises(OSError):
         load_session_overrides(tmp_path / "sessions.kdl")
