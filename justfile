@@ -530,6 +530,11 @@ heartwood-backfill-reset:
 heartwood-requests *flags:
     @{{ops}} heartwood-requests "$@"
 
+# Read-only; see apps/heartwood/py/consolidate.md for what to do with the pages it lists.
+# List wiki pages whose paragraphs come from many commits (--content DIR, --min N; default 4).
+heartwood-layered *flags:
+    cd "{{justfile_directory()}}" && {{uv_bin}} run --frozen --no-sync astra-heartwood-agent layered "$@"
+
 # ==== mouthpiece: the producer experiments ====================================================
 
 # Idempotent; the first run fetches Pyodide into DENO_DIR (network), later runs are offline.

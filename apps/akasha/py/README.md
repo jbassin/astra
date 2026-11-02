@@ -19,7 +19,9 @@ and the snapshot carries it as `frontmatter.campaigns` (`[]` when absent). heart
 
 **Edit the wiki by hand** (in the astra-data clone, on `main`):
 
-1. Edit the `.vellum` pages under `akasha/content/`.
+1. Edit the `.vellum` pages under `akasha/content/`. Put each new fact into the paragraph on
+   its topic and fix the opening if it no longer sums up the subject; never append a
+   paragraph at the end (see [`consolidate.md`](../../heartwood/py/consolidate.md)).
 2. From a code checkout, validate the corpus, rebuild the snapshot and reseed the entity
    registry:
 

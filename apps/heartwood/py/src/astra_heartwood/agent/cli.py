@@ -17,6 +17,10 @@
     drain-requests [--requests DIR]  the host runner (0036): run ``just heartwood-agent`` for
                                   every pending Dagster request, oldest first, and write
                                   each result (exit 0 unless the runner itself crashed)
+    layered [--content DIR] [--min N]  pages whose body paragraphs come from at least N
+                                  (default 4) commits, printed ``commits<TAB>words<TAB>path``,
+                                  path relative to DIR, most first: the candidates for
+                                  ``consolidate.md``
 
 The ``just heartwood-*`` recipes compose these (justfile, ``--- heartwood (0033) ---``).
 
@@ -49,7 +53,7 @@ from astra_akasha_backend.snapshot import SNAPSHOT_PATH
 from astra_config import load_config
 from astra_sessions import date_key
 
-from . import ledger
+from . import layered, ledger
 from .publish import commit_message, unresolved_delta
 from .run import RunResult, run_session
 from .sessions import ingestible_dates
@@ -216,6 +220,12 @@ def _cmd_drain_requests(args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
+def _cmd_layered(args: argparse.Namespace) -> int:
+    for page in layered.layered_pages(args.content, args.min):
+        print(f"{page.commits}\t{page.words}\t{page.path.relative_to(args.content)}")
+    return EXIT_OK
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="astra-heartwood-agent", description="The heartwood akasha-wiki agent (0033)."
@@ -272,6 +282,13 @@ def build_parser() -> argparse.ArgumentParser:
         "--requests", type=Path, default=None, help="default: heartwood.requests-path"
     )
     drain.set_defaults(func=_cmd_drain_requests)
+
+    lay = sub.add_parser("layered", help="pages whose paragraphs come from many commits")
+    lay.add_argument("--content", type=Path, default=CONTENT_DIR, help="default: the corpus")
+    lay.add_argument(
+        "--min", type=int, default=layered.DEFAULT_MIN_COMMITS, help="fewest commits to list"
+    )
+    lay.set_defaults(func=_cmd_layered)
     return parser
 
 

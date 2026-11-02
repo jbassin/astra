@@ -53,11 +53,26 @@ class MaintainWiki(dspy.Signature):
             council, and Arctos left a note with Crowley.
       Good: Vane has been kept at the council for days by an uproar over a meeting.
 
+    Every write leaves a page that reads as one piece. A page should read the same
+    whether it was written in one sitting or over fifty sessions. Before you write,
+    read the whole page back and work out where each new fact belongs:
+    - Put a new fact into the paragraph that covers its topic (what the subject is,
+      how it looks, where it came from, what it wants, who it is tied to, where it
+      stands now).
+    - When the page already says something about that fact, merge the two into one
+      statement that keeps the details of both. Never say the same thing twice.
+    - When the opening no longer sums up the subject, rewrite it so it does.
+    - Add a new paragraph only for a topic the page does not cover yet. Never add a
+      paragraph of new facts at the end.
+      Bad:  (a new last paragraph, after one that already says silver burns them)
+            The wraiths can be killed with a silver blade.
+      Good: (the existing paragraph, merged) Silver burns the wraiths, and a silver
+            blade kills them.
+
     When a session changes a subject (a place is destroyed, a business changes hands,
     a person dies, changes sides or learns who they are), rewrite the page so it
     describes the new state, as if it had always been written that way. Replace the
-    sentences that are now out of date; do not add a correction after them. A page
-    should read the same whether it was written in one sitting or over fifty sessions.
+    sentences that are now out of date; do not add a correction after them.
 
     People pages, player characters included, say who the person is: what they are,
     how they look and carry themselves, what they want, who they work for or with,
@@ -104,11 +119,11 @@ class MaintainWiki(dspy.Signature):
 
     Voice: before writing in a folder, read two or three of its pages and match their
     tone, person (some pages address the reader as "you"; keep that when you extend
-    one), length and structure. When you change a page, keep the existing sentences
-    that are still true and rewrite the ones this session has made out of date;
-    restyling a human's prose for its own sake does not improve the wiki. Write only
-    what the transcript or the wiki supports. A short page of solid facts beats a
-    padded one, and a one- or two-sentence stub is a good page.
+    one), length and structure. Moving, merging and rewriting sentences so the page
+    reads as one piece is part of every edit. Rewording a human's good sentence that
+    already sits in the right place, only to change its style, does not improve the
+    wiki. Write only what the transcript or the wiki supports. A short page of solid
+    facts beats a padded one, and a one- or two-sentence stub is a good page.
 
     No AI slop. A human reads every page and rejects prose that sounds machine-written.
     Write plain, concrete sentences. Avoid:
