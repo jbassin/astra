@@ -91,10 +91,6 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 
 ## Deploy and ops
 
-- [ ] Flaky test: `apps/codex/ingest/src/releaseStore.test.ts` ("breaks a lock whose holder is
-      gone") failed once in a full `just ci` on 2026-11-01 and passed alone and on the rerun. It is
-      the likely cause of that day's unexplained pre-push failure. The next failure's output is in
-      `<git dir>/ci-last.log`; make the test independent of machine load.
 - 2026-9-26 had two real recordings. The session was transcribed from
   `craig_gd2cviJRhL0Q_2026-9-26_17-43-41` (330 MB) and came out empty;
   `craig_xhzWjJp5Tga6_2026-9-26_22-44-56` (579 MB) was never transcribed and is probably the

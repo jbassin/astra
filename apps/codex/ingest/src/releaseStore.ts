@@ -251,7 +251,11 @@ function lockHeld(lock: string): boolean {
 /** Holds `releases/.lock` while `fn` runs, so two release operations never interleave. The
  * lock records its holder's pid and start time; a lock whose holder is gone (a crashed
  * build) is broken. Once held, leftover `.staging-*` and `.current-*` entries from before
- * this acquisition (a crashed build's) are deleted: only a lock holder creates them. */
+ * this acquisition (a crashed build's) are deleted: only a lock holder creates them, and this
+ * runs before `fn`, so nothing of this operation's own exists yet. "Before" is measured
+ * against the lock dir's own mtime, never `Date.now()`: file times come from the kernel's
+ * file clock, which can read ahead of `Date.now()` for stretches, and then a leftover made
+ * just before the lock looked newer than the acquisition and survived. */
 export async function withReleaseLock<T>(
   releasesDir: string,
   fn: () => T | Promise<T>,
@@ -272,6 +276,7 @@ export async function withReleaseLock<T>(
     }
   }
   const acquired = Date.now();
+  const acquiredMtime = lstatSync(lock).mtimeMs;
   const owner: LockOwner = {
     pid: process.pid,
     procStart: processStartTicks(process.pid),
@@ -282,7 +287,7 @@ export async function withReleaseLock<T>(
     for (const name of readdirSync(releasesDir)) {
       if (!name.startsWith(".staging-") && !name.startsWith(".current-")) continue;
       const path = join(releasesDir, name);
-      if (lstatSync(path).mtimeMs < acquired) {
+      if (lstatSync(path).mtimeMs <= acquiredMtime) {
         console.warn(`release: removing ${path}, left by an earlier operation`);
         rmSync(path, { recursive: true, force: true });
       }
