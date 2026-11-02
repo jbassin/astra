@@ -114,6 +114,12 @@ checkout -- akasha/content akasha/snapshot heartwood/agent-runs.jsonl entity/ent
   (`ASTRA_CONTENT_ROOT=/tmp/astra-data-campaigns uv run akasha-snapshot`), commit
   `akasha/content` and `akasha/snapshot`, and push. Under the git-publish lock, `git pull
   --ff-only` the live clone, then `just deploy akasha-frontend`. A second run changes nothing.
+- **Consolidate layered pages.** Pages that grew one appended paragraph per edit repeat and
+  contradict themselves. `just heartwood-layered` lists them (read-only; `commits`, `words`,
+  path, most layered first). Have an agent rewrite each page in a private clone of astra-data
+  by following [`consolidate.md`](./consolidate.md), get an independent review of each old
+  and new page for dropped, added or changed facts, then publish the clone like any hand
+  edit (as in the `campaigns` backfill above).
 - **Install the request units:** `just units-install heartwood-request`. The runner recipe
   `just heartwood-requests` asks first; `heartwood-request.service` passes `--yes`. Warm the
   sandbox after a Deno or Pyodide change: `just heartwood-sandbox-warm`.
