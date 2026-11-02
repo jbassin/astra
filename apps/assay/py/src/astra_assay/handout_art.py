@@ -39,7 +39,38 @@ MASKS: dict[str, tuple[float, float]] = {
     "chapterSidebarRightHalfTop": (332, 401),
     "chapterSidebarRightHalfBottom": (332, 401),
     "fullSidebarLeftHalfTop": (332, 480),
+    "fullSidebarLeftHalfBottom": (332, 480),
+    "fullSidebarRightHalfTop": (332, 480),
+    "fullSidebarRightHalfBottom": (332, 480),
 }
+#: Where each window class puts the art on its page, as (slot, position, size). The slot is
+#: ``one`` or ``two`` (a column) or ``band`` (across the text width); the position is the top
+#: (``t``) or bottom (``b``) of it. A column art's size is ``full`` (it fills the column) or
+#: ``half`` (it takes what the column's text leaves, within limits); a band's is ``band``.
+SLOTS: dict[str, tuple[str, str, str]] = {
+    "leftSide": ("one", "t", "full"),
+    "rightSide": ("two", "t", "full"),
+    "fullSidebarRight": ("two", "t", "full"),
+    "fullSidebarLeft": ("one", "t", "full"),
+    "fullSidebarBottom": ("band", "b", "band"),
+    "narrowSidebarBottom": ("band", "b", "band"),
+    "fullSidebarTop": ("band", "t", "band"),
+    "chapterSidebarRight": ("two", "t", "full"),
+    "chapterSidebarLeft": ("one", "t", "full"),
+    "chapterSidebarLeftHalfTop": ("one", "t", "half"),
+    "chapterSidebarLeftHalfBottom": ("one", "b", "half"),
+    "chapterSidebarRightHalfTop": ("two", "t", "half"),
+    "chapterSidebarRightHalfBottom": ("two", "b", "half"),
+    "fullSidebarLeftHalfTop": ("one", "t", "half"),
+    "fullSidebarLeftHalfBottom": ("one", "b", "half"),
+    "fullSidebarRightHalfTop": ("two", "t", "half"),
+    "fullSidebarRightHalfBottom": ("two", "b", "half"),
+}
+#: An imageWrapper with no window class: ``.imageWrapper``'s default window, right column.
+DEFAULT_SLOT: tuple[str, str, str] = ("two", "t", "half")
+#: The local image a lone ``{{imageWrapper}}`` falls back to, looked up in this order.
+ART_NAMES: tuple[str, ...] = ("art.png", "art.jpg", "art.jpeg")
+_BARE_NAME_RE = re.compile(r"\w[\w.+-]*\.(?:png|jpe?g)", re.IGNORECASE)
 _PX_RE = re.compile(r"(-?[\w-]+)\s*:\s*(-?[\d.]+)px")
 
 
@@ -70,6 +101,49 @@ def mask_size(wrapper_classes: list[str]) -> tuple[float, float]:
             elif key == "--maskHeight":
                 height = float(value)
     return width, height
+
+
+def slot_of(wrapper_classes: list[str]) -> tuple[str, str, str]:
+    """(slot, position, size) for an imageWrapper's class list: the last window class wins."""
+    slot = DEFAULT_SLOT
+    for cls in wrapper_classes:
+        slot = SLOTS.get(cls, slot)
+    return slot
+
+
+def find_art(handout_dir: Path) -> Path | None:
+    """The folder's ``art.*`` file, if any."""
+    for name in ART_NAMES:
+        if (handout_dir / name).is_file():
+            return handout_dir / name
+    return None
+
+
+def resolve_images(srcs: list[tuple[int, str]], handout_dir: Path | None) -> list[Path]:
+    """The file for each image, from its (source line, ``![](...)`` target).
+
+    A bare file name names that file in the handout folder. Anything else (a URL, a missing
+    file) falls back to the folder's ``art.*``, but only when the handout has one image."""
+    out: list[Path] = []
+    for line, src in srcs:
+        if handout_dir is not None and _BARE_NAME_RE.fullmatch(src):
+            path = handout_dir / src
+            if path.is_file():
+                out.append(path)
+                continue
+        if len(srcs) > 1:
+            raise ArtError(
+                f"line {line}: ![]({src}) names no file in the handout folder; with several "
+                "images, each needs the bare file name of an image there (like art-2.jpeg)"
+            )
+        fallback = find_art(handout_dir) if handout_dir is not None else None
+        if fallback is None:
+            raise ArtError(
+                f"line {line}: the handout has an {{{{imageWrapper}}}}, but ![]({src}) names no "
+                f"file in its folder and the folder has no {' / '.join(ART_NAMES)}"
+            )
+        out.append(fallback)
+    return out
 
 
 def parse_placement(payload: str) -> dict[str, float]:

@@ -28,7 +28,7 @@ All commands run from the repo root. Telemetry goes to SigNoz as `astra.assay`; 
 | `uv run assay store check` / `store fmt` | Validates the store against its model and format / rewrites it canonically. |
 | `uv run assay export-codex [--data-root PATH]` | Rebuilds `out/spell-power.json` alone from the snapshot and the committed `results/`, without refitting. |
 | `just book [--no-compile] [--out DIR]` | Runs `assay export-book`: the committed `.tex` and, unless `--no-compile`, the PDF into `assay.book-out-path` (or `DIR`). |
-| `just handout <name> [--no-compile] [--dir DIR]` | Runs `assay handout`: a one-page player handout PDF from `<assay.handouts-path>/<name>/handout.md` (below). |
+| `just handout <name> [--no-compile] [--dir DIR]` | Runs `assay handout`: a player handout PDF from `<assay.handouts-path>/<name>/handout.md` (below). |
 | `just assay-store-check` | `assay store check` with telemetry off; part of `just check` and CI. |
 
 Tests: `uv run pytest apps/assay/py`. They never touch the Foundry snapshot: they run off the
@@ -264,16 +264,20 @@ permission to distribute the PDF with them, so distribution needs no font check.
 
 1. Make a folder `/ruby/data/astra-state/handouts/<name>/`. Copying an existing one (for example
    `project-iron-seraph/`) is the quickest start: it has the header, art, caption and rule-block card.
-2. Edit `handout.md` and drop the image in as `art.png` or `art.jpg`. To move the crop, change
-   the `{top,left,width}` numbers on the `{{borderImage}}` line, as in Homebrewery.
+2. Edit `handout.md` and drop the images into the folder. Name each one in its
+   `{{borderImage ![](art-2.jpeg)}}` by its bare file name; a handout with a single image may
+   keep a URL there and call the file `art.png` or `art.jpg`. The imageWrapper's class places
+   the image (below). To move the crop, change the `{top,left,width}` numbers, as in
+   Homebrewery; with none, the image is cover-fit and centred.
 3. `just handout <name>`, then open `<name>/<name>.pdf`. A block the builder doesn't know stops
-   the build and names the block and line; a second page means the text overflowed (it warns).
+   the build and names the block and line. If the text runs past the last page, the builder
+   adds pages and warns.
 
 The six Vol.1 addenda are already there: project-iron-seraph, ghosts-of-raelion, belvedere,
 the-scale-timekeeper, the-scale-slayer and hearts-and-you. The folders have no git history; the
 original text is in `books/liturgy_vol1/liturgy_of_the_iridite_vol1.md`.
 
-**Build a player handout.** A handout is one "Addendum" page in the book's look, written in
+**Build a player handout.** A handout is one or more "Addendum" pages in the book's look, written in
 the Homebrewery-style Markdown of Vol.1. Each lives in its own folder under
 `assay.handouts-path` (`/ruby/data/astra-state/handouts/<name>/`): `handout.md`, `art.png` or
 `art.jpg`/`art.jpeg` when it has art, and the built `<name>.pdf`. The sources are spoilers
@@ -283,16 +287,28 @@ folder. `handout.py` parses, `handout_latex.py` emits against `handout.sty` (whi
 `liturgy.sty` with `\liturgyroot` set to that directory).
 
 Supported: the `{{chapter}}` header (`## eyebrow`, `# Title`, `___`), a drop cap on the first
-paragraph, `#`–`#####` headings, `\column`, colon spacer lines, `{{divine}}`, `{{mortal}}`,
-`{{joined}}`, `{{f}}` (free-action glyph), `**bold**`, `*italic*`, `_italic_`, `<br>`,
-backslash escapes, tables, `**Key** :: value` rows, `{{imageWrapper}}` with `{{borderImage}}`
-and `{{caption}}` (the local `art.*`), `{{ruleBlock}}` with
-`{{preamble}}`, `{{traits}}`/`{{trait}}` and `{{definitions}}`, `{{transcript}}`,
-`{{rightAligned}}` and `{{footnote A | B}}`. The art crop follows the borderImage's
-`{top,left,width}` payload inside the imageWrapper's mask window (`handout_art.py`), fitted to
-the frame's aspect without stretching; with no payload the art is cover-fit and centred. Other
-payloads, class lists, `{{resetCounting}}` and comments are ignored; any other block fails the
-build with its name and line. Text that does not fit one page continues on a second, with a warning.
+paragraph, `#`–`#####` headings, `\column` and `\page`, colon spacer lines, `{{divine}}`,
+`{{mortal}}`, `{{joined}}`, the action glyphs `{{a}}` `{{d}}` `{{t}}` `{{r}}` `{{f}}` (one, two,
+three actions, reaction, free; inline or after a card's `{{title}}`), `**bold**`, `*italic*`,
+`_italic_`, `<br>`, backslash escapes, tables, `**Key** :: value` rows, `{{imageWrapper}}` with
+`{{borderImage}}` and `{{caption}}`, `{{ruleBlock}}` with `{{preamble}}`,
+`{{traits}}`/`{{trait}}` and `{{definitions}}`, `{{transcript}}`, `{{rightAligned}}` and
+`{{footnote A | B}}`. The art crop follows the borderImage's `{top,left,width}` payload inside
+the imageWrapper's mask window (`handout_art.py`), fitted to the frame's aspect without
+stretching. Other payloads, class lists, `{{resetCounting}}` and comments are ignored; any other
+block fails the build with its name and line.
+
+Pages and placement: `\page` starts a page, and each page may have one `\column`. Text flows
+from column one to column two, then on to the next page's column one, ahead of that page's own
+text; a card never splits. Page one shows the first `{{chapter}}` header; a later page shows
+one only if it has its own. An image sits on the page where its imageWrapper appears, placed by
+its class, at most one per slot per page: `chapterSidebarRight`/`Left` (and the `fullSidebar`
+and `leftSide`/`rightSide` columns) fill the right or left column; the `HalfTop`/`HalfBottom`
+variants sit at that column's top or bottom and take what its text leaves (30–70% of it);
+`fullSidebarTop`, `fullSidebarBottom` and `narrowSidebarBottom` are a band across both columns
+at the page's top or bottom, as tall as the class's mask aspect (at most 60% of the page). No
+class means the right column's top. A colon spacer at the top of a column that holds art is
+dropped.
 
 **The archived review workshop.** The workshop files live under
 `thoughts/archive/assay-workshop/`: the scriptorium review UI source (`review-ui/`) and the

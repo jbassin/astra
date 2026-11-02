@@ -13,8 +13,9 @@ import subprocess
 from pathlib import Path
 
 import pytest
-from astra_assay import handout_latex
-from astra_assay.handout import (
+from astra_assay import handout_art, handout_latex
+from astra_assay.handout import parse_handout
+from astra_assay.handout_model import (
     DefRow,
     HandoutError,
     Heading,
@@ -23,7 +24,6 @@ from astra_assay.handout import (
     Spacer,
     Table,
     Transcript,
-    parse_handout,
 )
 
 FIXTURE = Path(__file__).parent / "fixtures" / "handout"
@@ -34,7 +34,7 @@ def _source() -> str:
 
 
 def _tex() -> str:
-    return handout_latex.build_handout_tex(parse_handout(_source()), FIXTURE / "art.png")
+    return handout_latex.build_handout_tex(parse_handout(_source()), FIXTURE)
 
 
 def test_header_footer_and_art_are_lifted_out_of_the_flow() -> None:
@@ -42,15 +42,16 @@ def test_header_footer_and_art_are_lifted_out_of_the_flow() -> None:
     assert h.eyebrow == "Addendum"
     assert h.title == "Test Pattern Æther"
     assert h.footer == "Addendum | Test Pattern"
-    assert h.art is not None
-    assert h.art.caption == ["Line one", "Line two"]
-    assert h.art.caption_align == "l"
+    assert len(h.arts) == 1
+    assert h.arts[0].caption == ["Line one", "Line two"]
+    assert h.arts[0].caption_align == "l"
     # The trailing \column (before the imageWrapper) leaves no third column.
-    assert len(h.columns) == 2
+    assert len(h.pages) == 1
+    assert len(h.pages[0].columns) == 2
 
 
 def test_column_one_holds_the_prose() -> None:
-    one = parse_handout(_source()).columns[0]
+    one = parse_handout(_source()).pages[0].columns[0]
     assert [type(el) for el in one] == [Paragraph, Heading, Paragraph]
     assert isinstance(one[1], Heading)
     assert one[1].level == 3
@@ -58,7 +59,7 @@ def test_column_one_holds_the_prose() -> None:
 
 
 def test_rule_block_card() -> None:
-    two = parse_handout(_source()).columns[1]
+    two = parse_handout(_source()).pages[0].columns[1]
     assert isinstance(two[0], Spacer)  # the art reservation, dropped at emission
     card = two[1]
     assert isinstance(card, RuleBlock)
@@ -79,7 +80,7 @@ def test_rule_block_card() -> None:
 
 
 def test_transcript_and_right_aligned() -> None:
-    two = parse_handout(_source()).columns[1]
+    two = parse_handout(_source()).pages[0].columns[1]
     assert isinstance(two[2], Spacer)
     assert two[2].lines == 1
     transcript = two[3]
@@ -108,8 +109,10 @@ def test_latex_emission() -> None:
     assert "escaped *asterisk*" in tex  # a markdown escape is a literal
     assert "a dash \\hochar{—} here" in tex
     assert "F\\hochar{æ}rrin" in tex
-    assert "\\handoutart{art.png}{Line one\\\\Line two}{l}" in tex
+    assert "\\handoutart{two}{art.png}{Line one\\\\Line two}{l}{t}{0}" in tex
     assert "\\handoutpage" in tex
+    assert tex.count("\\begin{handouthead}") == 1
+    assert "\\handoutfinish" in tex
     assert "\\begin{document}" in tex
 
 
@@ -180,18 +183,18 @@ def test_other_structural_errors() -> None:
         parse_handout("{{chapter\n# T\n}}\n\nA stray {{divine opener.\n")
     with pytest.raises(HandoutError, match="Title"):
         parse_handout("Just text.\n")
-    with pytest.raises(HandoutError, match="at most two columns"):
+    with pytest.raises(HandoutError, match="page 1 has more than two columns"):
         parse_handout("{{chapter\n# T\n}}\n\na\n\n\\column\n\nb\n\n\\column\n\nc\n")
     with pytest.raises(HandoutError, match=r"no art\.png"):
         handout_latex.build_handout_tex(parse_handout(_source()), None)
 
 
 def test_find_art_prefers_png(tmp_path: Path) -> None:
-    assert handout_latex.find_art(tmp_path) is None
+    assert handout_art.find_art(tmp_path) is None
     (tmp_path / "art.jpeg").write_bytes(b"x")
-    assert handout_latex.find_art(tmp_path) == tmp_path / "art.jpeg"
+    assert handout_art.find_art(tmp_path) == tmp_path / "art.jpeg"
     (tmp_path / "art.png").write_bytes(b"x")
-    assert handout_latex.find_art(tmp_path) == tmp_path / "art.png"
+    assert handout_art.find_art(tmp_path) == tmp_path / "art.png"
 
 
 @pytest.mark.skipif(shutil.which("tectonic") is None, reason="tectonic is not on PATH")
@@ -199,7 +202,7 @@ def test_fixture_compiles_to_one_page(tmp_path: Path) -> None:
     tectonic = shutil.which("tectonic")
     assert tectonic is not None
     pdf = tmp_path / "fixture.pdf"
-    overflow = handout_latex.compile_handout(_tex(), FIXTURE / "art.png", pdf, tectonic)
+    overflow = handout_latex.compile_handout(_tex(), [FIXTURE / "art.png"], pdf, tectonic)
     assert pdf.read_bytes().startswith(b"%PDF")
     assert overflow is False
     assert sorted(p.name for p in tmp_path.iterdir()) == ["fixture.pdf"]

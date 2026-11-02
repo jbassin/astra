@@ -1,4 +1,4 @@
-% handout.sty --- one-page player handouts ("Addendum" pages) in the Liturgy look
+% handout.sty --- player handouts ("Addendum" pages) in the Liturgy look
 % Built on liturgy.sty: same fonts, parchment, header and spell-block plumbing.
 % `assay handout` (astra_assay/handout.py) writes the document; it defines
 % \liturgyroot (this directory, absolute) before loading this package.
@@ -91,21 +91,32 @@
 \newcommand{\hocardrule}{\par\vspace{2pt}\hrule height 0.5pt\vspace{3pt}}
 
 % ---------------------------------------------------------------- page layout
-% A handout is a full-width header, then two columns. Column one is set
-% first; whatever does not fit its height continues at the top of column
-% two's text, below the framed art, followed by column two's own content.
-% The art takes whatever height column two's text leaves free, clamped to
-% [\hoartmin, \hoartmax] of the column height. Text that still does not fit
-% continues on a second page (and handout.py warns: "HANDOUT-OVERFLOW").
+% A handout is a run of pages. handout.py writes one \hopagebegin ...
+% \handoutpage group per source page (\page starts the next): an optional
+% full-width header, two columns, and up to three framed arts, one per slot:
+% each column (at its top or bottom) and a band across the text width (at
+% the top or bottom of the page). Text flows from column one into column
+% two, then into the next page's column one, ahead of that page's own text.
+% \handoutfinish sets what is still left on extra pages, two columns each
+% (and handout.py warns: "HANDOUT-OVERFLOW"). The columns are \vsplit by
+% hand, never multicols, which balances columns and overrides breaks; a
+% card is one unbreakable box, so it never splits across columns or pages.
+% A half-column art takes whatever height its column's text leaves free,
+% clamped to [\hoartmin, \hoartmax] of the column height; a full-column art
+% takes the whole column. A band is as tall as its mask's aspect makes it,
+% at most \hobandmax of the height below the header.
 \newlength{\ho@colw}
 \setlength{\ho@colw}{\dimexpr(\textwidth-\columnsep)/2\relax}
 \newlength{\ho@H}
 \newlength{\ho@art}
+\newlength{\ho@aw}
 \newlength{\ho@room}
+\newlength{\ho@band}
 \newlength{\hoheadgap}\setlength{\hoheadgap}{0.25cm}
 \newlength{\hoartgap}\setlength{\hoartgap}{0.45cm}
 \newcommand{\hoartmin}{0.30}
 \newcommand{\hoartmax}{0.70}
+\newcommand{\hobandmax}{0.60}
 \newsavebox{\ho@head}
 \newsavebox{\ho@one}
 \newsavebox{\ho@two}
@@ -113,6 +124,8 @@
 \newsavebox{\ho@rest}
 \newsavebox{\ho@right}
 \newsavebox{\ho@img}
+\newsavebox{\ho@carry}
+\newcount\ho@extra
 
 \def\ho@colsetup{%
   \hsize\ho@colw \linewidth\hsize \columnwidth\hsize
@@ -130,29 +143,48 @@
   \global\setbox\ho@two\vbox\bgroup\ho@colsetup
 }{\par\egroup}
 
-% \handoutart{image path}{caption, lines split by \\}{l or r}
-\newif\ifho@art
+% \handoutart{slot}{image}{caption, lines split by \\}{l or r}{t or b}{size}
+% slot: one or two (a column) or band. size: a band's height/width; for a
+% column art, 1 (it fills the column) or 0 (it takes what the text leaves).
+\newcommand{\handoutart}[6]{%
+  \@namedef{ho@has@#1}{}%
+  \@namedef{ho@path@#1}{#2}%
+  \@namedef{ho@cap@#1}{#3}%
+  \@namedef{ho@capal@#1}{#4}%
+  \@namedef{ho@pos@#1}{#5}%
+  \@namedef{ho@size@#1}{#6}}
+% \handoutartcrop{slot}{x}{y}{width}{height}{image height/width}: the
+% rectangle of the image Homebrewery's mask window showed, in image-width
+% units (handout_art.mask_crop). Without it the art cover-fills the frame.
+\newif\ifho@crop
+\newcommand{\handoutartcrop}[6]{%
+  \@namedef{ho@crop@#1}{\ho@croptrue
+    \def\ho@cx{#2}\def\ho@cy{#3}\def\ho@cw{#4}\def\ho@ch{#5}\def\ho@ir{#6}}}
+\newcommand{\ho@ifart}[1]{\@ifundefined{ho@has@#1}{\@secondoftwo}{\@firstoftwo}}
+\newcommand{\ho@ifpos}[2]{\if#2\@nameuse{ho@pos@#1}\expandafter\@firstoftwo
+  \else\expandafter\@secondoftwo\fi}
+% load a slot's art into the macros \ho@drawart reads
 \newcommand{\ho@artpath}{}
 \newcommand{\ho@caption}{}
 \newcommand{\ho@captionalign}{r}
-\newcommand{\handoutart}[3]{%
-  \ho@arttrue
-  \renewcommand{\ho@artpath}{#1}%
-  \renewcommand{\ho@caption}{#2}%
-  \renewcommand{\ho@captionalign}{#3}}
-% \handoutartcrop{x}{y}{width}{height}{image height/width}: the rectangle of
-% the image Homebrewery's mask window showed, in image-width units
-% (handout_art.mask_crop). Without it the art cover-fills the frame, centred.
-\newif\ifho@crop
-\newcommand{\handoutartcrop}[5]{%
-  \ho@croptrue
-  \def\ho@cx{#1}\def\ho@cy{#2}\def\ho@cw{#3}\def\ho@ch{#4}\def\ho@ir{#5}}
+\newcommand{\ho@loadart}[1]{%
+  \edef\ho@artpath{\@nameuse{ho@path@#1}}%
+  \expandafter\let\expandafter\ho@caption\csname ho@cap@#1\endcsname
+  \edef\ho@captionalign{\@nameuse{ho@capal@#1}}%
+  \ho@cropfalse\@nameuse{ho@crop@#1}}
+% each page starts with no header and no art
+\newcommand{\hopagebegin}{%
+  \global\setbox\ho@head\box\voidb@x
+  \@for\ho@s:=one,two,band\do{%
+    \expandafter\let\csname ho@has@\ho@s\endcsname\relax
+    \expandafter\let\csname ho@crop@\ho@s\endcsname\relax}}
+
 % The frame's aspect differs from the mask's, so fit, don't stretch: the
 % smallest crop of the frame's aspect holding that rectangle, centred on it,
 % shrunk to the image and slid inside it (handout_art.fit_crop, the same sums).
 % Sets \ho@D (the image's drawn width) and \ho@x/\ho@y (the crop's corner).
 \newcommand{\ho@fitcrop}{%
-  \pgfmathsetmacro{\ho@fa}{\ho@art/\ho@colw}%
+  \pgfmathsetmacro{\ho@fa}{\ho@art/\ho@aw}%
   \pgfmathsetmacro{\ho@w}{(\ho@ch/\ho@cw > \ho@fa) ? \ho@ch/\ho@fa : \ho@cw}%
   \pgfmathsetmacro{\ho@h}{\ho@w*\ho@fa}%
   \pgfmathsetmacro{\ho@s}{min(1, 1/\ho@w, \ho@ir/\ho@h)}%
@@ -160,7 +192,7 @@
   \pgfmathsetmacro{\ho@h}{\ho@h*\ho@s}%
   \pgfmathsetmacro{\ho@x}{min(max(\ho@cx+\ho@cw/2-\ho@w/2, 0), 1-\ho@w)}%
   \pgfmathsetmacro{\ho@y}{min(max(\ho@cy+\ho@ch/2-\ho@h/2, 0), \ho@ir-\ho@h)}%
-  \pgfmathsetlengthmacro{\ho@D}{\ho@colw/\ho@w}}
+  \pgfmathsetlengthmacro{\ho@D}{\ho@aw/\ho@w}}
 
 % The caption: white small caps over a soft dark halo (the CSS stacks
 % drop-shadows; drawn as offset translucent copies).
@@ -180,20 +212,20 @@
     at ($(owSE) + (-9pt, 12pt)$) {\ho@captiontext{\ho@caption}};
 }
 
-% The framed window: the art fills it (the payload's crop, else cover-fit and
-% centred), clipped to the
-% book's chamfer and framed with the book's gold 9-patch.
+% The framed window, \ho@aw by \ho@art: the loaded art fills it (the
+% payload's crop, else cover-fit and centred), clipped to the book's chamfer
+% and framed with the book's gold 9-patch.
 \newcommand{\ho@drawart}{%
   \sbox{\ho@img}{\includegraphics[width=100pt]{\ho@artpath}}%
-  \pgfmathsetmacro{\ho@tall}{(\ht\ho@img/100pt) > (\ho@art/\ho@colw) ? 1 : 0}%
-  \hbox to \ho@colw{%
+  \pgfmathsetmacro{\ho@tall}{(\ht\ho@img/100pt) > (\ho@art/\ho@aw) ? 1 : 0}%
+  \hbox to \ho@aw{%
     \begin{tikzpicture}
-      \setlength{\openerwindowwidth}{\ho@colw}%
+      \setlength{\openerwindowwidth}{\ho@aw}%
       \setlength{\openerwindowheight}{\ho@art}%
       \coordinate (owSW) at (0pt, 0pt);
-      \coordinate (owSE) at (\ho@colw, 0pt);
+      \coordinate (owSE) at (\ho@aw, 0pt);
       \coordinate (owNW) at (0pt, \ho@art);
-      \coordinate (owNE) at (\ho@colw, \ho@art);
+      \coordinate (owNE) at (\ho@aw, \ho@art);
       \begin{scope}
         \openerartclip
         \ifho@crop
@@ -204,7 +236,7 @@
         \else
           \node[inner sep=0pt] at ($(owSW)!0.5!(owNE)$) {%
             \ifnum\ho@tall=1
-              \includegraphics[width=\ho@colw]{\ho@artpath}%
+              \includegraphics[width=\ho@aw]{\ho@artpath}%
             \else
               \includegraphics[height=\ho@art]{\ho@artpath}%
             \fi};
@@ -216,48 +248,95 @@
       \useasboundingbox (owSW) rectangle (owNE);
     \end{tikzpicture}\hss}}
 
+% \ho@fill{slot}{text box}{column box}: set the column box, \ho@H tall, from
+% the text box, with the slot's art at its top or bottom. What does not fit
+% stays in the text box.
+\newif\ifho@full
+\newcommand{\ho@fill}[3]{%
+  \setlength{\ho@aw}{\ho@colw}%
+  \ho@fullfalse
+  \ho@ifart{#1}{%
+    \ifdim\@nameuse{ho@size@#1}pt>0pt
+      \ho@fulltrue
+      \setlength{\ho@art}{\ho@H}%
+    \else
+      \setlength{\ho@art}{\dimexpr\ho@H-\ht#2-\dp#2-\hoartgap\relax}%
+      \ifdim\ho@art<\hoartmin\ho@H \setlength{\ho@art}{\hoartmin\ho@H}\fi
+      \ifdim\ho@art>\hoartmax\ho@H \setlength{\ho@art}{\hoartmax\ho@H}\fi
+      \setlength{\ho@room}{\dimexpr\ho@H-\ho@art-\hoartgap\relax}%
+    \fi}{\setlength{\ho@room}{\ho@H}}%
+  \ifho@full
+    \setbox#3=\box\voidb@x
+  \else\ifdim\dimexpr\ht#2+\dp#2\relax>\ho@room
+    \setbox#3=\vsplit#2 to \ho@room
+  \else
+    \setbox#3=\box#2
+  \fi\fi
+  \setbox#3=\vbox to \ho@H{%
+    \ho@ifart{#1}{\ho@ifpos{#1}{t}{\ho@loadart{#1}\ho@drawart
+      \ifho@full\else\nointerlineskip\vskip\hoartgap\fi}{}}{}%
+    \unvbox#3\vss
+    \ho@ifart{#1}{\ho@ifpos{#1}{b}{\ifho@full\else\nointerlineskip\vskip\hoartgap\fi
+      \ho@loadart{#1}\ho@drawart}{}}{}}}
+
+\newcommand{\ho@drawband}{%
+  \setlength{\ho@aw}{\textwidth}\setlength{\ho@art}{\ho@band}%
+  \ho@loadart{band}\noindent\ho@drawart\par}
+
 \newcommand{\handoutpage}{%
   \par
-  \setlength{\ho@H}{\dimexpr\textheight-\ht\ho@head-\dp\ho@head-\hoheadgap-2pt\relax}%
   \vbadness=10000 \vfuzz=\maxdimen
   \splittopskip=0pt \splitmaxdepth=\maxdimen
-  % column one: as much as fits; the rest joins column two
-  \ifdim\dimexpr\ht\ho@one+\dp\ho@one\relax>\ho@H
-    \setbox\ho@left=\vsplit\ho@one to \ho@H
+  \ifvoid\ho@head
+    \setlength{\ho@H}{\dimexpr\textheight-2pt\relax}%
   \else
-    \setbox\ho@left=\box\ho@one
+    \setlength{\ho@H}{\dimexpr\textheight-\ht\ho@head-\dp\ho@head-\hoheadgap-2pt\relax}%
   \fi
-  \setbox\ho@left=\vbox to \ho@H{\unvbox\ho@left\vss}%
+  \ho@ifart{band}{%
+    \setlength{\ho@band}{\@nameuse{ho@size@band}\textwidth}%
+    \ifdim\ho@band>\hobandmax\ho@H \setlength{\ho@band}{\hobandmax\ho@H}\fi
+    \addtolength{\ho@H}{-\ho@band}\addtolength{\ho@H}{-\hoartgap}}{}%
+  % the text carried from the last page comes first in column one
+  \ifvoid\ho@carry\else
+    \setbox\ho@one=\vbox{\ho@colsetup
+      \unvbox\ho@carry
+      \ifdim\ht\ho@one>0pt\vskip 0.5\baselineskip\fi
+      \unvbox\ho@one}%
+  \fi
+  % column one: as much as fits; the rest joins column two
+  \ho@fill{one}{\ho@one}{\ho@left}%
   \setbox\ho@rest=\vbox{\ho@colsetup
     \ifvoid\ho@one\else\unvbox\ho@one\fi
     \ifvoid\ho@one\ifvoid\ho@two\else\ifdim\ht\ho@two>0pt\vskip 0.5\baselineskip\fi\fi\fi
     \ifvoid\ho@two\else\unvbox\ho@two\fi}%
-  % the art takes what column two's text leaves free
-  \ifho@art
-    \setlength{\ho@art}{\dimexpr\ho@H-\ht\ho@rest-\dp\ho@rest-\hoartgap\relax}%
-    \ifdim\ho@art<\hoartmin\ho@H \setlength{\ho@art}{\hoartmin\ho@H}\fi
-    \ifdim\ho@art>\hoartmax\ho@H \setlength{\ho@art}{\hoartmax\ho@H}\fi
-    \setlength{\ho@room}{\dimexpr\ho@H-\ho@art-\hoartgap\relax}%
-  \else
-    \setlength{\ho@art}{0pt}%
-    \setlength{\ho@room}{\ho@H}%
+  % column two: as much as fits; the rest carries to the next page
+  \ho@fill{two}{\ho@rest}{\ho@right}%
+  \setbox\ho@carry=\box\ho@rest
+  \ifvoid\ho@head\else
+    \noindent\box\ho@head\par
+    \nointerlineskip\vskip\hoheadgap
   \fi
-  \ifdim\dimexpr\ht\ho@rest+\dp\ho@rest\relax>\ho@room
-    \setbox\ho@right=\vsplit\ho@rest to \ho@room
-  \else
-    \setbox\ho@right=\box\ho@rest
-  \fi
-  \setbox\ho@right=\vbox to \ho@H{%
-    \ifho@art\ho@drawart\nointerlineskip\vskip\hoartgap\fi
-    \unvbox\ho@right\vss}%
-  \noindent\box\ho@head\par
-  \nointerlineskip\vskip\hoheadgap
+  \ho@ifart{band}{\ho@ifpos{band}{t}{\ho@drawband\nointerlineskip\vskip\hoartgap}{}}{}%
   \noindent\hbox to \textwidth{\box\ho@left\hfill\box\ho@right}\par
-  \ifvoid\ho@rest\else
-    \typeout{HANDOUT-OVERFLOW: content continues on a second page}%
-    \newpage
-    \begin{multicols}{2}\unvbox\ho@rest\end{multicols}%
-  \fi}
+  \ho@ifart{band}{\ho@ifpos{band}{b}{\nointerlineskip\vskip\hoartgap\ho@drawband}{}}{}%
+  \newpage}
+
+% After the last source page: extra pages, two columns each, until the
+% carried text is all set.
+\newcommand{\handoutfinish}{%
+  \ifvoid\ho@carry\else\expandafter\ho@extrapage\fi}
+\newcommand{\ho@extrapage}{%
+  \typeout{HANDOUT-OVERFLOW: the text runs past the last source page}%
+  \advance\ho@extra 1
+  \ifnum\ho@extra>20
+    \PackageError{handout}{The text never fits (is a card taller than a column?)}{}%
+    \setbox\ho@carry=\box\voidb@x
+  \fi
+  \hopagebegin
+  \setbox\ho@one=\box\voidb@x
+  \setbox\ho@two=\box\voidb@x
+  \handoutpage
+  \handoutfinish}
 
 % ---------------------------------------------------------------- footer
 % The book's footer furniture minus the page number (the handout sources
