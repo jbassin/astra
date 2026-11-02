@@ -335,6 +335,22 @@ def _tex_path(path: Path) -> str:
     return text
 
 
+_OVERFULL_RE = re.compile(
+    r"^Overfull \\hbox \((\d+(?:\.\d+)?)pt too wide\) in paragraph at lines (\d+)--"
+)
+
+
+def overfull_lines(log: str, min_pt: float = 1.0) -> list[tuple[float, int]]:
+    """``(points too wide, .tex line)`` for each Overfull hbox in a TeX log wider than ``min_pt``:
+    a line of text that sticks out past its column."""
+    hits = []
+    for raw in log.splitlines():
+        m = _OVERFULL_RE.match(raw)
+        if m and float(m.group(1)) > min_pt:
+            hits.append((float(m.group(1)), int(m.group(2))))
+    return hits
+
+
 def compile_handout(tex: str, images: list[Path], pdf_path: Path, tectonic: str) -> bool:
     """Compile ``tex`` in a temporary directory and copy the PDF to ``pdf_path``.
     Returns True when the text ran past the source's last page onto extra pages."""
@@ -354,6 +370,11 @@ def compile_handout(tex: str, images: list[Path], pdf_path: Path, tectonic: str)
             tail = "\n".join((proc.stdout + proc.stderr).strip().splitlines()[-30:])
             raise HandoutError(f"tectonic compile failed (exit {proc.returncode}):\n{tail}")
         log = (work / "handout.log").read_text(encoding="utf-8", errors="replace")
+        for pts, line in overfull_lines(log):
+            sys.stderr.write(
+                f"warning: a line sticks {pts:.1f}pt out of its column (paragraph at .tex line"
+                f" {line}; build with --no-compile to see the .tex)\n"
+            )
         shutil.copyfile(work / "handout.pdf", pdf_path)
     return OVERFLOW_MARKER in log
 
