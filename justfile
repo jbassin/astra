@@ -564,6 +564,16 @@ mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
 mouthpiece-roundtable *args: mouthpiece-sandbox-warm
     cd "{{justfile_directory()}}" && export PATH="$HOME/.deno/bin:$PATH" && {{uv_bin}} run --frozen --no-sync astra-mouthpiece-roundtable "$@"
 
+# schema, prepare and validate are free; script is PAID (OpenRouter) and render is PAID + LIVE.
+# Runs live under <data root>/mouthpiece/experiments/tierlist-<latest>/<run>/.
+#   just mouthpiece-tierlist prepare                    run dir + brief for the cast-file subagent
+#   just mouthpiece-tierlist validate <run-dir>         check its cast.json → cast.md (counts only)
+#   just mouthpiece-tierlist script <run-dir>           ~35-min two-board script from it
+#   just mouthpiece-tierlist render <run-dir>           TTS + assemble into episodes/ + auto-publish
+# The villain and NPC tier-list special (script is PAID; render is also LIVE).
+mouthpiece-tierlist *args:
+    cd "{{justfile_directory()}}" && {{uv_bin}} run --frozen --no-sync astra-mouthpiece-tierlist "$@"
+
 # ==== backups and alerting as code: astra-backup.sh, SigNoz rules, host metrics ===============
 # Nightly snapshot to the sda disk (/ruby/data/plex/data/astra-backups): pg_dump of the three
 # astra databases, the irreplaceable state dirs and the SigNoz alert rules; 14 daily + 8 weekly
