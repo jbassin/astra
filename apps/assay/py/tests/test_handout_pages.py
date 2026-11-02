@@ -159,3 +159,14 @@ def test_fixture_flows_onto_an_extra_page_and_keeps_the_card_whole(tmp_path: Pat
     assert (title[1] < half) == (last[1] < half)
     # Every page has the footer label.
     assert sum(1 for _, _, w in words if w == "|") == 3
+
+
+def test_overfull_lines_reports_only_lines_past_the_threshold() -> None:
+    from astra_assay.handout_latex import overfull_lines
+
+    log = (
+        "Overfull \\hbox (17.60898pt too wide) in paragraph at lines 21--22\n"
+        "Overfull \\hbox (0.89832pt too wide) in paragraph at lines 33--34\n"
+        "Underfull \\hbox (badness 10000) in paragraph at lines 5--6\n"
+    )
+    assert overfull_lines(log) == [(17.60898, 21)]
