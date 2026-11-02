@@ -94,15 +94,14 @@ def test_image_size_png_and_jpeg(tmp_path: Path) -> None:
 def test_fixture_emits_the_payload_crop() -> None:
     """The fixture's payload is Iron Seraph's, on an 8x12 image (aspect 1.5)."""
     handout = parse_handout((FIXTURE / "handout.md").read_text(encoding="utf-8"))
-    assert handout.art is not None
-    assert handout.art.placement == "top:-100px,left:-250px,width:1501px"
-    tex = handout_latex.build_handout_tex(handout, FIXTURE / "art.png")
-    assert "\\handoutartcrop{0.16656}{0.06662}{0.22119}{0.34644}{1.50000}" in tex
+    assert handout.arts[0].placement == "top:-100px,left:-250px,width:1501px"
+    tex = handout_latex.build_handout_tex(handout, FIXTURE)
+    assert "\\handoutartcrop{two}{0.16656}{0.06662}{0.22119}{0.34644}{1.50000}" in tex
 
 
 def test_no_payload_keeps_cover_fit() -> None:
     source = (FIXTURE / "handout.md").read_text(encoding="utf-8")
     source = source.replace(" {top:-100px,left:-250px,width:1501px}", "")
-    tex = handout_latex.build_handout_tex(parse_handout(source), FIXTURE / "art.png")
-    assert "\\handoutart{art.png}" in tex
+    tex = handout_latex.build_handout_tex(parse_handout(source), FIXTURE)
+    assert "\\handoutart{two}{art.png}" in tex
     assert "\\handoutartcrop" not in tex

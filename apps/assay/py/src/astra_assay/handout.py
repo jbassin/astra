@@ -1,121 +1,62 @@
 """Parse a player handout written in Homebrewery-style Markdown.
 
-A handout is one "Addendum" page in the Liturgy look: a header, two columns of prose,
-optional framed art with a caption, rule-block cards and a footer. Josh writes them in
-the Homebrewery dialect he used for Vol.1, and the source is accepted as written:
+A handout is one or more "Addendum" pages in the Liturgy look: a header, two columns of
+prose, framed art with captions, rule-block cards and a footer. Josh writes them in the
+Homebrewery dialect he used for Vol.1, and the source is accepted as written:
 
 - ``{{chapter ... }}`` holds the header: ``## Addendum`` (eyebrow), ``# Title`` and ``___``.
-- ``\\column`` starts column two. Column one's overflow continues in column two.
-- ``{{imageWrapper {{borderImage ![](url) {...}}} {{caption ...}} }}`` is the framed art.
-  The image is the handout folder's local ``art.*`` file, never the URL.
+  Page one always shows the first one; a later page shows a header only if it has its own.
+- ``\\column`` starts a page's column two; ``\\page`` starts a new page. Text that does not
+  fit flows on: column one into column two, then onto the next page.
+- ``{{imageWrapper,<class> {{borderImage ![](file) {...}}} {{caption ...}} }}`` is framed
+  art. ``file`` is a bare file name in the handout folder; a lone image may give a URL and
+  use the folder's ``art.*`` (``handout_art.resolve_images``). The class places it
+  (``handout_art.slot_of``): a column's top or bottom, or a band across the page.
 - ``{{ruleBlock ... {{preamble ...}} {{traits ...}} {{definitions ...}} body }}`` is a card.
 - ``{{transcript ...}}`` and ``{{rightAligned ...}}`` are a monospace fax and a right-aligned
   line.
 - ``{{footnote A | B}}`` is the footer label.
-- Inline: ``{{divine x}}``, ``{{mortal x}}``, ``{{joined x}}``, ``{{f,...}}`` (the free-action
-  glyph), ``**bold**``, ``*italic*``, ``_italic_``, ``<br>`` and markdown backslash escapes.
+- Inline: ``{{divine x}}``, ``{{mortal x}}``, ``{{joined x}}``, the action glyphs ``{{a}}``,
+  ``{{d}}``, ``{{t}}``, ``{{r}}``, ``{{f}}`` (any ``,style`` payload ignored), ``**bold**``,
+  ``*italic*``, ``_italic_``, ``<br>`` and markdown backslash escapes.
 
 The art crop follows Homebrewery's placement: the imageWrapper's mask class and
 ``--maskHeight`` and the borderImage's ``{top:..,left:..,width:..}`` payload (see
 ``handout_art``). Other positioning payloads and class lists (captions, the header),
 ``{{resetCounting}}`` and HTML comments are ignored, not emulated. A line of colons is
-a spacer; one at the top of column two is the Homebrewery reservation for the art and is
-dropped, because the layout reserves the art itself. Any other ``{{...}}`` block fails the
-parse with its name and line, so nothing is dropped silently. ``handout_latex`` turns the
-parsed :class:`Handout` into LaTeX.
+a spacer; one at the top of a column that holds art is the Homebrewery reservation for the
+art and is dropped, because the layout reserves the art itself. Any other ``{{...}}`` block
+fails the parse with its name and line, so nothing is dropped silently. ``handout_pages``
+splits the parsed flow into pages; ``handout_latex`` turns the :class:`Handout` into LaTeX.
 """
 
 from __future__ import annotations
 
 import re
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
-
-class HandoutError(Exception):
-    """The handout source uses something the builder does not support."""
-
-
-@dataclass
-class Heading:
-    level: int
-    text: str
-    line: int
-
-
-@dataclass
-class Paragraph:
-    text: str
-    line: int
-
-
-@dataclass
-class DefRow:
-    label: str
-    value: str
-    line: int
-
-
-@dataclass
-class Spacer:
-    lines: int
-
-
-@dataclass
-class Table:
-    header: list[str]
-    aligns: list[str]  # "l" | "c" | "r" per column
-    rows: list[list[str]]
-    line: int
-
-
-@dataclass
-class RightAligned:
-    text: str
-    line: int
-
-
-@dataclass
-class Transcript:
-    children: list[Element]
-
-
-@dataclass
-class RuleBlock:
-    title: str
-    kind: str
-    traits: list[str]
-    definitions: list[DefRow]
-    body: list[Element]
-    line: int
-
-
-@dataclass
-class ColumnBreak:
-    line: int
-
-
-Element = Heading | Paragraph | DefRow | Spacer | Table | RightAligned | Transcript | RuleBlock
-
-
-@dataclass
-class Art:
-    caption: list[str]  # caption lines, inline markup still raw
-    caption_align: str  # "l" | "r"
-    line: int
-    #: The imageWrapper's class list (it names the mask window) and the borderImage's
-    #: ``{top:..,left:..,width:..}`` payload, raw; ``handout_art`` reads them.
-    wrapper_classes: list[str] = field(default_factory=list)
-    placement: str = ""
-
-
-@dataclass
-class Handout:
-    eyebrow: str = ""
-    title: str = ""
-    footer: str = ""
-    art: Art | None = None
-    columns: list[list[Element]] = field(default_factory=lambda: [[]])
+from . import handout_pages
+from .handout_model import (
+    ACTION_GLYPHS,
+    INLINE_SPAN_RE,
+    Art,
+    ColumnBreak,
+    DefRow,
+    Element,
+    Flow,
+    Handout,
+    HandoutError,
+    Header,
+    Heading,
+    PageBreak,
+    Paragraph,
+    RightAligned,
+    RuleBlock,
+    Spacer,
+    Table,
+    Transcript,
+)
 
 
 @dataclass
@@ -134,14 +75,8 @@ _HEADING_RE = re.compile(r"^(#{1,5})\s+(.*)$")
 _DEFROW_RE = re.compile(r"^\*\*(.+?)\*\*\s*::\s*(.*)$")
 _SPACER_RE = re.compile(r"^:+$")
 _RULE_RE = re.compile(r"^(?:_{3,}|-{3,}|\*{3,})$")
+_IMAGE_RE = re.compile(r"!\[[^\]]*\]\(([^()\s]*)\)")
 _TABLE_DELIM_RE = re.compile(r"^\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?$")
-#: An inline span: ``{{name,classes content}}`` with no nested ``{{``.
-INLINE_SPAN_RE = re.compile(
-    r"\{\{(?P<name>[A-Za-z][\w-]*)(?P<cls>,[^\s{}]*)?(?:\s+(?P<body>(?:(?!\{\{|\}\}).)*?))?\s*\}\}",
-    re.DOTALL,
-)
-#: Inline spans the LaTeX side knows; anything else is an unknown block.
-INLINE_SPANS: frozenset[str] = frozenset({"divine", "mortal", "joined", "f"})
 #: Top-level blocks that carry nothing a handout renders.
 _IGNORED_BLOCKS: frozenset[str] = frozenset({"resetCounting", "pageNumber"})
 
@@ -228,7 +163,7 @@ class _FlowParser:
     def __init__(self, handout: Handout, handlers: Mapping[str, Handler]) -> None:
         self.handout = handout
         self.handlers = handlers
-        self.out: list[Element | ColumnBreak] = []
+        self.out: list[Flow] = []
         self.para: list[str] = []
         self.para_line = 0
 
@@ -239,7 +174,7 @@ class _FlowParser:
                 self.out.append(Paragraph(text, self.para_line))
             self.para = []
 
-    def parse(self, text: str, first_line: int) -> list[Element | ColumnBreak]:
+    def parse(self, text: str, first_line: int) -> list[Flow]:
         items = _segments(text, first_line)
         idx = 0
         while idx < len(items):
@@ -266,7 +201,8 @@ class _FlowParser:
             self.flush()
             self.out.append(ColumnBreak(line_no))
         elif stripped == "\\page":
-            raise HandoutError(f"line {line_no}: \\page is not supported (a handout is one page)")
+            self.flush()
+            self.out.append(PageBreak(line_no))
         elif _SPACER_RE.match(stripped):
             self.flush()
             self.out.append(Spacer(len(stripped)))
@@ -320,24 +256,29 @@ def _parse_inner(
     inner = _FlowParser(parser.handout, handlers or {})
     out: list[Element] = []
     for el in inner.parse(b.content, b.line):
-        if isinstance(el, ColumnBreak):
-            raise HandoutError(f"line {el.line}: \\column inside {{{{{b.name}}}}}")
+        if isinstance(el, ColumnBreak | PageBreak):
+            what = "\\column" if isinstance(el, ColumnBreak) else "\\page"
+            raise HandoutError(f"line {el.line}: {what} inside {{{{{b.name}}}}}")
+        if isinstance(el, Header | Art):  # only top-level handlers emit these
+            raise HandoutError(f"line {el.line}: {{{{{b.name}}}}} cannot hold a header or art")
         out.append(el)
     return out
 
 
 def _on_chapter(parser: _FlowParser, b: _Block) -> None:
+    header = Header(eyebrow="", title="", line=b.opened)
     for offset, raw in enumerate(b.content.split("\n")):
         stripped = raw.strip()
         if not stripped or _RULE_RE.match(stripped):
             continue
         m = _HEADING_RE.match(stripped)
         if m and len(m.group(1)) == 2:
-            parser.handout.eyebrow = m.group(2).strip()
+            header.eyebrow = m.group(2).strip()
         elif m and len(m.group(1)) == 1:
-            parser.handout.title = m.group(2).strip()
+            header.title = m.group(2).strip()
         else:
             raise HandoutError(f"line {b.line + offset}: unexpected header line {stripped!r}")
+    parser.out.append(header)
 
 
 def _on_footnote(parser: _FlowParser, b: _Block) -> None:
@@ -348,27 +289,26 @@ def _on_image_wrapper(parser: _FlowParser, b: _Block) -> None:
     caption: list[str] = []
     align = "r"
     placement = ""
+    src = ""
     for line_no, item in _segments(b.content, b.line):
         if isinstance(item, str):
             if item.strip():
                 raise HandoutError(f"line {line_no}: unexpected text in {{{{imageWrapper}}}}")
             continue
         if item.name == "borderImage":
-            # The image is the folder's art.* file, never the URL; the payload sets the crop.
-            m = re.search(r"\{([^{}]*)\}", item.content)
+            # The ![](...) target names the file; the {...} payload sets the crop.
+            img = _IMAGE_RE.search(item.content)
+            src = img.group(1).strip() if img else ""
+            rest = _IMAGE_RE.sub("", item.content)
+            m = re.search(r"\{([^{}]*)\}", rest)
             placement = m.group(1) if m else ""
             continue
         if item.name != "caption":
             raise HandoutError(f"line {item.opened}: unknown block {{{{{item.name}}}}}")
         align = "l" if "leftCaption" in item.classes else "r"
         caption = [ln.strip() for ln in item.content.split("\n") if ln.strip()]
-    parser.handout.art = Art(
-        caption=caption,
-        caption_align=align,
-        line=b.line,
-        wrapper_classes=b.classes,
-        placement=placement,
-    )
+    art = Art(caption, align, b.line, wrapper_classes=b.classes, placement=placement, src=src)
+    parser.out.append(art)
 
 
 def _on_right_aligned(parser: _FlowParser, b: _Block) -> None:
@@ -398,6 +338,8 @@ def _on_rule_block(parser: _FlowParser, b: _Block) -> None:
                 card.title = body.strip()
             elif name in ("kind", "level"):
                 kind.append(body.strip())
+            elif name in ACTION_GLYPHS:
+                card.glyph = name
             elif name != "spacer":
                 raise HandoutError(f"line {line}: unknown block {{{{{name}}}}}")
         card.kind = " ".join(kind)
@@ -436,51 +378,6 @@ def parse_handout(source: str) -> Handout:
     # Comments go first, keeping their newlines so line numbers stay true.
     source = _COMMENT_RE.sub(lambda m: "\n" * m.group(0).count("\n"), source)
     handout = Handout()
-    parser = _FlowParser(handout, _TOP_LEVEL)
-    for el in parser.parse(source, 1):
-        if isinstance(el, ColumnBreak):
-            handout.columns.append([])
-        else:
-            handout.columns[-1].append(el)
-    while len(handout.columns) > 1 and not handout.columns[-1]:
-        handout.columns.pop()
-    if len(handout.columns) > 2:
-        raise HandoutError("a handout has at most two columns of content (one \\column)")
-    if not handout.title:
-        raise HandoutError("no '# Title' found in a {{chapter}} header block")
-    _check_inline_spans(handout)
+    flow = _FlowParser(handout, _TOP_LEVEL).parse(source, 1)
+    handout_pages.assemble(handout, flow)
     return handout
-
-
-def _walk_text(elements: list[Element]) -> list[tuple[int, str]]:
-    out: list[tuple[int, str]] = []
-    for el in elements:
-        if isinstance(el, (Heading, Paragraph, RightAligned)):
-            out.append((el.line, el.text))
-        elif isinstance(el, DefRow):
-            out.append((el.line, f"{el.label} {el.value}"))
-        elif isinstance(el, Table):
-            out.extend((el.line, cell) for row in [el.header, *el.rows] for cell in row)
-        elif isinstance(el, Transcript):
-            out.extend(_walk_text(el.children))
-        elif isinstance(el, RuleBlock):
-            out.append((el.line, el.title))
-            out.extend(_walk_text([*el.definitions, *el.body]))
-    return out
-
-
-def _check_inline_spans(handout: Handout) -> None:
-    """Fail on an inline ``{{name ...}}`` span the LaTeX side does not know."""
-    texts = [(0, handout.title), (0, handout.eyebrow), (0, handout.footer)]
-    if handout.art:
-        texts.extend((handout.art.line, ln) for ln in handout.art.caption)
-    for column in handout.columns:
-        texts.extend(_walk_text(column))
-    for line, text in texts:
-        where = f"line {line}: " if line else ""
-        for m in INLINE_SPAN_RE.finditer(text):
-            if m.group("name") not in INLINE_SPANS:
-                raise HandoutError(f"{where}unknown block {{{{{m.group('name')}}}}}")
-        rest = INLINE_SPAN_RE.sub("", text)
-        if "{{" in rest or "}}" in rest:
-            raise HandoutError(f"{where}unbalanced '{{{{' or '}}}}' in {text[:60]!r}")
