@@ -3,6 +3,7 @@ roundtable prompt's seams. No network."""
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -134,3 +135,17 @@ def test_astra_block_lists_the_other_astra_games_only() -> None:
         assert listed == (c.slug != main.slug and c.world in being.astra_worlds), c.slug
     assert "Gamemaster" not in block  # the GM is named as "run by", never as a character
     assert build_astra_block("no-such-show") == ""
+
+
+def test_render_hands_the_roundtable_synopsis_to_the_shared_render(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    seen: list[tuple[Path, str]] = []
+
+    def fake_render(run: Path, synopsis: str) -> str:
+        seen.append((run, synopsis))
+        return "rendered"
+
+    monkeypatch.setattr(cli, "render_special", fake_render)
+    assert cli.cli(["render", str(tmp_path)]) == 0
+    assert seen == [(tmp_path, cli.SYNOPSIS)]

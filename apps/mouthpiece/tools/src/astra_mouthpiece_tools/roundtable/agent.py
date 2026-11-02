@@ -28,6 +28,7 @@ from astra_linguist.chronicle import (
     SEASONS_PATH,
     TRANSCRIPT_DIR,
     Chronicle,
+    ShowInfo,
 )
 from astra_llm.rlm import (
     HardenedRLM,
@@ -189,6 +190,40 @@ def episode_labeller(tools: ProducerTools, show: str, seasons_path: Path = SEASO
     return label
 
 
+def campaign_tools(
+    show: str,
+    latest: str | None = None,
+    *,
+    content_dir: Path = CONTENT_DIR,
+    transcript_dir: Path = TRANSCRIPT_DIR,
+    episodes_dir: Path = EPISODES_DIR,
+    seasons_path: Path = SEASONS_PATH,
+    scripts_root: Path | None = None,
+    shows: dict[str, ShowInfo] | None = None,
+) -> tuple[ProducerTools, str]:
+    """The read-only tools over every session of ``show`` through ``latest`` (default: its
+    newest transcript), and that latest date. Raises ``ValueError`` for a show with no
+    sessions."""
+
+    def tools(target: str) -> ProducerTools:
+        return ProducerTools(
+            target_date=target,
+            show=show,
+            content_dir=content_dir,
+            transcript_dir=transcript_dir,
+            episodes_dir=episodes_dir,
+            seasons_path=seasons_path,
+            scripts_root=scripts_root if scripts_root is not None else episodes_root(),
+            shows=shows,
+        )
+
+    probe = tools("9999-12-31")
+    if not probe.dates:
+        raise ValueError(f"show {show!r} has no sessions")
+    latest = latest or probe.dates[-1]
+    return tools(cutoff_after(latest)), latest
+
+
 # ── the run ──
 @dataclass
 class DossierResult:
@@ -224,27 +259,14 @@ def run_dossier(
         }
     )
     started = time.monotonic()
-    probe = ProducerTools(
-        target_date="9999-12-31",
-        show=show,
+    tools_impl, latest = campaign_tools(
+        show,
+        latest,
         content_dir=content_dir,
         transcript_dir=transcript_dir,
         episodes_dir=episodes_dir,
         seasons_path=seasons_path,
-        scripts_root=scripts_root if scripts_root is not None else episodes_root(),
-        shows=shows,
-    )
-    if not probe.dates:
-        raise ValueError(f"show {show!r} has no sessions")
-    latest = latest or probe.dates[-1]
-    tools_impl = ProducerTools(
-        target_date=cutoff_after(latest),
-        show=show,
-        content_dir=content_dir,
-        transcript_dir=transcript_dir,
-        episodes_dir=episodes_dir,
-        seasons_path=seasons_path,
-        scripts_root=scripts_root if scripts_root is not None else episodes_root(),
+        scripts_root=scripts_root,
         shows=shows,
     )
     out = run_dir if run_dir is not None else ARTIFACTS_ROOT / f"roundtable-{latest}" / new_run_id()
