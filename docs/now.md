@@ -4,11 +4,17 @@ Updated 2026-11-01.
 
 ## In flight
 
-- **Player handouts build from Markdown (2026-11-01, #188 and the art-crop PR).** `just handout
-  <name>` turns a Homebrewery-style `handout.md` plus `art.*` into a one-page PDF in the Liturgy
-  book's look. Sources live outside the repo in `/ruby/data/astra-state/handouts/` (spoilers; the
-  repo is public). The six Vol.1 addenda are ported there and build; the art crop follows each
-  file's Homebrewery positioning. How to write one: the assay README, "Write a new handout".
+- **Player handouts build from Markdown (2026-11-01, #188, #189, #191, #193).** `just handout
+  <name>` turns a Homebrewery-style `handout.md` plus its images into a PDF in the Liturgy
+  book's look: several pages, several named images (column art or full-width bands), action
+  glyphs, and a warning for any line that overflows its column. Sources live outside the repo in
+  `/ruby/data/astra-state/handouts/` (spoilers; the repo is public): the six Vol.1 addenda and
+  Josh's new two-page `the-accord`. How to write one: the assay README, "Write a new handout".
+- **The Accord handout is in akasha (2026-11-01, astra-data `bf6e340`, deployed).** New pages
+  `Org/The Accord` and `Geography/Færrin/Calarium`; the Providence, Far Realms and Divine Raiment
+  pages gained the Accord. Josh's canon calls: the 0–12ag war on the Timeline is the first of the
+  Eddic Crusade's three wars (Timeline unchanged); the Party's Providence is built on the Accord's
+  lost war machine; Calarium is the Dark Ages empire over Tormeré, Calaria and Brithwyn.
 - **Second prediction roundtable is live (2026-10-31, #184).** A Claude Code subagent wrote the
   dossier in place of the DeepSeek loop (16 mysteries, 128 clues, 12 wider-setting notes, 10 of
   them drawing on the earlier campaigns' pages; no API spend); Kimi wrote the dialogue and GLM
