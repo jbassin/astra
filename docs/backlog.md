@@ -78,7 +78,8 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   3 attempts (`key_beats` as a cut-off string, the later fields missing); the transcript was a
   normal size and a fresh run passed. Automation never re-requests a stage, so a failure like
   this blocks mouthpiece until someone re-executes from failure — agent; consider moving the
-  summary to GLM 5.3 or retrying a validation failure once more at the run level.
+  summary to GLM 5.3 or retrying a validation failure once more at the run level. 2026-11-3
+  passed (2 call-level retries recovered), so it is intermittent.
 - The SigNoz counters read with `increase` undercount on Dagster steps: 2026-10-29 showed 0 Pass A
   misses, 21 clip misses for 23 clips and $0 for Kimi, while the `astra.llm.call` spans showed the
   real values. Read cost from the spans; find why the counters drop values — agent.
