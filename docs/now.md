@@ -1,9 +1,19 @@
 # Now
 
-Updated 2026-11-02.
+Updated 2026-11-03.
 
 ## In flight
 
+- **2026-11-3's session ran end to end with no intervention (2026-11-02 23:35 to 11-03 00:17
+  EST).** craig-sync copied `craig_oe05tGnFZ9nL_2026-11-3_0-36-18` (966 MB) at 23:35 and ignored
+  the two stub zips; scribe launched 15 s later and took 7 min; linguist (1 min), heartwood and
+  mouthpiece each launched on their own, once, in order. The episode summary passed this time
+  (GLM 5.2 needed 2 retries at the call level, both recovered). heartwood published with no
+  command (astra-data `bd9c03d`, 3 created and 5 updated, $0.25, 20 min) and redeployed akasha.
+  mouthpiece rendered "Locate the Entity": 24 clips (all with a `request_id`), 42.7 min, 41 MB,
+  in 32 min; linguist-commit redeployed the mouthpiece frontend at 00:17. LLM cost from the
+  `astra.llm.call` spans: $0.57 across linguist and mouthpiece (script $0.37), plus heartwood's
+  $0.25. Nothing from the 2026-10-29 backlog items recurred.
 - **Villain and NPC tier-list special is live (2026-11-02, #200, #201).** A second special format:
   the hosts rank the Astra's villains by danger, then its NPCs by affection, on two S-to-D boards.
   `just mouthpiece-tierlist prepare` makes a run dir with the committed `tierlist/brief.md`; a
