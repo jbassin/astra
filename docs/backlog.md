@@ -49,10 +49,15 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
       and 2026-10-19 (re-rendered again 2026-10-29 as "No, Actually, Six", 55 MB). The pre-render
       versions are in `mouthpiece/experiments/backup-2026-{10-12,10-19}-pre-spoken/`.
 - [ ] Decide whether to trim the 5,500-6,500-word target: Kimi lands at or over the top
-      (6,549 words in the last test; 2026-10-12 rendered at 41 min). The second roundtable
-      overshot its 8,500-word ceiling too (9,578 words, 56.8 min).
-- [ ] Listen to the second prediction roundtable (2026-10-31) and say whether the
-      agent-written dossier should replace the DeepSeek loop for future specials.
+      (6,549 words in the last test; 2026-10-12 rendered at 41 min). The roundtables overshoot
+      their 8,500-word ceiling too: 9,578 words (56.8 min) on 2026-10-31 and 11,013 words
+      (65.5 min) on 2026-11-03, from an 18-mystery dossier. A lower mystery cap in
+      `roundtable/brief.md` is the cheap lever.
+- [ ] Listen to the second (2026-10-31) and the follow-up (2026-11-03) prediction roundtables
+      and say whether the subagent dossier (`prepare`/`validate`) should replace the DeepSeek
+      `dossier` loop for good. In the follow-up's dossier, one "shaken" prediction leans partly
+      on the GM's out-of-character talk after 2026-11-3, and one new mystery draws on wiki
+      backstory not yet shown at the table; say whether the brief should forbid either.
 - [ ] Listen to the villain and NPC tier-list special (2026-11-02,
       `000.through-a-song-darkly.2026-10-29-special-tier-list`) and say whether to make it a
       recurring format. Its cast file came from a subagent following the committed

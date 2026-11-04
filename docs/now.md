@@ -14,6 +14,16 @@ Updated 2026-11-03.
   in 32 min; linguist-commit redeployed the mouthpiece frontend at 00:17. LLM cost from the
   `astra.llm.call` spans: $0.57 across linguist and mouthpiece (script $0.37), plus heartwood's
   $0.25. Nothing from the 2026-10-29 backlog items recurred.
+- **Follow-up prediction roundtable is live (2026-11-03, #204).** The third roundtable, and the
+  first that remembers the last one: `just mouthpiece-roundtable prepare --previous <id>` puts
+  the 2026-10-31 roundtable's transcript in the run dir, a Claude Code subagent wrote the dossier
+  from the now-committed `roundtable/brief.md` (18 mysteries, 160 clues, 77 theories, 14
+  setting notes; the 9 old predictions: 6 untouched, 1 gained support, 1 shaken, 1 borne out;
+  no API spend), and `validate` checked it. Kimi and GLM wrote the script ($0.38, after one
+  OpenRouter 429 on the first try): 11,013 words, well over the 8,500 ceiling. Published as
+  `000.through-a-song-darkly.2026-11-3-special-roundtable` (65.5 min, 39 clips, astra-data
+  `7ba12c1`); new roundtables use the special id form. Run folder:
+  `mouthpiece/experiments/roundtable-2026-11-3/20261104T033836Z` (the GM must not read it).
 - **Villain and NPC tier-list special is live (2026-11-02, #200, #201).** A second special format:
   the hosts rank the Astra's villains by danger, then its NPCs by affection, on two S-to-D boards.
   `just mouthpiece-tierlist prepare` makes a run dir with the committed `tierlist/brief.md`; a
@@ -52,8 +62,7 @@ Updated 2026-11-03.
   dossier's background, connections and setting notes, the `astra.md` block of the GM's other
   Astra games, Kimi for Pass A, and a freshness check that refuses stale inputs. Run folder:
   `mouthpiece/experiments/roundtable-2026-10-29/20261101T010044Z-agent` (the GM must not read
-  it). The dossier agent's brief and validator are not in the repo; `just mouthpiece-roundtable
-  dossier` still runs the DeepSeek loop.
+  it). Its brief is now committed as `roundtable/brief.md` (#204).
 - **linguist-commit no longer pages while heartwood runs (2026-10-31, #183).** deploy.sh exits
   14 when the host-tooling lock is busy; linguist-commit passes `HOST_TOOLING_LOCK_TIMEOUT=0`
   and defers the redeploy instead of failing. It takes effect when the deploy checkout next
