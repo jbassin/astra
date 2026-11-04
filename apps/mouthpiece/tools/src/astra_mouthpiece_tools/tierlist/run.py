@@ -74,8 +74,9 @@ def sessions_block(slugs: list[str], names: Mapping[str, str], transcript_dir: P
     return "\n".join(lines)
 
 
-def fill_brief(values: Mapping[str, str]) -> str:
-    text = Path(__file__).with_name(BRIEF).read_text(encoding="utf-8")
+def fill_brief(values: Mapping[str, str], brief: Path | None = None) -> str:
+    """``brief`` (default: the tier list's) with each ``{{KEY}}`` replaced by its value."""
+    text = (brief or Path(__file__).with_name(BRIEF)).read_text(encoding="utf-8")
     for key, value in values.items():
         text = text.replace("{{" + key + "}}", value)
     return text

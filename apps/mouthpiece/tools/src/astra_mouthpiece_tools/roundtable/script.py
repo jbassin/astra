@@ -43,13 +43,62 @@ def _evidence_rules(a: str, b: str, c: str) -> str:
 """
 
 
-def build_roundtable_system_prompt(hosts: HostConfig) -> str:
+def _followup_rules(c: str) -> str:
+    """The follow-up section: the hosts remember their last roundtable and check back on it."""
+    return f"""THE LAST ROUNDTABLE:
+- This is not their first theory episode. The file opens with THE LAST ROUNDTABLE: what they
+  covered in it, the predictions each of them locked in, and what the campaign has done to
+  each one since. They recorded that episode and remember it.
+- They call back to it the way hosts do to their own show: "last time I said...", "you
+  called this one", "I'm walking that back". A host owns the predictions that aged badly
+  and enjoys the ones that held up; the others can tease, briefly.
+- Checking the old predictions is a thread, not a segment: touch on the ones the new
+  sessions settled or shook early, and pick up the rest as their mysteries come up. Never
+  read the list out in order. Leave out the untouched ones that have nothing new to say.
+- The rest is a FRESH roundtable: new clues, new mysteries and changed minds lead. Don't
+  rerun last episode's arguments unless something new changes them.
+- {c} heard the last roundtable too; nothing in it is news to her.
+
+"""
+
+
+def _shape(c: str, *, followup: bool) -> tuple[str, str, str]:
+    """The opening rule, the lightning-round rule and the follow-up section (empty for a
+    first roundtable)."""
+    if followup:
+        opening = (
+            "Start mid-conversation with the premise: no session to recap, so they're back for\n"
+            '  another theory episode, with their last predictions to answer for. No "welcome to\n'
+            '  the show".'
+        )
+        lightning = (
+            "End with a lightning round: each host locks in three NEW predictions (re-locking\n"
+            "  an old one counts only with a fresh reason), a sentence each, with how sure they\n"
+            "  are, so listeners can check back later. Then let it trail off."
+        )
+        followup_part = _followup_rules(c)
+    else:
+        opening = (
+            "Start mid-conversation with the premise: no session to recap, so it is a theory\n"
+            '  episode. No "welcome to the show".'
+        )
+        lightning = (
+            "End with a lightning round: each host locks in three predictions, a sentence each,\n"
+            "  with how sure they are, so listeners can check back later. Then let it trail off."
+        )
+        followup_part = ""
+    return opening, lightning, followup_part
+
+
+def build_roundtable_system_prompt(hosts: HostConfig, *, followup: bool = False) -> str:
     """Pass A for the prediction special. Same hosts, voices, format and mechanics rules
-    as the recap; the material is a mystery file instead of a session transcript."""
+    as the recap; the material is a mystery file instead of a session transcript. A
+    ``followup`` knows the last roundtable (the file's opening block) and checks back on it."""
     c = hosts.c
     if c is None:
         raise ValueError("the roundtable needs three hosts (a, b, c) — see hosts.py")
     a, b = hosts.a.name, hosts.b.name
+    opening, lightning, followup_part = _shape(c.name, followup=followup)
     return f"""You are writing down a recorded SPECIAL EPISODE of a podcast about a Pathfinder 2e
 campaign: a prediction roundtable. Three co-hosts — {a}, {b}, and {c.name} — are not
 recapping a session this time. They are sitting down to work out what is REALLY going on:
@@ -75,9 +124,8 @@ Format: plain text, one line per turn, as
 Use the hosts' names as the speaker labels. NOTHING else — no headings, no audio tags,
 no stage directions, no markdown. Ordinary spoken punctuation only.
 
-{_evidence_rules(a, b, c.name)}How the conversation runs:
-- Start mid-conversation with the premise: no session to recap, so it is a theory episode.
-  No "welcome to the show".
+{_evidence_rules(a, b, c.name)}{followup_part}How the conversation runs:
+- {opening}
 - The file has more mysteries than one episode can hold. CHOOSE: go deep on the biggest
   and most personal to the party (roughly seven to nine), and let smaller ones come up only
   when they connect. Let one theory lead naturally into the next mystery. For each: what
@@ -89,8 +137,7 @@ no stage directions, no markdown. Ordinary spoken punctuation only.
   where one proposes and the other objects every time.
 - {c.name} is never wrong about a fact and never corrected; {a} stays the only one who
   misremembers, and {b} gently fixes it.
-- End with a lightning round: each host locks in three predictions, a sentence each, with
-  how sure they are, so listeners can check back later. Then let it trail off.
+- {lightning}
 
 NARRATIVE MECHANICS: no dice results, modifiers, DCs or HP. Talk about the story.
 
@@ -132,6 +179,7 @@ def generate_roundtable_script(
     hosts: HostConfig,
     *,
     astra: str = "",
+    followup: bool = False,
     model: str | None = None,
     dress_model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
@@ -142,7 +190,7 @@ def generate_roundtable_script(
         user_content=build_roundtable_user_content(
             episode_id, overview, roster, dossier_block, astra
         ),
-        system=build_roundtable_system_prompt(hosts),
+        system=build_roundtable_system_prompt(hosts, followup=followup),
         max_tokens=max_tokens,
     )
     if model is not None:
