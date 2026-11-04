@@ -9,6 +9,10 @@ mystery's ``background`` (what is established, so the hosts can explain it), its
 ``connections`` to other mysteries, and the dossier-wide ``setting`` notes (cosmology,
 powers and the earlier Astra campaigns) that several theories lean on. Those fields default
 to empty, so a dossier written before them still loads.
+
+A follow-up roundtable also carries ``previous``: what the last roundtable episode covered and
+each prediction its hosts locked in, with what the sessions since have done to it, so the
+hosts can call back to their own episode. It defaults to ``None`` (a first roundtable).
 """
 
 from __future__ import annotations
@@ -75,15 +79,76 @@ class SettingNote(BaseModel):
     )
 
 
+PredictionStatus = Literal["borne out", "gained support", "untouched", "shaken", "ruled out"]
+
+
+class PastPrediction(BaseModel):
+    host: str = Field(description="The host who locked it in (a podcast persona name).")
+    claim: str = Field(description="The prediction as they made it, in one sentence.")
+    said: str = Field(default="", description="How sure they said they were, in their words.")
+    status: PredictionStatus = Field(
+        description="What the sessions since the last roundtable have done to it."
+    )
+    since: str = Field(
+        description=(
+            "One or two sentences: what happened since that bears on it, or that nothing has."
+        )
+    )
+    mystery: int | None = Field(
+        default=None, description="The 1-based number of the mystery in this dossier it sits under."
+    )
+
+
+class Callback(BaseModel):
+    host: str = Field(description="The host who said it.")
+    line: int = Field(description="Line number in the last roundtable's transcript.")
+    moment: str = Field(
+        description="One or two sentences: a theory, argument or running bit worth calling back."
+    )
+
+
+class LastRoundtable(BaseModel):
+    covered: str = Field(
+        description=(
+            "3 to 6 sentences: which mysteries the last roundtable went deep on and the big "
+            "theories each host argued, so the hosts can refer back to their own episode."
+        )
+    )
+    predictions: list[PastPrediction] = Field(min_length=1, max_length=12)
+    callbacks: list[Callback] = Field(default_factory=list, max_length=10)
+
+
 class Dossier(BaseModel):
+    previous: LastRoundtable | None = None
     setting: list[SettingNote] = Field(default_factory=list, max_length=15)
     mysteries: list[Mystery] = Field(min_length=3, max_length=18)
 
 
-def render_dossier(dossier: Dossier, *, episode_label: Callable[[str], str]) -> str:
+def render_previous(prev: LastRoundtable, title: str) -> str:
+    """The follow-up's opening block: the last roundtable and how its predictions fared."""
+    lines = [
+        f'THE LAST ROUNDTABLE ("{title}"; the hosts recorded it and remember it):',
+        f"What it covered: {prev.covered}",
+        "The predictions they locked in, and what has happened since:",
+    ]
+    for p in prev.predictions:
+        said = f" ({p.said})" if p.said else ""
+        where = f" See mystery {p.mystery}." if p.mystery else ""
+        lines.append(f"- {p.host}: {p.claim}{said} Now: {p.status}. {p.since}{where}")
+    if prev.callbacks:
+        lines.append("Moments worth calling back:")
+        lines += [f"- {c.host}: {c.moment}" for c in prev.callbacks]
+    return "\n".join(lines)
+
+
+def render_dossier(
+    dossier: Dossier, *, episode_label: Callable[[str], str], previous_title: str = ""
+) -> str:
     """The Pass A evidence block. ``episode_label(date)`` names a session the way the hosts
-    would (season + episode title)."""
+    would (season + episode title); ``previous_title`` names the last roundtable."""
     parts: list[str] = []
+    if dossier.previous is not None:
+        parts.append(render_previous(dossier.previous, previous_title or "the last one"))
     if dossier.setting:
         lines = ["THE WIDER SETTING (background several theories lean on):"]
         for note in dossier.setting:

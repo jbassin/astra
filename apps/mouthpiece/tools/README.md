@@ -20,19 +20,37 @@ needs neither.
     `just mouthpiece-experiment <date> [flags]`.
   - `brief <date> [--model ID]`: the producer over one session only. No recipe wraps it; run
     `uv run astra-mouthpiece-producer brief <date>`.
-- **`astra-mouthpiece-roundtable`**, run as `just mouthpiece-roundtable <subcommand>`:
-  - `dossier [--show SLUG] [--latest DATE]` (PAID): surveys the main campaign into an evidence
+- **`astra-mouthpiece-roundtable`**, run as `just mouthpiece-roundtable <subcommand>`. The
+  dossier (the evidence file) comes from a Claude Code subagent (`prepare`, then the
+  subagent, then `validate`; no API spend) or from the paid DeepSeek agent loop (`dossier`).
+  Both 2026-10-31 and later roundtables used the subagent.
+  - `schema`: prints the dossier's JSON schema (`roundtable/dossier.py`, `Dossier`).
+  - `prepare [--show SLUG] [--latest DATE] [--previous EPISODE_ID]` (free): lays out a fresh
+    run dir under `<artifacts-path>/roundtable-<latest>/` with `overview.md`, `astra.md`,
+    `sessions.md`, `dossier.schema.json`, `summary.json` and `brief.md` (the repo copy is
+    `roundtable/brief.md`). `--previous` names the last published roundtable (for example
+    `000.through-a-song-darkly.2026-10-29-recap-of-2025-8-28`) and makes the run a
+    **follow-up**: `previous.txt` holds that episode's numbered transcript, the subagent
+    fills the dossier's `previous` block (what it covered, each locked-in prediction and
+    how the sessions since have treated it, callbacks), and Pass A gets rules for calling
+    back to it and locking in new predictions.
+  - `validate RUN_DIR` (free): checks `dossier.json` against the schema, the clue sources
+    (a main-campaign session date and line, or a wiki page), clue ids, mystery numbers, and
+    for a follow-up the hosts and `previous.txt` line numbers; then writes `dossier.md`. It
+    prints counts, or each problem by its location, never content.
+  - `dossier [--show SLUG] [--latest DATE]` (PAID): the agent-loop alternative; surveys the main campaign into an evidence
     dossier in a fresh run dir under `<artifacts-path>/roundtable-<latest>/`. Besides each
     mystery's clues and theories, the dossier carries its background and its connections
     to other mysteries, and dossier-wide notes on the wider setting. The agent and the
     writer both get `astra.md`: the GM's other games in the Astra, from `being.kdl`, so the
     earlier campaigns' wiki pages count as this world's lore.
   - `script RUN_DIR [--model ID]` (PAID): writes the roundtable script from that dossier
-    (`pass_a.txt`, `script.json`, `report.md`). Pass A runs on `mouthpiece.script-model`
+    (`pass_a.txt`, `script.json`, `report.md`); a prepared run is validated again first. Pass A runs on `mouthpiece.script-model`
     (Kimi, as for the recaps) unless `--model` is given; Pass B stays on `mouthpiece.model`.
   - `render RUN_DIR` (PAID and LIVE): copies the script into `episodes/<id>/`, synthesizes it
     with the configured TTS provider, assembles the episode and touches `.last-rendered`, so
-    the linguist-commit path unit publishes it to the mouthpiece site.
+    the linguist-commit path unit publishes it to the mouthpiece site. A follow-up gets its
+    own spoiler-free synopsis.
 
 - **`astra-mouthpiece-tierlist`**, run as `just mouthpiece-tierlist <subcommand>`. Two
   boards in one episode: the villains of the whole Astra ranked S to D by how dangerous they
@@ -54,7 +72,7 @@ needs neither.
   - `render RUN_DIR` (PAID and LIVE): the same render as the roundtable's
     (`special.render_special`), with the tier list's spoiler-free synopsis.
 
-`dossier`, `prepare` and both `script` commands refuse (exit 1) when an input is stale: the astra-data clone has local
+`dossier`, both `prepare` and both `script` commands refuse (exit 1) when an input is stale: the astra-data clone has local
 changes or is not at `origin/main`, or the checkout running the command does not contain
 `origin/main` (its `being.kdl` feeds the roster and `astra.md`). `--allow-stale` skips the
 check.
@@ -80,12 +98,13 @@ The tests stub the LLM and never call TTS; they spend nothing.
 
 ## Traps
 
-- **Never show the dossier, the cast file (`cast.json`, `cast.md`) or either script to the
-  GM.** Report statistics only: `validate` and `script` print counts for that reason, and
-  the cast-file subagent's brief tells it to end with counts, not names.
-- **The roundtable keeps the recap id form** `<latest>-recap-of-<first>`, so it is unique
-  and sorts after its arc's last session. The tier list uses
-  `000.<show>.<latest>-special-tier-list`. `render` stores `kind: "special"` in the script
+- **Never show the dossier, `previous.txt`, the cast file (`cast.json`, `cast.md`) or either
+  script to the GM.** Report statistics only: `validate` and `script` print counts for that
+  reason, and both subagent briefs tell the subagent to end with counts, not names.
+- **Specials use the special id form**: `000.<show>.<latest>-special-roundtable` and
+  `000.<show>.<latest>-special-tier-list`. The two roundtables published before that form
+  (2026-10-19 and 2026-10-29) keep their recap-form ids (`<latest>-recap-of-<first>`);
+  never rename a published id. `render` stores `kind: "special"` in the script
   and digest, which every session-scoped reader skips on.
 - **`render` (both specials, `special.py`) imports private helpers from the backend** (`astra_mouthpiece.assets._voices`).
   Keep their signatures when changing the backend.

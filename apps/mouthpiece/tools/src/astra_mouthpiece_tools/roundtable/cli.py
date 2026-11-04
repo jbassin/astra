@@ -1,5 +1,16 @@
 """``astra-mouthpiece-roundtable`` — the prediction-roundtable special (host CLI).
 
+    schema
+        print the dossier's JSON schema.
+    prepare [--show SLUG] [--latest DATE] [--previous EPISODE_ID]
+        lay out a fresh run dir under <mouthpiece-producer.artifacts-path>/roundtable-<latest>/
+        for the dossier subagent: overview.md, astra.md, sessions.md, dossier.schema.json,
+        brief.md (paths filled in) and summary.json; with --previous, also previous.txt (that
+        published roundtable's transcript), which makes the run a follow-up. Free. Last
+        stdout line RUN_DIR=<path>.
+    validate RUN_DIR
+        check RUN_DIR/dossier.json (schema, clue sources and ids, mystery numbers, hosts) and
+        write dossier.md. Free. Prints counts, or each problem by its location; never content.
     dossier [--show SLUG] [--latest DATE]
         survey the campaign (default: the main show through its newest session) into a
         mystery file in a fresh run dir under
@@ -15,15 +26,17 @@
         configured TTS provider, assemble ``<id>.episode.mp3``, and touch ``.last-rendered``
         so the linguist-commit path unit publishes it to the mouthpiece site.
 
-The episode id uses the recap form (``…<latest>-recap-of-<first>``) so it is unique and
-the catalog sorts it right after its last session. ``render`` stores ``kind: "special"`` in
-the script and digest; that is what every session-scoped reader skips on.
+The episode id is ``000.<show>.<latest>-special-roundtable``: it sorts right after its last
+session. The two roundtables published before that form keep their recap-form ids.
+``render`` stores ``kind: "special"`` in the script and digest; that is what every
+session-scoped reader skips on.
 
-``dossier`` and ``script`` first refuse (exit 1) when an input is stale (``fresh.py``): the
-astra-data clone has local changes or is not at origin/main, or this checkout does not
-contain origin/main. ``--allow-stale`` skips the check.
+``prepare``, ``dossier`` and ``script`` first refuse (exit 1) when an input is stale
+(``fresh.py``): the astra-data clone has local changes or is not at origin/main, or this
+checkout does not contain origin/main. ``--allow-stale`` skips the check.
 
-Exit codes: 0 ok; 1 failed or stale; 2 dossier incomplete (iteration cap, still usable).
+Exit codes: 0 ok; 1 failed, stale or invalid; 2 dossier incomplete (iteration cap, still
+usable).
 """
 
 from __future__ import annotations
@@ -39,16 +52,25 @@ from astra_config import load_config
 from astra_llm import LiteLLMClient, ensure_openrouter_env
 from astra_llm.rlm import deno_available
 from astra_mouthpiece.hosts import load_hosts
+from astra_mouthpiece.inputs import episodes_root
 from astra_mouthpiece.lint import score_script
-from astra_mouthpiece.producer.tools import permitted_dates
 from astra_mouthpiece.roster import build_roster_block
 from astra_ontology_being import BEING_KDL_PATH, load_being
 
 from ..producer.experiment import host_shares, script_words
 from ..special import render_special
-from .agent import cutoff_after, run_dossier
+from .agent import run_dossier
 from .astra import build_astra_block
+from .dossier import Dossier
 from .fresh import stale_reasons
+from .run import (
+    counts,
+    dossier_schema,
+    load_previous,
+    prepare_run,
+    validate_dossier,
+    write_dossier_md,
+)
 from .script import generate_roundtable_script
 
 _EXIT = {"ok": 0, "failed": 1, "incomplete": 2}
@@ -59,6 +81,12 @@ SYNOPSIS = (
     "the Astra, breadcrumbs from every season and the GM's earlier games, and three "
     "locked-in predictions each to check back on."
 )
+#: The follow-up's blurb, equally spoiler-free.
+FOLLOWUP_SYNOPSIS = (
+    "A special episode: the theory roundtable is back. The hosts answer for their last "
+    "predictions, dig into the Astra's deepest mysteries with everything that has happened "
+    "since, and lock in three new predictions each."
+)
 
 
 def main_show() -> str:
@@ -66,8 +94,25 @@ def main_show() -> str:
 
 
 def episode_id(show: str, latest: str) -> str:
-    first = permitted_dates(cutoff_after(latest), show)[0]
-    return f"000.{show}.{latest}-recap-of-{first}"
+    """The special's id: sorts right after its last session, with its own token."""
+    return f"000.{show}.{latest}-special-roundtable"
+
+
+def _summary(run: Path) -> dict[str, object]:
+    return json.loads((run / "summary.json").read_text(encoding="utf-8"))
+
+
+def _checked_dossier(run: Path) -> Dossier | None:
+    """The validated dossier, with dossier.md rewritten; None (problems printed) when invalid."""
+    result = validate_dossier(run)
+    for p in result.problems:
+        print(f"invalid: {p}", file=sys.stderr)
+    if result.dossier is None or result.problems:
+        n = len(result.problems)
+        print(f"dossier.json is not valid: {n} problem{'' if n == 1 else 's'}", file=sys.stderr)
+        return None
+    write_dossier_md(run, result.dossier)
+    return result.dossier
 
 
 def _refuse_stale(args: argparse.Namespace) -> bool:
@@ -80,6 +125,35 @@ def _refuse_stale(args: argparse.Namespace) -> bool:
     if reasons:
         print("refusing (pass --allow-stale to run anyway)", file=sys.stderr)
     return bool(reasons)
+
+
+def _cmd_schema(_args: argparse.Namespace) -> int:
+    print(dossier_schema())
+    return 0
+
+
+def _cmd_prepare(args: argparse.Namespace) -> int:
+    if _refuse_stale(args):
+        return 1
+    show = args.show or main_show()
+    previous = load_previous(episodes_root(), args.previous) if args.previous else None
+    run = prepare_run(show, latest=args.latest, previous=previous)
+    summary = _summary(run)
+    kind = "follow-up" if previous is not None else "first roundtable"
+    sessions = summary["sessions"]
+    print(f"{show} through {summary['latest']}: {sessions} sessions, {kind}; brief.md ready")
+    print(f"RUN_DIR={run}")
+    return 0
+
+
+def _cmd_validate(args: argparse.Namespace) -> int:
+    run = Path(args.run_dir)
+    dossier = _checked_dossier(run)
+    if dossier is None:
+        return 1
+    print(f"dossier.json valid: {counts(dossier)}; wrote dossier.md")  # counts only
+    print(f"RUN_DIR={run}")
+    return 0
 
 
 def _cmd_dossier(args: argparse.Namespace) -> int:
@@ -106,7 +180,11 @@ def _cmd_script(args: argparse.Namespace) -> int:
     if _refuse_stale(args):
         return 1
     run = Path(args.run_dir)
+    # A prepared (subagent) run is checked again; an agent-loop run's dossier.md is used as is.
+    if (run / "brief.md").is_file() and _checked_dossier(run) is None:
+        return 1
     summary = json.loads((run / "summary.json").read_text(encoding="utf-8"))
+    followup = "previous" in summary
     block = (run / "dossier.md").read_text(encoding="utf-8")
     overview = (run / "overview.md").read_text(encoding="utf-8")
     show, latest = summary["show"], summary["latest"]
@@ -125,6 +203,7 @@ def _cmd_script(args: argparse.Namespace) -> int:
         block,
         load_hosts(),
         astra=astra,
+        followup=followup,
         model=model,
         dress_model=dress_model,
     )
@@ -134,7 +213,8 @@ def _cmd_script(args: argparse.Namespace) -> int:
     shares = ", ".join(f"{k} {v:.0%}" for k, v in host_shares(script).items())
     report = "\n".join(
         [
-            f"# Prediction roundtable — {show} through {latest}",
+            f"# Prediction roundtable — {show} through {latest}"
+            + (" (follow-up)" if followup else ""),
             "",
             f"- {len(script.turns)} turns, {words} words (~{words / 170:.0f} min), shares {shares}",
             f"- lint subtotal {score_script(script).mechanical_subtotal}/10 (provisional rubric)",
@@ -151,14 +231,27 @@ def _cmd_script(args: argparse.Namespace) -> int:
 
 
 def _cmd_render(args: argparse.Namespace) -> int:
-    print(render_special(Path(args.run_dir), SYNOPSIS))
+    run = Path(args.run_dir)
+    summary_path = run / "summary.json"
+    followup = summary_path.is_file() and "previous" in _summary(run)
+    print(render_special(run, FOLLOWUP_SYNOPSIS if followup else SYNOPSIS))
     return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="astra-mouthpiece-roundtable")
     sub = parser.add_subparsers(required=True)
-    d = sub.add_parser("dossier", help="survey the campaign into a mystery file")
+    sub.add_parser("schema", help="print the dossier's JSON schema").set_defaults(func=_cmd_schema)
+    p = sub.add_parser("prepare", help="lay out a run dir for the dossier subagent")
+    p.add_argument("--show", help="campaign slug (default: the main campaign)")
+    p.add_argument("--latest", help="last session to include, YYYY-M-D (default: newest)")
+    p.add_argument("--previous", help="published episode id of the last roundtable (follow-up)")
+    p.add_argument("--allow-stale", action="store_true", help="skip the freshness check")
+    p.set_defaults(func=_cmd_prepare)
+    v = sub.add_parser("validate", help="check dossier.json and write dossier.md (counts only)")
+    v.add_argument("run_dir")
+    v.set_defaults(func=_cmd_validate)
+    d = sub.add_parser("dossier", help="survey the campaign into a mystery file (agent loop)")
     d.add_argument("--show", help="campaign slug (default: the main campaign)")
     d.add_argument("--latest", help="last session to include, YYYY-M-D (default: newest)")
     d.add_argument("--allow-stale", action="store_true", help="skip the freshness check")

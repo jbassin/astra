@@ -555,9 +555,11 @@ mouthpiece-sandbox-warm:
 mouthpiece-experiment date *flags: mouthpiece-sandbox-warm
     cd "{{justfile_directory()}}" && {{uv_bin}} run --frozen --no-sync astra-mouthpiece-producer experiment "$@"
 
-# dossier + script are PAID (OpenRouter) and write only under <data root>/mouthpiece/
-# experiments/roundtable-<latest>/<run>/; render is PAID + LIVE.
-#   just mouthpiece-roundtable dossier                  survey the main campaign → mystery file
+# prepare and validate are free; dossier + script are PAID (OpenRouter). All write only under
+# <data root>/mouthpiece/experiments/roundtable-<latest>/<run>/; render is PAID + LIVE.
+#   just mouthpiece-roundtable prepare [--previous ID]  run dir + brief for the dossier subagent
+#   just mouthpiece-roundtable validate <run-dir>       check its dossier.json → dossier.md
+#   just mouthpiece-roundtable dossier                  or: the paid agent loop → mystery file
 #   just mouthpiece-roundtable script <run-dir>         ~45-min roundtable script from it
 #   just mouthpiece-roundtable render <run-dir>         TTS + assemble into episodes/ + auto-publish
 # The prediction-roundtable special (PAID; render is also LIVE).
