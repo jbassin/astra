@@ -264,8 +264,8 @@ services:
         APP: weal/bot
     image: astra-weal-bot:local
     container_name: astra-weal-bot
-    # weal-db: its store; weal-feed: it POSTs rolls to weal-overlay (weal.feed-ws-url).
-    networks: [telemetry, weal-db, weal-feed]
+    # weal-db: its store.
+    networks: [telemetry, weal-db]
     depends_on:
       weal-postgres:
         condition: service_healthy
@@ -274,29 +274,9 @@ services:
     # (degrades).
     environment:
       WEAL_DISCORD_KEY: ${WEAL_DISCORD_KEY:-}
-      WEAL_TOKEN: ${WEAL_TOKEN:-}
     healthcheck:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://127.0.0.1:10203/health').then(r=>process.exit(r.ok?0:1))"]
-
-  # weal-overlay: the dice-roll OBS overlay (SSE). Behind Caddy with flush_interval -1.
-  weal-overlay:
-    <<: *astra-app
-    build:
-      <<: *node-build
-      args:
-        APP: weal/overlay
-    image: astra-weal-overlay:local
-    container_name: astra-weal-overlay
-    networks: [telemetry, weal-feed]
-    # Shared weal↔overlay token (env injection via `just up`).
-    environment:
-      WEAL_TOKEN: ${WEAL_TOKEN:-}
-    ports:
-      - "10361:10361" # weal-overlay (astra range): config weal-overlay.port
-    healthcheck:
-      <<: *node-healthcheck
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10361/healthz').then(r=>process.exit(r.ok?0:1))"]
 
   # --- strider: the first SSR frontend, the template for the later ones. One SSR
   # process. The layer editor (a TanStack server function that writes
@@ -685,8 +665,3 @@ networks:
     ipam:
       config:
         - subnet: 10.27.5.0/24
-  # weal-bot -> weal-overlay:10361 (the roll feed, token-gated).
-  weal-feed:
-    ipam:
-      config:
-        - subnet: 10.27.6.0/24

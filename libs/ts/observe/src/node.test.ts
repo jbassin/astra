@@ -108,11 +108,11 @@ describe("serviceNameFor", () => {
     writeFileSync(join(dir, "package.json"), JSON.stringify(pkg));
     return join(dir, "src", "index.ts");
   }
-  const config = { wealOverlay: { serviceName: "astra.weal-overlay" } };
+  const config = { orator: { serviceName: "astra.orator-backend" } };
 
   test("reads the service-name of the block the package.json names", () => {
-    const entry = app({ astra: { config: "weal-overlay" } });
-    expect(serviceNameFor(entry, config)).toBe("astra.weal-overlay");
+    const entry = app({ astra: { config: "orator" } });
+    expect(serviceNameFor(entry, config)).toBe("astra.orator-backend");
   });
 
   test("fails loudly without the package.json field or the config field", () => {

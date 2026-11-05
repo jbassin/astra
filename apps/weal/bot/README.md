@@ -304,7 +304,7 @@ wrong, it's too big — shrink the pool or the depth, or split the expression up
 
 Every die display gets a five-tier goodness from where the sampled face order landed: **first
 face = fumble, last = crit, the span between splits into thirds** (bad / okay / good). It drives
-the `[Crit!]`/`[Fumble!]` title tags, the host's flavor line, and the overlay flair. One rule for
+the `[Crit!]`/`[Fumble!]` title tags, and the host's flavor line. One rule for
 everything — `d20`, atom dice, comparisons (`:false` = fumble end), and your `evaluate`
 mechanics alike. Note goodness judges against the *whole expression's* distribution: a 15 on
 `4d6kh3` is `good`, but a 15 on `4d6e2kh3` (which can reach far higher) is `bad`.
@@ -324,8 +324,8 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
 ## Operations
 
 - **Runtime:** a Docker Compose unit (`weal-bot` in `deploy/docker-compose.yml`) + its Postgres
-  (`weal-postgres`, data in `/ruby/data/astra-state/postgres/weal`). Secrets (Discord token,
-  overlay token) come from SOPS via `just deploy` env injection; config via `ontology-config`
+  (`weal-postgres`, data in `/ruby/data/astra-state/postgres/weal`). Secrets (the Discord token)
+  come from SOPS via `just deploy` env injection; config via `ontology-config`
   (`config.kdl`).
 - **Deploy:** push, then `just deploy weal-bot` (it builds from the deploy checkout at the pushed
   commit; local edits never ship). The engine wasm is a
@@ -343,10 +343,6 @@ mechanics alike. Note goodness judges against the *whole expression's* distribut
   failing probe (`skipping saved weal source: funcs_v2 row <id> (<name>): <kind> <probe>: <stage>:
   <message>`), and every other save and roll keeps working. A row refused for an engine fault logs at
   ERROR instead. Boot costs about ten evaluations per row (100 rows load in under 2 s).
-- **Overlay:** rolls broadcast to weal-overlay (`weal.feed-ws-url`) with the plain source text as
-  `expression` and the headline as `display` (atom rolls send `total: 0`). The message is built
-  through the shared schema in `@astra/weal-wire`, which the overlay validates with too; a change
-  there needs `just deploy weal-bot weal-overlay` together.
 - **Health:** `GET /health` on `weal.bind-addr` (127.0.0.1:10203, inside the container) answers
   `ok` while the process is up; the compose healthcheck is its only caller. It does not reflect the
   Discord connection.

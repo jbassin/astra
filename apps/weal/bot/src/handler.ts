@@ -1,6 +1,6 @@
 /**
- * Message orchestration — classify → engine → embeds/persistence/overlay, with
- * the discord.js + Postgres + overlay I/O behind an injectable
+ * Message orchestration — classify → engine → embeds/persistence, with
+ * the discord.js + Postgres I/O behind an injectable
  * {@link HandlerDeps} so the whole pipeline unit-tests dry.
  *
  * Rolls are evaluated by `@astra/weal-engine`: parse failures stay
@@ -9,8 +9,7 @@
  * trap the wrapper contained) always gets a short generic reply and an ERROR
  * log with the detail. Roll history is an archive written after the reply
  * (ADR 0025): a slow or failed write never delays or breaks a reply. Only
- * roll-resolving results write history; plot-only results skip it AND the
- * overlay broadcast. A save persists only after the save
+ * roll-resolving results write history; plot-only results skip it. A save persists only after the save
  * guard ({@link checkNewSave}) dry-runs it against the current saves; a
  * refused save gets a reply and is neither stored nor added to the list.
  */
@@ -24,7 +23,6 @@ import type {
   WealSave,
   WealValueDisplay,
 } from "@astra/weal-engine";
-import type { RollMessage } from "@astra/weal-wire";
 import { type Span, SpanStatusCode } from "@opentelemetry/api";
 
 import { saveDice, type WealStore } from "./db";
@@ -48,7 +46,6 @@ import {
   NUMBER_LINES,
   newSeedInfo,
   nothingToRoll,
-  overlayPayload,
   RESEED_LINES,
   resultsField,
   saveRefusal,
@@ -89,8 +86,6 @@ export interface HandlerDeps {
   setSeed: (seed: SeedInfo) => void;
   /** Post an embed as a host (webhook). */
   send: (msg: OutgoingMessage) => Promise<void>;
-  /** Best-effort v1 overlay broadcast (non-fatal on failure). */
-  broadcast: (payload: RollMessage) => Promise<void>;
   /** Test seam only: swap the engine call (scripted results). */
   engineHooks?: EngineHooks;
 }
@@ -182,7 +177,7 @@ async function doRoll(
   }
 
   for (const display of displays) {
-    if (display.kind === "die") await handleDie(text, display, profile, deps, span);
+    if (display.kind === "die") await handleDie(display, profile, deps, span);
     else await sendValue(text, display, profile, deps);
   }
   for (const plot of plots) await sendPlot(plot, deps);
@@ -190,7 +185,6 @@ async function doRoll(
 }
 
 async function handleDie(
-  text: string,
   display: WealDieDisplay,
   profile: Profile,
   deps: HandlerDeps,
@@ -213,7 +207,6 @@ async function handleDie(
     thumbnail: thumbnailFor(profile.edition, profile.characterClass, host.avatar),
     footer: dieFooter(goodness, deps.getSeed().seed, deps.getSeed().blame),
   });
-  await deps.broadcast(overlayPayload(profile.playerName, text, display));
   // Not awaited: the archive must never hold up the next reply (ADR 0025).
   void recordHistory(display.standardDice, profile, blameId, deps);
 }

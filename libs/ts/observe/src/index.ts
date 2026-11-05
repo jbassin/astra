@@ -342,7 +342,7 @@ const OBSERVE_SCOPE = "astra.observe";
 /**
  * Record an error the code deliberately ignores, instead of a bare `catch {}`: one
  * `astra.errors.ignored{site}` count and a DEBUG log record. `site` is a short, stable
- * name for the catch (`weal-overlay.sse-write`), never a value with unbounded cardinality.
+ * name for the catch (`orator.sse-write`), never a value with unbounded cardinality.
  */
 export function reportIgnored(site: string, err: unknown): void {
   // Taken at call time, so the count lands in whichever provider is installed now.

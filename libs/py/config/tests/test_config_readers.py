@@ -37,6 +37,7 @@ _REGISTER = (
 )
 ALLOWLIST: dict[tuple[str, str], str] = {
     ("portal_headless", "service_name"): _REGISTER,
+    ("weal", "service_name"): _REGISTER,
 }
 
 #: Tracked paths that are not readers: the config libraries themselves (the schemas, the

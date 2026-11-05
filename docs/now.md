@@ -4,9 +4,9 @@ Updated 2026-11-04.
 
 ## In flight
 
-- **Unused web apps removed from the repo (2026-11-04): menhir, ledger and the vellum site.**
-  Code, config, compose, Caddy, smoke checks and docs are gone; the live containers and edge
-  stanzas go at the next deploy.
+- **Unused web apps removed from the repo (2026-11-04): menhir, ledger, the vellum site
+  and weal-overlay.** weal-bot no longer posts rolls to an overlay. Code, config, compose, Caddy,
+  smoke checks and docs are gone; the live containers and edge stanzas go at the next deploy.
 - **2026-11-3's session ran end to end with no intervention (2026-11-02 23:35 to 11-03 00:17
   EST).** craig-sync copied `craig_oe05tGnFZ9nL_2026-11-3_0-36-18` (966 MB) at 23:35 and ignored
   the two stub zips; scribe launched 15 s later and took 7 min; linguist (1 min), heartwood and

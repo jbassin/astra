@@ -34,8 +34,7 @@ SERVICE_NETWORKS: dict[str, frozenset[str]] = {
     "dagster-webserver": DAGSTER,
     "dagster-daemon": DAGSTER,
     "weal-postgres": frozenset({"weal-db"}),
-    "weal-bot": frozenset({"telemetry", "weal-db", "weal-feed"}),
-    "weal-overlay": frozenset({"telemetry", "weal-feed"}),
+    "weal-bot": frozenset({"telemetry", "weal-db"}),
     "strider": TELEMETRY,
     "akasha-frontend": TELEMETRY,
     "codex": TELEMETRY,
@@ -73,8 +72,6 @@ DIALS: dict[str, frozenset[str]] = {
     "dagster-code": frozenset({"dagster-webserver", "dagster-daemon"}),
     # config.kdl weal.database-url.
     "weal-postgres": frozenset({"weal-bot"}),
-    # config.kdl weal.feed-ws-url: weal-bot POSTs each roll to the overlay.
-    "weal-overlay": frozenset({"weal-bot"}),
     # config.kdl orator.database-url.
     "orator-postgres": frozenset({"orator-backend"}),
 }

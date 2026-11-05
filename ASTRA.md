@@ -26,7 +26,6 @@ The general breakdown is as follows (subsystems, not directories; each app's REA
   - tools for the table:
       - `weal`:
           - `weal-bot`: a discord dice bot. players type `weal` expressions (a small dice language where dice are exact probability distributions, evaluated by a rust engine compiled to wasm), and the bot replies as a host with the roll, a distribution plot, or a saved macro. Records the results of dice rolls.
-          - `weal-overlay`: a webpage used as an obs overlay for displaying dice roll results as they happen.
       - `orator`:
           - `orator-backend`: a discord bot that plays music into a voice channel, with a web frontend for importing and tagging tracks.
           - `orator-controller`: a streamdeck plugin for controlling the orator-backend.
@@ -39,7 +38,7 @@ The general breakdown is as follows (subsystems, not directories; each app's REA
 
 Technologies:
   - web tech is tanstack and react
-  - the data pipeline (craig -> scribe -> linguist -> heartwood / mouthpiece) is orchestrated by Dagster (one partition per session); long-running services (bots, overlays, frontends, DBs) run as Docker Compose units.
+  - the data pipeline (craig -> scribe -> linguist -> heartwood / mouthpiece) is orchestrated by Dagster (one partition per session); long-running services (bots, frontends, DBs) run as Docker Compose units.
   - the pipeline's published output (transcripts, the wiki, the episode catalog) lives in its own repo, `astra-data`; the frontends bake it in at build time.
   - all applications make use of otel spans and metrics to be consumed by signoz
   - all llm interactions will be through litellm and dspy, behind one shared client (`libs/py/llm`)

@@ -1,6 +1,6 @@
 /**
  * Pure builders: defensive truncation at Discord's
- * exact limits, the error-reply fence/caret helpers, and the overlay payload.
+ * exact limits, and the error-reply fence/caret helpers.
  */
 
 import type { WealDieDisplay } from "@astra/weal-engine";
@@ -14,7 +14,6 @@ import {
   errorDescription,
   FIELD_LIMIT,
   fenced,
-  overlayPayload,
   resultsField,
   saveRefusal,
   spanExcerpt,
@@ -184,38 +183,6 @@ describe("saveRefusal (the save guard's reply)", () => {
     });
     expect(reply.title).toHaveLength(TITLE_LIMIT);
     expect(reply.contents).toHaveLength(DESCRIPTION_LIMIT);
-  });
-});
-
-describe("overlayPayload", () => {
-  test("numeric rolls keep the wire shape; expression = plain source", () => {
-    expect(overlayPayload("Jorge", "d20 + 7", dieDisplay())).toEqual({
-      v: 1,
-      user: "Jorge",
-      expression: "d20 + 7",
-      total: 21,
-      is_crit: false,
-      is_fumble: false,
-      display: "21",
-    });
-  });
-
-  test("atom rolls send total 0 with goodness-derived flags", () => {
-    const display = dieDisplay({
-      headline: ":great",
-      value: { t: "atom", v: "great" },
-      goodness: "crit",
-      standardDice: [],
-    });
-    expect(overlayPayload("Jorge", "dl([:great])", display)).toEqual({
-      v: 1,
-      user: "Jorge",
-      expression: "dl([:great])",
-      total: 0,
-      is_crit: true,
-      is_fumble: false,
-      display: ":great",
-    });
   });
 });
 

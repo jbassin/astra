@@ -35,18 +35,8 @@ export const Weal = z
   .object({
     serviceName: z.string(),
     databaseUrl: z.string(),
-    feedWsUrl: z.string(),
     bindAddr: z.string(),
     discordToken: secret(),
-    feedToken: secret(),
-  })
-  .strict();
-
-export const WealOverlay = z
-  .object({
-    serviceName: z.string(),
-    port: z.number().int(),
-    token: secret(),
   })
   .strict();
 
@@ -143,7 +133,6 @@ export const ConfigSchema = z.object({
   data: Data,
   telemetry: Telemetry,
   weal: Weal,
-  wealOverlay: WealOverlay,
   orator: Orator,
   strider: Strider,
   akashaFrontend: AkashaFrontend,

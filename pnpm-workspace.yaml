@@ -9,8 +9,7 @@ packages:
 # then `pnpm install`. A dependency only one package uses keeps its range in that
 # package.json; when a second package adds it, move it here.
 # Off the catalog on purpose: zod. apps/codex/web, apps/codex/ingest, libs/ts/codex-corpus
-# and libs/ts/weal-wire resolve 4.6.7 while the other four zod users resolve
-# 4.4.3; one catalog entry would upgrade those four. The three codex packages must resolve the
+# resolve 4.6.7 while the other zod users resolve 4.4.3; one catalog entry would upgrade those. The three codex packages must resolve the
 # same zod.
 catalog:
   "@bgotink/kdl": "^0.4.0"

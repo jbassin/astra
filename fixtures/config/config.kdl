@@ -85,13 +85,7 @@ assay {
 weal {
     service-name "astra.weal-bot"
     database-url ""
-    feed-ws-url ""
     bind-addr "127.0.0.1:10203"
-}
-weal-overlay {
-    service-name "astra.weal-overlay"
-    port 10360
-    token ref="sops:fixture_overlay_token"
 }
 orator {
     service-name "astra.orator-backend"

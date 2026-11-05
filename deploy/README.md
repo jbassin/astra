@@ -164,8 +164,7 @@ or `dagster/workspace.yaml`) or a hostname that dials it:
 | Service | Networks | Why |
 |---|---|---|
 | every Node app not listed below: strider, akasha-frontend, codex, mouthpiece-frontend, harrow, portal, portal-headless | `telemetry` | OTLP to `signoz-otel-collector:4318` (`telemetry.otlp-endpoint`); no other in-cluster call. Calls to other sites go through the public edge. |
-| weal-bot | `telemetry`, `weal-db`, `weal-feed` | OTLP; `weal-postgres:5432` (`weal.database-url`); `weal-overlay:10361` (`weal.feed-ws-url`) |
-| weal-overlay | `telemetry`, `weal-feed` | OTLP; weal-bot posts rolls to it |
+| weal-bot | `telemetry`, `weal-db` | OTLP; `weal-postgres:5432` (`weal.database-url`) |
 | orator-backend | `telemetry`, `orator-db` | OTLP; `orator-postgres:5432` (`orator.database-url`) |
 | weal-postgres, orator-postgres | `weal-db`, `orator-db` | called only by their one app |
 | dagster-postgres | `dagster-db` (internal) | called by the Dagster services and the run containers (`dagster.yaml` storage) |
