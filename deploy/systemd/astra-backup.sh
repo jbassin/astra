@@ -89,7 +89,7 @@ PG_CONTAINERS=(astra-dagster-postgres astra-weal-postgres astra-orator-postgres)
 # new state dir is backed up without an edit here. That includes astra-data (the clone, .git
 # and all, so bot commits that have not been pushed yet are kept), audio (83 of 104 session
 # recordings exist nowhere else), mouthpiece (paid LLM + TTS renders), scribe/incoming (raw
-# Craig zips; the Drive originals can be cleaned out), heartwood, portal-oauth, menhir,
+# Craig zips; the Drive originals can be cleaned out), heartwood, portal-oauth,
 # linguist and deploy.
 # Skipped whole:
 #   postgres       live PGDATA (uid 70, mode 0700): a file copy of a running cluster is not

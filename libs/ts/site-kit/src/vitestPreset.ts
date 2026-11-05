@@ -14,13 +14,13 @@ export interface SiteVitestOptions {
   /** The app dir (`import.meta.dirname` in its `vitest.config.ts`). */
   root: string;
   /**
-   * The default test environment. Default `"jsdom"`. codex and menhir use `"node"` and opt
+   * The default test environment. Default `"jsdom"`. codex uses `"node"` and opt
    * single files into a DOM with a `// @vitest-environment jsdom` docblock.
    */
   environment?: "jsdom" | "node";
   /**
    * Whether the app has a `scripts/build-content.ts` to run before tests. Default true. False
-   * drops the generated-content global setup (codex, menhir and vellum have no such step).
+   * drops the generated-content global setup (codex and vellum have no such step).
    */
   generatedContent?: boolean;
   /** Extra global setup files, run after the generated-content one. */

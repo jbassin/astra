@@ -3,7 +3,7 @@
 `createService()` serves one Node HTTP service on srvx: a route table with `:param` templates and
 zod-validated JSON bodies, authenticated route groups, JSON error mapping, `/healthz` with
 readiness probes, WebSocket upgrade endpoints, and one ordered shutdown. orator-backend
-(`apps/orator/bot`), menhir (`apps/menhir/web`), portal (`apps/portal/server`), weal-overlay
+(`apps/orator/bot`), portal (`apps/portal/server`), weal-overlay
 (`apps/weal/overlay`) and vellum-render (`apps/vellum/render`) use it. Frontends use
 `@astra/site-kit`'s `createSsrServer` instead.
 

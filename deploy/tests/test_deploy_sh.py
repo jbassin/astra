@@ -122,7 +122,7 @@ def _fake_docker(bin_dir: Path, body: str) -> None:
 CODEX_RELEASE = "0123456789abcdef"
 
 
-@pytest.mark.parametrize("args", [("codex",), (), ("menhir", "codex"), ("--restart", "codex")])
+@pytest.mark.parametrize("args", [("codex",), (), ("harrow", "codex"), ("--restart", "codex")])
 def test_refuses_codex_without_a_current_release(rig: Rig, args: tuple[str, ...]) -> None:
     current = rig.data_root / "codex" / "data" / "releases" / "current"
     current.unlink()
@@ -137,7 +137,7 @@ def test_refuses_codex_without_a_current_release(rig: Rig, args: tuple[str, ...]
 
 def test_deploys_other_services_without_a_codex_release(rig: Rig) -> None:
     (rig.data_root / "codex" / "data" / "releases" / "current").unlink()
-    r = rig.run("--dry-run", "menhir")
+    r = rig.run("--dry-run", "harrow")
     assert r.returncode == 0, r.stderr
 
 
@@ -198,7 +198,7 @@ def test_skip_failed_skips_only_a_failed_build_at_the_same_target(
         # A skip does not mask the failure: the next run still skips.
         assert rig.run("--dry-run", "--skip-failed", "codex").returncode == 11
     # Other services, or no --skip-failed, still deploy.
-    assert rig.run("--dry-run", "--skip-failed", "menhir").returncode == 0
+    assert rig.run("--dry-run", "--skip-failed", "harrow").returncode == 0
     assert rig.run("--dry-run", "codex").returncode == 0
 
 
@@ -243,7 +243,7 @@ def _runs(*runs: tuple[str, str, str]) -> bytes:
 DAGSTER_SCOPES = [
     ("dagster-code",),
     ("dagster-code", "dagster-daemon", "dagster-webserver"),
-    ("menhir", "dagster-postgres"),
+    ("harrow", "dagster-postgres"),
     (),
 ]
 
@@ -282,7 +282,7 @@ def test_deploys_dagster_with_no_run_in_flight(rig: Rig, graphql: type[_GraphQL]
 
 def test_other_services_never_ask_dagster(rig: Rig, graphql: type[_GraphQL]) -> None:
     graphql.answer = _runs(("abc123", "__ASSET_JOB", "STARTED"))
-    r = rig.run("--dry-run", "menhir", "codex")
+    r = rig.run("--dry-run", "harrow", "codex")
     assert r.returncode == 0, r.stderr
     assert graphql.queries == []
 

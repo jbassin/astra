@@ -36,7 +36,6 @@ SERVICE_NETWORKS: dict[str, frozenset[str]] = {
     "weal-postgres": frozenset({"weal-db"}),
     "weal-bot": frozenset({"telemetry", "weal-db", "weal-feed"}),
     "weal-overlay": frozenset({"telemetry", "weal-feed"}),
-    "menhir": TELEMETRY,
     "strider": TELEMETRY,
     "akasha-frontend": TELEMETRY,
     "codex": TELEMETRY,

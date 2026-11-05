@@ -97,7 +97,7 @@ to build has no `build` script; `pnpm -r run build` skips it, and `deploy/node.D
 `pnpm run --if-present build`.
 `pnpm --filter <pkg> test` still runs one package alone. A dependency that two or more packages use has one version, in
 the `catalog:` of `pnpm-workspace.yaml`, and each package.json names it `"catalog:"`; bump it there.
-zod is off the catalog until its users converge (codex and menhir resolve 4.6.7, the rest 4.4.3).
+zod is off the catalog until its users converge (codex resolves 4.6.7, the rest 4.4.3).
 
 **Rust.** Only `libs/rust/weal-engine` (toolchain 1.96.0 via its `rust-toolchain.toml`). Rebuild the
 committed wasm in `libs/ts/weal-engine/gen/` with `just weal-engine-build`, never by hand. Two CI
@@ -246,7 +246,7 @@ different directory than the source. What is still hand-maintained:
    it needs ffmpeg or Chromium (the `node.Dockerfile` header lists the knobs). It sets no
    `command:`; the image's CMD runs the server bundle. Bind mounts use the long form `{ <<: *bind, source: ..., target: ... }`, whose
    `create_host_path: false` fails the deploy when the host dir is missing. The runtime image holds the whole built app dir, so a new
-   data dir such as menhir's `quizzes/` needs no COPY. Paths the container writes are
+   data dir in the app needs no COPY. Paths the container writes are
    identical-path bind mounts under `/ruby/data/astra-state`; add the dir to `deploy.sh`
    `init_artifacts` and to the `config.kdl` `data` comment. A public host is a
    `sites.caddyfile` block with `import astra_site` (plus `import local_only` for private paths); the

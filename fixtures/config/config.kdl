@@ -160,9 +160,3 @@ portal-headless {
     gm-username "Portal"
     reload-interval-hours 24
 }
-menhir {
-    service-name "astra.menhir"
-    port 10375
-    public-origin "https://menhir.iridi.cc"
-    results-path "menhir/results.jsonl"
-}

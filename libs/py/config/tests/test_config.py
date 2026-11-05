@@ -112,7 +112,7 @@ def test_python_loader_rejects_a_bad_python_block(fixture_with: FixtureWith) -> 
 
 
 def test_whole_config_rejects_an_unknown_namespace(fixture_with: FixtureWith) -> None:
-    kdl = fixture_with("menhir {", 'heartwod {\n    model "x"\n}\nmenhir {')
+    kdl = fixture_with("portal-headless {", 'heartwod {\n    model "x"\n}\nportal-headless {')
     assert load_config(kdl).heartwood.model  # the Python loader ignores the stray block
     with pytest.raises(KdlDecodeError, match="heartwod"):
         load_whole_config(kdl)
@@ -181,7 +181,6 @@ def test_data_paths_resolve_against_the_root(monkeypatch: pytest.MonkeyPatch) ->
     # A relative dataset resolves under the content root (`astra-data` under root).
     assert cfg.data.linguist_data == "/srv/state/astra-data/linguist/data"
     whole = load_whole_config(FIXTURE)
-    assert whole.menhir.results_path == "/srv/state/menhir/results.jsonl"
     assert whole.orator.data_dir == "/data"  # a container path, not a data path
     monkeypatch.setenv("ASTRA_DATA_ROOT", "/override")
     assert load_config(FIXTURE).scribe.data_path == "/override/scribe/data"

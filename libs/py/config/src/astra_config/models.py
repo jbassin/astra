@@ -13,7 +13,7 @@ Ownership (who reads each block, from a grep of the apps): both languages read `
 `telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
 `heartwood`, `mouthpiece-producer` and `ops`. Only TS reads `weal`, `weal-overlay`, `orator`,
 `strider`, `akasha-frontend`, `mouthpiece-frontend`, `vellum-frontend`, `vellum-render`,
-`harrow`, `ledger`, `portal`, `portal-headless` and `menhir`. `TS_NAMESPACES` below
+`harrow`, `ledger`, `portal` and `portal-headless`. `TS_NAMESPACES` below
 lists the TS-read ones; a TS-only namespace lives here in `WholeConfig`.
 
 Every field has a reader outside the config libraries and tests: the CI test
@@ -376,18 +376,6 @@ class OpsConfig(_Base):
     smoke_textfile: DataPath
 
 
-class MenhirConfig(_Base):
-    # menhir — a Kahoot-style session-opener quiz, on the weal-overlay
-    # template (srvx server + SSE fan-out + vite React SPA, no auth). Same
-    # config-single-source contract: server.ts binds this port + names telemetry;
-    # no PORT env. results_path is the JSONL append target (a data path; the
-    # container mounts it at the same absolute path, the data-path convention).
-    service_name: str
-    port: int
-    public_origin: str
-    results_path: DataPath
-
-
 class Config(_Base):
     """The namespaces Python code reads: what `load_config()` validates and returns.
 
@@ -459,7 +447,6 @@ class WholeConfig(Config):
     ledger: LedgerConfig
     portal: PortalConfig
     portal_headless: PortalHeadlessConfig
-    menhir: MenhirConfig
 
 
 #: The namespaces TS reads, in the order `libs/ts/config/src/config.gen.ts` declares them:
@@ -480,5 +467,4 @@ TS_NAMESPACES: tuple[str, ...] = (
     "portal",
     "portal_headless",
     "codex",
-    "menhir",
 )

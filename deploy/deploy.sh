@@ -153,7 +153,7 @@ init_artifacts() {
   mkdir -p "$r"/scribe/{incoming,data,tmp} "$r"/linguist/script \
     "$r"/mouthpiece/{episodes,experiments} \
     "$r"/heartwood/requests/logs \
-    "$r"/codex/data/releases "$r"/menhir \
+    "$r"/codex/data/releases \
     "$r"/audio/{akasha,mouthpiece,orator} "$r"/postgres/{dagster,orator,weal} "$r"/portal-oauth \
     "$r"/node-exporter/textfile "$r"/deploy/live "$r"/locks
 }

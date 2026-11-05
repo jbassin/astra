@@ -9,8 +9,6 @@ no build step. How to start a new frontend from these pieces is in `apps/strider
 
 An app's shell files are a few lines of app-specific options. Every TanStack Start frontend uses
 it: strider, akasha-frontend, mouthpiece-frontend, harrow, ledger, vellum-frontend and codex.
-menhir is a plain vite SPA served by its own service-kit server, so it uses only the vitest
-preset.
 
 | File | Calls | App-specific options |
 |---|---|---|

@@ -108,7 +108,7 @@ export function generateTokenFiles(): GeneratedFile[] {
 
   const parchmentCss = [
     `/* ${HEADER}`,
-    "   The parchment theme (codex, menhir): plain custom properties, no Tailwind. */",
+    "   The parchment theme (codex): plain custom properties, no Tailwind. */",
     ":root {",
     ...themeBody(parchment),
     "}",

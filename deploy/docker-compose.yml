@@ -298,27 +298,6 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10361/healthz').then(r=>process.exit(r.ok?0:1))"]
 
-  # menhir: the Kahoot-style session-opener quiz. SSE behind Caddy with
-  # flush_interval -1. No secrets (no auth; the hostToken is minted per game).
-  # Results JSONL rides an IDENTICAL-PATH rw bind mount (host path == container
-  # path — plain config fields have no env override, the Dagster pipeline-volume convention);
-  # deploy.sh init_artifacts pre-creates the dir as uid 1000.
-  menhir:
-    <<: *astra-app
-    build:
-      <<: *node-build
-      args:
-        APP: menhir/web
-    image: astra-menhir:local
-    container_name: astra-menhir
-    ports:
-      - "10375:10375"
-    volumes:
-      - { <<: *bind, source: /ruby/data/astra-state/menhir, target: /ruby/data/astra-state/menhir }
-    healthcheck:
-      <<: *node-healthcheck
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10375/healthz').then(r=>process.exit(r.ok?0:1))"]
-
   # --- strider: the first SSR frontend, the template for the later ones. One SSR
   # process. The layer editor (a TanStack server function that writes
   # content/layers/*.kdl) exists only under `vite dev`; the production build leaves it out.

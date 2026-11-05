@@ -35,7 +35,6 @@ data {
     //   heartwood/               per-run agent artifacts, backfill.log, backfill.lock
     //   heartwood/requests/      the Dagster <-> host request files, logs/ inside
     //   codex/data/              codex releases/ (corpus + Pagefind index), AoN + Foundry snapshots
-    //   menhir/                  menhir results.jsonl
     //   assay/books/             the Liturgy PDF (`just book` creates it on the host; no
     //                            container uses it, so init_artifacts leaves it alone)
     //   handouts/                player handout sources and PDFs (`just handout`; host only)
@@ -430,17 +429,4 @@ assay {
     // data.root, holding handout.md (Homebrewery-style source, a spoiler until handed out, so
     // never in the public repo), art.* and the built <name>.pdf.
     handouts-path "handouts"
-}
-
-menhir {
-    // menhir — a Kahoot-style session-opener quiz, on the weal-overlay
-    // template (srvx server + SSE fan-out + vite React SPA, no auth by stakeholder choice). Same
-    // config-single-source contract: server.ts binds this port + names telemetry;
-    // no PORT env. Behind Caddy at menhir.iridi.cc → host 10375. results-path is the
-    // JSONL append target (identical-path bind mount, the Dagster pipeline-volume
-    // convention — plain config fields have no env override).
-    service-name "astra.menhir"
-    port 10375
-    public-origin "https://menhir.iridi.cc"
-    results-path "menhir/results.jsonl"
 }
