@@ -31,7 +31,6 @@ The general breakdown is as follows (subsystems, not directories; each app's REA
       - `orator`:
           - `orator-backend`: a discord bot that plays music into a voice channel, with a web frontend for importing and tagging tracks.
           - `orator-controller`: a streamdeck plugin for controlling the orator-backend.
-      - `menhir`: a kahoot-style quiz for opening a session. the gm shares the host view, and players answer on their phones.
       - `portal`: an MCP server that lets an LLM (Claude) search and edit the live FoundryVTT world, through a Foundry module running in a GM's browser session.
   - tools for making things:
       - `vellum`:

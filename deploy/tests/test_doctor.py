@@ -59,7 +59,7 @@ def _run(tmp_path: Path, skip: str, **env: str) -> subprocess.CompletedProcess[s
 def test_binds_reports_a_missing_data_root_source(tmp_path: Path) -> None:
     present = tmp_path / "data" / "audio"
     present.mkdir(parents=True)
-    missing = tmp_path / "data" / "menhir"
+    missing = tmp_path / "data" / "harrow"
     compose = {
         "services": {
             "a": {"volumes": [{"type": "bind", "source": str(present)}]},

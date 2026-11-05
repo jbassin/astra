@@ -57,7 +57,7 @@ describe("the shared-file stubs, applied to the real files", () => {
   const port = nextFreePort(real("config"), real("compose"));
 
   test("the next free port is above every port config.kdl and compose name", () => {
-    expect(port).toBeGreaterThan(10375);
+    expect(port).toBeGreaterThan(10374);
     expect(port).toBeLessThanOrEqual(10399);
     expect(real("config")).not.toMatch(new RegExp(`\\b${port}\\b`));
   });
@@ -81,9 +81,11 @@ describe("the shared-file stubs, applied to the real files", () => {
     const py = addPydanticModel(real("models"), names);
     expect(py).toContain("class DemoSiteConfig(_Base):\n");
     expect(py.indexOf("class DemoSiteConfig(")).toBeLessThan(py.indexOf("class WholeConfig("));
-    expect(py).toContain("    menhir: MenhirConfig\n    demo_site: DemoSiteConfig\n\n\n");
-    expect(py).toMatch(/TS_NAMESPACES[^)]*"menhir",\n {4}"demo_site",\n\)/);
-    expect(py).toMatch(/`portal-headless`, `menhir`\s+and `demo-site`\./);
+    expect(py).toContain(
+      "    portal_headless: PortalHeadlessConfig\n    demo_site: DemoSiteConfig\n\n\n",
+    );
+    expect(py).toMatch(/TS_NAMESPACES[^)]*"codex",\n {4}"demo_site",\n\)/);
+    expect(py).toMatch(/`portal`, `portal-headless`\s+and `demo-site`\./);
     for (const line of py.split("\n")) expect(line.length).toBeLessThanOrEqual(100);
     expect(() => addPydanticModel(py, names)).toThrow(/already has DemoSiteConfig/);
   });

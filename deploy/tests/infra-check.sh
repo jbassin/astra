@@ -119,7 +119,6 @@ check_edge() {
   done
   # The LAN still reaches every path a prober uses; a public client still reaches the sites.
   expect 200 codex.iridi.cc /healthz
-  expect 200 menhir.iridi.cc /healthz
   expect 200 orator.iridi.cc /healthz
   expect 200 vellum.iridi.cc /health
   expect 200 portal.iridi.cc /health

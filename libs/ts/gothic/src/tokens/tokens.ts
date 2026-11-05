@@ -3,7 +3,7 @@
  * is written here once; `just tokens-gen` turns it into the files under `src/generated/`:
  *
  * - `gothic-theme.css`: the gothic theme, a Tailwind `@theme` block that `theme.css` imports.
- * - `parchment-theme.css`: the parchment theme, a plain `:root` block (codex, menhir).
+ * - `parchment-theme.css`: the parchment theme, a plain `:root` block (codex).
  * - `graph-palette.css`: concrete hex for the akasha graph, which reads CSS variables in canvas.
  * - `palette.ts`: each theme's opaque colours as hex strings, pixi numbers and RGB floats for
  *   pixi code and GLSL uniforms.
@@ -102,10 +102,10 @@ export const gothic: Theme = {
 };
 
 /**
- * parchment: the "Liturgy of the Iridite" print-sourcebook theme that codex and menhir share.
+ * parchment: the "Liturgy of the Iridite" print-sourcebook theme that codex uses.
  * The hex values are the style-tokens doc's extraction from 36 reference pages
  * (`thoughts/archive/research/2026-07-14-codex-0029-p45-style-tokens.md`). App-only tokens
- * (codex's pills and density, menhir's answer shapes and medals) stay in each app's tokens.css.
+ * (codex's pills and density) stay in the app's tokens.css.
  */
 export const parchment: Theme = {
   colors: [

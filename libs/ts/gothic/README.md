@@ -5,7 +5,7 @@ primitives (`Panel`, `Title`, `Button`, `Input`, `Columns`), and `DocumentView`,
 parsed vellum document (`@astra/vellum-lang`) as React: statblocks, handouts, fields, timelines,
 deity cards and prose. Consumers: strider, akasha-frontend, mouthpiece-frontend, vellum-frontend,
 vellum-render, harrow, ledger, orator-backend, weal-overlay. gothic also owns astra's one
-design-token source, which generates the parchment theme that codex and menhir use instead of
+design-token source, which generates the parchment theme that codex uses instead of
 gothic. Plain TS source, no build step; `pnpm --filter @astra/gothic storybook` shows the
 primitives and vellum fixtures.
 
@@ -39,12 +39,12 @@ the source, run `just tokens-gen`, commit both.
 | Generated file | Export | Used by |
 |---|---|---|
 | `gothic-theme.css` | imported by `theme.css` | every gothic app (a Tailwind `@theme` block: CSS variables and utilities) |
-| `parchment-theme.css` | `@astra/gothic/parchment-theme.css` | codex and menhir, from their `styles/tokens.css` |
+| `parchment-theme.css` | `@astra/gothic/parchment-theme.css` | codex, from its `styles/tokens.css` |
 | `graph-palette.css` | `@astra/gothic/graph-palette.css` | the akasha graph (Quartz variable names as concrete hex) |
 | `palette.ts` | `@astra/gothic/palette` | pixi and GLSL code: `gothic.hex.*` strings, `gothic.pixi.*` numbers, `gothic.rgb.*` 0-1 floats rounded to 3 places (backdrop's shader uniforms, strider's map and background, harrow's card gold); `parchment.*` likewise |
 
-App-only tokens stay in the app: codex's pills, links and density, menhir's answer shapes and
-medals, and colours that are not theme colours (strider's map highlights, the starfield's
+App-only tokens stay in the app: codex's pills, links and density,
+and colours that are not theme colours (strider's map highlights, the starfield's
 warm tones).
 
 ### Token names

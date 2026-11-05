@@ -135,7 +135,6 @@ describe("the loader, against the fixture", () => {
     expect(cfg.data.root).toBe("/srv/state");
     expect(cfg.data.contentRoot).toBe("/srv/state/astra-data"); // relative, so under root
     expect(cfg.codex.dataPath).toBe("/srv/state/codex/data");
-    expect(cfg.menhir.resultsPath).toBe("/srv/state/menhir/results.jsonl");
     expect(cfg.data.akashaContent).toBe("/elsewhere/content");
     expect(cfg.orator.dataDir).toBe("/data"); // a container path, not a data path
     // A relative dataset resolves under the content root (`astra-data` under root).

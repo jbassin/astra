@@ -61,7 +61,6 @@ live in the 10350 to 10399 band.
 | `vellum.iridi.cc` | vellum-frontend (document editor) and vellum-render (`/render`) | 10367, 10368 |
 | `harrow.iridi.cc` | harrow (tarot reader) | 10369 |
 | `ledger.iridi.cc` | ledger (landing page) | 10370 |
-| `menhir.iridi.cc` | menhir (session-opener quiz) | 10375 |
 | `weal-overlay.iridi.cc` | weal-overlay (dice overlay) | 10361 |
 | `orator.iridi.cc` | orator-backend (music bot API and web UI) | 10363 |
 | `portal.iridi.cc` | portal server (MCP bridge to FoundryVTT) | 10372 |
