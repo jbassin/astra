@@ -198,6 +198,5 @@ describe("SecretRef.require / optional", () => {
   test("loaded refs carry their config key", () => {
     const cfg = loadConfig(join(findRepoRoot(), "fixtures", "config", "config.kdl"));
     expect(cfg.orator.sessionSecret?.configKey).toBe("orator.session-secret");
-    expect(cfg.wealOverlay.token?.configKey).toBe("weal-overlay.token");
   });
 });

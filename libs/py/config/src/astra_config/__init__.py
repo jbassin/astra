@@ -28,7 +28,6 @@ from .models import (
     ScribeConfig,
     TelemetryConfig,
     WealConfig,
-    WealOverlayConfig,
     WholeConfig,
 )
 from .root import find_repo_root
@@ -53,7 +52,6 @@ __all__ = [
     "SecretUnsetError",
     "TelemetryConfig",
     "WealConfig",
-    "WealOverlayConfig",
     "WholeConfig",
     "default_config_file",
     "default_secrets_file",

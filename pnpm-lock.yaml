@@ -837,9 +837,6 @@ importers:
       '@astra/weal-engine':
         specifier: workspace:*
         version: link:../../../libs/ts/weal-engine
-      '@astra/weal-wire':
-        specifier: workspace:*
-        version: link:../../../libs/ts/weal-wire
       '@opentelemetry/api':
         specifier: 'catalog:'
         version: 1.9.1
@@ -862,70 +859,6 @@ importers:
       tsx:
         specifier: 'catalog:'
         version: 4.23.15
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.15)(yaml@2.9.0))
-
-  apps/weal/overlay:
-    dependencies:
-      '@astra/config':
-        specifier: workspace:*
-        version: link:../../../libs/ts/config
-      '@astra/gothic':
-        specifier: workspace:*
-        version: link:../../../libs/ts/gothic
-      '@astra/observe':
-        specifier: workspace:*
-        version: link:../../../libs/ts/observe
-      '@astra/service-kit':
-        specifier: workspace:*
-        version: link:../../../libs/ts/service-kit
-      '@astra/site-kit':
-        specifier: workspace:*
-        version: link:../../../libs/ts/site-kit
-      '@astra/weal-wire':
-        specifier: workspace:*
-        version: link:../../../libs/ts/weal-wire
-      '@fontsource/ibm-plex-mono':
-        specifier: 'catalog:'
-        version: 5.2.7
-      pixi.js:
-        specifier: 'catalog:'
-        version: 8.19.0
-      react:
-        specifier: 'catalog:'
-        version: 19.2.7
-      react-dom:
-        specifier: 'catalog:'
-        version: 19.2.7(react@19.2.7)
-      srvx:
-        specifier: 'catalog:'
-        version: 0.11.20
-    devDependencies:
-      '@tailwindcss/vite':
-        specifier: 'catalog:'
-        version: 4.3.2(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.15)(yaml@2.9.0))
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.2.17
-      '@types/react-dom':
-        specifier: 'catalog:'
-        version: 19.2.3(@types/react@19.2.17)
-      '@vitejs/plugin-react':
-        specifier: 'catalog:'
-        version: 5.2.0(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.15)(yaml@2.9.0))
-      tailwindcss:
-        specifier: 'catalog:'
-        version: 4.3.2
-      tsdown:
-        specifier: 'catalog:'
-        version: 0.22.3(oxc-resolver@11.23.0)(tsx@4.23.15)(typescript@5.9.3)
-      tsx:
-        specifier: 'catalog:'
-        version: 4.23.15
-      vite:
-        specifier: 'catalog:'
-        version: 8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.15)(yaml@2.9.0)
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.15)(yaml@2.9.0))
@@ -1270,16 +1203,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.15)(yaml@2.9.0))
-
-  libs/ts/weal-wire:
-    dependencies:
-      zod:
-        specifier: ^4.4.3
-        version: 4.6.7
-    devDependencies:
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/browser-preview@4.1.9)(jsdom@29.1.1)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.15)(yaml@2.9.0))

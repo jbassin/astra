@@ -11,8 +11,8 @@ Each language validates only the namespaces its apps read:
 
 Ownership (who reads each block, from a grep of the apps): both languages read `data`,
 `telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
-`heartwood`, `mouthpiece-producer` and `ops`. Only TS reads `weal`, `weal-overlay`, `orator`,
-`strider`, `akasha-frontend`, `mouthpiece-frontend`, `harrow`, `portal` and `portal-headless`.
+`heartwood`, `mouthpiece-producer` and `ops`. Only TS reads `weal`, `orator`, `strider`,
+`akasha-frontend`, `mouthpiece-frontend`, `harrow`, `portal` and `portal-headless`.
 `TS_NAMESPACES` below lists the TS-read ones; a TS-only namespace lives here in `WholeConfig`.
 
 Every field has a reader outside the config libraries and tests: the CI test
@@ -152,16 +152,8 @@ class MouthpieceConfig(_Base):
 class WealConfig(_Base):
     service_name: str
     database_url: str
-    feed_ws_url: str
     bind_addr: str
     discord_token: Secret | None = None
-    feed_token: Secret | None = None
-
-
-class WealOverlayConfig(_Base):
-    service_name: str
-    port: int
-    token: Secret | None = None  # shared weal↔overlay secret (=weal.feed_token)
 
 
 class OratorConfig(_Base):
@@ -403,7 +395,6 @@ class WholeConfig(Config):
     model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
 
     weal: WealConfig
-    weal_overlay: WealOverlayConfig
     orator: OratorConfig
     strider: StriderConfig
     akasha_frontend: AkashaFrontendConfig
@@ -419,7 +410,6 @@ TS_NAMESPACES: tuple[str, ...] = (
     "data",
     "telemetry",
     "weal",
-    "weal_overlay",
     "orator",
     "strider",
     "akasha_frontend",

@@ -74,7 +74,7 @@
 # compose `strider` service publishes host port 10360. It self-serves gothic's
 # fonts from dist/ (site-kit's gothicFontsPlugin copies them in at build), so
 # /fonts/* falls through to the reverse_proxy — no gothic_fonts import, matching
-# orator/weal-overlay. The later frontends inherit this.
+# orator. The later frontends inherit this.
 strider.iridi.cc {
 	import astra_site
 
@@ -172,17 +172,6 @@ codex.iridi.cc {
 	reverse_proxy localhost:10374
 }
 
-# weal-overlay — the dice-roll OBS overlay. SSE: flush_interval -1 disables
-# response buffering so text/event-stream reaches OBS immediately. The overlay
-# self-serves its fonts from dist/, so no gothic_fonts import. Compose publishes
-# host port 10361.
-weal-overlay.iridi.cc {
-	import astra_site
-	reverse_proxy localhost:10361 {
-		flush_interval -1
-	}
-}
-
 # orator-backend — the Discord music console: Bun.serve REST + the served
 # operator SPA (one origin, M3). The SPA self-serves its gothic fonts from dist/
 # (gothicFontsPlugin copies them in), so no gothic_fonts import. Auth is handled in
@@ -207,7 +196,7 @@ orator.iridi.cc {
 
 # portal — the FoundryVTT MCP+WS bridge server. Two upstream concerns on one
 # origin: the SSE-shaped Streamable-HTTP `/mcp` surface + the bridge `/ws` upgrade
-# (flush_interval -1, mirroring weal-overlay/orator's SSE matchers — WS upgrades need
+# (flush_interval -1, mirroring orator's SSE matchers — WS upgrades need
 # the same unbuffered proxying), and an explicit `/module/*` route so Foundry's
 # server-side manifest fetch resolves cleanly (D11 — install by Manifest URL =
 # https://portal.iridi.cc/module/module.json; the catch-all would cover it too, but

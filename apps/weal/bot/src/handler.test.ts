@@ -1,13 +1,12 @@
 /**
  * Message pipeline (the locally-testable cases) — the full
- * classify → engine → host+webhook → persistence → overlay flow, exercised dry
+ * classify → engine → host+webhook → persistence flow, exercised dry
  * with fakes (no Discord/Postgres/network) against the REAL committed wasm
  * engine under a fixed seed (deterministic goldens).
  */
 
 import type { WealHost } from "@astra/ontology";
 import { evaluate } from "@astra/weal-engine";
-import type { RollMessage } from "@astra/weal-wire";
 import { describe, expect, test } from "vitest";
 
 import type { FuncV2, WealStore } from "./db";
@@ -73,7 +72,6 @@ interface Harness {
   deps: HandlerDeps;
   store: FakeStore;
   sent: OutgoingMessage[];
-  broadcasts: RollMessage[];
   funcsAdded: [string, string][];
   seed: SeedInfo;
 }
@@ -81,7 +79,6 @@ interface Harness {
 function harness(initFuncs: [string, string][] = []): Harness {
   const store = new FakeStore();
   const sent: OutgoingMessage[] = [];
-  const broadcasts: RollMessage[] = [];
   const funcs = [...initFuncs];
   const funcsAdded: [string, string][] = [];
   const state = { seed: { seed: 999, blameId: 1, blame: "Josh" } };
@@ -104,16 +101,11 @@ function harness(initFuncs: [string, string][] = []): Harness {
       sent.push(msg);
       return Promise.resolve();
     },
-    broadcast: (payload) => {
-      broadcasts.push(payload);
-      return Promise.resolve();
-    },
   };
   return {
     deps,
     store,
     sent,
-    broadcasts,
     funcsAdded,
     get seed() {
       return state.seed;
@@ -147,7 +139,7 @@ describe("classification (unchanged surfaces)", () => {
 });
 
 describe("die rolls (real engine, seeded)", () => {
-  test("d20 + 7 end-to-end: embed golden + persistence + overlay", async () => {
+  test("d20 + 7 end-to-end: embed golden + persistence", async () => {
     const h = harness();
     await handleMessage("d20 + 7", PROFILE, h.deps);
     // seed 77 draws a 4 → 11, goodness "bad"
@@ -160,17 +152,6 @@ describe("die rolls (real engine, seeded)", () => {
     expect(msg?.fields).toEqual([["Results", "d20 ⟪4⟫ + 7 = `11`"]]);
     expect(msg?.thumbnail).toBe("https://2e.aonprd.com/Images/Class/champion_Icon.png");
     expect(msg?.footer).toBe("bad • 999 (Josh did this)");
-    expect(h.broadcasts).toEqual([
-      {
-        v: 1,
-        user: "Jorge",
-        expression: "d20 + 7",
-        total: 11,
-        is_crit: false,
-        is_fumble: false,
-        display: "11",
-      },
-    ]);
   });
 
   test("a crit die gets the [Crit!] tag + the crit bank + crit footer", async () => {
@@ -204,24 +185,15 @@ describe("die rolls (real engine, seeded)", () => {
     expect(h.store.inserts).toEqual([]); // atom dice contribute no standard rows
   });
 
-  test("atom-die roll: overlay carries display with total 0 + goodness flags", async () => {
+  test("atom-die roll: the top atom gets the [Crit!] tag", async () => {
     const h = harness();
     await handleMessage("dl([:fine, :good, :great])", PROFILE, h.deps);
     expect(h.sent[0]?.title).toBe("Argyle: :great [Crit!]");
-    expect(h.broadcasts[0]).toEqual({
-      v: 1,
-      user: "Jorge",
-      expression: "dl([:fine, :good, :great])",
-      total: 0,
-      is_crit: true,
-      is_fumble: false,
-      display: ":great",
-    });
   });
 });
 
 describe("value displays (the Knife invented flow)", () => {
-  test("a bare number → Knife message, no save, no broadcast", async () => {
+  test("a bare number → Knife message, no save", async () => {
     const h = harness();
     await handleMessage("5", PROFILE, h.deps);
     expect(h.sent).toHaveLength(1);
@@ -229,7 +201,6 @@ describe("value displays (the Knife invented flow)", () => {
     expect(h.sent[0]?.title).toBe("i invented the number 5");
     expect(h.sent[0]?.fields).toEqual([["Result", "5 = `5`"]]);
     expect(h.store.inserts).toEqual([]);
-    expect(h.broadcasts).toEqual([]);
   });
 });
 
@@ -244,7 +215,6 @@ describe("error visibility + the noise gate", () => {
     const h = harness();
     await handleMessage(":p", PROFILE, h.deps);
     expect(h.sent).toEqual([]);
-    expect(h.broadcasts).toEqual([]);
   });
 
   test("`xyzzy + 1` (operator present) → visible unbound-ident reply golden", async () => {
@@ -312,7 +282,6 @@ describe("engine faults (stage internal)", () => {
       "something broke deep in the dice machinery — it's been reported",
     );
     expect(h.store.inserts).toEqual([]);
-    expect(h.broadcasts).toEqual([]);
   });
 
   test("a fault replies even when the source would not pass the noise gate", async () => {
@@ -338,12 +307,11 @@ describe("engine faults (stage internal)", () => {
 });
 
 describe("roll history is written after the reply (ADR 0025)", () => {
-  test("a write that never finishes doesn't hold up the reply or the overlay", async () => {
+  test("a write that never finishes doesn't hold up the reply", async () => {
     const h = harness();
     h.store.insertResult = () => new Promise<void>(() => {});
     await handleMessage("d20 + 7", PROFILE, h.deps);
     expect(h.sent).toHaveLength(1);
-    expect(h.broadcasts).toHaveLength(1);
     expect(h.store.inserts).toEqual([[20, 4, 42, 1]]);
   });
 
@@ -518,7 +486,6 @@ describe("persistence guards", () => {
     const h = harness();
     await handleMessage("31d6", PROFILE, h.deps);
     expect(h.sent).toHaveLength(1);
-    expect(h.broadcasts).toHaveLength(1);
     expect(h.store.inserts).toEqual([]);
   });
 
@@ -531,7 +498,7 @@ describe("persistence guards", () => {
 });
 
 describe("plots", () => {
-  test("plot(d6): GSR embed w/ attachment image + mean/std; no rows, no broadcast", async () => {
+  test("plot(d6): GSR embed w/ attachment image + mean/std; no rows", async () => {
     const h = harness();
     await handleMessage("plot(d6)", PROFILE, h.deps);
     expect(h.sent).toHaveLength(1);
@@ -548,6 +515,5 @@ describe("plots", () => {
     // PNG magic bytes prove the base64 → bytes decode
     expect([...(msg?.files?.[0]?.data.slice(0, 4) ?? [])]).toEqual([0x89, 0x50, 0x4e, 0x47]);
     expect(h.store.inserts).toEqual([]);
-    expect(h.broadcasts).toEqual([]);
   });
 });

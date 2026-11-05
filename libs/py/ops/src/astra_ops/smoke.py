@@ -85,9 +85,6 @@ CHECKS: tuple[Check, ...] = (
     Check("harrow-index", "https://harrow.iridi.cc/", contains=("Harrow",)),
     Check("orator-healthz", "https://orator.iridi.cc/healthz", contains=('"status":"ready"',)),
     Check("portal-health", "https://portal.iridi.cc/health", json_fields=("ok",)),
-    # weal-overlay has no health route: every unknown path falls back to the SPA's index.html,
-    # so `/health` would pass on any build. The index's title is the marker instead.
-    Check("weal-overlay-index", "https://weal-overlay.iridi.cc/", contains=("weal-overlay",)),
 )
 
 

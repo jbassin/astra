@@ -122,7 +122,7 @@ export interface GothicFontsOptions {
  * export, not a path climb), no frontend vendors a copy into git. This (a) serves
  * /fonts in `vite dev` and (b) copies the gothic fonts into `clientOutDir/fonts`
  * at build, so the SSR container self-serves them (server static-serves the client
- * dir) — no host-Caddy `gothic_fonts` dependency, matching orator/weal-overlay.
+ * dir) — no host-Caddy `gothic_fonts` dependency, matching orator.
  */
 export function gothicFontsPlugin(opts: GothicFontsOptions): Plugin {
   return {

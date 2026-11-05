@@ -91,7 +91,6 @@ function deps(over: Partial<HandlerDeps> = {}): HandlerDeps {
     getSeed: () => ({ seed: 999, blameId: 1, blame: "Josh" }),
     setSeed: () => {},
     send: () => Promise.resolve(),
-    broadcast: () => Promise.resolve(),
     ...over,
   };
 }

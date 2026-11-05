@@ -242,5 +242,3 @@ def test_loaded_refs_carry_their_config_key() -> None:
     whole = load_whole_config(fixture)
     assert whole.orator.session_secret is not None
     assert whole.orator.session_secret.config_key == "orator.session-secret"
-    assert whole.weal_overlay.token is not None
-    assert whole.weal_overlay.token.config_key == "weal-overlay.token"

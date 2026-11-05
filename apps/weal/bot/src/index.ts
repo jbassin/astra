@@ -39,8 +39,6 @@ async function main(): Promise<void> {
     {
       // Unset → "" → that feature off.
       discordToken: cfg.weal.discordToken?.optional() ?? "",
-      feedWsUrl: cfg.weal.feedWsUrl,
-      feedToken: cfg.weal.feedToken?.optional() ?? "",
     },
     roster,
     hosts,

@@ -1,5 +1,5 @@
 /**
- * Pure message classification + embed/overlay builders. Classification (trim +
+ * Pure message classification + embed builders. Classification (trim +
  * reseed detection) is the faerrin port, unchanged; the builders are rewired
  * off `@astra/weal-engine`'s display contract.
  *
@@ -13,7 +13,6 @@
  */
 
 import type { WealDieDisplay, WealGoodness, WealSpan } from "@astra/weal-engine";
-import { type RollMessage, RollMessageSchema } from "@astra/weal-wire";
 
 import type { SaveRefusal } from "./engine";
 import type { Profile } from "./roster";
@@ -262,35 +261,6 @@ export function saveRefusal(
     title: truncate(`${name} not saved`, TITLE_LIMIT),
     contents: truncate(lines.join("\n"), DESCRIPTION_LIMIT),
   };
-}
-
-// --- overlay payload ----------------------------------------------------------------
-
-/**
- * The roll message weal-overlay shows, built through the shared wire schema
- * (`@astra/weal-wire`), so a shape the overlay would reject fails here first.
- * Atom (non-numeric) rolls send `total: 0` with goodness-derived flags.
- * `expression` is the PLAIN SOURCE TEXT, never renderText (OBS would show raw
- * `~~`/`⟪⟫`).
- */
-export function overlayPayload(
-  playerName: string,
-  source: string,
-  display: WealDieDisplay,
-): RollMessage {
-  const numeric =
-    display.value.t === "num" || display.value.t === "dec" || display.value.t === "float";
-  const parsed = numeric ? Number(display.value.v) : 0;
-  const total = Number.isFinite(parsed) ? parsed : 0;
-  return RollMessageSchema.parse({
-    v: 1,
-    user: playerName,
-    expression: source,
-    total,
-    is_crit: display.goodness === "crit",
-    is_fumble: display.goodness === "fumble",
-    display: display.headline,
-  });
 }
 
 // --- classification (port of handler.rs trim + parse_func, minus plot) --------------

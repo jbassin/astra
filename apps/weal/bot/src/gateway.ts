@@ -1,7 +1,7 @@
 /**
  * The discord.js gateway — the I/O shell around the tested core ([[handler.ts]]).
  * Wires a long-running Discord client: per-channel webhook discovery/creation, the
- * host-identity embed send, and the best-effort overlay broadcast. Untested glue
+ * host-identity embed send. Untested glue
  * (needs a live token — the acceptance-I runtime check); the message pipeline it
  * drives is unit-tested via injected deps.
  */
@@ -10,7 +10,6 @@ import { randomBytes } from "node:crypto";
 
 import { getLogger } from "@astra/observe";
 import type { WealHost } from "@astra/ontology";
-import { type RollMessage, tokenHeaders } from "@astra/weal-wire";
 import {
   AttachmentBuilder,
   ChannelType,
@@ -34,10 +33,6 @@ const log = getLogger("astra.weal-bot");
 
 interface GatewayConfig {
   discordToken: string;
-  /** weal-overlay's ingest URL; empty disables the broadcast. */
-  feedWsUrl: string;
-  /** Shared overlay token (`@astra/weal-wire` token headers); empty = unauthenticated. */
-  feedToken: string;
 }
 
 export class Gateway {
@@ -116,7 +111,6 @@ export class Gateway {
         this.seed = seed;
       },
       send: (msg) => this.sendEmbed(webhook, msg),
-      broadcast: (payload) => this.broadcast(payload),
     };
   }
 
@@ -128,24 +122,6 @@ export class Gateway {
       // Plot PNGs ride as attachments the embed references (`attachment://plot.png`).
       files: msg.files?.map((f) => new AttachmentBuilder(Buffer.from(f.data), { name: f.name })),
     });
-  }
-
-  /** Best-effort: the roll is already posted+saved, so a down feed must not fail it. */
-  private async broadcast(payload: RollMessage): Promise<void> {
-    try {
-      if (this.cfg.feedWsUrl !== "") {
-        const headers: Record<string, string> = { "content-type": "application/json" };
-        if (this.cfg.feedToken !== "") Object.assign(headers, tokenHeaders(this.cfg.feedToken));
-        const res = await fetch(this.cfg.feedWsUrl, {
-          method: "POST",
-          headers,
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error(`overlay ${res.status}`);
-      }
-    } catch (e) {
-      log.emit({ severityText: "ERROR", body: `overlay broadcast failed (non-fatal): ${e}` });
-    }
   }
 
   private async channelWebhook(channel: TextChannel): Promise<Webhook> {

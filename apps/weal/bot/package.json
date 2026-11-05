@@ -16,7 +16,6 @@
     "@astra/ontology": "workspace:*",
     "@astra/pg-migrate": "workspace:*",
     "@astra/weal-engine": "workspace:*",
-    "@astra/weal-wire": "workspace:*",
     "@opentelemetry/api": "catalog:",
     "discord.js": "catalog:",
     "postgres": "catalog:",

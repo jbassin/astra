@@ -59,7 +59,6 @@ live in the 10350 to 10399 band.
 | `codex.iridi.cc`, `2e.iridi.cc` | codex (PF2e reference, noindexed) | 10374 |
 | `strider.iridi.cc` | strider (faction map; editor is local network only) | 10360 |
 | `harrow.iridi.cc` | harrow (tarot reader) | 10369 |
-| `weal-overlay.iridi.cc` | weal-overlay (dice overlay) | 10361 |
 | `orator.iridi.cc` | orator-backend (music bot API and web UI) | 10363 |
 | `portal.iridi.cc` | portal server (MCP bridge to FoundryVTT) | 10372 |
 | `otel.iridi.cc` | OTel collector OTLP/HTTP, for browser RUM and desktop clients | 10353 |
@@ -118,11 +117,11 @@ in the [runbook](runbook.md).
 ## Code layout
 
 ```
-apps/        apps/<domain>/<role>/: py (the uv member) or web, bot, overlay, render, controller,
+apps/        apps/<domain>/<role>/: py (the uv member) or web, bot, controller,
              ingest (pnpm)
 libs/py/     config, llm, observe, ontology, lexicon, sessions, vellum-lang, ops, pipeline-resources
 libs/ts/     config, observe, ontology, gothic, site-kit, service-kit, content-build, backdrop,
-             vellum-lang, codex-corpus, pg-migrate, weal-engine (the committed wasm build), weal-wire
+             vellum-lang, codex-corpus, pg-migrate, weal-engine (the committed wasm build)
 libs/rust/   weal-engine, the only Rust in the repo
 ontology/    ontology-config (config.kdl and its schema), ontology-being (players, campaigns,
              hosts), ontology-entity (the setting's entity registry)
