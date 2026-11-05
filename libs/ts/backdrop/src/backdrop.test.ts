@@ -6,12 +6,8 @@ import { BACKDROPS } from "./shaders";
 // vitest). The load-bearing invariant: every uniform a spec declares must actually
 // be referenced in its fragment, and the fragment must follow the Pixi-v8 convention.
 describe("backdrop catalog", () => {
-  it("exposes the three pixi backdrops", () => {
-    expect(Object.keys(BACKDROPS).sort()).toEqual([
-      "ledgerAurora",
-      "mouthpieceInterference",
-      "starfield",
-    ]);
+  it("exposes the two pixi backdrops", () => {
+    expect(Object.keys(BACKDROPS).sort()).toEqual(["mouthpieceInterference", "starfield"]);
   });
 
   for (const [key, spec] of Object.entries(BACKDROPS)) {

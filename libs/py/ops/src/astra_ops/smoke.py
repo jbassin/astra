@@ -82,7 +82,6 @@ CHECKS: tuple[Check, ...] = (
         "https://strider.iridi.cc/factions/ternion-heavy-industries",
         contains=("Ternion Heavy Industries",),
     ),
-    Check("ledger-index", "https://ledger.iridi.cc/", contains=('href="https://akasha.iridi.cc"',)),
     Check("harrow-index", "https://harrow.iridi.cc/", contains=("Harrow",)),
     Check("vellum-health", "https://vellum.iridi.cc/health", json_fields=("ready",)),
     Check("orator-healthz", "https://orator.iridi.cc/healthz", contains=('"status":"ready"',)),

@@ -1,4 +1,3 @@
-import { ledgerAurora } from "./ledgerAurora";
 import { mouthpieceInterference } from "./mouthpieceInterference";
 import { starfield } from "./starfield";
 
@@ -7,7 +6,6 @@ import { starfield } from "./starfield";
 export const BACKDROPS = {
   starfield, // harrow
   mouthpieceInterference, // mouthpiece-frontend (two-voice interference)
-  ledgerAurora, // ledger
 } as const;
 
 export type BackdropName = keyof typeof BACKDROPS;

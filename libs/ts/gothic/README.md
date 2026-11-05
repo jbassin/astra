@@ -4,7 +4,7 @@ gothic is the amber/teal dark theme (Tailwind v4 `@theme` tokens and fonts), a f
 primitives (`Panel`, `Title`, `Button`, `Input`, `Columns`), and `DocumentView`, which renders a
 parsed vellum document (`@astra/vellum-lang`) as React: statblocks, handouts, fields, timelines,
 deity cards and prose. Consumers: strider, akasha-frontend, mouthpiece-frontend, vellum-frontend,
-vellum-render, harrow, ledger, orator-backend, weal-overlay. gothic also owns astra's one
+vellum-render, harrow, orator-backend, weal-overlay. gothic also owns astra's one
 design-token source, which generates the parchment theme that codex uses instead of
 gothic. Plain TS source, no build step; `pnpm --filter @astra/gothic storybook` shows the
 primitives and vellum fixtures.

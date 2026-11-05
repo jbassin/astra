@@ -530,26 +530,6 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10369/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- ledger: the astra landing page — the simplest SSR frontend, a sibling
-  # of harrow. One homepage: a gothic card grid linking the player-facing sites. No
-  # backend, no DB, no volume — the linked URLs are baked from each site's config
-  # public-origin at build time. Port/service-name from config.kdl. ---
-  ledger:
-    <<: *astra-app
-    build:
-      <<: *node-build
-      args:
-        APP: ledger/web
-    image: astra-ledger:local
-    container_name: astra-ledger
-    # No PORT env — serviceName/port come from config.kdl (config-single-source);
-    # compose only maps the published host port below.
-    ports:
-      - "10370:10370" # ledger SSR (astra range) — also reachable directly
-    healthcheck:
-      <<: *node-healthcheck
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10370/').then(r=>process.exit(r.ok?0:1))"]
-
   # --- portal: the FoundryVTT MCP+WS bridge server. TS on the orator-backend
   # template (no build step for the server itself — the Dockerfile DOES build the
   # Foundry module, tsdown -> module/dist/main.js, packaged at runtime by the server

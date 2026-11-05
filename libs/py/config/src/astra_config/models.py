@@ -13,7 +13,7 @@ Ownership (who reads each block, from a grep of the apps): both languages read `
 `telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
 `heartwood`, `mouthpiece-producer` and `ops`. Only TS reads `weal`, `weal-overlay`, `orator`,
 `strider`, `akasha-frontend`, `mouthpiece-frontend`, `vellum-frontend`, `vellum-render`,
-`harrow`, `ledger`, `portal` and `portal-headless`. `TS_NAMESPACES` below
+`harrow`, `portal` and `portal-headless`. `TS_NAMESPACES` below
 lists the TS-read ones; a TS-only namespace lives here in `WholeConfig`.
 
 Every field has a reader outside the config libraries and tests: the CI test
@@ -192,8 +192,6 @@ class StriderConfig(_Base):
     # also derives the browser RUM name (``{service_name}-rum``).
     service_name: str
     port: int
-    # Absolute base URL — the canonical entry the ledger landing page links to.
-    public_origin: str
 
 
 class AkashaFrontendConfig(_Base):
@@ -248,17 +246,6 @@ class HarrowConfig(_Base):
     # service_name + port are the single source for server.ts + vite's dev port;
     # service_name also derives the browser RUM name. No backend/audio — every card
     # glyph is inline SVG.
-    service_name: str
-    port: int
-    public_origin: str
-
-
-class LedgerConfig(_Base):
-    # The astra landing page — a backend-less SSR frontend on the strider
-    # template, a sibling of Harrow. service_name + port are the single
-    # source for server.ts + vite's dev port; service_name also derives the browser
-    # RUM name. It links to the other sites by reading their public_origin from this
-    # same config at build time — no hardcoded URLs.
     service_name: str
     port: int
 
@@ -444,7 +431,6 @@ class WholeConfig(Config):
     vellum_frontend: VellumFrontendConfig
     vellum_render: VellumRenderConfig
     harrow: HarrowConfig
-    ledger: LedgerConfig
     portal: PortalConfig
     portal_headless: PortalHeadlessConfig
 
@@ -463,7 +449,6 @@ TS_NAMESPACES: tuple[str, ...] = (
     "vellum_frontend",
     "vellum_render",
     "harrow",
-    "ledger",
     "portal",
     "portal_headless",
     "codex",

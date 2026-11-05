@@ -23,7 +23,6 @@ The general breakdown is as follows (subsystems, not directories; each app's REA
       - `strider`: a website chronicling the progression of the factions' journey on a hexmap. it is also the template every other ssr frontend copies.
       - `codex`: a Pathfinder 2e reference site (rules, spells, creatures, items, classes) built from the Foundry pf2e packs and the Archives of Nethys, plus our homebrew spells. public but noindexed.
       - `harrow`: a reader for the campaign's homebrew Harrow tarot deck: draw a reading, browse the cards, look back at past spreads.
-      - `ledger`: the landing page, a card for each player-facing site.
   - tools for the table:
       - `weal`:
           - `weal-bot`: a discord dice bot. players type `weal` expressions (a small dice language where dice are exact probability distributions, evaluated by a rust engine compiled to wasm), and the bot replies as a host with the roll, a distribution plot, or a saved macro. Records the results of dice rolls.

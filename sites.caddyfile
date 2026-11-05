@@ -153,16 +153,6 @@ harrow.iridi.cc {
 	reverse_proxy localhost:10369
 }
 
-# ledger — the astra landing page, the simplest SSR frontend, a sibling of
-# harrow. One homepage: a gothic card grid linking the player-facing sites (the links
-# are baked from each site's config public-origin at build time). Read-only (no
-# editor → no local_only gate); self-serves gothic's fonts from the container. Compose
-# publishes host port 10370.
-ledger.iridi.cc {
-	import astra_site
-	reverse_proxy localhost:10370
-}
-
 # codex — the PF2e compendium/rules browser, SSR frontend on port 10374.
 # Public with NO auth gate but NOINDEXED: the X-Robots-Tag header here is
 # layer 3 of 3 (the SSR HTML always carries a robots meta tag; /robots.txt Disallow-all

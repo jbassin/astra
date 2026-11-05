@@ -1,14 +1,14 @@
 # @astra/site-kit — the shared spine of astra's SSR frontends
 
 site-kit holds the parts every TanStack Start frontend shares, so apps don't copy them. Consumers:
-strider, akasha-frontend, mouthpiece-frontend, vellum-frontend, harrow, ledger and codex (plus
+strider, akasha-frontend, mouthpiece-frontend, vellum-frontend, harrow and codex (plus
 `serveFile` and the server-bundle preset in the other Node services). It is plain TS source with
 no build step. How to start a new frontend from these pieces is in `apps/strider/web/README.md`.
 
 ## The frontend preset
 
 An app's shell files are a few lines of app-specific options. Every TanStack Start frontend uses
-it: strider, akasha-frontend, mouthpiece-frontend, harrow, ledger, vellum-frontend and codex.
+it: strider, akasha-frontend, mouthpiece-frontend, harrow, vellum-frontend and codex.
 
 | File | Calls | App-specific options |
 |---|---|---|

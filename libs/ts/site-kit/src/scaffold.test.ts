@@ -72,8 +72,8 @@ describe("the shared-file stubs, applied to the real files", () => {
         ["port", port],
       ]);
     }
-    expect(() => addConfigBlock(real("config"), frontendNames("ledger"), port)).toThrow(
-      /already has a ledger block/,
+    expect(() => addConfigBlock(real("config"), frontendNames("harrow"), port)).toThrow(
+      /already has a harrow block/,
     );
   });
 

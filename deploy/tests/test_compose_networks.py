@@ -45,7 +45,6 @@ SERVICE_NETWORKS: dict[str, frozenset[str]] = {
     "orator-postgres": frozenset({"orator-db"}),
     "orator-backend": frozenset({"telemetry", "orator-db"}),
     "harrow": TELEMETRY,
-    "ledger": TELEMETRY,
     "portal": TELEMETRY,
     "portal-headless": TELEMETRY,
 }

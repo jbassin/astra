@@ -111,7 +111,6 @@ orator {
 strider {
     service-name "astra.strider"
     port 10360
-    public-origin "https://strider.iridi.cc"
 }
 akasha-frontend {
     service-name "astra.akasha-frontend"
@@ -137,11 +136,6 @@ vellum-render {
 harrow {
     service-name "astra.harrow"
     port 10369
-    public-origin "https://harrow.iridi.cc"
-}
-ledger {
-    service-name "astra.ledger"
-    port 10370
 }
 portal {
     service-name "astra.portal"
