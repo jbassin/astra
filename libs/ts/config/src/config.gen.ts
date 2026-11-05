@@ -75,7 +75,6 @@ export const Strider = z
   .object({
     serviceName: z.string(),
     port: z.number().int(),
-    publicOrigin: z.string(),
   })
   .strict();
 
@@ -113,14 +112,6 @@ export const VellumRender = z
   .strict();
 
 export const Harrow = z
-  .object({
-    serviceName: z.string(),
-    port: z.number().int(),
-    publicOrigin: z.string(),
-  })
-  .strict();
-
-export const Ledger = z
   .object({
     serviceName: z.string(),
     port: z.number().int(),
@@ -175,7 +166,6 @@ export const ConfigSchema = z.object({
   vellumFrontend: VellumFrontend,
   vellumRender: VellumRender,
   harrow: Harrow,
-  ledger: Ledger,
   portal: Portal,
   portalHeadless: PortalHeadless,
   codex: Codex,

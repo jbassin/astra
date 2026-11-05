@@ -115,8 +115,7 @@ The `just codex-*` recipes call the ingest CLI (`pnpm --filter @astra/codex-inge
   publishes a release. Production compose never sets `CODEX_CORPUS_ROOT`.
 - **Noindex has three layers:** every SSR page carries `<meta name="robots" content="noindex">`
   (`src/routes/__root.tsx`), `public/robots.txt` disallows everything, and the Caddy stanzas
-  in `sites.caddyfile` set `X-Robots-Tag: noindex` for both hosts. There is no sitemap, and
-  codex is not on ledger's landing grid.
+  in `sites.caddyfile` set `X-Robots-Tag: noindex` for both hosts. There is no sitemap.
 
 ## How the site works
 

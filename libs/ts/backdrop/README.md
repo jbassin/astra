@@ -2,8 +2,8 @@
 
 backdrop is astra's signature page background: a fixed, full-viewport pixi shader behind the
 content. An app mounts `<ShaderBackground spec={…} />` once in its root route's `<body>` and picks
-a catalog entry or passes its own `BackdropSpec`. Users: harrow (`starfield`), ledger
-(`ledgerAurora`) and mouthpiece-frontend (`mouthpieceInterference`). akasha-frontend and strider
+a catalog entry or passes its own `BackdropSpec`. Users: harrow (`starfield`) and
+mouthpiece-frontend (`mouthpieceInterference`). akasha-frontend and strider
 don't use it (see Traps).
 
 ## How it works

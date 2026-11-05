@@ -3,7 +3,7 @@
 `@astra/content-build` holds the primitives the frontends' `build-content` scripts use to turn
 files (markdown, KDL, the astra-data datasets) into generated TypeScript modules that the app
 imports at runtime. The runtime app never reads the filesystem for content. akasha-frontend,
-mouthpiece-frontend, strider, harrow and ledger use it, each with its own domain parsing.
+mouthpiece-frontend, strider and harrow use it, each with its own domain parsing.
 
 ## Public surface
 

@@ -4,7 +4,7 @@
     "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
-    // Frontend-lane override (same as apps/ledger/web/heartwood-frontend): server-only
+    // Frontend-lane override (same as the other TanStack Start frontends): server-only
     // imports must stay out of anything the client bundle pulls in.
     "verbatimModuleSyntax": false,
     "types": ["node", "react", "react-dom", "vite/client"],
