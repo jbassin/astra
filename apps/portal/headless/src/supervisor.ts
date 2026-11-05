@@ -5,8 +5,7 @@
  * injected dependency ({@link SupervisorDeps}), so the whole classify/login/backoff/
  * reload/relaunch loop is unit-testable with a fake {@link PageAdapter} and fake timers
  * — zero Chromium involved (unit CI stays hermetic; the real Playwright driver in
- * `playwrightDriver.ts` is deliberately thin and untested in unit CI, mirroring
- * vellum-render). Shaped after the module's `bridgeClient.ts` (same injected-timer /
+ * `playwrightDriver.ts` is deliberately thin and untested in unit CI). Shaped after the module's `bridgeClient.ts` (same injected-timer /
  * injected-clock / capped-exponential-backoff idiom, applied here to Foundry's `/join`
  * instead of the bridge WS).
  *

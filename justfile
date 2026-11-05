@@ -57,12 +57,10 @@ fix:
 test: (_each "test" "py-test,ts-test")
 
 # The pre-push hook runs this; commitlint and no-decision-ids cover base..HEAD. Unlike CI, which path-filters
-# its jobs, this always runs every step. Not run here: vellum-visual-regression, because its
-# goldens are pinned to the node:24-slim container's Chromium and fonts (a host browser
-# renders different pixels); it stays CI-only. weal-engine-rust needs rustup on the host (it
+# its jobs, this always runs every step. weal-engine-rust needs rustup on the host (it
 # installs the crate's pinned toolchain on first use).
 # pg-test and infra-check need Docker on the host (a throwaway Postgres; the pinned tool images).
-# Run everything CI runs, locally (all but the container-only vellum render goldens).
+# Run everything CI runs, locally.
 ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,tokens-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,no-decision-ids " + base + " HEAD,ratchet,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
@@ -276,12 +274,6 @@ ratchet *flags:
 codex-e2e *args:
     pnpm --filter @astra/codex build
     cd apps/codex/web && pnpm exec playwright test "$@"
-
-# CI-only (see `ci`): runs inside node:24-slim with the Chromium the playwright lock pins.
-# CI job vellum-visual-regression: each fixture's rendered PNG against its golden.
-vellum-visual-regression:
-    pnpm --filter @astra/vellum-render build
-    cd apps/vellum/render && node --import tsx scripts/visual-regression.ts
 
 # Needs only the toolchain rustup installs from the crate's rust-toolchain.toml (1.96.0 with
 # rustfmt and clippy), not the wasm tools. The second clippy pass bans unwrap in library code;

@@ -3,7 +3,7 @@
  * 0004) → React, in the amber/teal 40k-gothic skin. gothic RENDERS the AST; it
  * never parses (that's vellum-lang) and never resolves a `[[crossref]]` target
  * (that's akasha-backend, 0007). `<DocumentView>` is the `[data-vellum-export]`
- * boundary the render service screenshots.
+ * card boundary.
  */
 
 export { CrossRef } from "./components/CrossRef";

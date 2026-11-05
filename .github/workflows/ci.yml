@@ -26,7 +26,6 @@ jobs:
       ts: ${{ steps.filter.outputs.ts }}
       corpus: ${{ steps.filter.outputs.corpus }}
       vellumParity: ${{ steps.filter.outputs.vellumParity }}
-      vellumRender: ${{ steps.filter.outputs.vellumRender }}
       codex: ${{ steps.filter.outputs.codex }}
       wealEngine: ${{ steps.filter.outputs.wealEngine }}
       infra: ${{ steps.filter.outputs.infra }}
@@ -93,17 +92,8 @@ jobs:
               - 'pnpm-lock.yaml'
               - 'justfile'
               - '.github/**'
-            # The render output depends on the service + the renderer (gothic) + the
-            # parser (vellum-lang); a change to any can shift the goldens.
-            vellumRender:
-              - 'apps/vellum/render/**'
-              - 'libs/ts/gothic/**'
-              - 'libs/ts/vellum-lang/**'
-              - 'pnpm-lock.yaml'
-              - 'justfile'
-              - '.github/**'
-            # codex: the row-pitch drift guard needs a real Chromium,
-            # same "own pinned-container job" posture as vellumRender above.
+            # codex: the row-pitch drift guard needs a real Chromium, so it gets its own
+            # pinned-container job.
             codex:
               - 'apps/codex/web/**'
               - 'apps/codex/ingest/**'
@@ -303,39 +293,10 @@ jobs:
       - uses: ./.github/actions/setup-pnpm
       - run: just vellum-parity
 
-  # The vellum-render golden-image gate. Runs in the PINNED container
-  # node:24-slim with the Chromium the `playwright` lock pins (same env the
-  # vellum-render image uses, so goldens don't drift — the golden contract is
-  # pinned to this exact image). Builds the render-entry, then compares
-  # each fixture's PNG to its committed golden (>0.5% pixel drift fails).
-  vellum-visual-regression:
-    needs: changes
-    if: needs.changes.outputs.vellumRender == 'true'
-    runs-on: ubuntu-latest
-    container:
-      image: node:24-slim
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
-    steps:
-      # actions/checkout needs git inside the container.
-      - run: apt-get update && apt-get install -y --no-install-recommends git ca-certificates
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-just
-      # corepack installs the pnpm that package.json's packageManager pins.
-      - run: corepack enable && corepack install
-      - run: pnpm install --frozen-lockfile
-      # `playwright` is a devDependency of vellum-render only (pnpm's strict layout
-      # doesn't hoist it to the root node_modules `npx` would search from root) — run
-      # from the app dir, matching deploy/node.Dockerfile's `npx playwright install`
-      # (its os-chromium stage also runs it from /repo/apps/<app>).
-      - run: cd apps/vellum/render && npx playwright install --with-deps chromium
-      - run: just vellum-visual-regression
-
   # The codex e2e suite (Playwright Test, apps/codex/web/e2e) in real Chromium: listing row
   # geometry at both container tiers, and the virtualization, keyboard, reload and filter-pane
-  # behavior jsdom can't observe. Same pinned-container posture as vellum-visual-regression
-  # above. The suite's server generates the fixture corpus and pins CODEX_CORPUS_ROOT to it, so
-  # no real corpus is read. A failure uploads each failing test's trace and screenshot, and the
+  # behavior jsdom can't observe. Runs in the pinned node:24-slim container. The suite's server
+  # generates the fixture corpus and pins CODEX_CORPUS_ROOT to it, so no real corpus is read. A failure uploads each failing test's trace and screenshot, and the
   # HTML report.
   codex-e2e:
     needs: changes
@@ -498,7 +459,6 @@ jobs:
       - pg-test
       - corpus-validate
       - vellum-parity
-      - vellum-visual-regression
       - codex-e2e
       - weal-engine-rust
       - weal-engine-hash-check

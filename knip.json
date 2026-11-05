@@ -14,9 +14,6 @@
     "apps/codex/web": {
       "entry": ["src/server.ts", "e2e/server.ts", "scripts/*.ts"]
     },
-    "apps/vellum/render": {
-      "entry": ["src/render-entry/main.tsx"]
-    },
     "libs/ts/site-kit": {
       "entry": ["scripts/*.ts"]
     },

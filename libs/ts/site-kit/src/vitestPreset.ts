@@ -20,7 +20,7 @@ export interface SiteVitestOptions {
   environment?: "jsdom" | "node";
   /**
    * Whether the app has a `scripts/build-content.ts` to run before tests. Default true. False
-   * drops the generated-content global setup (codex and vellum have no such step).
+   * drops the generated-content global setup (codex has no such step).
    */
   generatedContent?: boolean;
   /** Extra global setup files, run after the generated-content one. */

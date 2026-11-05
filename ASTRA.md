@@ -34,14 +34,12 @@ The general breakdown is as follows (subsystems, not directories; each app's REA
   - tools for making things:
       - `vellum`:
           - `vellum-lang`: a custom markdown flavor definition and parser. Parses the custom syntax and outputs a structured format that can be ingested by downstream tools.
-          - `vellum-frontend`: a website for writing vellum documents (statblocks, handouts, deity cards) with a live preview and png export.
-          - `vellum-render`: the service that renders a vellum document to a png.
       - `assay`: the homebrew spell workbench. scores spell power against the official spell corpus, holds the canonical store of our homebrew spells (which codex serves), and builds the *Liturgy of the Iridite* spellbook from it.
       - `gothic`: a ui framework to be used by the various frontends to keep a consistent visual language, and the react renderer for vellum documents.
 
 Technologies:
   - web tech is tanstack and react
-  - the data pipeline (craig -> scribe -> linguist -> heartwood / mouthpiece) is orchestrated by Dagster (one partition per session); long-running services (bots, overlays, frontends, render service, DBs) run as Docker Compose units.
+  - the data pipeline (craig -> scribe -> linguist -> heartwood / mouthpiece) is orchestrated by Dagster (one partition per session); long-running services (bots, overlays, frontends, DBs) run as Docker Compose units.
   - the pipeline's published output (transcripts, the wiki, the episode catalog) lives in its own repo, `astra-data`; the frontends bake it in at build time.
   - all applications make use of otel spans and metrics to be consumed by signoz
   - all llm interactions will be through litellm and dspy, behind one shared client (`libs/py/llm`)

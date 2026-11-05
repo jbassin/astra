@@ -24,12 +24,12 @@ under `/ruby/data/astra-state/deploy/`; the header of `deploy.sh` has the detail
 
 Every Node service builds from one file, `node.Dockerfile`; its compose `build.args` pick the app
 (`APP`), the baked datasets (`CONTENT`) and the OS layer (`RUNTIME`: ffmpeg for orator, Chromium
-for vellum-render and portal-headless), and portal adds `target: portal`. Each image runs its
+for portal-headless), and portal adds `target: portal`. Each image runs its
 server bundle, `node --import ./dist-server/register.mjs dist-server/main.mjs`: the app's build
 bundles its server entry and the workspace packages with tsdown, so no TypeScript runs in
 production. The runtime images carry only the app's own production dependencies. The OS layers sit at the bottom of each image
 and take nothing from the repo, so a source, manifest or lockfile change rebuilds only the app
-layers (about 100 MB at most) and the two Chromium services share one ~1 GB browser layer. Keep it
+layers (about 100 MB at most). Keep it
 that way: an `ARG APP` or a repo mount in an `os-*` stage makes every manifest change reinstall
 Chromium. Dagster and smart-exporter keep their own Dockerfiles. `just infra-check` (CI job
 `infra-check`) lints all of this before a deploy: compose config, `sites.caddyfile` under the
@@ -163,7 +163,7 @@ or `dagster/workspace.yaml`) or a hostname that dials it:
 
 | Service | Networks | Why |
 |---|---|---|
-| every Node app not listed below: strider, akasha-frontend, codex, mouthpiece-frontend, vellum-frontend, vellum-render, harrow, portal, portal-headless | `telemetry` | OTLP to `signoz-otel-collector:4318` (`telemetry.otlp-endpoint`); no other in-cluster call. Calls to other sites go through the public edge. |
+| every Node app not listed below: strider, akasha-frontend, codex, mouthpiece-frontend, harrow, portal, portal-headless | `telemetry` | OTLP to `signoz-otel-collector:4318` (`telemetry.otlp-endpoint`); no other in-cluster call. Calls to other sites go through the public edge. |
 | weal-bot | `telemetry`, `weal-db`, `weal-feed` | OTLP; `weal-postgres:5432` (`weal.database-url`); `weal-overlay:10361` (`weal.feed-ws-url`) |
 | weal-overlay | `telemetry`, `weal-feed` | OTLP; weal-bot posts rolls to it |
 | orator-backend | `telemetry`, `orator-db` | OTLP; `orator-postgres:5432` (`orator.database-url`) |

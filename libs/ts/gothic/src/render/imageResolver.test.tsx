@@ -33,7 +33,7 @@ function render(resolveImage?: ImageResolver): string {
 }
 
 describe("image resolver seam", () => {
-  test("no resolver → alt text only, no <img> (vellum-render, Storybook unchanged)", () => {
+  test("no resolver → alt text only, no <img> (Storybook unchanged)", () => {
     const html = render();
     expect(html).not.toContain("<img");
     expect(html).not.toContain("<figure");

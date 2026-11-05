@@ -12,9 +12,8 @@ Each language validates only the namespaces its apps read:
 Ownership (who reads each block, from a grep of the apps): both languages read `data`,
 `telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
 `heartwood`, `mouthpiece-producer` and `ops`. Only TS reads `weal`, `weal-overlay`, `orator`,
-`strider`, `akasha-frontend`, `mouthpiece-frontend`, `vellum-frontend`, `vellum-render`,
-`harrow`, `portal` and `portal-headless`. `TS_NAMESPACES` below
-lists the TS-read ones; a TS-only namespace lives here in `WholeConfig`.
+`strider`, `akasha-frontend`, `mouthpiece-frontend`, `harrow`, `portal` and `portal-headless`.
+`TS_NAMESPACES` below lists the TS-read ones; a TS-only namespace lives here in `WholeConfig`.
 
 Every field has a reader outside the config libraries and tests: the CI test
 `tests/test_config_readers.py` fails on a field nothing reads, so delete a field when its
@@ -221,25 +220,6 @@ class MouthpieceFrontendConfig(_Base):
     audio_dir: str
 
 
-class VellumFrontendConfig(_Base):
-    # The PF2e document-forge editor — same SSR-frontend contract as the other
-    # frontends. service_name + port are the single source for
-    # server.ts + vite's dev port; service_name also derives the browser RUM name.
-    # The PNG export POSTs same-origin to /render (Caddy routes it to vellum-render).
-    service_name: str
-    port: int
-    # Absolute base URL — the share-link origin + the same-origin host for /render.
-    public_origin: str
-
-
-class VellumRenderConfig(_Base):
-    # The PNG render service — a Bun.serve + Playwright sidecar, a SEPARATE
-    # Compose unit from vellum-frontend. service_name names its telemetry; port
-    # is the bind port (the editor reaches it same-origin via Caddy).
-    service_name: str
-    port: int
-
-
 class HarrowConfig(_Base):
     # The tarot deck reader — a standalone SSR frontend on the strider
     # template, a sibling of strider (interactive, backend-less).
@@ -428,8 +408,6 @@ class WholeConfig(Config):
     strider: StriderConfig
     akasha_frontend: AkashaFrontendConfig
     mouthpiece_frontend: MouthpieceFrontendConfig
-    vellum_frontend: VellumFrontendConfig
-    vellum_render: VellumRenderConfig
     harrow: HarrowConfig
     portal: PortalConfig
     portal_headless: PortalHeadlessConfig
@@ -446,8 +424,6 @@ TS_NAMESPACES: tuple[str, ...] = (
     "strider",
     "akasha_frontend",
     "mouthpiece_frontend",
-    "vellum_frontend",
-    "vellum_render",
     "harrow",
     "portal",
     "portal_headless",

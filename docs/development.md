@@ -31,10 +31,8 @@ uv run pytest apps/<domain>/py # one Python app (they run as Dagster assets, no 
 ```
 
 Each CI job in `.github/workflows/ci.yml` runs the `just` recipe of the same name, so `just ci`
-runs the same commands. Differences: CI path-filters its jobs while `just ci` runs them all, and
-`vellum-visual-regression` stays CI-only because its goldens are pinned to the `node:24-slim`
-container's Chromium and fonts. `just ci` also runs the weal-engine crate's cargo gate, so the host
-needs rustup. `pg-test` runs the `*.pg.test.ts` suites against a real Postgres: CI gives it a
+runs the same commands. Differences: CI path-filters its jobs while `just ci` runs them all.
+`just ci` also runs the weal-engine crate's cargo gate, so the host needs rustup. `pg-test` runs the `*.pg.test.ts` suites against a real Postgres: CI gives it a
 `services: postgres` container, and locally the recipe starts a throwaway one, so `just ci` needs
 Docker. `infra-check` needs it too: it runs shellcheck, hadolint, the edge's Caddy and
 `systemd-analyze` from pinned images (deploy/README.md says what it checks). Shell-script
@@ -266,7 +264,7 @@ different directory than the source. What is still hand-maintained:
    for a user-content problem: every ERROR log pages Discord.
 6. A short `README.md`: what it is, where it runs, operations, traps. Check visual changes
    (CSS, pixi) in a real browser; no unit test sees them.
-7. A new CI path filter only if the app gets its own CI job (like `codex` or `vellumRender` in
+7. A new CI path filter only if the app gets its own CI job (like `codex` or `wealEngine` in
    `.github/workflows/ci.yml`); the `py` and `ts` lanes already watch `apps/*/py/**`,
    `apps/*/tools/**` and `apps/**`.
 

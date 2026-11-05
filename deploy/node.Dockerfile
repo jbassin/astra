@@ -1,4 +1,4 @@
-# The one Dockerfile for every astra Node service (frontends, bots, render, portal). The
+# The one Dockerfile for every astra Node service (frontends, bots, portal). The
 # build context is the REPO ROOT: every service is a pnpm workspace member that depends on
 # @astra/* libraries through workspace:* links. Build it through compose (`just deploy`):
 # each service's `build.args` in deploy/docker-compose.yml set the knobs below.
@@ -8,7 +8,7 @@
 #   CONTENT  which published datasets the build bakes from the `astra-data` build context
 #            (compose additional_contexts): none (default), akasha or mouthpiece.
 #   RUNTIME  the OS layer under the runtime: plain (default), ffmpeg (orator: ffmpeg +
-#            yt-dlp) or chromium (vellum-render, portal-headless: Playwright's Chromium).
+#            yt-dlp) or chromium (portal-headless: Playwright's Chromium).
 # Targets: the last stage (`runtime`) serves every app; `portal` adds the built Foundry
 # module that portal-server packages into its install zip.
 #
@@ -27,9 +27,8 @@ ARG RUNTIME=plain
 
 # --- Runtime OS layers (RUNTIME picks one). They are the bottom of every runtime image, so
 # they take nothing from the repo: no APP, no lockfile, no manifests. A source, manifest or
-# lockfile change then rebuilds only the app layers above them, and vellum-render and
-# portal-headless share one Chromium layer. Bump a version ARG to rebuild one. node:24-slim
-# ships a `node` user at uid/gid 1000, so compose's `user: "1000:1000"` carries over. ---
+# lockfile change then rebuilds only the app layers above them. Bump a version ARG to rebuild
+# one. node:24-slim ships a `node` user at uid/gid 1000, so compose's `user: "1000:1000"` carries over. ---
 FROM node:24-slim AS os-plain
 
 FROM node:24-slim AS os-ffmpeg
@@ -51,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM node:24-slim AS os-chromium
 # Chromium and its system libraries, from the `playwright` release pnpm-lock.yaml locks (the
 # app's own install drives the browser at runtime). `just infra-check` fails when this ARG
-# and the lock disagree, so bump them together. The services launch it with --no-sandbox,
+# and the lock disagree, so bump them together. portal-headless launches it with --no-sandbox,
 # since a container has no user-namespace sandbox. The chown is in the same layer so the
 # browser bundle is not stored twice; the runtime user (1000) must read and execute it.
 ARG PLAYWRIGHT_VERSION=1.61.1

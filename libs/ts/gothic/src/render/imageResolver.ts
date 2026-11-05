@@ -4,7 +4,7 @@ import { createContext } from "react";
  * The image resolver seam, the twin of the crossref resolver.
  *
  * gothic never fetches from another origin: without a resolver an `![alt](src)` renders its
- * alt text only, so the vellum render service, Storybook and every app that ships no images
+ * alt text only, so Storybook and every app that ships no images
  * are unchanged. An app that ships image files itself (akasha-frontend, from astra-data's
  * `akasha/assets/`) injects `<DocumentView resolveImage={fn} />`; `fn` maps the author's
  * path to the URL the app serves it at, or returns null for a path it doesn't ship.

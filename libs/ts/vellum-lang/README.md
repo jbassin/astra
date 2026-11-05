@@ -1,9 +1,9 @@
 # @astra/vellum-lang — the vellum parser
 
 `@astra/vellum-lang` is the reference parser for vellum, the markdown dialect the akasha wiki
-and the vellum editor are written in. It turns source into a `VellumDocument` AST
+is written in. It turns source into a `VellumDocument` AST
 (frontmatter, theme mode, and an ordered list of prose runs and `:::kind` blocks). The React
-renderer is in `@astra/gothic`. akasha-frontend, strider, vellum-frontend, vellum-render and
+renderer is in `@astra/gothic`. akasha-frontend, strider and
 gothic import it. The dialect itself is specified in [`MARKDOWN.md`](./MARKDOWN.md).
 
 The Python [`astra-vellum-lang`](../../py/vellum-lang/README.md) extracts only the metadata

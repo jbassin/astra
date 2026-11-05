@@ -40,8 +40,6 @@ SERVICE_NETWORKS: dict[str, frozenset[str]] = {
     "akasha-frontend": TELEMETRY,
     "codex": TELEMETRY,
     "mouthpiece-frontend": TELEMETRY,
-    "vellum-frontend": TELEMETRY,
-    "vellum-render": TELEMETRY,
     "orator-postgres": frozenset({"orator-db"}),
     "orator-backend": frozenset({"telemetry", "orator-db"}),
     "harrow": TELEMETRY,

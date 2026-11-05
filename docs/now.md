@@ -4,8 +4,9 @@ Updated 2026-11-04.
 
 ## In flight
 
-- **Unused web apps removed from the repo (2026-11-04): menhir and ledger.** Code, config, compose, Caddy,
-  smoke checks and docs are gone; the live containers and edge stanzas go at the next deploy.
+- **Unused web apps removed from the repo (2026-11-04): menhir, ledger and the vellum site.**
+  Code, config, compose, Caddy, smoke checks and docs are gone; the live containers and edge
+  stanzas go at the next deploy.
 - **2026-11-3's session ran end to end with no intervention (2026-11-02 23:35 to 11-03 00:17
   EST).** craig-sync copied `craig_oe05tGnFZ9nL_2026-11-3_0-36-18` (966 MB) at 23:35 and ignored
   the two stub zips; scribe launched 15 s later and took 7 min; linguist (1 min), heartwood and
@@ -118,8 +119,7 @@ Updated 2026-11-04.
   0.1 of [`thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md`](../thoughts/shared/research/2026-10-22-techdebt-paydown-0037-thoughts.md)),
   and the agent backlog it fed was cleared the same day.
 - **Live since 2026-10-26:** Dagster stage automation (three automation sensors, started after a
-  clean pre-flight), resumable paid stages with one retry policy, the edge health block and
-  `/render` body cap, the weal save guard, orator/portal/pg-migrate fixes, the vellum parity timer.
+  clean pre-flight), resumable paid stages with one retry policy, the edge health block, the weal save guard, orator/portal/pg-migrate fixes, the vellum parity timer.
 - **Live since 2026-10-28:** mouthpiece's realism changes (#137 to #140): a spoken-style recap
   prompt, Pass A on Kimi `kimi-k3.1-pro` with Pass B on GLM, ElevenLabs stability 0.0, linked
   dialogue chunks, new voices for Maeve (Ellen) and Nell (Siren), and the first `defs.kdl`

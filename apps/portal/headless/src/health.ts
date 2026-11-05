@@ -1,6 +1,6 @@
 /**
- * Plain node `/health` server — deliberately NOT srvx/express (vellum-render
- * and portal-server both have other reasons to run a richer HTTP stack; this service's
+ * Plain node `/health` server — deliberately NOT srvx/express (portal-server
+ * has other reasons to run a richer HTTP stack; this service's
  * ONLY HTTP surface is a health check, so `node:http` is the whole dependency). The
  * compose healthcheck asserts `ok` alone — process-up + browser-connected ONLY.
  * `world-down` is a reported state, not unhealthy (a restart can't launch a

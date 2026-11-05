@@ -1,7 +1,7 @@
 // The ONE search RUM event: `codex.search`, `{surface}`.
 //
 // **Why this is a SERVER counter, not a browser one:** every `lazyCounter`
-// call site in the repo today (weal-bot, weal-overlay, strider's `writeLayerFn.ts`, vellum-render,
+// call site in the repo today (weal-bot, weal-overlay, strider's `writeLayerFn.ts`,
 // orator-backend, heartwood-frontend, portal) is SERVER-side, because
 // there's no browser `MeterProvider` anywhere in astra — `@astra/observe/web`
 // (`initRum`) wires only a `WebTracerProvider` (traces); metrics were never

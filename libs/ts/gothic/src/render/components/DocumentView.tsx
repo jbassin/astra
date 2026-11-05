@@ -66,13 +66,13 @@ function Node({ node }: { node: VellumNode }): ReactNode {
 
 /**
  * Renders a parsed document. The `[data-vellum-export]` element is the card
- * boundary the render service screenshots (vellum-frontend); `data-mode` drives
+ * boundary apps style against; `data-mode` drives
  * the mechanical|diegetic skin entirely in CSS (structure stays theme-agnostic).
  * The frontmatter (title/tags) renders as a page header above the nodes.
  *
  * `resolveCrossref` (optional) lets a consuming app (akasha-frontend 0011) turn
  * `[[crossref]]` placeholders into real `<a href>` links; omitted, crossrefs stay
- * unresolved placeholders (gothic's L6 default — render service / Storybook).
+ * unresolved placeholders (gothic's L6 default — Storybook).
  *
  * `resolveImage` (optional) maps a Markdown image's path to the same-origin URL the app
  * serves it at (akasha-frontend's `akasha/assets/`); omitted, images render their alt text.
