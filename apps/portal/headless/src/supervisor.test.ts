@@ -3,7 +3,7 @@
  * `PageAdapter` drives every classification/failure path with `vi.useFakeTimers()`
  * (CI must not sleep; mirrors `apps/portal/module/src/bridgeClient.test.ts`'s idiom).
  * Zero Chromium, zero Foundry — the real `playwrightDriver.ts` is exercised only
- * live, never in unit CI (mirrors vellum-render).
+ * live, never in unit CI.
  */
 import { afterEach, describe, expect, it, vi } from "vitest";
 

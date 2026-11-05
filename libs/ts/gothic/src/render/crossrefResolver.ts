@@ -12,7 +12,7 @@ import { createContext } from "react";
  *
  * The resolver is a pure function `node -> {href} | null`. Returning `null`
  * (the default — no provider) keeps the placeholder `<span>`, so gothic's
- * stand-alone behaviour and the vellum-frontend render service are unchanged.
+ * stand-alone behaviour is unchanged.
  *
  * It MUST be deterministic across SSR + hydration (close over a static
  * build-time edge map, not request state) or React will warn on a mismatch.

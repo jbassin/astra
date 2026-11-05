@@ -19,7 +19,7 @@ def caddyfile(tmp: Path) -> Path:
     p.write_text(
         "(local_only) {\n}\n"
         "strider.iridi.cc {\n\treverse_proxy x\n}\n"
-        "vellum.iridi.cc {\n}\n"
+        "codex.iridi.cc {\n}\n"
         "strider.iridi.cc {\n}\n"
         "# not.a.site {\n"
     )
@@ -58,7 +58,7 @@ class Children:
 
 def certs(host: str, port: int) -> float:
     assert port == 443
-    if host == "vellum.iridi.cc":
+    if host == "codex.iridi.cc":
         return NOW + 13 * DAY
     raise OSError("connection refused")
 
@@ -93,7 +93,7 @@ def probes(children: Children) -> hm.Probes:
 
 
 def test_site_hosts_in_order_without_duplicates(tmp_path: Path) -> None:
-    assert hm.site_hosts(caddyfile(tmp_path)) == ["strider.iridi.cc", "vellum.iridi.cc"]
+    assert hm.site_hosts(caddyfile(tmp_path)) == ["strider.iridi.cc", "codex.iridi.cc"]
 
 
 def test_writes_every_metric(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -102,8 +102,8 @@ def test_writes_every_metric(tmp_path: Path, capsys: pytest.CaptureFixture[str])
     text = t.textfile.read_text()
     for line in [
         'astra_probe_success{probe="tls",target="strider.iridi.cc"} 0',
-        'astra_probe_success{probe="tls",target="vellum.iridi.cc"} 1',
-        f'astra_tls_cert_expiry_seconds{{host="vellum.iridi.cc"}} {13 * DAY}',
+        'astra_probe_success{probe="tls",target="codex.iridi.cc"} 1',
+        f'astra_tls_cert_expiry_seconds{{host="codex.iridi.cc"}} {13 * DAY}',
         'astra_probe_success{probe="docker",target="astra"} 1',
         'astra_container_unhealthy{container="astra-codex"} 0',
         'astra_container_unhealthy{container="astra-weal-bot"} 1',

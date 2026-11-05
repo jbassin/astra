@@ -83,7 +83,6 @@ CHECKS: tuple[Check, ...] = (
         contains=("Ternion Heavy Industries",),
     ),
     Check("harrow-index", "https://harrow.iridi.cc/", contains=("Harrow",)),
-    Check("vellum-health", "https://vellum.iridi.cc/health", json_fields=("ready",)),
     Check("orator-healthz", "https://orator.iridi.cc/healthz", contains=('"status":"ready"',)),
     Check("portal-health", "https://portal.iridi.cc/health", json_fields=("ok",)),
     # weal-overlay has no health route: every unknown path falls back to the SPA's index.html,

@@ -124,15 +124,6 @@ mouthpiece-frontend {
     public-origin "https://mouthpiece.iridi.cc"
     audio-dir "/audio"
 }
-vellum-frontend {
-    service-name "astra.vellum-frontend"
-    port 10367
-    public-origin "https://vellum.iridi.cc"
-}
-vellum-render {
-    service-name "astra.vellum-render"
-    port 10368
-}
 harrow {
     service-name "astra.harrow"
     port 10369

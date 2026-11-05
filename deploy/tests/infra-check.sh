@@ -71,8 +71,7 @@ check_edge() {
   scratch=$(mktemp -d) || return 1
   chmod 755 "$scratch"
   # Trust X-Forwarded-For from the test client (Docker's gateway, a private address). The stub
-  # upstream echoes the request body, so it reads all of it (as vellum-render does); an
-  # upstream that answered unread would hide the cap.
+  # upstream echoes the request body.
   jq '
     ([.. | .dial? // empty] | unique | map(":" + split(":")[1])) as $ports
     | del(.apps.tls)
@@ -120,22 +119,12 @@ check_edge() {
   # The LAN still reaches every path a prober uses; a public client still reaches the sites.
   expect 200 codex.iridi.cc /healthz
   expect 200 orator.iridi.cc /healthz
-  expect 200 vellum.iridi.cc /health
   expect 200 portal.iridi.cc /health
   expect 200 codex.iridi.cc /spell/fireball "${public[@]}"
   expect 200 orator.iridi.cc /api/v1/queue "${public[@]}"
-  # The render cap: a body holding the service's largest source passes; over 1MB is refused,
-  # with or without a Content-Length.
-  { printf '{"source":"'; head -c 65536 /dev/zero | tr '\0' a; printf '","mode":"mechanical"}'; } \
-    >"$scratch/ok.json"
-  head -c 2000000 /dev/zero | tr '\0' a >"$scratch/big.json"
-  expect 200 vellum.iridi.cc /render "${public[@]}" --data-binary "@$scratch/ok.json"
-  expect 413 vellum.iridi.cc /render "${public[@]}" --data-binary "@$scratch/big.json"
-  expect 413 vellum.iridi.cc /render "${public[@]}" -H "Transfer-Encoding: chunked" \
-    --data-binary "@$scratch/big.json"
   docker rm -f "$name" >/dev/null 2>&1
   rm -rf "$scratch"
-  [ "$rc" -eq 0 ] && echo "edge: health paths 404 to the public on ${#hosts[@]} hosts; /render caps at 1MB"
+  [ "$rc" -eq 0 ] && echo "edge: health paths 404 to the public on ${#hosts[@]} hosts"
   return "$rc"
 }
 

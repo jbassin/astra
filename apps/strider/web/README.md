@@ -86,7 +86,7 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
   Unlayered it outranks gothic's `@layer components` content styles and silently
   zeroes every rendered-vellum margin/padding (paragraph spacing, list indents,
   trait-pill + code-block padding). Only frontends that render gothic `DocumentView`
-  (akasha, strider factions, the vellum editor preview) are affected — but layering
+  (akasha, strider factions) are affected — but layering
   is free, so do it everywhere. See the 2026-06-24 design audit.
 - **Cap the reading measure** — if a route renders long-form vellum prose, cap the
   reading column at ~42rem/68ch; gothic's content base is sized for cards, and an

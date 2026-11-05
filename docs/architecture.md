@@ -58,7 +58,6 @@ live in the 10350 to 10399 band.
 | `mouthpiece.iridi.cc` | mouthpiece-frontend (recap podcast) | 10366 |
 | `codex.iridi.cc`, `2e.iridi.cc` | codex (PF2e reference, noindexed) | 10374 |
 | `strider.iridi.cc` | strider (faction map; editor is local network only) | 10360 |
-| `vellum.iridi.cc` | vellum-frontend (document editor) and vellum-render (`/render`) | 10367, 10368 |
 | `harrow.iridi.cc` | harrow (tarot reader) | 10369 |
 | `weal-overlay.iridi.cc` | weal-overlay (dice overlay) | 10361 |
 | `orator.iridi.cc` | orator-backend (music bot API and web UI) | 10363 |

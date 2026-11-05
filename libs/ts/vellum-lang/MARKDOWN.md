@@ -35,7 +35,7 @@ wiki, not just PF2e statblocks. It describes **exactly what the parser does** (`
    `:::kind` that isn't one of the seven) degrade to prose rather than vanishing.
 3. Inside a block you write normal CommonMark + the inline directives.
 4. The **theme** (mechanical/diegetic) is **not** part of the markdown — it's a
-   viewer/export setting (the editor toggle, or the render request's `mode`).
+   viewer setting (the renderer's `mode`).
    Default is `mechanical`.
 
 ```
@@ -220,7 +220,7 @@ All standard CommonMark works both at the document top level and in a block body
   its line becomes a figure, and the quoted title becomes its caption. Alt text is required.
   Anything else (an `https://` URL, a missing file) renders as its alt text only, and the corpus
   validator rejects it: a page never makes the reader's browser fetch from another origin.
-  Outside akasha (the vellum editor and render service) images always render as alt text.
+  Outside akasha, images always render as alt text.
 - Thematic breaks `---`, hard line breaks (two trailing spaces), entities `&amp;`
 
 ### 4.1 Columns — side-by-side layout
@@ -406,9 +406,8 @@ Canonical `:::` and the inline sigils stay **valid-ish CommonMark** and degrade
 gracefully in a vanilla viewer (aether/Obsidian). **VSS source does not degrade** —
 `@columns [ … ]` is garbage outside vellum. VSS is therefore an **opt-in** surface:
 authoring in it trades portability for structure, scoped to vellum-rendered
-contexts (editor preview, render service, share links). Nothing forces VSS on
-existing content, and the **⇄ Syntax** toolbar button converts both ways on
-demand: VSS → canonical (`compileVss`, always exact) for portable export, and
+contexts. Nothing forces VSS on existing content, and vellum-lang converts both
+ways on demand: VSS → canonical (`compileVss`, always exact) for portable export, and
 canonical → VSS (`canonicalToVss`, conservative — anything that wouldn't
 round-trip model-identically is left canonical).
 

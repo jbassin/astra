@@ -51,13 +51,12 @@
 	header ?Strict-Transport-Security "max-age=31536000"
 
 	# Health paths are LAN-only on every host: a public client gets a bare 404. The services'
-	# /healthz (service-kit; orator's runs a Postgres ping), vellum-render and portal's /health,
+	# /healthz (service-kit; orator's runs a Postgres ping), portal's /health,
 	# and orator's legacy /api/v1/health. The ranges are local_only's. Nothing internal loses
 	# its probe: compose healthchecks and the codex release prune call the container port, the
 	# deploy health wait and host-metrics read Docker, and astra-smoke and Uptime Kuma go through
 	# this edge from the LAN (hairpin NAT: the router hands them over as 192.168.0.1). A `handle`
-	# so it runs before each site's own handle blocks; astra_site is imported first, so it wins
-	# the overlap with vellum's @render (which also routes /health).
+	# so it runs before each site's own handle blocks.
 	@public_health {
 		path /healthz /healthz/* /health /health/* /api/v1/health /api/v1/health/*
 		not client_ip private_ranges 100.64.0.0/10
@@ -171,42 +170,6 @@ codex.iridi.cc {
 	import astra_site
 	header X-Robots-Tag noindex
 	reverse_proxy localhost:10374
-}
-
-# vellum-frontend — the document-forge editor, the fourth SSR frontend on the
-# strider/akasha template. Two upstreams (mirroring faerrin's old vellum block):
-# /render + /health proxy to the vellum-render service (the PNG render sidecar), so the
-# editor's export POSTs same-origin; everything else (the editor + preview) goes to the
-# SSR frontend. The /editor UI is gated local_only (like strider) — the export still
-# works for local clients; a public visitor sees the read-only landing page. Self-serves
-# gothic's fonts from the container. Compose publishes 10367 (frontend) + 10368 (render).
-vellum.iridi.cc {
-	import astra_site
-
-	# The PNG render API → the vellum-render service (warm Chromium, egress-blocked,
-	# semaphore-gated). Same-origin so the editor needs no CORS / env var. /health is
-	# LAN-only (astra_site's health gate). request_body caps the body at 1MB (over the cap
-	# → 413): the service rejects a source over 64 KiB, and JSON escaping can grow a valid
-	# source to at most 6× that (~384 KiB) as a body; the largest real document is ~9 KB.
-	@render path /render /health
-	handle @render {
-		request_body {
-			max_size 1MB
-		}
-		reverse_proxy localhost:10368
-	}
-
-	# Editor UI — local network only (import local_only → "Access Denied" for
-	# non-private clients). Same posture as strider's editor.
-	@editor path /editor /editor/*
-	handle @editor {
-		import local_only
-		reverse_proxy localhost:10367
-	}
-
-	handle {
-		reverse_proxy localhost:10367
-	}
 }
 
 # weal-overlay — the dice-roll OBS overlay. SSE: flush_interval -1 disables

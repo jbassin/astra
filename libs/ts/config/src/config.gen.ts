@@ -96,21 +96,6 @@ export const MouthpieceFrontend = z
   })
   .strict();
 
-export const VellumFrontend = z
-  .object({
-    serviceName: z.string(),
-    port: z.number().int(),
-    publicOrigin: z.string(),
-  })
-  .strict();
-
-export const VellumRender = z
-  .object({
-    serviceName: z.string(),
-    port: z.number().int(),
-  })
-  .strict();
-
 export const Harrow = z
   .object({
     serviceName: z.string(),
@@ -163,8 +148,6 @@ export const ConfigSchema = z.object({
   strider: Strider,
   akashaFrontend: AkashaFrontend,
   mouthpieceFrontend: MouthpieceFrontend,
-  vellumFrontend: VellumFrontend,
-  vellumRender: VellumRender,
   harrow: Harrow,
   portal: Portal,
   portalHeadless: PortalHeadless,

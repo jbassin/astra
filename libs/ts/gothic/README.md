@@ -3,8 +3,8 @@
 gothic is the amber/teal dark theme (Tailwind v4 `@theme` tokens and fonts), a few React
 primitives (`Panel`, `Title`, `Button`, `Input`, `Columns`), and `DocumentView`, which renders a
 parsed vellum document (`@astra/vellum-lang`) as React: statblocks, handouts, fields, timelines,
-deity cards and prose. Consumers: strider, akasha-frontend, mouthpiece-frontend, vellum-frontend,
-vellum-render, harrow, orator-backend, weal-overlay. gothic also owns astra's one
+deity cards and prose. Consumers: strider, akasha-frontend, mouthpiece-frontend,
+harrow, orator-backend, weal-overlay. gothic also owns astra's one
 design-token source, which generates the parchment theme that codex uses instead of
 gothic. Plain TS source, no build step; `pnpm --filter @astra/gothic storybook` shows the
 primitives and vellum fixtures.
@@ -77,9 +77,6 @@ palette names (`--color-heading-maroon*`, `--color-gold-*`, `--color-callout-tan
    VSS brace form (`@kind "Title" { … }`) follows from `DOCUMENT_KINDS`. Document it in
    `libs/ts/vellum-lang/MARKDOWN.md`.
 2. gothic: add a card component and a `case` in `DocumentView`'s block switch.
-3. vellum-frontend: add a slash snippet (`slashComplete.ts`) and a template.
-4. vellum-render: add a fixture to `test/visual/fixtures.ts` and generate its golden (see
-   `apps/vellum/render/README.md`).
 
 Author new wiki content in the VSS brace form; the akasha corpus has no `:::` openers left.
 
@@ -91,9 +88,6 @@ Author new wiki content in the VSS brace form; the akasha corpus has no `:::` op
   rendered vellum.
 - **Cap long-form reading columns at about 42rem.** gothic's content styles are sized for cards;
   an uncapped column runs prose past 100 characters a line.
-- **Any change to gothic can drift the vellum-render goldens.** The CI job
-  `vellum-visual-regression` runs on every gothic change; regenerate goldens in the pinned
-  container and review each PNG.
 - **Canvas code can't read token variables reliably.** `getComputedStyle` may return an
   unresolved `var(--color-…)` string; give canvas/pixi code concrete values from
   `@astra/gothic/palette`, or, for code that must read CSS variables (akasha's graph), a generated

@@ -418,48 +418,6 @@ services:
       <<: *node-healthcheck
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10366/').then(r=>process.exit(r.ok?0:1))"]
 
-  # --- vellum-frontend: the document-forge editor — SSR Compose service
-  # behind Caddy. The editor route is client-only (ssr:false); the PNG
-  # export POSTs same-origin /render, which Caddy routes to vellum-render below. ---
-  vellum-frontend:
-    <<: *astra-app
-    build:
-      <<: *node-build
-      args:
-        APP: vellum/web
-    image: astra-vellum-frontend:local
-    container_name: astra-vellum-frontend
-    # No PORT env — serviceName/port come from config.kdl (config-single-source);
-    # compose only maps the published host port below.
-    ports:
-      - "10367:10367" # vellum-frontend SSR (astra range) — also reachable directly
-    healthcheck:
-      <<: *node-healthcheck
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10367/').then(r=>process.exit(r.ok?0:1))"]
-
-  # --- vellum-render: the PNG render service — a SEPARATE unit, the first
-  # browser-in-a-container in astra (warm Chromium, egress-blocked, semaphore-gated).
-  # Caddy routes vellum.iridi.cc/render + /health here. The Dockerfile chowns
-  # /ms-playwright so the (non-root) Chromium can read its browser bundle; the profile is
-  # an ephemeral /tmp dir; --no-sandbox. ---
-  vellum-render:
-    <<: *astra-app
-    build:
-      <<: *node-build
-      args:
-        APP: vellum/render
-        RUNTIME: chromium
-    image: astra-vellum-render:local
-    container_name: astra-vellum-render
-    # No PORT env — serviceName/port come from config.kdl (config-single-source).
-    ports:
-      - "10368:10368" # vellum-render (astra range) — reached same-origin via Caddy /render
-    healthcheck:
-      <<: *node-healthcheck
-      # /healthz turns ready once Chromium is warm; start_period covers the launch.
-      test: ["CMD", "node", "-e", "await fetch('http://localhost:10368/healthz').then(r=>process.exit(r.ok?0:1))"]
-      start_period: 25s
-
   # --- orator: the music bot's library store ---
   orator-postgres:
     <<: *astra-postgres
@@ -574,9 +532,8 @@ services:
   # pf2e "Faerrin" world through the public edge, so portal's MCP tools work with no
   # human browser tab open. A SEPARATE unit from portal-server: health-only,
   # not edge-routed (no Caddy entry), on `telemetry` alone; it reaches Foundry through the
-  # public edge, not a compose network. Follows
-  # vellum-render's browser-in-a-container lifecycle with the long-lived-tab
-  # deltas: `shm_size` (Docker's 64MB `/dev/shm` default is the known Chromium OOM
+  # public edge, not a compose network. A browser in a
+  # container, with the long-lived-tab settings: `shm_size` (Docker's 64MB `/dev/shm` default is the known Chromium OOM
   # source for a process-life-long page) and a generous `start_period` (Chromium warm-up
   # + first navigation + `/join`). ---
   portal-headless:

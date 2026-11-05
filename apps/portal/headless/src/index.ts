@@ -2,8 +2,8 @@
  * portal-headless entrypoint. Telemetry (traces,
  * metrics, logs, HTTP spans, the SIGTERM flush) is already installed by
  * `node --import @astra/observe/register`; this reads config, wires the Playwright page
- * adapter into the `Supervisor` state machine, then binds `/health`. Mirrors
- * vellum-render's "warm the browser before serving" shape.
+ * adapter into the `Supervisor` state machine, then binds `/health`: the
+ * browser warms before the service serves.
  */
 import { loadConfig } from "@astra/config";
 import {

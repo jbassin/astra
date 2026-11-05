@@ -5,7 +5,7 @@ metadata:
   type: reference
 ---
 
-astra's SSR frontends (strider, akasha-frontend, mouthpiece-frontend, vellum-frontend, harrow,
+astra's SSR frontends (strider, akasha-frontend, mouthpiece-frontend, harrow,
 codex) are TanStack Start apps on the site-kit preset; a new one starts from
 `just new-frontend <name>`. Before adding server-side behaviour or a new frontend:
 
