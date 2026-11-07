@@ -8,7 +8,6 @@
    "cha"
   ],
   "feat": "magic-initiate",
-  "featList": "cleric",
   "skills": [
    "insight",
    "religion"
@@ -41,7 +40,8 @@
    {
     "valueCp": 800
    }
-  ]
+  ],
+  "featList": "cleric"
  },
  {
   "id": "artisan",
@@ -304,7 +304,6 @@
    "wis"
   ],
   "feat": "magic-initiate",
-  "featList": "druid",
   "skills": [
    "stealth",
    "survival"
@@ -344,7 +343,8 @@
    {
     "valueCp": 300
    }
-  ]
+  ],
+  "featList": "druid"
  },
  {
   "id": "hermit",
@@ -473,7 +473,6 @@
    "wis"
   ],
   "feat": "magic-initiate",
-  "featList": "wizard",
   "skills": [
    "arcana",
    "history"
@@ -505,7 +504,8 @@
    {
     "valueCp": 800
    }
-  ]
+  ],
+  "featList": "wizard"
  },
  {
   "id": "sailor",

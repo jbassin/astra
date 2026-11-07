@@ -24,7 +24,9 @@ import {
 } from "./content";
 import type {
   Ability,
+  Activation,
   ClassContent,
+  DamageOn,
   EquipmentLine,
   ItemContent,
   OptionContent,
@@ -101,12 +103,22 @@ export interface SpellEntry {
   note?: string;
   /** Casts without a spell slot, in plain words ("2 per Long Rest"). */
   freeCasts?: string;
+  /** When it is cast (from the spell's casting time). */
+  activation: Activation;
   attack?: {
     toHit?: number;
     save?: { ability: Ability; dc: number };
     damage?: string;
     damageType?: string;
+    /** How the damage lands (set whenever `damage` is). */
+    damageOn?: DamageOn;
+    /** A successful save halves the damage. */
+    halfOnSave?: boolean;
   };
+  /** Hit Points it restores, modifier included ("2d8 + 3"). */
+  healing?: string;
+  /** Plain words for the rolls beyond the first ("1d8 more if the target is a Fiend…"). */
+  rollNote?: string;
   /** A shortlist pick the curation marks as a good first choice. */
   recommended?: boolean;
 }
@@ -132,6 +144,8 @@ export interface FeatureLine {
   name: string;
   source: "class" | "option" | "species" | "background" | "feat";
   summary: string;
+  /** When it is used, which decides where the sheet lists it. */
+  activation: Activation;
   /** How often, in plain words ("2 per Long Rest; regain one use on a Short Rest"). */
   uses?: string;
 }
@@ -195,6 +209,77 @@ function signed(n: number): string {
 function damageWith(dice: string, mod: number): string {
   if (mod === 0) return dice;
   return mod > 0 ? `${dice} + ${mod}` : `${dice} − ${Math.abs(mod)}`;
+}
+
+/** A spell's attack roll, save and damage with the caster's numbers, if it has any. */
+function spellAttack(
+  s: SpellContent,
+  attackBonus: number,
+  saveDc: number,
+  damageBonus: number,
+): SpellEntry["attack"] {
+  if (!s.damage && !s.spellAttack && !s.save) return undefined;
+  const damage = s.damage
+    ? {
+        damage: damageWith(s.damage, damageBonus),
+        ...(s.damageType && { damageType: s.damageType }),
+        ...(s.damageOn && { damageOn: s.damageOn }),
+        ...(s.halfOnSave && { halfOnSave: true }),
+      }
+    : {};
+  return {
+    ...(s.spellAttack && { toHit: attackBonus }),
+    ...(s.save && { save: { ability: s.save, dc: saveDc } }),
+    ...damage,
+  };
+}
+
+/**
+ * A spell as the character casts it: its numbers worked out from the caster's attack bonus,
+ * save DC and spellcasting modifier (`damageBonus` adds to damage: Agonizing Blast).
+ */
+export function spellEntry(
+  s: SpellContent,
+  caster: {
+    attackBonus: number;
+    saveDc: number;
+    modifier: number;
+    damageBonus?: number;
+    note?: string;
+    freeCasts?: string;
+    recommended?: boolean;
+  },
+): SpellEntry {
+  const { attackBonus, saveDc, modifier, damageBonus = 0, ...extra } = caster;
+  const attack = spellAttack(s, attackBonus, saveDc, damageBonus);
+  return {
+    id: s.id,
+    name: s.name,
+    level: s.level,
+    summary: s.summary,
+    time: s.time,
+    range: s.range,
+    duration: s.duration,
+    components: s.components,
+    concentration: s.concentration,
+    ritual: s.ritual,
+    activation: s.activation,
+    ...extra,
+    ...(attack && { attack }),
+    ...(s.healing && {
+      healing: s.healingAddsModifier ? damageWith(s.healing, modifier) : s.healing,
+    }),
+    ...(s.rollNote && { rollNote: s.rollNote }),
+  };
+}
+
+/** A cantrip that belongs on the attack list: it deals damage with an attack roll or a save. */
+export function isAttackCantrip(s: SpellEntry): boolean {
+  return (
+    s.level === 0 &&
+    s.attack?.damage !== undefined &&
+    (s.attack.damageOn === "attack" || s.attack.damageOn === "save")
+  );
 }
 
 function dieFaces(dice: string): number {
@@ -700,35 +785,13 @@ export function buildCharacter(answers: Answers): Character {
   ): SpellEntry | undefined => {
     const s: SpellContent | undefined = CONTENT.spells[id];
     if (!s) return undefined;
-    let attack: SpellEntry["attack"];
-    if (s.damage && (s.spellAttack || s.save)) {
-      const dmgMod = agonizing && id === "eldritch-blast" ? mods.cha : 0;
-      attack = {
-        ...(s.spellAttack && { toHit: atkFor(a) }),
-        ...(s.save && { save: { ability: s.save, dc: dcFor(a) } }),
-        damage: damageWith(s.damage, dmgMod),
-        ...(s.damageType && { damageType: s.damageType }),
-      };
-    } else if (s.spellAttack || s.save) {
-      attack = {
-        ...(s.spellAttack && { toHit: atkFor(a) }),
-        ...(s.save && { save: { ability: s.save, dc: dcFor(a) } }),
-      };
-    }
-    return {
-      id,
-      name: s.name,
-      level: s.level,
-      summary: s.summary,
-      time: s.time,
-      range: s.range,
-      duration: s.duration,
-      components: s.components,
-      concentration: s.concentration,
-      ritual: s.ritual,
+    return spellEntry(s, {
+      attackBonus: atkFor(a),
+      saveDc: dcFor(a),
+      modifier: mods[a],
+      damageBonus: agonizing && id === "eldritch-blast" ? mods.cha : 0,
       ...extra,
-      ...(attack && { attack }),
-    };
+    });
   };
   const entries = (ids: string[], a: Ability, extra?: Parameters<typeof entry>[2]): SpellEntry[] =>
     ids.flatMap((id) => {
@@ -839,7 +902,7 @@ export function buildCharacter(answers: Answers): Character {
   // Cantrips that attack go on the attack list too.
   for (const block of spellcasting) {
     for (const c of block.cantrips) {
-      if (!c.attack?.damage) continue;
+      if (!isAttackCantrip(c) || !c.attack?.damage) continue;
       attacks.push({
         name: c.name,
         kind: "cantrip",
@@ -865,6 +928,7 @@ export function buildCharacter(answers: Answers): Character {
       name: f.name,
       source: "class",
       summary: f.summary,
+      activation: f.activation,
       ...(f.uses && { uses: formatUses(f.uses, mods) }),
     });
   }
@@ -874,6 +938,7 @@ export function buildCharacter(answers: Answers): Character {
       name: o.name,
       source: "option",
       summary: o.summary,
+      activation: o.activation,
       ...(o.uses && { uses: formatUses(o.uses, mods) }),
     });
   }
@@ -884,6 +949,7 @@ export function buildCharacter(answers: Answers): Character {
         name: `${t.name} (${speciesOption.name})`,
         source: "species",
         summary: speciesOption.summary,
+        activation: speciesOption.activation,
       });
     } else {
       features.push({
@@ -891,6 +957,7 @@ export function buildCharacter(answers: Answers): Character {
         name: t.name,
         source: "species",
         summary: t.summary,
+        activation: t.activation,
         ...(t.uses && { uses: formatUses(t.uses, mods) }),
       });
     }
@@ -903,6 +970,7 @@ export function buildCharacter(answers: Answers): Character {
         name: f.name,
         source: id === background?.feat ? "background" : "feat",
         summary: f.summary,
+        activation: f.activation,
         ...(f.uses && { uses: formatUses(f.uses, mods) }),
       });
   }

@@ -84,6 +84,19 @@ export interface Uses {
   unit?: string;
 }
 
+/**
+ * When a thing is used, which decides where the sheet lists it: on your action, bonus action or
+ * reaction; "minute" for a minute or more (outside a fight); "passive" for always on, or used
+ * when its own text says (a trigger with no action cost).
+ */
+export const ACTIVATIONS = ["action", "bonus", "reaction", "minute", "passive"] as const;
+export type Activation = (typeof ACTIVATIONS)[number];
+
+/** Something the sheet sorts by when it is used. */
+interface Activated {
+  activation: Activation;
+}
+
 /** Anything a player sees: a name, a plain-language summary and the full rules text. */
 export interface Summarized {
   id: string;
@@ -94,7 +107,7 @@ export interface Summarized {
   rulesText: string[];
 }
 
-export interface FeatureContent extends Summarized {
+export interface FeatureContent extends Summarized, Activated {
   level: number;
   uses?: Uses;
 }
@@ -112,7 +125,7 @@ export type OptionKind =
   | "invocation"
   | "metamagic";
 
-export interface OptionContent extends Summarized {
+export interface OptionContent extends Summarized, Activated {
   kind: OptionKind;
   uses?: Uses;
   /** Metamagic cost in Sorcery Points. */
@@ -220,7 +233,7 @@ export interface ArchetypeContent {
   classes: ClassId[];
 }
 
-export interface SpeciesOptionContent extends Summarized {
+export interface SpeciesOptionContent extends Summarized, Activated {
   /** The species trait this option replaces on the sheet. */
   replacesTrait: string;
   speed?: number;
@@ -230,7 +243,7 @@ export interface SpeciesOptionContent extends Summarized {
   innateSpells: Array<{ id: string; uses: Uses }>;
 }
 
-export interface SpeciesTraitContent extends Summarized {
+export interface SpeciesTraitContent extends Summarized, Activated {
   uses?: Uses;
 }
 
@@ -280,7 +293,7 @@ export interface BackgroundContent {
   initiate?: MagicInitiateContent;
 }
 
-export interface FeatContent extends Summarized {
+export interface FeatContent extends Summarized, Activated {
   category: string;
   repeatable: boolean;
   uses?: Uses;
@@ -290,7 +303,22 @@ export interface FeatContent extends Summarized {
   tools?: string[];
 }
 
-export interface SpellContent extends Summarized {
+/**
+ * How a spell's damage lands: on a spell attack hit, on a failed save, with no roll at all, as
+ * extra damage on your weapon hit, at the start of each of the target's turns while it lasts,
+ * or as the weapon's new damage die (Shillelagh).
+ */
+export const DAMAGE_ON = [
+  "attack",
+  "save",
+  "auto",
+  "weapon-hit",
+  "each-turn",
+  "weapon-die",
+] as const;
+export type DamageOn = (typeof DAMAGE_ON)[number];
+
+export interface SpellContent extends Summarized, Activated {
   level: number;
   school: string;
   time: string;
@@ -300,9 +328,20 @@ export interface SpellContent extends Summarized {
   concentration: boolean;
   ritual: boolean;
   higherLevel: string[];
-  /** Damage dice at character level 2, for spells that deal damage. */
+  /** Damage dice at character level 2, for spells that deal damage: the first roll the text
+   * gives (`rollNote` covers any others). */
   damage?: string;
   damageType?: string;
+  /** How `damage` lands; set whenever `damage` is. */
+  damageOn?: DamageOn;
+  /** A successful save halves the damage instead of avoiding it. */
+  halfOnSave?: boolean;
+  /** Healing dice ("2d8"), for spells that restore Hit Points. */
+  healing?: string;
+  /** The healing adds the caster's spellcasting modifier. */
+  healingAddsModifier?: boolean;
+  /** Plain words for the rolls `damage` and `healing` can't say (a second roll, a bonus). */
+  rollNote?: string;
   spellAttack?: "melee" | "ranged";
   save?: Ability;
 }

@@ -418,6 +418,23 @@ function spellTime(time: Json[]): string {
     .join(" or ");
 }
 
+/** The casting unit of the first `time` entry; a minute or an hour both read "minute". */
+function spellActivation(time: Json[]): ImportedSpell["activation"] {
+  const unit = time[0]?.unit;
+  if (unit === "action" || unit === "bonus" || unit === "reaction") return unit;
+  if (unit === "minute" || unit === "hour") return "minute";
+  throw new Error(`unknown spell casting unit "${String(unit)}"`);
+}
+
+/** The rolls in `{@tag roll}` or `{@tag roll|display}` markup anywhere in `raw`, in order,
+ * spaced the way the text prints them ("1d4 + 1"). */
+function rollsIn(raw: Json, tag: string): string[] {
+  const re = new RegExp(String.raw`\{@${tag} ([^|}]+)(?:\|[^}]*)?\}`, "g");
+  return [...JSON.stringify(raw).matchAll(re)].map((m) =>
+    (m[1] ?? "").replaceAll(/\s*([+-])\s*/g, " $1 ").trim(),
+  );
+}
+
 function spellRange(r: Json): string {
   const d = r.distance ?? {};
   const dist = d.amount ? `${d.amount} ${d.type === "feet" ? "feet" : d.type}` : "";
@@ -480,7 +497,16 @@ function importSpells(dataDir: string): ImportedSpell[] {
         higherLevel: flattenEntries(s.entriesHigherLevel ?? []),
         classes,
         damageTypes: s.damageInflict ?? [],
+        activation: spellActivation(s.time),
       };
+      const damageDice = rollsIn(s.entries, "damage");
+      if (damageDice.length > 0) spell.damageDice = damageDice;
+      const tags: string[] = s.miscTags ?? [];
+      if (tags.includes("HL")) {
+        const healDice = rollsIn(s.entries, "dice");
+        if (healDice.length > 0) spell.healDice = healDice;
+      }
+      if (tags.includes("AAD")) spell.attackRider = true;
       if (s.scalingLevelDice) {
         spell.cantripDice = Array.isArray(s.scalingLevelDice)
           ? s.scalingLevelDice.map((x: Json) => x.scaling["1"]).join(" or ")

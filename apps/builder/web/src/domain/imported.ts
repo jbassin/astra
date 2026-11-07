@@ -155,6 +155,14 @@ export interface ImportedSpell {
   spellAttack?: "melee" | "ranged";
   save?: Ability[];
   damageTypes: string[];
+  /** When it is cast, from the first entry of 5etools `time` ("minute" covers longer casts). */
+  activation: "action" | "bonus" | "reaction" | "minute";
+  /** Every `{@damage ...}` roll in the spell's own text, in order ("2d10", "1d4 + 1"). */
+  damageDice?: string[];
+  /** Healing spells (5etools `miscTags` HL): the `{@dice ...}` rolls in the text. */
+  healDice?: string[];
+  /** The spell adds damage to a weapon attack you make (5etools `miscTags` AAD). */
+  attackRider?: boolean;
 }
 
 export type WeaponProperty =

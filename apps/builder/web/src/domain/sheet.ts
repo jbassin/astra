@@ -2,18 +2,23 @@
 // is used, what to roll for an attack or a spell, and one card per feature and spell. Pure, so
 // the player page, the DM page and the tests share it.
 
-import type { Ability } from "./contentTypes";
-import type { AttackLine, Character, FeatureLine, SpellEntry } from "./engine";
+import type { Ability, Activation } from "./contentTypes";
+import {
+  type AttackLine,
+  type Character,
+  type FeatureLine,
+  isAttackCantrip,
+  type SpellEntry,
+} from "./engine";
 
-/** When a thing is used: on your action, bonus action or reaction, outside a fight, or always. */
-type TurnSlot = "action" | "bonus" | "reaction" | "longer" | "always";
-
-const SLOT_LABEL: Record<TurnSlot, string> = {
+/** Where the sheet lists each activation; the curation and the spell data set it, never the
+ * wording of a summary. */
+const ACTIVATION_LABEL: Record<Activation, string> = {
   action: "Your action",
   bonus: "Your bonus action",
   reaction: "Your reaction",
-  longer: "Takes a minute or more",
-  always: "Always on, or when it says",
+  minute: "Takes a minute or more",
+  passive: "Always on, or when it says",
 };
 
 export const ABILITY_NAMES: Record<Ability, string> = {
@@ -33,23 +38,6 @@ export function signed(n: number): string {
 /** "d20 + 5", "d20 − 1". */
 function d20(bonus: number): string {
   return bonus >= 0 ? `d20 + ${bonus}` : `d20 − ${Math.abs(bonus)}`;
-}
-
-/** A feature's slot, read from its plain summary ("As a bonus action, …"). */
-export function featureSlot(summary: string): TurnSlot {
-  const s = summary.toLowerCase();
-  if (s.includes("bonus action")) return "bonus";
-  if (/\breaction\b/.test(s)) return "reaction";
-  if (/\bas an action\b|\bextra action\b|\battack action\b/.test(s)) return "action";
-  return "always";
-}
-
-/** A spell's slot, from its casting time ("1 bonus action, which you take …"). */
-export function spellSlot(time: string): TurnSlot {
-  if (time.startsWith("1 bonus action")) return "bonus";
-  if (time.startsWith("1 reaction")) return "reaction";
-  if (time.startsWith("1 action")) return "action";
-  return "longer";
 }
 
 /** The first sentence of a summary, for the short "On your turn" lines. */
@@ -76,21 +64,63 @@ export function attackRoll(a: AttackLine): string {
   return `Roll a ${d20(a.toHit ?? 0)} to hit. On a hit, roll ${dmg} damage.`;
 }
 
-/** What to roll for a spell, or `undefined` when it needs no roll. */
+/** The damage sentence for one way a spell's damage lands. */
+function damageSentence(at: NonNullable<SpellEntry["attack"]>, dmg: string): string {
+  switch (at.damageOn) {
+    case "attack":
+      return `Roll a ${d20(at.toHit ?? 0)} to hit. On a hit, roll ${dmg} damage.`;
+    case "save": {
+      const half = at.halfOnSave ? "; on a success, half as much" : "";
+      return `On a failure, roll ${dmg} damage${half}.`;
+    }
+    case "weapon-hit":
+      return `When your attack hits, add ${dmg} damage.`;
+    case "each-turn":
+      return `On a failure, the target takes ${dmg} damage at the start of each of its turns while the spell lasts.`;
+    case "weapon-die":
+      return `While it lasts, the weapon rolls ${at.damage ?? dmg} for damage instead of its own die.`;
+    default:
+      return `It hits with no roll: roll ${dmg} damage.`;
+  }
+}
+
+/**
+ * What to roll for a spell, or `undefined` when it needs no roll: the attack or save, the
+ * damage with how it lands, the healing, then any roll the first can't say (`rollNote`).
+ */
 export function spellRoll(s: SpellEntry): string | undefined {
-  const at = s.attack;
-  if (!at) return undefined;
+  const { first, last } = s.attack ? attackSentences(s.attack) : { first: [], last: [] };
+  const parts = [
+    ...first,
+    ...(s.healing ? [`The creature regains ${s.healing} Hit Points.`] : []),
+    ...(s.rollNote ? [s.rollNote] : []),
+    ...last,
+  ];
+  return parts.length > 0 ? parts.join(" ") : undefined;
+}
+
+/** A spell's attack, save and damage sentences; `last` goes after the roll note. */
+function attackSentences(at: NonNullable<SpellEntry["attack"]>): {
+  first: string[];
+  last: string[];
+} {
   const dmg = at.damage ? `${at.damage} ${at.damageType ?? ""}`.trim() : undefined;
-  if (at.toHit !== undefined) {
-    return dmg
-      ? `Roll a ${d20(at.toHit)} to hit. On a hit, roll ${dmg} damage.`
-      : `Roll a ${d20(at.toHit)} to hit.`;
+  const save = at.save
+    ? [`Targets make a ${ABILITY_NAMES[at.save.ability]} save against DC ${at.save.dc}.`]
+    : [];
+  if (!dmg) {
+    const hit = at.toHit === undefined ? [] : [`Roll a ${d20(at.toHit)} to hit.`];
+    return { first: [...hit, ...save], last: [] };
   }
-  if (at.save) {
-    const save = `Targets make a ${ABILITY_NAMES[at.save.ability]} save against DC ${at.save.dc}.`;
-    return dmg ? `${save} On a failure, roll ${dmg} damage.` : save;
+  if (at.damageOn === "save" || at.damageOn === "each-turn") {
+    return { first: [...save, damageSentence(at, dmg)], last: [] };
   }
-  return undefined;
+  // A save the damage doesn't hang on (Ice Knife's burst, Searing Smite's flames): the note
+  // says what it is for, so its numbers follow the note.
+  const later = at.save
+    ? [`The ${ABILITY_NAMES[at.save.ability]} save is against DC ${at.save.dc}.`]
+    : [];
+  return { first: [damageSentence(at, dmg)], last: later };
 }
 
 /** How often a spell can be cast, in plain words. */
@@ -138,14 +168,15 @@ function featureItem(f: FeatureLine): TurnItem {
 export function turnPlan(c: Character): TurnPlan {
   const plan: TurnPlan = { action: [], bonus: [], reaction: [], always: [], actionSpells: [] };
   for (const f of c.features) {
-    const slot = featureSlot(f.summary);
-    if (slot !== "longer") plan[slot].push(featureItem(f));
+    // Something that takes a minute or more isn't used on a turn; its card still says so.
+    if (f.activation === "minute") continue;
+    plan[f.activation === "passive" ? "always" : f.activation].push(featureItem(f));
   }
   for (const s of allSpells(c)) {
-    const slot = spellSlot(s.time);
+    const slot = s.activation;
     if (slot === "action") {
       // Cantrips that attack already appear as attacks.
-      if (!(s.level === 0 && s.attack?.damage)) plan.actionSpells.push(s.name);
+      if (!isAttackCantrip(s)) plan.actionSpells.push(s.name);
     } else if (slot === "bonus" || slot === "reaction") {
       plan[slot].push({
         id: `spell-${s.id}`,
@@ -185,7 +216,7 @@ export function sheetCards(c: Character): SheetCard[] {
     id: f.id,
     name: f.name,
     kind: "Feature",
-    when: SLOT_LABEL[featureSlot(f.summary)],
+    when: ACTIVATION_LABEL[f.activation],
     uses: f.uses,
     text: f.summary,
   }));
@@ -194,7 +225,7 @@ export function sheetCards(c: Character): SheetCard[] {
       id: `spell-${s.id}`,
       name: s.name,
       kind: s.level === 0 ? "Cantrip" : "Level 1 spell",
-      when: SLOT_LABEL[spellSlot(s.time)],
+      when: ACTIVATION_LABEL[s.activation],
       roll: spellRoll(s),
       uses: spellUses(s),
       text: s.note ? `${s.summary} (${s.note})` : s.summary,

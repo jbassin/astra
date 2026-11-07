@@ -7,7 +7,6 @@
    "M"
   ],
   "speed": 30,
-  "darkvision": 60,
   "resist": [
    "necrotic",
    "radiant"
@@ -58,6 +57,7 @@
   "cantrips": [
    "light"
   ],
+  "darkvision": 60,
   "spellAbility": "cha"
  },
  {
@@ -67,7 +67,6 @@
    "M"
   ],
   "speed": 30,
-  "darkvision": 60,
   "resist": [],
   "traits": [
    {
@@ -128,14 +127,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Acid damage."
     ],
-    "resist": [
-     "acid"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Black",
      "damageType": "Acid"
-    }
+    },
+    "resist": [
+     "acid"
+    ]
    },
    {
     "id": "blue",
@@ -146,14 +145,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Lightning damage."
     ],
-    "resist": [
-     "lightning"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Blue",
      "damageType": "Lightning"
-    }
+    },
+    "resist": [
+     "lightning"
+    ]
    },
    {
     "id": "brass",
@@ -164,14 +163,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Fire damage."
     ],
-    "resist": [
-     "fire"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Brass",
      "damageType": "Fire"
-    }
+    },
+    "resist": [
+     "fire"
+    ]
    },
    {
     "id": "bronze",
@@ -182,14 +181,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Lightning damage."
     ],
-    "resist": [
-     "lightning"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Bronze",
      "damageType": "Lightning"
-    }
+    },
+    "resist": [
+     "lightning"
+    ]
    },
    {
     "id": "copper",
@@ -200,14 +199,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Acid damage."
     ],
-    "resist": [
-     "acid"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Copper",
      "damageType": "Acid"
-    }
+    },
+    "resist": [
+     "acid"
+    ]
    },
    {
     "id": "gold",
@@ -218,14 +217,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Fire damage."
     ],
-    "resist": [
-     "fire"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Gold",
      "damageType": "Fire"
-    }
+    },
+    "resist": [
+     "fire"
+    ]
    },
    {
     "id": "green",
@@ -236,14 +235,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Poison damage."
     ],
-    "resist": [
-     "poison"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Green",
      "damageType": "Poison"
-    }
+    },
+    "resist": [
+     "poison"
+    ]
    },
    {
     "id": "red",
@@ -254,14 +253,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Fire damage."
     ],
-    "resist": [
-     "fire"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Red",
      "damageType": "Fire"
-    }
+    },
+    "resist": [
+     "fire"
+    ]
    },
    {
     "id": "silver",
@@ -272,14 +271,14 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Cold damage."
     ],
-    "resist": [
-     "cold"
-    ],
     "cantrips": [],
     "vars": {
      "color": "Silver",
      "damageType": "Cold"
-    }
+    },
+    "resist": [
+     "cold"
+    ]
    },
    {
     "id": "white",
@@ -290,17 +289,18 @@
      "You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
      "Damage Resistance. You have Resistance to Cold damage."
     ],
-    "resist": [
-     "cold"
-    ],
     "cantrips": [],
     "vars": {
      "color": "White",
      "damageType": "Cold"
-    }
+    },
+    "resist": [
+     "cold"
+    ]
    }
   ],
-  "cantrips": []
+  "cantrips": [],
+  "darkvision": 60
  },
  {
   "id": "dwarf",
@@ -309,7 +309,6 @@
    "M"
   ],
   "speed": 30,
-  "darkvision": 120,
   "resist": [
    "poison"
   ],
@@ -345,7 +344,8 @@
    }
   ],
   "options": [],
-  "cantrips": []
+  "cantrips": [],
+  "darkvision": 120
  },
  {
   "id": "elf",
@@ -354,7 +354,6 @@
    "M"
   ],
   "speed": 30,
-  "darkvision": 60,
   "resist": [],
   "traits": [
    {
@@ -409,10 +408,10 @@
      "When you reach character level 3, you learn the Faerie Fire spell. When you reach character level 5, you also learn the Darkness spell. You always have these spells prepared, and you can cast each spell once without a spell slot. Once you cast either of these spells with this trait, you can't cast that spell with it again until you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.",
      "Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage)."
     ],
-    "darkvision": 120,
     "cantrips": [
      "dancing-lights"
-    ]
+    ],
+    "darkvision": 120
    },
    {
     "id": "high-elf",
@@ -436,13 +435,14 @@
      "When you reach character level 3, you learn the Longstrider spell. When you reach character level 5, you also learn the Pass without Trace spell. You always have these spells prepared, and you can cast each spell once without a spell slot. Once you cast either of these spells with this trait, you can't cast that spell with it again until you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.",
      "Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage)."
     ],
-    "speed": 35,
     "cantrips": [
      "druidcraft"
-    ]
+    ],
+    "speed": 35
    }
   ],
-  "cantrips": []
+  "cantrips": [],
+  "darkvision": 60
  },
  {
   "id": "gnome",
@@ -451,7 +451,6 @@
    "S"
   ],
   "speed": 30,
-  "darkvision": 60,
   "resist": [],
   "traits": [
    {
@@ -509,7 +508,8 @@
     ]
    }
   ],
-  "cantrips": []
+  "cantrips": [],
+  "darkvision": 60
  },
  {
   "id": "goliath",
@@ -695,7 +695,6 @@
    "M"
   ],
   "speed": 30,
-  "darkvision": 120,
   "resist": [],
   "traits": [
    {
@@ -722,7 +721,8 @@
    }
   ],
   "options": [],
-  "cantrips": []
+  "cantrips": [],
+  "darkvision": 120
  },
  {
   "id": "tiefling",
@@ -732,7 +732,6 @@
    "M"
   ],
   "speed": 30,
-  "darkvision": 60,
   "resist": [],
   "traits": [
    {
@@ -772,12 +771,12 @@
      "When you reach character level 3, you learn the Ray of Sickness spell. When you reach character level 5, you also learn the Hold Person spell. You always have these spells prepared, and you can cast each spell once without a spell slot. Once you cast either of these spells with this trait, you can't cast that spell with it again until you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.",
      "Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the legacy)."
     ],
-    "resist": [
-     "poison"
-    ],
     "cantrips": [
      "thaumaturgy",
      "poison-spray"
+    ],
+    "resist": [
+     "poison"
     ]
    },
    {
@@ -789,12 +788,12 @@
      "When you reach character level 3, you learn the False Life spell. When you reach character level 5, you also learn the Ray of Enfeeblement spell. You always have these spells prepared, and you can cast each spell once without a spell slot. Once you cast either of these spells with this trait, you can't cast that spell with it again until you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.",
      "Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the legacy)."
     ],
-    "resist": [
-     "necrotic"
-    ],
     "cantrips": [
      "thaumaturgy",
      "chill-touch"
+    ],
+    "resist": [
+     "necrotic"
     ]
    },
    {
@@ -806,15 +805,16 @@
      "When you reach character level 3, you learn the Hellish Rebuke spell. When you reach character level 5, you also learn the Darkness spell. You always have these spells prepared, and you can cast each spell once without a spell slot. Once you cast either of these spells with this trait, you can't cast that spell with it again until you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.",
      "Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the legacy)."
     ],
-    "resist": [
-     "fire"
-    ],
     "cantrips": [
      "thaumaturgy",
      "fire-bolt"
+    ],
+    "resist": [
+     "fire"
     ]
    }
   ],
-  "cantrips": []
+  "cantrips": [],
+  "darkvision": 60
  }
 ]

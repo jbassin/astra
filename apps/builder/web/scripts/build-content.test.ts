@@ -3,7 +3,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { CURATION, type Curation, joinContent, loadImported } from "./build-content";
+import { CURATION, type Curation, joinContent, loadImported, unshownRolls } from "./build-content";
 
 const data = loadImported();
 
@@ -11,6 +11,11 @@ function withCuration(edit: (c: Curation) => void): () => unknown {
   const copy = structuredClone(CURATION);
   edit(copy);
   return () => joinContent(data, copy);
+}
+
+/** Drops a curated entry's activation, as a careless edit would. */
+function unset(o: object): void {
+  Reflect.deleteProperty(o, "activation");
 }
 
 function cls(c: Curation, id: string) {
@@ -89,6 +94,65 @@ describe("joinContent", () => {
         if (elf) delete elf.traits.trance;
       }),
     ).toThrow(/trait "trance" has no summary/);
+  });
+
+  it("fails on a shown feature, trait, option or feat with no activation", () => {
+    expect(
+      withCuration((c) => unset(cls(c, "fighter").features["fighter-second-wind"] ?? {})),
+    ).toThrow(/class fighter fighter-second-wind: no activation/);
+    expect(
+      withCuration((c) => unset(c.species.find((s) => s.id === "elf")?.traits.trance ?? {})),
+    ).toThrow(/species elf trance: no activation/);
+    expect(withCuration((c) => unset(c.options.protection ?? {}))).toThrow(
+      /option protection: no activation/,
+    );
+    expect(withCuration((c) => unset(c.feats.lucky ?? {}))).toThrow(/feat lucky: no activation/);
+  });
+
+  it("takes each spell's activation from its 5etools casting time", () => {
+    const { spells } = joinContent(data);
+    expect(spells["hellish-rebuke"]?.activation).toBe("reaction");
+    expect(spells["healing-word"]?.activation).toBe("bonus");
+    expect(spells["fire-bolt"]?.activation).toBe("action");
+    expect(spells["find-familiar"]?.activation).toBe("minute"); // 1 hour
+  });
+
+  it("gives every spell that deals damage or heals its dice", () => {
+    const { spells } = joinContent(data);
+    expect(spells["hellish-rebuke"]).toMatchObject({
+      damage: "2d10",
+      damageType: "Fire",
+      damageOn: "save",
+      halfOnSave: true,
+      save: "dex",
+    });
+    expect(spells["cure-wounds"]).toMatchObject({ healing: "2d8", healingAddsModifier: true });
+    expect(spells["magic-missile"]).toMatchObject({ damage: "1d4 + 1", damageOn: "auto" });
+    expect(spells["divine-smite"]).toMatchObject({ damage: "2d8", damageOn: "weapon-hit" });
+    expect(spells["sacred-flame"]).toMatchObject({ damage: "1d8", damageOn: "save" });
+    expect(spells["sacred-flame"]?.halfOnSave).toBeUndefined();
+    for (const s of Object.values(spells)) expect(unshownRolls(s), s.id).toEqual([]);
+  });
+
+  it("fails when a spell's rules text rolls dice its sheet entry leaves out", () => {
+    expect(withCuration((c) => delete c.spellRolls["ice-knife"])).toThrow(
+      /spell ice-knife: its rules text rolls 2d6/,
+    );
+    expect(
+      unshownRolls({
+        rulesText: ["It makes a Dexterity saving throw, taking 2d10 Fire damage on a failed save."],
+      }),
+    ).toEqual([expect.stringMatching(/rolls 2d10/)]);
+    // Dice that aren't damage or healing (Bless's 1d4) don't count.
+    expect(
+      unshownRolls({ rulesText: ["The target adds 1d4 to the attack roll or save."] }),
+    ).toEqual([]);
+  });
+
+  it("fails on a curated spell roll for a spell nobody can pick", () => {
+    expect(withCuration((c) => (c.spellRolls.fireball = { note: "Boom." }))).toThrow(
+      /spell roll "fireball" .* is never used/,
+    );
   });
 
   it("fails when Magic Initiate cantrips could run out", () => {

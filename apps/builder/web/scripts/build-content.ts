@@ -5,8 +5,10 @@
 //
 // The build fails, listing every problem, on: a curated id that isn't in the imported data, an
 // imported level 1–2 feature or species trait with no summary (or explicit `hidden` reason), a
-// shortlist smaller than its pick count, a spell that isn't on the class's list, or a pick
-// count the class table doesn't give. Pick counts come from the class table, never from here.
+// shortlist smaller than its pick count, a spell that isn't on the class's list, a pick count
+// the class table doesn't give, a shown feature, trait, option or feat with no activation, or a
+// spell whose rules text rolls damage or healing dice its sheet entry doesn't carry. Pick
+// counts come from the class table, never from here.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -23,9 +25,12 @@ import { OPTIONS } from "../content/options";
 import { SPECIES } from "../content/species";
 import { CANTRIP_SUMMARIES } from "../content/spells/cantrips";
 import { LEVEL1_SUMMARIES } from "../content/spells/level1";
+import { SPELL_ROLLS } from "../content/spells/rolls";
 import { ARCHETYPES } from "../src/domain/character";
 import {
   type Ability,
+  ACTIVATIONS,
+  type Activation,
   type AlwaysPreparedSpell,
   BACKGROUND_IDS,
   type BackgroundContent,
@@ -34,6 +39,8 @@ import {
   CLASS_IDS,
   type ClassContent,
   type ClassId,
+  DAMAGE_ON,
+  type DamageOn,
   type EquipmentLine,
   type FeatContent,
   type ItemContent,
@@ -59,6 +66,7 @@ import type {
   CuratedOption,
   CuratedSpecies,
   CuratedSpellPick,
+  CuratedSpellRoll,
   CuratedUses,
 } from "../src/domain/curationTypes";
 import {
@@ -88,6 +96,36 @@ function overlap(a: SpellChoice[], b: SpellChoice[], cap: number): number {
   return Math.min(cap, a.filter((x) => b.some((y) => y.id === x.id)).length);
 }
 
+/** Dice like "2d10" or "1d4 + 1". */
+const DICE = /\b\d+d\d+(?: \+ \d+)?\b/g;
+/** A sentence about damage or healing (not Bless's 1d4 on a roll). */
+const DAMAGE_OR_HEALING = /\bdamage\b|\bHit Points?\b|\bregains?\b|\brestores?\b/i;
+
+/**
+ * The damage and healing rolls a spell's sheet entry leaves out: every roll in a sentence of
+ * its rules text that deals damage or heals, and every `extra` roll (the importer's structured
+ * ones), must appear in its damage, healing or roll note. Empty when nothing is missing.
+ */
+export function unshownRolls(
+  s: Pick<SpellContent, "rulesText" | "damage" | "healing" | "rollNote">,
+  extra: string[] = [],
+): string[] {
+  const shown = [s.damage, s.healing, s.rollNote].filter(Boolean).join(" | ");
+  const shownDice = new Set(shown.match(DICE) ?? []);
+  const wanted = new Set(extra);
+  for (const sentence of s.rulesText.join(" ").split(/(?<=[.!?])\s+/)) {
+    if (!DAMAGE_OR_HEALING.test(sentence)) continue;
+    for (const d of sentence.match(DICE) ?? []) wanted.add(d);
+  }
+  return [...wanted]
+    .filter((d) => !shownDice.has(d))
+    .map(
+      (d) =>
+        `its rules text rolls ${d} for damage or healing, but the sheet shows no ${d} ` +
+        "(add it to content/spells/rolls.ts as a note)",
+    );
+}
+
 /** Reads the imported JSON from content/5etools/. */
 export function loadImported(dir = IMPORT_DIR): ImportedData {
   const out: Partial<Record<keyof ImportedData, unknown>> = {};
@@ -107,6 +145,7 @@ export interface Curation {
   masteries: Record<string, string>;
   cantrips: Record<string, string>;
   level1: Record<string, string>;
+  spellRolls: Record<string, CuratedSpellRoll>;
 }
 
 export const CURATION: Curation = {
@@ -118,6 +157,7 @@ export const CURATION: Curation = {
   masteries: MASTERY_SUMMARIES,
   cantrips: CANTRIP_SUMMARIES,
   level1: LEVEL1_SUMMARIES,
+  spellRolls: SPELL_ROLLS,
 };
 
 /** Joins imported data and curation, collecting every problem; throws if there are any. */
@@ -162,6 +202,15 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
   ): Uses | undefined {
     if (!u) return undefined;
     return { ...u, count: count(u.count, cls, ctx) };
+  }
+
+  /** A curated activation, checked: the sheet sorts by it, so a missing one fails the build. */
+  function activation(a: Activation | undefined, ctx: string): Activation {
+    if (a === undefined || !(ACTIVATIONS as readonly string[]).includes(a)) {
+      fail(`${ctx}: no activation (want one of ${ACTIVATIONS.join(", ")})`);
+      return "passive";
+    }
+    return a;
   }
 
   function spellChoices(
@@ -268,7 +317,14 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       if (!f) fail(`${ctx}: class feature "${o.from.classFeature}" is not in the imported data`);
       else ({ name, text: rulesText } = f);
     }
-    const out: OptionContent = { id, name, kind: o.kind, summary: o.summary, rulesText };
+    const out: OptionContent = {
+      id,
+      name,
+      kind: o.kind,
+      summary: o.summary,
+      rulesText,
+      activation: activation(o.activation, ctx),
+    };
     const u = uses(o.uses, undefined, ctx);
     if (u) out.uses = u;
     if (o.cost !== undefined) out.cost = o.cost;
@@ -329,6 +385,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
           level: f.level,
           summary: c.summary,
           rulesText: f.text,
+          activation: activation(c.activation, `${ctx} ${f.id}`),
           ...(u && { uses: u }),
         },
       ];
@@ -574,7 +631,14 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       if (!c || c.hidden !== undefined) return [];
       const u = uses(c.uses, undefined, `${ctx} ${t.id}`);
       return [
-        { id: t.id, name: t.name, summary: c.summary, rulesText: t.text, ...(u && { uses: u }) },
+        {
+          id: t.id,
+          name: t.name,
+          summary: c.summary,
+          rulesText: t.text,
+          activation: activation(c.activation, `${ctx} ${t.id}`),
+          ...(u && { uses: u }),
+        },
       ];
     });
     let option: SpeciesContent["option"];
@@ -599,6 +663,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
           name: o.name,
           summary: c?.summary ?? "",
           rulesText: o.text,
+          activation: c ? activation(c.activation, `${ctx} ${o.id}`) : ("passive" as const),
           replacesTrait: o.replacesTrait,
           ...(o.speed !== undefined && { speed: o.speed }),
           ...(o.darkvision !== undefined && { darkvision: o.darkvision }),
@@ -660,6 +725,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       name: imp.name,
       summary: cur.summary,
       rulesText: imp.text,
+      activation: activation(cur.activation, ctx),
       category: imp.category,
       repeatable: imp.repeatable,
       ...(u && { uses: u }),
@@ -732,16 +798,42 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       fail(`spell "${id}" is not in the imported data`);
       continue;
     }
+    const ctx = `spell ${id}`;
     const summary = summaries[id];
     if (!summary) fail(`spell "${id}" has no summary in content/spells/`);
-    const fromText = s.text.join(" ").match(/(\d+d\d+(?: \+ \d+)?) (\w+) damage/);
-    const damage = s.level === 0 ? (s.cantripDice ?? fromText?.[1]) : undefined;
-    const damageType = damage ? (fromText?.[2] ?? s.damageTypes[0]) : undefined;
-    spells[id] = {
+    const text = s.text.join(" ");
+    const roll = curation.spellRolls[id] ?? {};
+    // Damage: a cantrip's scaling dice (character levels 1–4), else the first damage roll the
+    // text gives; Eldritch Blast's beams have no scaling field, so it falls back to the text.
+    const fromText = text.match(/(\d+d\d+(?: \+ \d+)?) (\w+) damage/);
+    const damage =
+      (s.level === 0 ? s.cantripDice : undefined) ?? s.damageDice?.[0] ?? fromText?.[1];
+    const firstDie = damage?.split(" or ")[0] ?? "";
+    const typed = text.match(new RegExp(`${firstDie.replaceAll("+", "\\+")} (\\w+) damage`));
+    const damageType = damage ? (typed?.[1] ?? s.damageTypes[0]) : undefined;
+    let damageOn: DamageOn | undefined;
+    if (damage) {
+      if (roll.on) damageOn = roll.on;
+      else if (s.spellAttack) damageOn = "attack";
+      else if (s.attackRider) damageOn = "weapon-hit";
+      else if (s.save?.[0]) damageOn = "save";
+      else damageOn = "auto";
+    } else if (roll.on) fail(`${ctx}: a curated "on" but the spell deals no damage`);
+    if (roll.on && !(DAMAGE_ON as readonly string[]).includes(roll.on))
+      fail(`${ctx}: unknown "on" value "${roll.on}"`);
+    const halfOnSave = damageOn === "save" && /half as much damage/.test(text);
+    const healing = s.healDice?.[0];
+    const healingAddsModifier =
+      healing !== undefined && /plus your spellcasting ability modifier/.test(text);
+    const spellActivation = s.activation;
+    if (!(ACTIVATIONS as readonly string[]).includes(spellActivation))
+      fail(`${ctx}: no activation in the import (re-run the importer)`);
+    const out: SpellContent = {
       id,
       name: s.name,
       summary: summary ?? "",
       rulesText: s.text,
+      activation: spellActivation,
       level: s.level,
       school: s.school,
       time: s.time,
@@ -753,12 +845,22 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       higherLevel: s.higherLevel,
       ...(damage && { damage }),
       ...(damageType && { damageType: damageType.charAt(0).toUpperCase() + damageType.slice(1) }),
+      ...(damageOn && { damageOn }),
+      ...(halfOnSave && { halfOnSave }),
+      ...(healing && { healing }),
+      ...(healingAddsModifier && { healingAddsModifier }),
+      ...(roll.note && { rollNote: roll.note }),
       ...(s.spellAttack && { spellAttack: s.spellAttack }),
       ...(s.save?.[0] && { save: s.save[0] }),
     };
+    for (const problem of unshownRolls(out, [...(s.damageDice ?? []), ...(s.healDice ?? [])]))
+      fail(`${ctx}: ${problem}`);
+    spells[id] = out;
   }
   for (const id of Object.keys(summaries))
     if (!usedSpells.has(id)) fail(`spell summary "${id}" is never used`);
+  for (const id of Object.keys(curation.spellRolls))
+    if (!usedSpells.has(id)) fail(`spell roll "${id}" in content/spells/rolls.ts is never used`);
 
   const masteries: Record<string, Summarized> = {};
   for (const m of data.masteries) {

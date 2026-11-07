@@ -11,18 +11,22 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       "celestial-resistance": {
+        activation: "passive",
         summary: "Necrotic and Radiant damage hurt you less: you take only half of it.",
       },
       darkvision: {
+        activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
       },
       "healing-hands": {
+        activation: "action",
         summary:
           "As an action, touch a creature and roll 2d4 (one d4 per point of your Proficiency Bonus); it regains that many Hit Points. Use it when a friend is badly hurt.",
         uses: { count: 1, per: "long" },
       },
       "light-bearer": {
+        activation: "passive",
         summary:
           "You know the Light cantrip, so you can make an object glow like a torch whenever you need to see. Charisma powers it.",
       },
@@ -36,18 +40,22 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       "draconic-ancestry": {
+        activation: "passive",
         summary:
           "You descend from one kind of dragon. Its colour sets the damage type of your Breath Weapon and the damage you resist.",
       },
       "breath-weapon": {
+        activation: "action",
         summary:
           "When you take the Attack action, swap one attack for a breath: a 15-foot cone or a 30-foot line 5 feet wide. Everyone in it makes a Dexterity save, taking 1d10 damage on a failure or half on a success.",
         uses: { count: "pb", per: "long" },
       },
       "damage-resistance": {
+        activation: "passive",
         summary: "You take only half damage of your dragon's damage type.",
       },
       darkvision: {
+        activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
       },
@@ -57,33 +65,45 @@ export const SPECIES: CuratedSpecies[] = [
       prompt: "Pick the colour of your dragon ancestor. It decides your breath's damage type.",
       choices: {
         black: {
+          activation: "passive",
           summary: "Black dragon: your Breath Weapon deals Acid damage, and you resist Acid.",
         },
         blue: {
+          activation: "passive",
           summary:
             "Blue dragon: your Breath Weapon deals Lightning damage, and you resist Lightning.",
         },
         brass: {
+          activation: "passive",
           summary: "Brass dragon: your Breath Weapon deals Fire damage, and you resist Fire.",
         },
         bronze: {
+          activation: "passive",
           summary:
             "Bronze dragon: your Breath Weapon deals Lightning damage, and you resist Lightning.",
         },
         copper: {
+          activation: "passive",
           summary: "Copper dragon: your Breath Weapon deals Acid damage, and you resist Acid.",
         },
         gold: {
+          activation: "passive",
           summary: "Gold dragon: your Breath Weapon deals Fire damage, and you resist Fire.",
         },
         green: {
+          activation: "passive",
           summary: "Green dragon: your Breath Weapon deals Poison damage, and you resist Poison.",
         },
-        red: { summary: "Red dragon: your Breath Weapon deals Fire damage, and you resist Fire." },
+        red: {
+          activation: "passive",
+          summary: "Red dragon: your Breath Weapon deals Fire damage, and you resist Fire.",
+        },
         silver: {
+          activation: "passive",
           summary: "Silver dragon: your Breath Weapon deals Cold damage, and you resist Cold.",
         },
         white: {
+          activation: "passive",
           summary: "White dragon: your Breath Weapon deals Cold damage, and you resist Cold.",
         },
       },
@@ -96,18 +116,22 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       darkvision: {
+        activation: "passive",
         summary:
           "You can see in the dark up to 120 feet away as if it were dim light, though only in shades of gray.",
       },
       "dwarven-resilience": {
+        activation: "passive",
         summary:
           "You take only half Poison damage, and you roll with Advantage on saves against being Poisoned.",
       },
       "dwarven-toughness": {
+        activation: "passive",
         summary:
           "You have 1 extra Hit Point for every level you have (already added to your total).",
       },
       stonecunning: {
+        activation: "bonus",
         summary:
           "As a bonus action while touching stone, you sense creatures moving on the ground within 60 feet for 10 minutes, even ones you can't see.",
         uses: { count: "pb", per: "long" },
@@ -121,21 +145,26 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       darkvision: {
+        activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
       },
       "elven-lineage": {
+        activation: "passive",
         summary:
           "Your elven family line gives you a magic trick: a cantrip, and for some lineages better darkvision or more speed.",
       },
       "fey-ancestry": {
+        activation: "passive",
         summary: "You roll with Advantage on saves to avoid or end being Charmed.",
       },
       "keen-senses": {
+        activation: "passive",
         summary:
           "You are trained in one of Insight, Perception or Survival (already on your sheet).",
       },
       trance: {
+        activation: "passive",
         summary:
           "You don't need to sleep and magic can't put you to sleep. You finish a Long Rest in 4 hours of quiet meditation.",
       },
@@ -144,14 +173,17 @@ export const SPECIES: CuratedSpecies[] = [
       prompt: "Pick the elven lineage you come from.",
       choices: {
         drow: {
+          activation: "passive",
           summary:
             "Drow: you see in the dark up to 120 feet instead of 60, and you know the Dancing Lights cantrip.",
         },
         "high-elf": {
+          activation: "passive",
           summary:
             "High elf: you know the Prestidigitation cantrip, and after each Long Rest you can swap it for another Wizard cantrip.",
         },
         "wood-elf": {
+          activation: "passive",
           summary:
             "Wood elf: your speed is 35 feet instead of 30, and you know the Druidcraft cantrip.",
         },
@@ -166,13 +198,16 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Small",
     traits: {
       darkvision: {
+        activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
       },
       "gnomish-cunning": {
+        activation: "passive",
         summary: "You roll with Advantage on Intelligence, Wisdom and Charisma saving throws.",
       },
       "gnomish-lineage": {
+        activation: "passive",
         summary: "Your gnome family line gives you a little magic: cantrips and a special trick.",
       },
     },
@@ -180,11 +215,13 @@ export const SPECIES: CuratedSpecies[] = [
       prompt: "Pick the gnome lineage you come from.",
       choices: {
         "forest-gnome": {
+          activation: "passive",
           summary:
             "Forest gnome: you know the Minor Illusion cantrip, and you can cast Speak with Animals without a spell slot.",
           uses: { count: "pb", per: "long" },
         },
         "rock-gnome": {
+          activation: "passive",
           summary:
             "Rock gnome: you know the Mending and Prestidigitation cantrips. With 10 minutes of tinkering you can build a tiny clockwork toy that does one Prestidigitation trick (up to three at a time, each lasts 8 hours).",
         },
@@ -198,11 +235,13 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       "giant-ancestry": {
+        activation: "passive",
         summary:
           "Your giant ancestors give you one supernatural boon you can use a few times a day.",
       },
       "large-form": { hidden: "Starts at character level 5." },
       "powerful-build": {
+        activation: "passive",
         summary:
           "You roll with Advantage on checks to break free of a grapple, and you can carry as much as a creature one size larger.",
       },
@@ -211,31 +250,37 @@ export const SPECIES: CuratedSpecies[] = [
       prompt: "Pick the kind of giant you descend from. Each gives a different boon.",
       choices: {
         "cloud-giant": {
+          activation: "bonus",
           summary:
             "Cloud's Jaunt: as a bonus action, teleport up to 30 feet to a spot you can see.",
           uses: { count: "pb", per: "long" },
         },
         "fire-giant": {
+          activation: "passive",
           summary:
             "Fire's Burn: when you hit with an attack roll and deal damage, add 1d10 Fire damage.",
           uses: { count: "pb", per: "long" },
         },
         "frost-giant": {
+          activation: "passive",
           summary:
             "Frost's Chill: when you hit with an attack roll and deal damage, add 1d6 Cold damage and cut the target's speed by 10 feet until the start of your next turn.",
           uses: { count: "pb", per: "long" },
         },
         "hill-giant": {
+          activation: "passive",
           summary:
             "Hill's Tumble: when you hit a Large or smaller creature with an attack roll and deal damage, you can knock it Prone.",
           uses: { count: "pb", per: "long" },
         },
         "stone-giant": {
+          activation: "reaction",
           summary:
             "Stone's Endurance: when you take damage, use your reaction to roll 1d12, add your Constitution modifier, and take that much less damage.",
           uses: { count: "pb", per: "long" },
         },
         "storm-giant": {
+          activation: "reaction",
           summary:
             "Storm's Thunder: when a creature within 60 feet damages you, use your reaction to deal it 1d8 Thunder damage.",
           uses: { count: "pb", per: "long" },
@@ -249,16 +294,22 @@ export const SPECIES: CuratedSpecies[] = [
     blurb: "Small, cheerful and brave, with luck that turns bad rolls around.",
     size: "Small",
     traits: {
-      brave: { summary: "You roll with Advantage on saves to avoid or end being Frightened." },
+      brave: {
+        activation: "passive",
+        summary: "You roll with Advantage on saves to avoid or end being Frightened.",
+      },
       "halfling-nimbleness": {
+        activation: "passive",
         summary:
           "You can move through the space of any creature bigger than you, but you can't stop there.",
       },
       luck: {
+        activation: "passive",
         summary:
           "When you roll a 1 on the d20 for an attack, check or save, you can reroll it, and you must use the new roll.",
       },
       "naturally-stealthy": {
+        activation: "passive",
         summary:
           "You can try to Hide even when the only thing hiding you is a creature at least one size bigger than you.",
       },
@@ -271,11 +322,18 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       resourceful: {
+        activation: "passive",
         summary:
           "You gain Heroic Inspiration whenever you finish a Long Rest: spend it to reroll any one die you just rolled.",
       },
-      skillful: { summary: "You are trained in one extra skill (already on your sheet)." },
-      versatile: { summary: "You get an extra origin feat (shown with your feats)." },
+      skillful: {
+        activation: "passive",
+        summary: "You are trained in one extra skill (already on your sheet).",
+      },
+      versatile: {
+        activation: "passive",
+        summary: "You get an extra origin feat (shown with your feats).",
+      },
     },
     skillChoice: "any",
     languages: [],
@@ -286,15 +344,18 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       "adrenaline-rush": {
+        activation: "bonus",
         summary:
           "Take the Dash action as a bonus action to move twice as far, and gain Temporary Hit Points equal to your Proficiency Bonus when you do.",
         uses: { count: "pb", per: "short" },
       },
       darkvision: {
+        activation: "passive",
         summary:
           "You can see in the dark up to 120 feet away as if it were dim light, though only in shades of gray.",
       },
       "relentless-endurance": {
+        activation: "passive",
         summary:
           "When something drops you to 0 Hit Points without killing you outright, you can drop to 1 Hit Point instead.",
         uses: { count: 1, per: "long" },
@@ -308,14 +369,17 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       darkvision: {
+        activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
       },
       "fiendish-legacy": {
+        activation: "passive",
         summary:
           "Your fiendish legacy gives you resistance to one damage type and an attack cantrip.",
       },
       "otherworldly-presence": {
+        activation: "passive",
         summary:
           "You know the Thaumaturgy cantrip: small spooky wonders like a booming voice, flickering flames or tremors underfoot.",
       },
@@ -324,14 +388,17 @@ export const SPECIES: CuratedSpecies[] = [
       prompt: "Pick the fiendish legacy in your blood.",
       choices: {
         abyssal: {
+          activation: "passive",
           summary:
             "Abyssal: you take only half Poison damage, and you know the Poison Spray cantrip.",
         },
         chthonic: {
+          activation: "passive",
           summary:
             "Chthonic: you take only half Necrotic damage, and you know the Chill Touch cantrip.",
         },
         infernal: {
+          activation: "passive",
           summary: "Infernal: you take only half Fire damage, and you know the Fire Bolt cantrip.",
         },
       },
