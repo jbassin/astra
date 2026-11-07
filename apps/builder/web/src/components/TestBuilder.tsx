@@ -5,6 +5,7 @@
 import { useState } from "react";
 
 import type { Answers } from "@/domain/character";
+import { Icon } from "@/ui/Icon";
 
 import { BuilderFlow } from "./BuilderFlow";
 
@@ -21,16 +22,24 @@ export function TestBuilder() {
       initial={{}}
       persist={keepInTab}
       title="Try the builder"
-      intro="Click through and make a practice character. Your real character lives at the link your DM sent you."
+      intro="Make a practice character. Your real character lives at the link your DM sent you."
       banner={
         <div className="test-banner" role="note">
+          <Icon name="ui-flask-conical" className="test-banner-icon" />
           <p>
             <strong>Test mode — nothing is saved.</strong> Reloading the page loses this character.
           </p>
-          <button type="button" className="button quiet" onClick={() => setRun((n) => n + 1)}>
+          <button type="button" className="button quiet small" onClick={() => setRun((n) => n + 1)}>
+            <Icon name="ui-rotate-ccw" />
             Start over
           </button>
         </div>
+      }
+      status={
+        <span className="save-state" data-state="practice">
+          <Icon name="ui-flask-conical" />
+          <span>Practice</span>
+        </span>
       }
     />
   );

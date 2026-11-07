@@ -1,351 +1,381 @@
-/* The builder flow: page frame, progress rail, screens, choice cards, fields and buttons.
- * Phone first; the rail moves to the side from 60rem. Touch targets are at least 44px. */
+/* The builder flow: the greeting, the quest path, screens, choice cards, fields and the bottom
+ * bar. Phone first (390px), touch targets at least 44px, nothing wider than the screen at
+ * 360px. */
 
 .flow {
   flex: 1;
   width: 100%;
-  max-width: 72rem;
+  max-width: 64rem;
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 0 1rem calc(var(--bar-h) + 2rem + env(safe-area-inset-bottom));
+}
+
+/* ── the greeting ───────────────────────────────────────────────────────────────── */
+.flow-top {
+  display: grid;
+  gap: 0.85rem;
+  padding-top: 0.25rem;
+}
+.flow-head {
+  display: grid;
+  gap: 0.15rem;
 }
 .flow-head h1 {
-  font: 650 1.9rem/1.2 var(--bd-sans);
-  margin-bottom: 0.4rem;
+  font-size: 1.5rem;
+  font-weight: 800;
 }
-.flow-head .lede {
-  margin-bottom: 1.5rem;
+.flow-intro {
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 40rem;
 }
-.flow-body {
+
+/* ── the test banner ────────────────────────────────────────────────────────────── */
+.test-banner {
   display: grid;
-  /* minmax(0, …): the rail's nowrap strip must scroll inside the column, not widen the page. */
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.6rem 0.6rem 0.85rem;
+  border: 1.5px dashed var(--gilt);
+  border-radius: var(--radius-m);
+  background: color-mix(in oklab, var(--gilt-glow) 10%, var(--surface));
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
-@media (min-width: 60rem) {
-  .flow {
-    padding: 2.5rem 1.5rem 5rem;
-  }
-  .flow-body {
-    grid-template-columns: 14rem minmax(0, 1fr);
-    gap: 2.5rem;
-    align-items: start;
+.test-banner strong {
+  display: block;
+  font-size: 0.95rem;
+}
+.test-banner-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--gilt);
+}
+@media (min-width: 40rem) {
+  .test-banner strong {
+    display: inline;
   }
 }
 
-/* ── progress rail ──────────────────────────────────────────────────────────────── */
+/* ── the quest path ─────────────────────────────────────────────────────────────── */
+.stepper {
+  display: grid;
+  gap: 0.35rem;
+}
 .stepper ol {
   /* The offset parent for Stepper's scroll-into-view. */
   position: relative;
   display: flex;
-  gap: 0.4rem;
   overflow-x: auto;
-  list-style: none;
-  padding-bottom: 0.25rem;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  padding: 0.25rem 0.1rem;
 }
-@media (min-width: 60rem) {
-  .stepper {
-    position: sticky;
-    top: 1.5rem;
-  }
-  .stepper ol {
-    flex-direction: column;
-    overflow: visible;
-  }
+.stepper ol::-webkit-scrollbar {
+  display: none;
+}
+.stepper li {
+  position: relative;
+  flex: 1 0 2.75rem;
+  display: flex;
+  justify-content: center;
+}
+/* The road from the previous waypoint to this one; gilt once the previous one is done. */
+.stepper li + li::before {
+  content: "";
+  position: absolute;
+  top: calc(1.375rem + 0.25rem - 1.5px);
+  right: calc(50% + 1.1rem);
+  left: calc(-50% + 1.1rem);
+  height: 3px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, var(--rule-strong) 0 5px, transparent 5px 9px);
+  transition: background 300ms var(--ease-out);
+}
+.stepper li[data-state="done"] + li::before {
+  background: var(--gilt);
 }
 .step-link {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  width: 100%;
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  min-width: 2.75rem;
   min-height: 2.75rem;
-  padding: 0.35rem 0.8rem 0.35rem 0.4rem;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--bd-muted);
-  font: 500 0.95rem var(--bd-sans);
-  white-space: nowrap;
+  border: 0;
+  background: none;
+  color: var(--muted);
   cursor: pointer;
-  transition:
-    background-color var(--bd-ease),
-    border-color var(--bd-ease);
+  -webkit-tap-highlight-color: transparent;
 }
-.step-link:hover {
-  background: var(--bd-sunk);
+.step-link:focus-visible {
+  outline: none;
 }
-.step-link[aria-current="step"] {
-  border-color: var(--bd-accent);
-  background: var(--bd-surface);
-  color: var(--bd-ink);
+.step-link:focus-visible .step-mark {
+  outline: 3px solid var(--gilt);
+  outline-offset: 2px;
 }
 .step-mark {
-  display: inline-grid;
-  place-content: center;
-  flex: none;
-  width: 1.9rem;
-  height: 1.9rem;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1.5px solid var(--rule-strong);
   border-radius: 50%;
-  background: var(--bd-sunk);
-  font-size: 0.85rem;
-  font-weight: 600;
+  background: var(--surface);
+  transition:
+    background-color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+.step-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+.step-done {
+  position: absolute;
+  right: -0.2rem;
+  bottom: -0.2rem;
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: var(--ok);
+  color: var(--surface);
+  animation: pop 320ms var(--pop);
+}
+.step-done .icon {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: none;
+  stroke-width: 3;
 }
 .step-link[data-state="done"] .step-mark {
-  background: var(--bd-accent);
-  color: var(--bd-surface);
+  border-color: var(--gilt);
+  color: var(--gilt);
 }
 .step-link[data-state="blocked"] {
-  color: var(--bd-faint);
+  opacity: 0.55;
 }
 .step-link[data-state="blocked"] .step-mark {
-  background: transparent;
-  border: 1px dashed var(--bd-rule);
+  border-style: dashed;
+}
+.step-link[aria-current="step"] .step-mark {
+  border-color: var(--action);
+  background: var(--action);
+  color: var(--action-ink);
+  transform: scale(1.08);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--gilt-glow) 30%, transparent);
+}
+.step-link:hover .step-mark {
+  border-color: var(--gilt);
+}
+.step-label {
+  display: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+.step-link[aria-current="step"] .step-label {
+  color: var(--ink);
+  font-weight: 800;
+}
+.stepper-where {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+@media (min-width: 48rem) {
+  .step-label {
+    display: block;
+  }
+  .stepper-where {
+    display: none;
+  }
 }
 
-/* ── the current screen ─────────────────────────────────────────────────────────── */
+/* ── a screen ───────────────────────────────────────────────────────────────────── */
 .flow-screen {
+  margin-top: 1.5rem;
   min-width: 0;
-  padding: 1.25rem 1rem 1.5rem;
-  border: 1px solid var(--bd-rule);
-  border-radius: 0.9rem;
-  background: var(--bd-surface);
 }
-@media (min-width: 40rem) {
-  .flow-screen {
-    padding: 1.75rem 2rem 2rem;
+.screen-enter {
+  display: grid;
+  gap: 1.25rem;
+  animation: screen-in 240ms var(--ease-out) both;
+}
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
   }
 }
 .screen-title {
-  font: 650 1.45rem/1.25 var(--bd-sans);
-  margin-bottom: 0.35rem;
+  font-size: clamp(1.75rem, 6.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.005em;
   scroll-margin-top: 1rem;
+}
+/* On the sheet the hero banner is the real title; the heading stays for screen readers. */
+.flow-screen[data-view="sheet"] .screen-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .screen-title:focus {
   outline: none;
 }
 .screen-title:focus-visible {
-  outline: 2px solid var(--bd-accent);
+  outline: 3px solid var(--gilt);
 }
 .screen-hint {
-  color: var(--bd-muted);
-  margin-bottom: 1.25rem;
+  margin-top: -0.6rem;
+  color: var(--muted);
+  max-width: 42rem;
 }
 .notice,
-.blocked,
-.issues {
-  display: block;
-  margin-bottom: 1.25rem;
-  padding: 0.75rem 1rem;
-  border-left: 3px solid var(--bd-accent);
-  border-radius: 0.4rem;
-  background: var(--bd-sunk);
-  font: 0.95rem/1.5 var(--bd-sans);
+.issues li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.75rem 0.9rem;
+  border-left: 4px solid var(--gilt);
+  border-radius: var(--radius-s);
+  background: color-mix(in oklab, var(--gilt-glow) 12%, var(--surface));
+  animation: screen-in 200ms var(--ease-out) both;
+}
+.notice .icon,
+.issues .icon {
+  margin-top: 0.15rem;
+  color: var(--gilt);
 }
 .issues {
-  border-left-color: var(--bd-error);
-  padding-left: 2rem;
-}
-
-/* ── choices ────────────────────────────────────────────────────────────────────── */
-.choice-group {
-  border: 0;
-  margin-bottom: 1.75rem;
-}
-.group-legend {
-  display: block;
-  font: 600 1.05rem var(--bd-sans);
-  margin-bottom: 0.25rem;
-}
-.group-prompt {
-  display: block;
-  color: var(--bd-muted);
-  font-size: 0.95rem;
-  margin-bottom: 0.75rem;
-}
-.pick-count {
-  display: inline-block;
-  margin-left: 0.25rem;
-  padding: 0.05rem 0.6rem;
-  border-radius: 999px;
-  background: var(--bd-sunk);
-  color: var(--bd-ink);
-  font: 600 0.85rem var(--bd-sans);
-  white-space: nowrap;
-}
-.pick-count[data-full] {
-  background: var(--bd-accent);
-  color: var(--bd-surface);
-}
-.choices {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
-  gap: 0.75rem;
-}
-.choice {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  min-height: 2.75rem;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--bd-rule);
-  border-radius: 0.7rem;
-  background: var(--bd-page);
-  cursor: pointer;
-  transition:
-    border-color var(--bd-ease),
-    box-shadow var(--bd-ease);
-}
-.choice:hover {
-  border-color: var(--bd-muted);
-}
-.choice:has(input:checked) {
-  border-color: var(--bd-accent);
-  box-shadow: inset 0 0 0 1px var(--bd-accent);
-  background: var(--bd-surface);
-}
-.choice:has(input:focus-visible) {
-  outline: 2px solid var(--bd-accent);
-  outline-offset: 2px;
-}
-.choice.is-disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-.choice.is-disabled:hover {
-  border-color: var(--bd-rule);
-}
-.choice input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-.choice-title {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   gap: 0.5rem;
-  padding-right: 1.75rem;
 }
-.choice:has(input:checked) .choice-title::after {
-  content: "✓";
-  position: absolute;
-  top: 0.75rem;
-  right: 0.9rem;
-  color: var(--bd-accent);
-  font: 700 1rem var(--bd-sans);
-}
-.choice-label {
-  font: 600 1.02rem var(--bd-sans);
-}
-.choice-blurb {
-  color: var(--bd-ink);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-.choice-meta,
-.choice-reason {
-  color: var(--bd-muted);
-  font: 0.85rem/1.45 var(--bd-sans);
-}
-.choice-reason {
-  font-weight: 600;
-}
-.badge {
-  padding: 0.05rem 0.55rem;
-  border: 1px solid var(--bd-ok);
-  border-radius: 999px;
-  color: var(--bd-ok);
-  font: 600 0.75rem var(--bd-sans);
-  letter-spacing: 0.02em;
-}
-.gifts {
-  margin: -0.5rem 0 1.75rem;
-  font-size: 0.95rem;
-}
-.gifts summary {
-  min-height: 2.75rem;
-  padding: 0.6rem 0;
-  color: var(--bd-accent);
-  font: 600 0.95rem var(--bd-sans);
-  cursor: pointer;
-}
-.gifts ul {
+.blocked {
   display: grid;
-  gap: 0.4rem;
-  padding-left: 1.25rem;
+  justify-items: start;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1.5px dashed var(--rule-strong);
+  border-radius: var(--radius-l);
+}
+.blocked-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--muted);
 }
 
-/* ── fields and buttons ─────────────────────────────────────────────────────────── */
+/* ── About you ──────────────────────────────────────────────────────────────────── */
 .about {
   display: grid;
   gap: 1.5rem;
+  max-width: 40rem;
+}
+.about-field {
+  display: grid;
+  gap: 0.35rem;
+}
+.field-label {
+  font: 700 1.3rem/1.2 var(--display);
+}
+.field-hint {
+  color: var(--muted);
 }
 .field {
   width: 100%;
-  min-height: 2.75rem;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--bd-rule);
-  border-radius: 0.5rem;
-  background: var(--bd-page);
-  color: var(--bd-ink);
-  font: inherit;
+  min-height: 3rem;
+  margin-top: 0.25rem;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--rule-strong);
+  border-radius: var(--radius-m);
+  background: var(--raised);
+  /* 16px or more, so iOS doesn't zoom into the field. */
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  transition:
+    border-color 150ms var(--ease-out),
+    box-shadow 150ms var(--ease-out);
 }
 textarea.field {
-  min-height: 7rem;
+  min-height: 6.5rem;
   resize: vertical;
 }
-.flow-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--bd-rule);
-}
-.flow-nav .button:last-child {
-  margin-left: auto;
-}
-.button {
-  min-height: 2.75rem;
-  padding: 0.55rem 1.25rem;
-  border: 1px solid var(--bd-accent);
-  border-radius: 0.5rem;
-  background: var(--bd-accent);
-  color: var(--bd-surface);
-  font: 600 1rem var(--bd-sans);
-  cursor: pointer;
-}
-.button.quiet {
-  background: transparent;
-  color: var(--bd-accent);
-}
-.link-button {
-  border: 0;
-  background: none;
-  color: var(--bd-accent);
-  font: inherit;
-  font-weight: 600;
-  text-decoration: underline;
-  cursor: pointer;
+.field:focus {
+  outline: none;
+  border-color: var(--hue-ink);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--hue-ink) 30%, transparent);
 }
 
-/* ── test mode ──────────────────────────────────────────────────────────────────── */
-.test-banner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
-  padding: 0.75rem 1rem;
-  border: 1px dashed var(--bd-accent);
-  border-radius: 0.7rem;
-  background: var(--bd-sunk);
-  font: 0.95rem var(--bd-sans);
+/* ── the bottom bar ─────────────────────────────────────────────────────────────── */
+.flow-bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 10;
+  padding: 0.65rem 0.75rem;
+  padding-bottom: max(0.65rem, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--rule);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.3);
+  -webkit-backdrop-filter: blur(12px) saturate(1.3);
 }
-.home-try {
-  margin-top: 1.25rem;
-  font: 1rem var(--bd-sans);
+.flow-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+.bar-status {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  text-align: center;
+}
+.bar-spacer {
+  width: 0;
+}
+.flow-bar .bar-back {
+  padding-inline: 0.75rem 1rem;
+}
+.flow-bar .bar-next {
+  padding-inline: 1.15rem 0.85rem;
+  max-width: 62%;
+}
+/* On a narrow phone the save state is a lone icon; its words stay for screen readers. */
+@media (max-width: 23rem) {
+  .bar-status .save-state > span:not(.icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .bar-status .save-state[data-state="error"] > span {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    white-space: normal;
+    font-size: 0.8rem;
+  }
+}
+@media (min-width: 60rem) {
+  .flow-head h1 {
+    font-size: 2rem;
+  }
+  .flow-screen {
+    margin-top: 2rem;
+  }
 }

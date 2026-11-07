@@ -5,6 +5,8 @@ import { STEPS } from "@/domain/character";
 import { buildCharacter } from "@/domain/engine";
 import type { DmPlayerRow } from "@/server/builder";
 import { getDmView } from "@/server/builderFns";
+import { classTincture, hueStyle } from "@/ui/heraldry";
+import { Crest, Icon } from "@/ui/Icon";
 
 // A wrong or unset token throws the router-wide 404, the same page as any unknown URL, so the
 // DM page never shows that it exists.
@@ -29,6 +31,7 @@ function formatTime(iso: string | null): string {
 
 function PlayerCard({ player }: { player: DmPlayerRow }) {
   const c = buildCharacter(player.answers);
+  const heraldry = classTincture(c.class?.id);
   const species =
     c.species && (c.species.option ? `${c.species.name} (${c.species.option})` : c.species.name);
   const rows: Array<[string, string | undefined]> = [
@@ -38,29 +41,45 @@ function PlayerCard({ player }: { player: DmPlayerRow }) {
     ["Species", species],
     ["Background", c.background?.name],
   ];
+  const answered = STEPS.filter((s) => player.answered.includes(s.key));
   return (
-    <section className="dm-player">
-      <h2>{player.name}</h2>
-      <p className="dm-meta">
-        <a href={player.link}>{player.link}</a>
-        <br />
-        Last saved {formatTime(player.updatedAt)} · {player.answered.length} of {player.total} steps
-        answered
-        {player.answered.length > 0 &&
-          ` (${STEPS.filter((s) => player.answered.includes(s.key))
-            .map((s) => s.label)
-            .join(", ")})`}
-      </p>
+    <section className="dm-player hued" style={hueStyle(heraldry)}>
+      <header className="dm-player-head">
+        <Crest icon={heraldry?.icon ?? "wax-seal"} className="dm-crest" />
+        <div>
+          <h2>{player.name}</h2>
+          <p className="dm-saved">Last saved {formatTime(player.updatedAt)}</p>
+        </div>
+      </header>
+      <div className="dm-progress">
+        <progress
+          className="dm-progress-bar"
+          aria-label="Steps answered"
+          max={Math.max(1, player.total)}
+          value={player.answered.length}
+        />
+        <p className="dm-meta">
+          {player.answered.length} of {player.total} steps answered
+          {answered.length > 0 && ` (${answered.map((s) => s.label).join(", ")})`}
+        </p>
+      </div>
       <dl className="dm-answers">
         {rows.map(([label, value]) => (
-          <div key={label} style={{ display: "contents" }}>
+          <div key={label}>
             <dt>{label}</dt>
             <dd>{value?.trim() ? value : "—"}</dd>
           </div>
         ))}
       </dl>
+      <p className="dm-link">
+        <Icon name="ui-link" />
+        <a href={player.link}>{player.link}</a>
+      </p>
       <details className="dm-sheet">
-        <summary>{player.name}’s full sheet</summary>
+        <summary>
+          <span>{player.name}’s full sheet</span>
+          <Icon name="ui-chevron-down" className="gifts-chevron" />
+        </summary>
         <CharacterSheet character={c} />
       </details>
     </section>
@@ -70,7 +89,7 @@ function PlayerCard({ player }: { player: DmPlayerRow }) {
 function DmComponent() {
   const players = Route.useLoaderData();
   return (
-    <main className="wrap wide">
+    <main className="dm">
       <h1>Players</h1>
       <p className="lede">
         {players.length === 0

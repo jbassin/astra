@@ -1,7 +1,8 @@
-/* Paper: the browser's print gives the sheet alone, black on white, with the cards on their
- * own pages in a grid of dashed cut lines. The header, rail, buttons and banners are hidden.
- * globals.css imports this file, so its own rules come later: overrides of them need more
- * weight (`html …`, or `!important` for the hidden parts). */
+/* Paper: the browser's print gives the sheet alone, black on white and ink-light: no filled
+ * banners or chips, outlines instead, with the cards on their own pages in a grid of dashed
+ * cut lines. The header, path, bars, buttons and banners are hidden. It comes last in globals.css,
+ * but the screen rules it overrides often carry more weight, so its rules start with `html`
+ * (and the hidden parts use `!important`). */
 
 @media print {
   /* As heavy as tokens.css's dark blocks, and later, so paper is light in a dark theme too. */
@@ -9,89 +10,196 @@
   :root:not([data-theme="light"]),
   :root[data-theme] {
     color-scheme: light;
-    --bd-page: #ffffff;
-    --bd-surface: #ffffff;
-    --bd-sunk: #f1f1f1;
-    --bd-ink: #000000;
-    --bd-muted: #333333;
-    --bd-faint: #555555;
-    --bd-rule: #999999;
-    --bd-accent: #000000;
+    --page: #ffffff;
+    --surface: #ffffff;
+    --raised: #ffffff;
+    --sunk: #ffffff;
+    --ink: #000000;
+    --muted: #333333;
+    --faint: #444444;
+    --rule: #999999;
+    --rule-strong: #666666;
+    --gilt: #000000;
+    --gilt-ink: #ffffff;
+    --shadow: none;
+    --shadow-lift: none;
+    --hue-ink-l: 0.3;
+    --hue-wash-pct: 0%;
+    --hue-line-pct: 40%;
   }
   @page {
     margin: 12mm;
   }
-  body {
-    font-size: 11pt;
+  html body {
+    background: #ffffff;
+    font-size: 10.5pt;
   }
   .site-head,
+  .site-foot,
   .stepper,
   .flow-head,
-  .flow-nav,
+  .flow-bar,
   .test-banner,
   .screen-title,
   .screen-hint,
   .notice,
   .sheet-print,
   .still .button,
-  .dm-sheet > summary,
-  .dm-meta {
-    /* globals.css comes later in the cascade (its imports, this file, sit at the top). */
+  .dm > h1,
+  .dm > .lede,
+  .dm-player-head,
+  .dm-progress,
+  .dm-answers,
+  .dm-link,
+  .dm-sheet > summary {
     display: none !important;
   }
   html .flow,
-  html .wrap {
+  html .dm {
     max-width: none;
     padding: 0;
   }
-  .flow-body {
-    display: block;
+  html .flow-screen {
+    margin: 0;
   }
-  .flow-screen,
-  .dm-player {
+  html .screen-enter {
+    animation: none;
+  }
+  html .dm-player {
     padding: 0;
     border: 0;
+    box-shadow: none;
+    break-after: page;
   }
+  .dm-player:not(:has(.dm-sheet[open])) {
+    display: none;
+  }
+  html .sheet {
+    gap: 1rem;
+  }
+
+  /* The banner: an outlined title block instead of a solid fill. */
+  html .sheet-banner {
+    padding: 0.6rem 0.9rem;
+    background: none;
+    color: #000000;
+    border: 2px solid #000000;
+    box-shadow: none;
+  }
+  html .sheet-banner::after {
+    display: none;
+  }
+  html .sheet-banner .crest-field {
+    fill: #ffffff;
+    stroke: #000000;
+    stroke-width: 3;
+  }
+  html .sheet-banner .crest-rule {
+    stroke: #000000;
+  }
+  html .sheet-banner .crest-charge {
+    color: #000000;
+    fill: #000000;
+  }
+  html .sheet-crest {
+    width: 3.5rem;
+    filter: none;
+  }
+  html .origin {
+    background: none;
+    border: 1px solid #000000;
+  }
+  html .sheet-story {
+    border-top-color: #999999;
+  }
+  html .section-title {
+    font-size: 1.3rem;
+  }
+  html .section-title::after {
+    background: #000000;
+    height: 1px;
+  }
+
   .vital,
   .turn-box,
   .spell-block,
-  .ability {
+  .spell,
+  .ability,
+  .turn-item {
     break-inside: avoid;
   }
-  .roll,
-  .card-roll {
-    border: 1px solid #999999;
+  html .vital,
+  html .ability,
+  html .turn-box,
+  html .spell-block {
+    border-color: #000000;
+    box-shadow: none;
   }
-  .vital-grid {
+  html .vital-grid {
     grid-template-columns: repeat(4, 1fr);
   }
-  .turn-grid {
+  html .vital-value {
+    font-size: 1.9rem;
+  }
+  html .ability-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  html .turn-grid {
     grid-template-columns: 1.4fr 1fr 1fr;
   }
-  .turn-box.wide {
+  html .turn-box {
+    border-top-width: 3px;
+  }
+  html .turn-box.wide {
     grid-column: 1 / -1;
   }
-  .detail-grid {
+  html .turn-icon {
+    background: none;
+    color: #000000;
+    border: 1.5px solid #000000;
+  }
+  html .roll,
+  html .card-roll {
+    background: none;
+    border: 1px solid #000000;
+  }
+  html .detail-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  html .spell-list {
     grid-template-columns: 1fr 1fr;
   }
+  html .expert {
+    background: none;
+    color: #000000;
+    border: 1px solid #000000;
+  }
+
   /* The cards start a new page, three across, with dashed lines to cut along. */
   .cards-section {
     break-before: page;
   }
-  .cards {
+  html .cards {
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
   }
-  .card {
+  html .card {
     break-inside: avoid;
     border: 1px dashed #000000;
     border-radius: 0;
-    font-size: 9pt;
+    box-shadow: none;
+    font-size: 8.5pt;
   }
-  .dm-player {
-    break-after: page;
+  html .card[data-kind] .card-head {
+    background: none;
+    color: #000000;
+    border-bottom: 1.5px solid #000000;
   }
-  .dm-sheet:not([open]) {
-    display: none;
+  html .card-emblem {
+    background: none;
+    border-color: #000000;
+  }
+  html .card-name {
+    font-size: 1.05rem;
   }
 }

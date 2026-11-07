@@ -13,10 +13,27 @@ import {
   spellPickLists,
   unavailableSpellIds,
 } from "@/domain/content";
-import type { OptionGroupContent } from "@/domain/contentTypes";
+import type { OptionGroupContent, OptionGroupKey } from "@/domain/contentTypes";
+import type { IconName } from "@/generated/icons";
+import { CLASS_HERALDRY, hueStyle, schoolIcon } from "@/ui/heraldry";
+import { Icon } from "@/ui/Icon";
 
 import { Choice, ChoiceGroup, PickCounter } from "./Choice";
 import type { ScreenProps } from "./OriginScreens";
+
+const GROUP_ICON: Record<OptionGroupKey, IconName> = {
+  fightingStyle: "sword-brandish",
+  divineOrder: "holy-symbol",
+  primalOrder: "oak-leaf",
+  invocations: "warlock-eye",
+  metamagic: "magic-swirl",
+};
+
+/** The chosen class's hue, so the pick screens keep its colour. */
+function classHue(answers: Answers) {
+  const id = classOf(answers)?.id;
+  return hueStyle(id ? CLASS_HERALDRY[id] : undefined);
+}
 
 /** The new array after toggling `id`; a pick-one list replaces instead of adding. */
 function toggled(current: string[], id: string, count: number): string[] {
@@ -50,6 +67,8 @@ function OptionGroup({ group, answers, update }: ScreenProps & { group: OptionGr
             disabled={type === "checkbox" && !checked && picked.length >= group.count}
             onChange={() => pick(id)}
             title={o.name}
+            hue={classHue(answers)}
+            icon={<Icon name={GROUP_ICON[group.key]} className="emblem-icon" />}
           >
             <span className="choice-blurb">{o.summary}</span>
           </Choice>
@@ -78,9 +97,17 @@ function picksOf(answers: Answers, field: SpellPickList["field"]): string[] {
 function SpellMeta({ id }: { id: string }) {
   const s = CONTENT.spells[id];
   if (!s) return null;
-  const parts = [s.level === 0 ? "Cantrip" : "Level 1", s.time.split(",")[0], s.range];
+  const parts = [s.level === 0 ? "Cantrip" : "Level 1", s.time.split(",")[0] ?? s.time, s.range];
   if (s.concentration) parts.push("Concentration");
-  return <span className="choice-meta">{parts.join(" · ")}</span>;
+  return (
+    <span className="chips">
+      {parts.map((p) => (
+        <span key={p} className="chip">
+          {p}
+        </span>
+      ))}
+    </span>
+  );
 }
 
 function SpellList({ list, answers, update }: ScreenProps & { list: SpellPickList }) {
@@ -121,11 +148,25 @@ function SpellList({ list, answers, update }: ScreenProps & { list: SpellPickLis
             disabled={taken || (type === "checkbox" && !checked && picked.length >= list.count)}
             onChange={() => pick(c.id)}
             title={s.name}
-            badge={c.recommended && <span className="badge">Recommended</span>}
+            hue={classHue(answers)}
+            icon={<Icon name={schoolIcon(s.school)} className="emblem-icon" />}
+            badge={
+              c.recommended && (
+                <span className="badge">
+                  <Icon name="ui-star" />
+                  Recommended
+                </span>
+              )
+            }
           >
             <SpellMeta id={c.id} />
             <span className="choice-blurb">{s.summary}</span>
-            {taken && <span className="choice-reason">{reason}</span>}
+            {taken && (
+              <span className="choice-reason">
+                <Icon name="ui-lock" />
+                {reason}
+              </span>
+            )}
           </Choice>
         );
       })}
@@ -140,7 +181,10 @@ export function SpellsScreen({ answers, update }: ScreenProps) {
       {issues.length > 0 && (
         <ul className="issues">
           {issues.map((i) => (
-            <li key={i}>{i}</li>
+            <li key={i}>
+              <Icon name="ui-info" />
+              <span>{i}</span>
+            </li>
           ))}
         </ul>
       )}
@@ -155,35 +199,38 @@ export function AboutScreen({ answers, update }: ScreenProps) {
   return (
     <div className="about">
       <label className="about-field">
-        <span className="group-legend">Name</span>
+        <span className="field-label">Name</span>
         <input
           className="field"
           type="text"
           maxLength={80}
+          autoComplete="off"
           value={answers.name ?? ""}
           onChange={(e) => update({ name: e.target.value })}
         />
       </label>
       <label className="about-field">
-        <span className="group-legend">What do they look like?</span>
-        <span className="group-prompt">
+        <span className="field-label">What do they look like?</span>
+        <span className="field-hint">
           A sentence or two is plenty: height, hair, clothes, a scar.
         </span>
         <textarea
           className="field"
           maxLength={2000}
+          rows={3}
           value={answers.look ?? ""}
           onChange={(e) => update({ look: e.target.value })}
         />
       </label>
       <label className="about-field">
-        <span className="group-legend">What are they like?</span>
-        <span className="group-prompt">
+        <span className="field-label">What are they like?</span>
+        <span className="field-hint">
           A habit, a fear, something they want. Cheerful and nosy? Quiet and loyal?
         </span>
         <textarea
           className="field"
           maxLength={2000}
+          rows={3}
           value={answers.personality ?? ""}
           onChange={(e) => update({ personality: e.target.value })}
         />
