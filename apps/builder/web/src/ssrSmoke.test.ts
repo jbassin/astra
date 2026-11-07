@@ -30,15 +30,35 @@ vi.stubEnv("BUILDER_DM_TOKEN", DM_TOKEN);
 describeSsrSmoke({
   appRoot: path.resolve(import.meta.dirname, ".."),
   routes: [
-    { path: "/", contains: ["Character builder", "personal link"] },
+    { path: "/", contains: ["Character builder", "personal link", 'href="/test"'] },
+    // The saved answers pick an archetype, so the page resumes on the class screen.
     {
       path: `/c/${PLAYER_ID}`,
-      contains: ["Smoke Tester", 'checked="" value="scoundrel"', 'value="Quill"'],
+      contains: ["Smoke Tester", "Pick your class", 'value="rogue"', "Class (to do)"],
+    },
+    {
+      path: "/test",
+      contains: [
+        "Test mode — nothing is saved.",
+        "Start over",
+        "What kind of hero",
+        'value="warrior"',
+      ],
     },
     { path: `/c/${"A".repeat(22)}`, status: 404, contains: ["We couldn’t find that character"] },
     { path: "/c/not-an-id", status: 404, contains: ["We couldn’t find that character"] },
     { path: "/dm/wrong", status: 404, contains: ["That page doesn’t exist."] },
-    { path: `/dm/${DM_TOKEN}`, contains: ["Players", "Smoke Tester", "Quill", "1 invited"] },
+    {
+      path: `/dm/${DM_TOKEN}`,
+      contains: [
+        "Players",
+        "Smoke Tester",
+        "Quill",
+        "1 invited",
+        "’s full sheet",
+        "Still to choose",
+      ],
+    },
     { path: "/__no-such-page", status: 404, contains: ["That page doesn’t exist."] },
   ],
 });

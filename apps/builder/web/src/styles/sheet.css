@@ -1,0 +1,249 @@
+/* The character sheet and its cards, on screen. print.css restyles it for paper. */
+
+.sheet {
+  display: grid;
+  gap: 1.75rem;
+}
+.sheet-head {
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--bd-ink);
+}
+.sheet-name {
+  font: 700 1.9rem/1.15 var(--bd-sans);
+}
+.sheet-sub {
+  color: var(--bd-muted);
+  font: 500 1rem var(--bd-sans);
+  margin-bottom: 0.5rem;
+}
+.sheet-story {
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+}
+.sheet-print {
+  color: var(--bd-muted);
+  font: 0.9rem var(--bd-sans);
+}
+.sheet-section {
+  display: grid;
+  gap: 0.6rem;
+}
+.section-title {
+  font: 650 1.2rem var(--bd-sans);
+}
+.sheet-note {
+  color: var(--bd-muted);
+  font: 0.9rem/1.5 var(--bd-sans);
+}
+.still ul {
+  padding-left: 1.25rem;
+}
+.still .button {
+  justify-self: start;
+}
+
+/* ── key numbers ────────────────────────────────────────────────────────────────── */
+.vital-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+@media (min-width: 40rem) {
+  .vital-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.vital {
+  display: grid;
+  justify-items: center;
+  padding: 0.75rem 0.5rem;
+  border: 1px solid var(--bd-rule);
+  border-radius: 0.7rem;
+  background: var(--bd-page);
+  text-align: center;
+}
+.vital dt {
+  font: 600 0.8rem var(--bd-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bd-muted);
+}
+.vital dd {
+  font: 700 2rem/1.2 var(--bd-sans);
+}
+.vital-note {
+  color: var(--bd-muted);
+  font: 0.78rem/1.3 var(--bd-sans);
+}
+
+/* ── on your turn ───────────────────────────────────────────────────────────────── */
+.turn-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+@media (min-width: 52rem) {
+  .turn-grid {
+    grid-template-columns: 1.4fr 1fr 1fr;
+    align-items: start;
+  }
+  .turn-box.wide {
+    grid-column: 1 / -1;
+  }
+}
+.turn-box {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--bd-rule);
+  border-radius: 0.7rem;
+  background: var(--bd-page);
+}
+.turn-box h4 {
+  font: 650 1.05rem var(--bd-sans);
+}
+.turn-hint {
+  color: var(--bd-muted);
+  font: 0.85rem var(--bd-sans);
+  margin-bottom: 0.5rem;
+}
+.turn-box ul,
+.spell-block ul {
+  display: grid;
+  gap: 0.7rem;
+  list-style: none;
+}
+.turn-item {
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+.turn-item strong {
+  font-family: var(--bd-sans);
+}
+.turn-range,
+.uses {
+  color: var(--bd-muted);
+  font: 0.85rem var(--bd-sans);
+}
+.roll {
+  margin: 0.15rem 0;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  background: var(--bd-sunk);
+  font: 500 0.92rem/1.45 var(--bd-sans);
+}
+.turn-detail {
+  color: var(--bd-muted);
+  font-size: 0.9rem;
+}
+.spell-block {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--bd-rule);
+  border-radius: 0.7rem;
+  background: var(--bd-page);
+}
+.spell-block h5 {
+  font: 650 1.05rem var(--bd-sans);
+}
+
+/* ── details ────────────────────────────────────────────────────────────────────── */
+.detail-grid {
+  gap: 1rem;
+}
+@media (min-width: 44rem) {
+  .detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+.detail-box {
+  display: grid;
+  gap: 0.4rem;
+}
+.plain-list {
+  display: grid;
+  gap: 0.15rem;
+  padding-left: 1.1rem;
+  font-size: 0.95rem;
+}
+.ability-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.ability {
+  display: grid;
+  justify-items: center;
+  padding: 0.5rem 0.25rem;
+  border: 1px solid var(--bd-rule);
+  border-radius: 0.6rem;
+  background: var(--bd-page);
+}
+.ability dt {
+  font: 600 0.78rem var(--bd-sans);
+  color: var(--bd-muted);
+}
+.ability dd {
+  font: 700 1.5rem/1.2 var(--bd-sans);
+}
+.ability-score {
+  color: var(--bd-faint);
+  font: 0.75rem var(--bd-sans);
+}
+
+/* ── cards ──────────────────────────────────────────────────────────────────────── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 0.75rem;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--bd-rule);
+  border-top: 4px solid var(--bd-accent);
+  border-radius: 0.6rem;
+  background: var(--bd-page);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.card-kind,
+.card-when,
+.card-uses,
+.card-meta {
+  color: var(--bd-muted);
+  font: 0.8rem/1.35 var(--bd-sans);
+}
+.card-kind {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.card-name {
+  font: 650 1.1rem/1.2 var(--bd-sans);
+}
+.card-when {
+  color: var(--bd-ink);
+  font-weight: 600;
+}
+.card-roll {
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.4rem;
+  background: var(--bd-sunk);
+  font: 500 0.88rem/1.4 var(--bd-sans);
+}
+
+/* ── the DM page's per-player sheet ─────────────────────────────────────────────── */
+.dm-sheet {
+  margin-top: 1rem;
+}
+.dm-sheet > summary {
+  min-height: 2.75rem;
+  padding: 0.6rem 0;
+  color: var(--bd-accent);
+  font: 600 1rem var(--bd-sans);
+  cursor: pointer;
+}
+.dm-sheet[open] > summary {
+  margin-bottom: 1rem;
+}

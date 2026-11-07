@@ -1,6 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
-import { ARCHETYPES, STEPS } from "@/domain/character";
+import { CharacterSheet } from "@/components/sheet/CharacterSheet";
+import { STEPS } from "@/domain/character";
+import { buildCharacter } from "@/domain/engine";
 import type { DmPlayerRow } from "@/server/builder";
 import { getDmView } from "@/server/builderFns";
 
@@ -25,16 +27,16 @@ function formatTime(iso: string | null): string {
   });
 }
 
-function archetypeLabel(id: string | undefined): string | undefined {
-  return ARCHETYPES.find((a) => a.id === id)?.label;
-}
-
 function PlayerCard({ player }: { player: DmPlayerRow }) {
-  const { answers } = player;
+  const c = buildCharacter(player.answers);
+  const species =
+    c.species && (c.species.option ? `${c.species.name} (${c.species.option})` : c.species.name);
   const rows: Array<[string, string | undefined]> = [
-    ["Archetype", archetypeLabel(answers.archetype)],
-    ["Name", answers.name],
-    ["Look", answers.look],
+    ["Name", c.name],
+    ["Archetype", c.archetype?.label],
+    ["Class", c.class?.name],
+    ["Species", species],
+    ["Background", c.background?.name],
   ];
   return (
     <section className="dm-player">
@@ -57,6 +59,10 @@ function PlayerCard({ player }: { player: DmPlayerRow }) {
           </div>
         ))}
       </dl>
+      <details className="dm-sheet">
+        <summary>{player.name}’s full sheet</summary>
+        <CharacterSheet character={c} />
+      </details>
     </section>
   );
 }

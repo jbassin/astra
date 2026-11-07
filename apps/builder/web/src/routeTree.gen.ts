@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TestRouteImport } from './routes/test'
 import { Route as CIdRouteImport } from './routes/c/$id'
 import { Route as DmTokenRouteImport } from './routes/dm/$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestRoute = TestRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CIdRoute = CIdRouteImport.update({
@@ -31,30 +37,34 @@ const DmTokenRoute = DmTokenRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/test': typeof TestRoute
   '/c/$id': typeof CIdRoute
   '/dm/$token': typeof DmTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/test': typeof TestRoute
   '/c/$id': typeof CIdRoute
   '/dm/$token': typeof DmTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/test': typeof TestRoute
   '/c/$id': typeof CIdRoute
   '/dm/$token': typeof DmTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/c/$id' | '/dm/$token'
+  fullPaths: '/' | '/test' | '/c/$id' | '/dm/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/c/$id' | '/dm/$token'
-  id: '__root__' | '/' | '/c/$id' | '/dm/$token'
+  to: '/' | '/test' | '/c/$id' | '/dm/$token'
+  id: '__root__' | '/' | '/test' | '/c/$id' | '/dm/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TestRoute: typeof TestRoute
   CIdRoute: typeof CIdRoute
   DmTokenRoute: typeof DmTokenRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/c/$id': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TestRoute: TestRoute,
   CIdRoute: CIdRoute,
   DmTokenRoute: DmTokenRoute,
 }

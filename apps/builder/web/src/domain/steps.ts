@@ -125,11 +125,6 @@ export function nextStep(answers: Answers): StepKey | null {
   return stepStatuses(answers).find((s) => s.applicable && !s.complete)?.key ?? null;
 }
 
-/** Whether one step is complete (a step that doesn't apply counts as complete). */
-export function isAnswered(answers: Answers, key: StepKey): boolean {
-  return stepStatuses(answers).find((s) => s.key === key)?.complete ?? false;
-}
-
 /** The keys of the complete, applicable steps, in flow order (the DM page's progress). */
 export function answeredSteps(answers: Answers): StepKey[] {
   return stepStatuses(answers)
