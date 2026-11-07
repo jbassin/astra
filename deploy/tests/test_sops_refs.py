@@ -21,9 +21,6 @@ OPTIONAL = {
     # ops.signoz-api-key: until it exists, `just signoz-rules-check` warns and the watchdog
     # skips the rule-drift check (libs/py/ops/README.md).
     "signoz_api_key",
-    # builder.dm-token: until it exists, the character builder's DM page answers 404
-    # (apps/builder/web/README.md).
-    "builder_dm_token",
 }
 
 

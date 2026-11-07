@@ -32,8 +32,8 @@ green. This file is the plan; this section is the checklist.
   save, progress and answers.
 - [x] `astra.builder.saves{outcome}` counter, save span, RUM.
 - [x] Tests: store, token check, DM view, SSR smoke.
-- [ ] `builder_dm_token` added to `deploy/sops/secrets.enc.yaml` (main session), then remove it
-  from `OPTIONAL` in `deploy/tests/test_sops_refs.py` if the page should be required.
+- [x] `builder_dm_token` added to `deploy/sops/secrets.enc.yaml` (32 random characters) and
+  required by `deploy/tests/test_sops_refs.py`.
 
 **Slice 2a: content and rules engine.** Data source: the public 5etools data, XPHB only, content
 committed (Josh's decision). Characters are level 2.
