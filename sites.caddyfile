@@ -270,7 +270,12 @@ dagster.iridi.cc {
 
 # builder: an SSR frontend on the site-kit preset (`just new-frontend`), port 10375.
 # (*.iridi.cc wildcard: no DNS record needed; the certificate is issued on the first request.)
+# Saves are tiny (a few KB of answers), so cap request bodies: an anonymous client could
+# otherwise make the Node process buffer a huge POST before the server function validates it.
 builder.iridi.cc {
 	import astra_site
+	request_body {
+		max_size 64KB
+	}
 	reverse_proxy localhost:10375
 }

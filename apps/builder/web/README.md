@@ -29,6 +29,8 @@ healer), a name and a look. Classes, species, backgrounds, spells and the final 
   `builder_dm_token` (config `builder.dm-token`, env `BUILDER_DM_TOKEN`, injected by
   `just deploy`). Read it with
   `SOPS_AGE_KEY_FILE=deploy/sops/age.key sops -d --extract '["builder_dm_token"]' deploy/sops/secrets.enc.yaml`.
+  Generate the token with at least 128 random bits (`openssl rand -base64 24 | tr '+/' '-_'`):
+  nothing throttles guesses, so its length is the only defence.
 - Dev server: `just dev builder/web`. Set `ASTRA_DATA_ROOT` to a scratch dir first, or it reads
   and writes the live data under `/ruby/data/astra-state/builder`.
 - Deploy: `just deploy builder`.
