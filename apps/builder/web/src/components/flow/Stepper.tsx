@@ -4,7 +4,7 @@
 // a compact bar shows where you are ("3 / 8", one segment per screen) and opens the same
 // waypoints as a list, so the path never scrolls sideways.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { ViewKey, ViewStatus } from "@/domain/flow";
 import type { IconName } from "@/generated/icons";
@@ -43,6 +43,24 @@ export function Stepper({
     shown.findIndex((s) => s.key === current),
   );
   const here = shown[at];
+  const nav = useRef<HTMLElement>(null);
+  useEffect(() => {
+    // The path sticks to the top of the screen (path.css), except on the sheet, which has its
+    // own jump bar. Publish its height as --sticky-h, so headings and the pick lists' sticky
+    // counters sit just under it.
+    const el = nav.current;
+    const root = document.documentElement;
+    if (!el) return;
+    const publish = () => {
+      const h = current === "sheet" ? 0 : el.offsetHeight;
+      root.style.setProperty("--sticky-h", `${h}px`);
+    };
+    publish();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [current]);
   useEffect(() => {
     // Escape closes the opened list, wherever the focus is.
     if (!open) return;
@@ -53,7 +71,7 @@ export function Stepper({
     return () => document.removeEventListener("keydown", close);
   }, [open]);
   return (
-    <nav className="stepper" aria-label="Steps" data-open={open ? "" : undefined}>
+    <nav ref={nav} className="stepper" aria-label="Steps" data-open={open ? "" : undefined}>
       <button
         type="button"
         className="stepper-toggle"

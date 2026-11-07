@@ -2,7 +2,22 @@
 /* Phone: a compact bar (where you are, one segment per screen) that opens the waypoints as a
  * list. From 48rem: the waypoints run across the page and the bar goes away. */
 .stepper {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  margin: 0.45rem -1rem 0;
+  padding: 0.4rem 1rem 0.5rem;
+  padding-top: max(0.4rem, env(safe-area-inset-top));
+  background: color-mix(in oklab, var(--page) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+/* The sheet has its own sticky jump bar, so the path stays put there. */
+.flow[data-view="sheet"] .stepper {
   position: relative;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 .stepper-toggle {
   display: grid;

@@ -68,9 +68,13 @@ the sheet banner and its cards. Phone first: most players use a phone.
 - **Hues:** an element with the `hued` class and `hueStyle(...)` gets `--hue`, `--hue-ink`,
   `--hue-wash` and `--hue-line` (`src/styles/tokens.css`), in OKLCH, tuned per theme.
 - **Phone first:** on a phone the quest path is a compact bar ("3 / 8", one segment per
-  screen) that opens the steps as a list; from 48rem the waypoints run across the page. Pick
-  cards show their curated gist (clamped to two lines) with the full summary behind "More", and
-  each list's name and "Pick N" count stick to the top while it scrolls. The sheet gets a sticky jump
+  screen) that opens the steps as a list; from 48rem the waypoints run across the page. The
+  path sticks to the top of the screen on every step but the sheet. Once the player moves on
+  from the screen they opened, a phone hides the page header and the greeting and shrinks the
+  test banner to one line, so each step's heading starts about 90px down; Next, Back and a
+  jump scroll to the heading, just under the path, and focus it. Pick cards show their
+  curated gist (clamped to two lines) with the full summary behind "More", and each list's
+  name and "Pick N" count stick to the top while it scrolls. The sheet gets a sticky jump
   bar (Turn, Spells, Abilities, Gear, Cards) and folds "Always on" and the cards until asked;
   a laptop and paper always show everything. The bottom bar is fixed, except at the end of the
   sheet on a laptop.
@@ -228,6 +232,10 @@ takes every data-root dir by default).
 - **A card's "More" disclosure sits outside its `<label>`,** so opening the full rules never
   picks the card. `<details>` has the ARIA role `group`, so tests that want the pick lists
   filter `getAllByRole("group")` to fieldsets.
+- **The quest path must stay a direct child of `<main class="flow">`** to stick for the whole
+  page (a sticky element only sticks inside its parent). `Stepper` publishes its height as
+  `--sticky-h` (0 on the sheet), which the headings' scroll margin and the pick lists' sticky
+  counters use.
 - **Phone-only folds start folded on the server too.** `Fold` and `SheetJump` render the same
   first frame everywhere (folded, nothing marked); CSS shows the content on a laptop and on
   paper, so there is no hydration mismatch and nothing to measure.

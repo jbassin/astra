@@ -188,8 +188,13 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6rem 1rem;
-  padding-top: max(0.6rem, env(safe-area-inset-top));
+  padding: 0.25rem 1rem;
+  padding-top: max(0.25rem, env(safe-area-inset-top));
+}
+@media (min-width: 48rem) {
+  .site-head {
+    padding-block: 0.6rem;
+  }
 }
 .site-brand {
   display: inline-flex;

@@ -28,7 +28,8 @@
 /* The list's name and count, held under the top of the screen while its cards scroll by. */
 .group-sticky {
   position: sticky;
-  top: 0;
+  /* Under the sticky quest path (its height, published by Stepper). */
+  top: var(--sticky-h, 0px);
   z-index: 5;
   display: flex;
   align-items: center;
