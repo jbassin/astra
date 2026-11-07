@@ -204,41 +204,42 @@ describe("buildCharacter: one worked character per class", () => {
     ]);
   });
 
-  it("Ranger (Human, Guard, Druidic Warrior)", () => {
+  it("Ranger (Human, Wayfarer, Druidic Warrior)", () => {
     const c = buildCharacter({
       archetype: "scoundrel",
       classId: "ranger",
       speciesId: "human",
-      backgroundId: "guard",
+      backgroundId: "wayfarer",
       options: { fightingStyle: ["druidic-warrior"] },
       bonusCantrips: ["guidance", "starry-wisp"],
       spells: ["cure-wounds", "entangle", "goodberry"],
       ...DONE,
     });
-    // Priority wis dex con str int cha → 15 14 13 12 10 8; Guard (Str Int Wis): Wis +2, Str +1.
-    expect(scores(c)).toEqual({ str: 13, dex: 14, con: 13, int: 10, wis: 17, cha: 8 });
-    // Guard gives Alert, so Human Versatile falls back to Tough. d10: (10 + 1) + (6 + 1) + 4 = 22.
-    expect(c.hitPoints.max).toBe(22);
+    // Priority dex wis con str int cha → 15 14 13 12 10 8; Wayfarer (Dex Wis Cha): Dex +2, Wis +1.
+    expect(scores(c)).toEqual({ str: 12, dex: 17, con: 13, int: 10, wis: 15, cha: 8 });
+    // Wayfarer gives Lucky, so Human Versatile takes Alert. d10: (10 + 1) + (6 + 1) = 18.
+    expect(c.hitPoints.max).toBe(18);
     expect(
       c.features.filter((f) => f.source === "feat" || f.source === "background").map((f) => f.name),
-    ).toEqual(["Alert", "Tough"]);
-    expect(c.armorClass.value).toBe(14); // Studded Leather 12 + Dex 2
-    expect(c.initiative).toBe(4); // Dex 2 + Alert 2
-    // Guard: Athletics, Perception; Ranger: Stealth, Survival, Nature; Skillful: Animal Handling.
-    // Deft Explorer expertise: Perception 3 + 4 = 7.
+    ).toEqual(["Lucky", "Alert"]);
+    expect(c.armorClass.value).toBe(15); // Studded Leather 12 + Dex 3
+    expect(c.initiative).toBe(5); // Dex 3 + Alert 2
+    // Wayfarer: Insight, Stealth; Ranger: Perception, Survival, Nature; Skillful: Animal Handling.
+    // Deft Explorer expertise: Perception 2 + 4 = 6.
     expect(proficientSkills(c)).toEqual({
-      "animal-handling": 5,
-      athletics: 3,
+      "animal-handling": 4,
+      insight: 4,
       nature: 2,
-      perception: 7,
-      stealth: 4,
-      survival: 5,
+      perception: 6,
+      stealth: 5,
+      survival: 4,
     });
-    expect(c.passivePerception).toBe(17);
-    expect(attack(c, "Longbow")).toMatchObject({ toHit: 4, damage: "1d8 + 2" });
+    expect(c.passivePerception).toBe(16);
+    expect(attack(c, "Longbow")).toMatchObject({ toHit: 5, damage: "1d8 + 3" });
     expect(attack(c, "Longbow").mastery?.name).toBe("Slow");
     const ranger = c.spellcasting.find((b) => b.source === "class");
-    expect(ranger).toMatchObject({ ability: "wis", saveDc: 13, attackBonus: 5, slots: [2] });
+    // Wis 2 + proficiency 2: DC 8 + 4 = 12, attack +4.
+    expect(ranger).toMatchObject({ ability: "wis", saveDc: 12, attackBonus: 4, slots: [2] });
     expect(ranger?.spells.map((s) => s.id)).toEqual([
       "cure-wounds",
       "entangle",
@@ -247,7 +248,7 @@ describe("buildCharacter: one worked character per class", () => {
     ]);
     expect(ranger?.spells.at(-1)?.freeCasts).toBe("2 per Long Rest");
     expect(attack(c, "Starry Wisp")).toMatchObject({
-      toHit: 5,
+      toHit: 4,
       damage: "1d8",
       damageType: "Radiant",
     });
