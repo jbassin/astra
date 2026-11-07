@@ -87,6 +87,8 @@
 @media (min-width: 44rem) {
   .choices[data-layout="grid"] {
     grid-template-columns: 1fr 1fr;
+    /* An opened card grows alone; its neighbour keeps its own height. */
+    align-items: start;
   }
 }
 @media (min-width: 60rem) {
