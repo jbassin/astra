@@ -279,6 +279,9 @@ importers:
       '@astra/config':
         specifier: workspace:*
         version: link:../../../libs/ts/config
+      '@astra/content-build':
+        specifier: workspace:*
+        version: link:../../../libs/ts/content-build
       '@astra/gothic':
         specifier: workspace:*
         version: link:../../../libs/ts/gothic

@@ -4,7 +4,8 @@
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 
-import { type Answers, answeredSteps, type CharacterDoc, type StepKey } from "@/domain/character";
+import type { Answers, CharacterDoc, StepKey } from "@/domain/character";
+import { answeredSteps, applicableStepCount } from "@/domain/steps";
 
 import { dmTokenMatches } from "./dmToken";
 import type { BuilderStore } from "./store";
@@ -58,6 +59,8 @@ export interface DmPlayerRow {
   createdAt: string;
   updatedAt: string | null;
   answered: StepKey[];
+  /** How many steps apply to this player's character so far (a Barbarian skips spells). */
+  total: number;
   answers: Answers;
 }
 
@@ -76,6 +79,7 @@ export function loadDmView(
       createdAt: player.createdAt,
       updatedAt: doc?.updatedAt ?? null,
       answered: answeredSteps(answers),
+      total: applicableStepCount(answers),
       answers,
     };
   });

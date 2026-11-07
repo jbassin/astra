@@ -9,7 +9,7 @@
 #   mouthpiece     the producer experiments
 #   backups        snapshot, restore test, SigNoz rules
 #   codex, builds  corpus refresh and search index; portal module, assay book, weal wasm
-#   builder        the character builder's player links
+#   builder        the character builder's player links and content
 #   edge           the shared reverse proxy
 #
 # The ops recipes are one-line wrappers over the astra-ops CLI (libs/py/ops): its README lists
@@ -787,11 +787,22 @@ weal-engine-build:
     tools/gen-stamp.sh write {{quote(weal_stamp)}}
     sha256sum "$gen"/weal_engine_bg.wasm "$gen"/weal_engine.js
 
-# ==== builder: the character builder's player links (apps/builder/web/README.md) ============
+# ==== builder: the character builder's links and content (apps/builder/web/README.md) ======
 # Writes <builder.data-dir>/roster.json (under data.root; ASTRA_DATA_ROOT overrides it).
 # Invite a player to the character builder and print their private link.
 builder-invite +name:
     cd apps/builder/web && node --import tsx scripts/invite.ts "$@"
+
+# Re-import the builder's D&D content from a 5etools `data/` checkout at <commit>, then rebuild
+# it. The checkout is only read as JSON (nothing in it is ever run); commit the changed
+# content/5etools/ files.
+builder-import data commit:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    data="$(cd {{quote(invocation_directory())}} && realpath {{quote(data)}})"
+    cd apps/builder/web
+    node --import tsx scripts/import-5etools.ts "$data" {{quote(commit)}}
+    node --import tsx scripts/build-content.ts
 
 # ==== edge: the SHARED reverse proxy at /ruby/data/reverse-proxy =============================
 # A custom `caddy` binary with the cloudflare-dns plugin (the stock /usr/bin/caddy lacks it)

@@ -4,6 +4,14 @@
 
 import { z } from "zod";
 
+import {
+  ARCHETYPE_IDS,
+  BACKGROUND_IDS,
+  CLASS_IDS,
+  OPTION_GROUP_KEYS,
+  SPECIES_IDS,
+} from "./contentTypes";
+
 /** A player id: 128 random bits, base64url without padding (22 characters). */
 export const PlayerId = z.string().regex(/^[A-Za-z0-9_-]{22}$/, "not a player id");
 export type PlayerId = z.infer<typeof PlayerId>;
@@ -20,7 +28,7 @@ export type RosterEntry = z.infer<typeof RosterEntry>;
 export const Roster = z.array(RosterEntry);
 export type Roster = z.infer<typeof Roster>;
 
-/** The four starting archetypes; Josh narrows each to classes later. */
+/** The four starting archetypes; content/classes.ts says which classes each one offers. */
 export const ARCHETYPES = [
   { id: "warrior", label: "Warrior", blurb: "Stands in front, hits hard and takes the hits." },
   {
@@ -32,17 +40,40 @@ export const ARCHETYPES = [
   { id: "healer", label: "Healer", blurb: "Keeps friends standing and turns the tide with faith." },
 ] as const;
 
-const Archetype = z.enum(["warrior", "scoundrel", "mage", "healer"]);
+const Archetype = z.enum(ARCHETYPE_IDS);
+
+/** A content id: a lower-case slug (spell, option, species sub-option). */
+const Slug = z.string().regex(/^[a-z0-9-]{1,40}$/, "not a content id");
 
 /**
- * Every answer a player can give. Each is optional, so a half-finished character is valid.
- * New steps add fields here; a change that breaks old documents bumps `schemaVersion`.
+ * Every answer a player can give. Each is optional, so a half-finished character is valid, and
+ * every string and array is bounded. Ids of curated content (spells, options, sub-options) are
+ * slugs rather than enums, so a document saved before a curation change still parses;
+ * `pruneAnswers` (steps.ts) drops ids the content no longer offers. New steps add fields here;
+ * a change that breaks old documents bumps `schemaVersion`.
  */
 export const Answers = z
   .object({
     archetype: Archetype.optional(),
+    classId: z.enum(CLASS_IDS).optional(),
+    speciesId: z.enum(SPECIES_IDS).optional(),
+    /** The species sub-choice: elf lineage, dragonborn ancestry, tiefling legacy, … */
+    speciesOption: Slug.optional(),
+    backgroundId: z.enum(BACKGROUND_IDS).optional(),
+    /** Class option picks by group (fighting style, divine order, invocations, …). */
+    options: z.partialRecord(z.enum(OPTION_GROUP_KEYS), z.array(Slug).max(6)).optional(),
+    /** Class cantrips. */
+    cantrips: z.array(Slug).max(8).optional(),
+    /** Class level 1 spells (prepared; for a Wizard, the prepared spells from the spellbook). */
+    spells: z.array(Slug).max(8).optional(),
+    /** Cantrips from a fighting style (Blessed Warrior, Druidic Warrior). */
+    bonusCantrips: z.array(Slug).max(4).optional(),
+    /** Magic Initiate (Acolyte, Guide, Sage backgrounds): two cantrips and one level 1 spell. */
+    initiateCantrips: z.array(Slug).max(4).optional(),
+    initiateSpell: Slug.optional(),
     name: z.string().max(80).optional(),
     look: z.string().max(2000).optional(),
+    personality: z.string().max(2000).optional(),
   })
   .strict();
 export type Answers = z.infer<typeof Answers>;
@@ -57,21 +88,20 @@ export const CharacterDoc = z
   .strict();
 export type CharacterDoc = z.infer<typeof CharacterDoc>;
 
-/** The steps of the flow, in order, and whether each is answered. */
+/**
+ * The steps of the flow, in order. Whether a step applies and is complete depends on the content
+ * (a Barbarian has no class options or spells): see `stepStatuses` in steps.ts.
+ */
 export const STEPS = [
   { key: "archetype", label: "Archetype" },
+  { key: "class", label: "Class" },
+  { key: "species", label: "Species" },
+  { key: "background", label: "Background" },
+  { key: "options", label: "Class choices" },
+  { key: "spells", label: "Spells" },
   { key: "name", label: "Name" },
   { key: "look", label: "Look" },
-] as const satisfies ReadonlyArray<{ key: keyof Answers; label: string }>;
+  { key: "personality", label: "Personality" },
+] as const;
 
 export type StepKey = (typeof STEPS)[number]["key"];
-
-export function isAnswered(answers: Answers, key: StepKey): boolean {
-  const value = answers[key];
-  return typeof value === "string" && value.trim() !== "";
-}
-
-/** The keys of the answered steps, in flow order. */
-export function answeredSteps(answers: Answers): StepKey[] {
-  return STEPS.filter((s) => isAnswered(answers, s.key)).map((s) => s.key);
-}

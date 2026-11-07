@@ -1,0 +1,686 @@
+[
+ {
+  "id": "acolyte",
+  "name": "Acolyte",
+  "abilities": [
+   "int",
+   "wis",
+   "cha"
+  ],
+  "feat": "magic-initiate",
+  "featList": "cleric",
+  "skills": [
+   "insight",
+   "religion"
+  ],
+  "tools": [
+   "calligraphers-supplies"
+  ],
+  "equipmentA": [
+   {
+    "item": "book",
+    "quantity": 1,
+    "displayName": "Book (Prayers)"
+   },
+   {
+    "item": "calligraphers-supplies",
+    "quantity": 1
+   },
+   {
+    "item": "holy-symbol",
+    "quantity": 1
+   },
+   {
+    "item": "parchment",
+    "quantity": 10
+   },
+   {
+    "item": "robe",
+    "quantity": 1
+   },
+   {
+    "valueCp": 800
+   }
+  ]
+ },
+ {
+  "id": "artisan",
+  "name": "Artisan",
+  "abilities": [
+   "str",
+   "dex",
+   "int"
+  ],
+  "feat": "crafter",
+  "skills": [
+   "investigation",
+   "persuasion"
+  ],
+  "tools": [
+   "anyArtisansTool"
+  ],
+  "equipmentA": [
+   {
+    "choice": "toolArtisan",
+    "quantity": 1
+   },
+   {
+    "item": "pouch",
+    "quantity": 2
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 3200
+   }
+  ]
+ },
+ {
+  "id": "charlatan",
+  "name": "Charlatan",
+  "abilities": [
+   "dex",
+   "con",
+   "cha"
+  ],
+  "feat": "skilled",
+  "skills": [
+   "deception",
+   "sleight-of-hand"
+  ],
+  "tools": [
+   "forgery-kit"
+  ],
+  "equipmentA": [
+   {
+    "item": "forgery-kit",
+    "quantity": 1
+   },
+   {
+    "item": "costume",
+    "quantity": 1
+   },
+   {
+    "item": "fine-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1500
+   }
+  ]
+ },
+ {
+  "id": "criminal",
+  "name": "Criminal",
+  "abilities": [
+   "dex",
+   "con",
+   "int"
+  ],
+  "feat": "alert",
+  "skills": [
+   "sleight-of-hand",
+   "stealth"
+  ],
+  "tools": [
+   "thieves-tools"
+  ],
+  "equipmentA": [
+   {
+    "item": "dagger",
+    "quantity": 2
+   },
+   {
+    "item": "thieves-tools",
+    "quantity": 1
+   },
+   {
+    "item": "crowbar",
+    "quantity": 1
+   },
+   {
+    "item": "pouch",
+    "quantity": 2
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1600
+   }
+  ]
+ },
+ {
+  "id": "entertainer",
+  "name": "Entertainer",
+  "abilities": [
+   "str",
+   "dex",
+   "cha"
+  ],
+  "feat": "musician",
+  "skills": [
+   "acrobatics",
+   "performance"
+  ],
+  "tools": [
+   "anyMusicalInstrument"
+  ],
+  "equipmentA": [
+   {
+    "choice": "instrumentMusical",
+    "quantity": 1
+   },
+   {
+    "item": "costume",
+    "quantity": 2
+   },
+   {
+    "item": "mirror",
+    "quantity": 1
+   },
+   {
+    "item": "perfume",
+    "quantity": 1
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1100
+   }
+  ]
+ },
+ {
+  "id": "farmer",
+  "name": "Farmer",
+  "abilities": [
+   "str",
+   "con",
+   "wis"
+  ],
+  "feat": "tough",
+  "skills": [
+   "animal-handling",
+   "nature"
+  ],
+  "tools": [
+   "carpenters-tools"
+  ],
+  "equipmentA": [
+   {
+    "item": "sickle",
+    "quantity": 1
+   },
+   {
+    "item": "carpenters-tools",
+    "quantity": 1
+   },
+   {
+    "item": "healers-kit",
+    "quantity": 1
+   },
+   {
+    "item": "iron-pot",
+    "quantity": 1
+   },
+   {
+    "item": "shovel",
+    "quantity": 1
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 3000
+   }
+  ]
+ },
+ {
+  "id": "guard",
+  "name": "Guard",
+  "abilities": [
+   "str",
+   "int",
+   "wis"
+  ],
+  "feat": "alert",
+  "skills": [
+   "athletics",
+   "perception"
+  ],
+  "tools": [
+   "anyGamingSet"
+  ],
+  "equipmentA": [
+   {
+    "item": "spear",
+    "quantity": 1
+   },
+   {
+    "item": "light-crossbow",
+    "quantity": 1
+   },
+   {
+    "item": "bolts-20",
+    "quantity": 1
+   },
+   {
+    "choice": "setGaming",
+    "quantity": 1
+   },
+   {
+    "item": "hooded-lantern",
+    "quantity": 1
+   },
+   {
+    "item": "manacles",
+    "quantity": 1
+   },
+   {
+    "item": "quiver",
+    "quantity": 1
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1200
+   }
+  ]
+ },
+ {
+  "id": "guide",
+  "name": "Guide",
+  "abilities": [
+   "dex",
+   "con",
+   "wis"
+  ],
+  "feat": "magic-initiate",
+  "featList": "druid",
+  "skills": [
+   "stealth",
+   "survival"
+  ],
+  "tools": [
+   "cartographers-tools"
+  ],
+  "equipmentA": [
+   {
+    "item": "shortbow",
+    "quantity": 1
+   },
+   {
+    "item": "arrows-20",
+    "quantity": 1
+   },
+   {
+    "item": "cartographers-tools",
+    "quantity": 1
+   },
+   {
+    "item": "bedroll",
+    "quantity": 1
+   },
+   {
+    "item": "quiver",
+    "quantity": 1
+   },
+   {
+    "item": "tent",
+    "quantity": 1
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 300
+   }
+  ]
+ },
+ {
+  "id": "hermit",
+  "name": "Hermit",
+  "abilities": [
+   "con",
+   "wis",
+   "cha"
+  ],
+  "feat": "healer",
+  "skills": [
+   "medicine",
+   "religion"
+  ],
+  "tools": [
+   "herbalism-kit"
+  ],
+  "equipmentA": [
+   {
+    "item": "quarterstaff",
+    "quantity": 1
+   },
+   {
+    "item": "herbalism-kit",
+    "quantity": 1
+   },
+   {
+    "item": "bedroll",
+    "quantity": 1
+   },
+   {
+    "item": "book",
+    "quantity": 1
+   },
+   {
+    "item": "lamp",
+    "quantity": 1
+   },
+   {
+    "item": "oil",
+    "quantity": 3
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1600
+   }
+  ]
+ },
+ {
+  "id": "merchant",
+  "name": "Merchant",
+  "abilities": [
+   "con",
+   "int",
+   "cha"
+  ],
+  "feat": "lucky",
+  "skills": [
+   "animal-handling",
+   "persuasion"
+  ],
+  "tools": [
+   "navigators-tools"
+  ],
+  "equipmentA": [
+   {
+    "item": "navigators-tools",
+    "quantity": 1
+   },
+   {
+    "item": "pouch",
+    "quantity": 2
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 2200
+   }
+  ]
+ },
+ {
+  "id": "noble",
+  "name": "Noble",
+  "abilities": [
+   "str",
+   "int",
+   "cha"
+  ],
+  "feat": "skilled",
+  "skills": [
+   "history",
+   "persuasion"
+  ],
+  "tools": [
+   "anyGamingSet"
+  ],
+  "equipmentA": [
+   {
+    "choice": "setGaming",
+    "quantity": 1
+   },
+   {
+    "item": "fine-clothes",
+    "quantity": 1
+   },
+   {
+    "item": "perfume",
+    "quantity": 1
+   },
+   {
+    "valueCp": 2900
+   }
+  ]
+ },
+ {
+  "id": "sage",
+  "name": "Sage",
+  "abilities": [
+   "con",
+   "int",
+   "wis"
+  ],
+  "feat": "magic-initiate",
+  "featList": "wizard",
+  "skills": [
+   "arcana",
+   "history"
+  ],
+  "tools": [
+   "calligraphers-supplies"
+  ],
+  "equipmentA": [
+   {
+    "item": "quarterstaff",
+    "quantity": 1
+   },
+   {
+    "item": "calligraphers-supplies",
+    "quantity": 1
+   },
+   {
+    "item": "book",
+    "quantity": 1
+   },
+   {
+    "item": "parchment",
+    "quantity": 8
+   },
+   {
+    "item": "robe",
+    "quantity": 1
+   },
+   {
+    "valueCp": 800
+   }
+  ]
+ },
+ {
+  "id": "sailor",
+  "name": "Sailor",
+  "abilities": [
+   "str",
+   "dex",
+   "wis"
+  ],
+  "feat": "tavern-brawler",
+  "skills": [
+   "acrobatics",
+   "perception"
+  ],
+  "tools": [
+   "navigators-tools"
+  ],
+  "equipmentA": [
+   {
+    "item": "dagger",
+    "quantity": 1
+   },
+   {
+    "item": "navigators-tools",
+    "quantity": 1
+   },
+   {
+    "item": "rope",
+    "quantity": 1
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 2000
+   }
+  ]
+ },
+ {
+  "id": "scribe",
+  "name": "Scribe",
+  "abilities": [
+   "dex",
+   "int",
+   "wis"
+  ],
+  "feat": "skilled",
+  "skills": [
+   "investigation",
+   "perception"
+  ],
+  "tools": [
+   "calligraphers-supplies"
+  ],
+  "equipmentA": [
+   {
+    "item": "calligraphers-supplies",
+    "quantity": 1
+   },
+   {
+    "item": "fine-clothes",
+    "quantity": 1
+   },
+   {
+    "item": "lamp",
+    "quantity": 1
+   },
+   {
+    "item": "oil",
+    "quantity": 1
+   },
+   {
+    "item": "parchment",
+    "quantity": 1
+   },
+   {
+    "valueCp": 2300
+   }
+  ]
+ },
+ {
+  "id": "soldier",
+  "name": "Soldier",
+  "abilities": [
+   "str",
+   "dex",
+   "con"
+  ],
+  "feat": "savage-attacker",
+  "skills": [
+   "athletics",
+   "intimidation"
+  ],
+  "tools": [
+   "anyGamingSet"
+  ],
+  "equipmentA": [
+   {
+    "item": "spear",
+    "quantity": 1
+   },
+   {
+    "item": "shortbow",
+    "quantity": 1
+   },
+   {
+    "item": "arrows-20",
+    "quantity": 1
+   },
+   {
+    "choice": "setGaming",
+    "quantity": 1
+   },
+   {
+    "item": "healers-kit",
+    "quantity": 1
+   },
+   {
+    "item": "quiver",
+    "quantity": 1
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1400
+   }
+  ]
+ },
+ {
+  "id": "wayfarer",
+  "name": "Wayfarer",
+  "abilities": [
+   "dex",
+   "wis",
+   "cha"
+  ],
+  "feat": "lucky",
+  "skills": [
+   "insight",
+   "stealth"
+  ],
+  "tools": [
+   "thieves-tools"
+  ],
+  "equipmentA": [
+   {
+    "item": "dagger",
+    "quantity": 2
+   },
+   {
+    "item": "thieves-tools",
+    "quantity": 1
+   },
+   {
+    "choice": "setGaming",
+    "quantity": 1
+   },
+   {
+    "item": "bedroll",
+    "quantity": 1
+   },
+   {
+    "item": "pouch",
+    "quantity": 2
+   },
+   {
+    "item": "travelers-clothes",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1600
+   }
+  ]
+ }
+]

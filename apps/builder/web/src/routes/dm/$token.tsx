@@ -42,7 +42,7 @@ function PlayerCard({ player }: { player: DmPlayerRow }) {
       <p className="dm-meta">
         <a href={player.link}>{player.link}</a>
         <br />
-        Last saved {formatTime(player.updatedAt)} · {player.answered.length} of {STEPS.length} steps
+        Last saved {formatTime(player.updatedAt)} · {player.answered.length} of {player.total} steps
         answered
         {player.answered.length > 0 &&
           ` (${STEPS.filter((s) => player.answered.includes(s.key))

@@ -7,11 +7,13 @@
     "dev": "vite dev --configLoader runner",
     "build": "vite build --configLoader runner && tsdown --config-loader tsx",
     "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "typecheck": "node --import tsx scripts/build-content.ts && tsc --noEmit",
+    "test": "vitest run",
+    "generate:content": "node --import tsx scripts/build-content.ts"
   },
   "dependencies": {
     "@astra/config": "workspace:*",
+    "@astra/content-build": "workspace:*",
     "@astra/gothic": "workspace:*",
     "@astra/observe": "workspace:*",
     "@astra/service-kit": "workspace:*",
