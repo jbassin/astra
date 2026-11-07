@@ -154,5 +154,13 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   transcripts by date, not episode title; `build-content.ts` sits at the 500-line ratchet limit —
   agent.
 
+- Character builder: walk `/test`, then send the five player names for `just builder-invite`
+  — Josh.
+- Character builder: the Hellish Rebuke card shows its save but not its 2d10 Fire damage (no
+  damage field in the content); the sheet sorts features into action, bonus action and reaction
+  by their summary's wording, so a summary worded differently lands under "always on" — agent.
+- `libs/ts/site-kit/src/scaffold.test.ts` hard-codes the last namespace in `models.py`, so it
+  breaks on every `just new-frontend`; make it order-independent — agent.
+
 ## Docs
 

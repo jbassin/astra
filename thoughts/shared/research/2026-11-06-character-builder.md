@@ -48,7 +48,7 @@ committed (Josh's decision). Characters are level 2.
 - [x] `Answers` extended (optional, bounded; slice 1 documents still parse); `pruneAnswers`,
   `stepStatuses`/`nextStep`; DM progress counts only the steps that apply.
 - [x] `buildCharacter` in `src/domain/engine.ts`, with one hand-checked character per class.
-- [ ] Josh reviews the shortlists (in the slice 2a pull request).
+- [x] Josh reviewed the shortlists (2026-11-07); the ranger now puts Dexterity first (#209).
 
 **Slice 2b: the player flow and the sheet.** Builds on `content.ts`, `steps.ts` and
 `engine.ts` (the app README lists the API).
@@ -69,6 +69,6 @@ committed (Josh's decision). Characters are level 2.
   SSR smoke for `/test`.
 
 **Go live.**
-- [ ] Merge, `just deploy builder`, `just caddy-reload`.
-- [ ] Add the SOPS secret and redeploy; open the DM link.
+- [x] Merged, `just deploy builder`, `just caddy-reload` (2026-11-07).
+- [x] SOPS secret added (#210); the DM link answers 200 and a wrong token 404.
 - [ ] Invite the five players with `just builder-invite` and send each their link.
