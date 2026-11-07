@@ -107,6 +107,16 @@ export interface Summarized {
   rulesText: string[];
 }
 
+/** The longest a pick card's gist may be; the build fails on a longer one. */
+export const GIST_MAX = 90;
+
+/** Something a player picks from a list of cards. */
+interface Gisted {
+  /** One short, plain line for the pick card (at most GIST_MAX characters); the full summary
+   * sits behind the card's disclosure. */
+  gist: string;
+}
+
 export interface FeatureContent extends Summarized, Activated {
   level: number;
   uses?: Uses;
@@ -125,7 +135,7 @@ export type OptionKind =
   | "invocation"
   | "metamagic";
 
-export interface OptionContent extends Summarized, Activated {
+export interface OptionContent extends Summarized, Activated, Gisted {
   kind: OptionKind;
   uses?: Uses;
   /** Metamagic cost in Sorcery Points. */
@@ -233,7 +243,7 @@ export interface ArchetypeContent {
   classes: ClassId[];
 }
 
-export interface SpeciesOptionContent extends Summarized, Activated {
+export interface SpeciesOptionContent extends Summarized, Activated, Gisted {
   /** The species trait this option replaces on the sheet. */
   replacesTrait: string;
   speed?: number;
@@ -318,7 +328,7 @@ export const DAMAGE_ON = [
 ] as const;
 export type DamageOn = (typeof DAMAGE_ON)[number];
 
-export interface SpellContent extends Summarized, Activated {
+export interface SpellContent extends Summarized, Activated, Gisted {
   level: number;
   school: string;
   time: string;

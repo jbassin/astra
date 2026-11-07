@@ -66,44 +66,54 @@ export const SPECIES: CuratedSpecies[] = [
       choices: {
         black: {
           activation: "passive",
+          gist: "Breathe acid, and resist Acid damage.",
           summary: "Black dragon: your Breath Weapon deals Acid damage, and you resist Acid.",
         },
         blue: {
           activation: "passive",
+          gist: "Breathe lightning, and resist Lightning damage.",
           summary:
             "Blue dragon: your Breath Weapon deals Lightning damage, and you resist Lightning.",
         },
         brass: {
           activation: "passive",
+          gist: "Breathe fire, and resist Fire damage.",
           summary: "Brass dragon: your Breath Weapon deals Fire damage, and you resist Fire.",
         },
         bronze: {
           activation: "passive",
+          gist: "Breathe lightning, and resist Lightning damage.",
           summary:
             "Bronze dragon: your Breath Weapon deals Lightning damage, and you resist Lightning.",
         },
         copper: {
           activation: "passive",
+          gist: "Breathe acid, and resist Acid damage.",
           summary: "Copper dragon: your Breath Weapon deals Acid damage, and you resist Acid.",
         },
         gold: {
           activation: "passive",
+          gist: "Breathe fire, and resist Fire damage.",
           summary: "Gold dragon: your Breath Weapon deals Fire damage, and you resist Fire.",
         },
         green: {
           activation: "passive",
+          gist: "Breathe poison, and resist Poison damage.",
           summary: "Green dragon: your Breath Weapon deals Poison damage, and you resist Poison.",
         },
         red: {
           activation: "passive",
+          gist: "Breathe fire, and resist Fire damage.",
           summary: "Red dragon: your Breath Weapon deals Fire damage, and you resist Fire.",
         },
         silver: {
           activation: "passive",
+          gist: "Breathe frost, and resist Cold damage.",
           summary: "Silver dragon: your Breath Weapon deals Cold damage, and you resist Cold.",
         },
         white: {
           activation: "passive",
+          gist: "Breathe frost, and resist Cold damage.",
           summary: "White dragon: your Breath Weapon deals Cold damage, and you resist Cold.",
         },
       },
@@ -174,16 +184,19 @@ export const SPECIES: CuratedSpecies[] = [
       choices: {
         drow: {
           activation: "passive",
+          gist: "See in the dark to 120 feet, and conjure Dancing Lights.",
           summary:
             "Drow: you see in the dark up to 120 feet instead of 60, and you know the Dancing Lights cantrip.",
         },
         "high-elf": {
           activation: "passive",
+          gist: "Know Prestidigitation, or swap it for another Wizard cantrip.",
           summary:
             "High elf: you know the Prestidigitation cantrip, and after each Long Rest you can swap it for another Wizard cantrip.",
         },
         "wood-elf": {
           activation: "passive",
+          gist: "Run faster (35 feet), and know the Druidcraft cantrip.",
           summary:
             "Wood elf: your speed is 35 feet instead of 30, and you know the Druidcraft cantrip.",
         },
@@ -216,12 +229,14 @@ export const SPECIES: CuratedSpecies[] = [
       choices: {
         "forest-gnome": {
           activation: "passive",
+          gist: "Know Minor Illusion, and talk with animals for free.",
           summary:
             "Forest gnome: you know the Minor Illusion cantrip, and you can cast Speak with Animals without a spell slot.",
           uses: { count: "pb", per: "long" },
         },
         "rock-gnome": {
           activation: "passive",
+          gist: "Know Mending and Prestidigitation, and build tiny clockwork toys.",
           summary:
             "Rock gnome: you know the Mending and Prestidigitation cantrips. With 10 minutes of tinkering you can build a tiny clockwork toy that does one Prestidigitation trick (up to three at a time, each lasts 8 hours).",
         },
@@ -251,36 +266,42 @@ export const SPECIES: CuratedSpecies[] = [
       choices: {
         "cloud-giant": {
           activation: "bonus",
+          gist: "Teleport up to 30 feet to a spot you can see.",
           summary:
             "Cloud's Jaunt: as a bonus action, teleport up to 30 feet to a spot you can see.",
           uses: { count: "pb", per: "long" },
         },
         "fire-giant": {
           activation: "passive",
+          gist: "Add 1d10 Fire damage to a hit.",
           summary:
             "Fire's Burn: when you hit with an attack roll and deal damage, add 1d10 Fire damage.",
           uses: { count: "pb", per: "long" },
         },
         "frost-giant": {
           activation: "passive",
+          gist: "Add 1d6 Cold damage to a hit and slow the target.",
           summary:
             "Frost's Chill: when you hit with an attack roll and deal damage, add 1d6 Cold damage and cut the target's speed by 10 feet until the start of your next turn.",
           uses: { count: "pb", per: "long" },
         },
         "hill-giant": {
           activation: "passive",
+          gist: "Knock a Large or smaller foe Prone when you hit it.",
           summary:
             "Hill's Tumble: when you hit a Large or smaller creature with an attack roll and deal damage, you can knock it Prone.",
           uses: { count: "pb", per: "long" },
         },
         "stone-giant": {
           activation: "reaction",
+          gist: "Shrug off a blow: take 1d12 + your Constitution modifier less damage.",
           summary:
             "Stone's Endurance: when you take damage, use your reaction to roll 1d12, add your Constitution modifier, and take that much less damage.",
           uses: { count: "pb", per: "long" },
         },
         "storm-giant": {
           activation: "reaction",
+          gist: "Strike back with 1d8 Thunder damage when a foe hurts you.",
           summary:
             "Storm's Thunder: when a creature within 60 feet damages you, use your reaction to deal it 1d8 Thunder damage.",
           uses: { count: "pb", per: "long" },
@@ -389,16 +410,19 @@ export const SPECIES: CuratedSpecies[] = [
       choices: {
         abyssal: {
           activation: "passive",
+          gist: "Resist Poison damage, and know the Poison Spray cantrip.",
           summary:
             "Abyssal: you take only half Poison damage, and you know the Poison Spray cantrip.",
         },
         chthonic: {
           activation: "passive",
+          gist: "Resist Necrotic damage, and know the Chill Touch cantrip.",
           summary:
             "Chthonic: you take only half Necrotic damage, and you know the Chill Touch cantrip.",
         },
         infernal: {
           activation: "passive",
+          gist: "Resist Fire damage, and know the Fire Bolt cantrip.",
           summary: "Infernal: you take only half Fire damage, and you know the Fire Bolt cantrip.",
         },
       },

@@ -82,6 +82,8 @@ export interface CuratedOption {
   kind: OptionKind;
   /** Where the rules text comes from. */
   from: { feat: string } | { optionalFeature: string } | { classFeature: string };
+  /** One short line for the pick card (see `gist` in contentTypes.ts). */
+  gist: string;
   summary: string;
   activation: Activation;
   uses?: CuratedUses;
@@ -95,6 +97,8 @@ export interface CuratedOption {
 }
 
 export interface CuratedSpeciesOption {
+  /** One short line for the pick card (see `gist` in contentTypes.ts). */
+  gist: string;
   summary: string;
   activation: Activation;
   uses?: CuratedUses;
@@ -109,6 +113,12 @@ export interface CuratedSpecies {
   option?: { prompt: string; choices: Record<string, CuratedSpeciesOption> };
   skillChoice?: string[] | "any";
   languages: string[];
+}
+
+/** A spell's curated words: the pick card's one line and the plain summary. */
+export interface CuratedSpell {
+  gist: string;
+  summary: string;
 }
 
 export interface CuratedBackground {

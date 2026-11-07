@@ -14,7 +14,7 @@ import {
   unavailableSpellIds,
 } from "@/domain/content";
 import type { OptionGroupContent, OptionGroupKey, SpellContent } from "@/domain/contentTypes";
-import { ABILITY_NAMES, spellGist } from "@/domain/sheet";
+import { ABILITY_NAMES } from "@/domain/sheet";
 import type { IconName } from "@/generated/icons";
 import { CLASS_HERALDRY, damageIcon, hueStyle, schoolIcon } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
@@ -71,10 +71,10 @@ function OptionGroup({ group, answers, update }: ScreenProps & { group: OptionGr
             title={o.name}
             hue={classHue(answers)}
             icon={<Icon name={GROUP_ICON[group.key]} className="emblem-icon" />}
-            more={gist(o.summary) === o.summary ? undefined : <p>{o.summary}</p>}
+            more={<p>{o.summary}</p>}
             moreLabel="Read all of it"
           >
-            <span className="choice-blurb">{gist(o.summary)}</span>
+            <span className="choice-blurb">{o.gist}</span>
           </Choice>
         );
       })}
@@ -96,11 +96,6 @@ export function OptionsScreen({ answers, update }: ScreenProps) {
 function picksOf(answers: Answers, field: SpellPickList["field"]): string[] {
   if (field === "initiateSpell") return answers.initiateSpell ? [answers.initiateSpell] : [];
   return answers[field] ?? [];
-}
-
-/** The first sentence, for a compact card; the rest sits behind "Read all of it". */
-function gist(summary: string): string {
-  return spellGist(summary);
 }
 
 /** The chips under a spell's name: what it rolls and how it reaches its target. (The list's
@@ -192,7 +187,7 @@ function SpellList({ list, answers, update }: ScreenProps & { list: SpellPickLis
             }
           >
             <SpellChips s={s} />
-            <span className="choice-blurb">{gist(s.summary)}</span>
+            <span className="choice-blurb">{s.gist}</span>
             {taken && (
               <span className="choice-reason">
                 <Icon name="ui-lock" />

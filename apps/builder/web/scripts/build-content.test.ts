@@ -3,7 +3,8 @@
 
 import { describe, expect, it } from "vitest";
 
-import { CURATION, type Curation, joinContent, loadImported, unshownRolls } from "./build-content";
+import { CURATION, type Curation, joinContent, loadImported } from "./build-content";
+import { unshownRolls } from "./spell-rolls";
 
 const data = loadImported();
 
@@ -107,6 +108,28 @@ describe("joinContent", () => {
       /option protection: no activation/,
     );
     expect(withCuration((c) => unset(c.feats.lucky ?? {}))).toThrow(/feat lucky: no activation/);
+  });
+
+  it("fails on a missing or over-long gist on anything a player picks from cards", () => {
+    const long = "x".repeat(91);
+    expect(
+      withCuration((c) => {
+        const o = c.options.protection;
+        if (o) o.gist = "";
+      }),
+    ).toThrow(/option protection: no gist/);
+    expect(
+      withCuration((c) => {
+        const s = c.cantrips["fire-bolt"];
+        if (s) s.gist = long;
+      }),
+    ).toThrow(/spell fire-bolt: gist has 91 characters \(max 90\)/);
+    expect(
+      withCuration((c) => {
+        const red = c.species.find((s) => s.id === "dragonborn")?.option?.choices.red;
+        if (red) Reflect.deleteProperty(red, "gist");
+      }),
+    ).toThrow(/species dragonborn red: no gist/);
   });
 
   it("takes each spell's activation from its 5etools casting time", () => {
