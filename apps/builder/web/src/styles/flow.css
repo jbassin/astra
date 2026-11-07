@@ -102,10 +102,11 @@
   }
 }
 .screen-title {
+  /* Next and Back scroll the heading to just under the sticky quest path. */
+  scroll-margin-top: calc(var(--sticky-h, 4.5rem) + 0.75rem);
   font-size: clamp(1.75rem, 6.5vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.005em;
-  scroll-margin-top: 1rem;
 }
 /* On the sheet the hero banner is the real title; the heading stays for screen readers. */
 .flow-screen[data-view="sheet"] .screen-title {
@@ -263,6 +264,51 @@ textarea.field {
   }
   .flow-screen {
     margin-top: 2rem;
+  }
+}
+
+/* After the first step a phone folds the page header, the greeting and the test banner's
+ * sentence away, so the step's heading starts near the top of the screen. */
+.test-banner-short {
+  display: none;
+}
+@media (max-width: 47.99rem) {
+  body:has(.flow[data-compact]) .site-head {
+    display: none;
+  }
+  .flow[data-compact] .flow-head {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .flow[data-compact] .flow-top {
+    gap: 0.4rem;
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+  .flow[data-compact] .test-banner {
+    gap: 0.5rem;
+    padding: 0.1rem 0.25rem 0.1rem 0.7rem;
+    border-width: 1px;
+  }
+  .flow[data-compact] .test-banner-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .flow[data-compact] .test-banner-full {
+    display: none;
+  }
+  .flow[data-compact] .test-banner-short {
+    display: block;
+    font-weight: 700;
+  }
+  .flow[data-compact] .test-banner .button {
+    border-color: transparent;
+  }
+  .flow[data-compact] .flow-screen {
+    margin-top: 0.9rem;
   }
 }
 

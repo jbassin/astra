@@ -157,6 +157,17 @@ describe("what the player sees on the pick screens", () => {
     expect(radios.some((el) => el instanceof HTMLInputElement && el.checked)).toBe(false);
   });
 
+  it("folds the greeting away once the player moves on, and back on the first screen", () => {
+    renderFlow();
+    const main = screen.getByRole("main");
+    expect(main.hasAttribute("data-compact")).toBe(false);
+    choose("radio", /^Warrior/);
+    next();
+    expect(main.hasAttribute("data-compact")).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    expect(main.hasAttribute("data-compact")).toBe(false);
+  });
+
   it("shows a spell's full rules without picking it", () => {
     const { persist } = renderFlow({ archetype: "mage", classId: "wizard" });
     fireEvent.click(screen.getByRole("button", { name: /^Spells/ }));

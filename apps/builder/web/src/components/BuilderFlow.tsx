@@ -173,13 +173,19 @@ export function BuilderFlow({
   const [notice, setNotice] = useState<string | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
+  // Once the player moves on from the screen they opened, a phone folds the greeting and the
+  // test banner away (flow.css), so each step's heading starts near the top of the screen.
+  const [compact, setCompact] = useState(false);
   const statuses = viewStatuses(answers);
 
   useEffect(() => {
-    // Bring the new screen to the top and its heading into focus, but not on first load.
+    // Land on the new screen's heading, just under the sticky quest path (its scroll margin,
+    // flow.css), and focus it; not on first load.
     if (!moved.current) return;
-    document.documentElement.scrollTop = 0;
-    heading.current?.focus({ preventScroll: true });
+    const h = heading.current;
+    if (!h) return;
+    if (typeof h.scrollIntoView === "function") h.scrollIntoView({ block: "start" });
+    h.focus({ preventScroll: true });
   }, [view]);
 
   function update(patch: Partial<Answers>) {
@@ -194,6 +200,7 @@ export function BuilderFlow({
     moved.current = true;
     const show = () => {
       setNotice(null);
+      setCompact(next !== "archetype");
       setView(next);
     };
     // A view transition slides the old screen out and the new one in (flow.css); without
@@ -209,15 +216,21 @@ export function BuilderFlow({
   const screen = view === "sheet" ? undefined : SCREENS[view];
   const cls = classOf(answers);
   return (
-    <main className="flow hued" style={hueStyle(cls ? CLASS_HERALDRY[cls.id] : undefined)}>
+    <main
+      className="flow hued"
+      style={hueStyle(cls ? CLASS_HERALDRY[cls.id] : undefined)}
+      data-compact={compact ? "" : undefined}
+      data-view={view}
+    >
       <div className="flow-top">
         <header className="flow-head">
           <h1>{title}</h1>
           <div className="flow-intro">{intro}</div>
         </header>
         {banner}
-        <Stepper statuses={statuses} current={view} onJump={go} />
       </div>
+      {/* A child of <main> itself, so it can stick for the whole page (path.css). */}
+      <Stepper statuses={statuses} current={view} onJump={go} />
       <section className="flow-screen" aria-labelledby="screen-title" data-view={view}>
         <div className="screen-enter" key={view}>
           <h2 id="screen-title" ref={heading} tabIndex={-1} className="screen-title">

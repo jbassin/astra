@@ -26,9 +26,11 @@ export function TestBuilder() {
       banner={
         <div className="test-banner" role="note">
           <Icon name="ui-flask-conical" className="test-banner-icon" />
-          <p>
+          <p className="test-banner-full">
             <strong>Test mode — nothing is saved.</strong> Reloading the page loses this character.
           </p>
+          {/* After the first step a phone shows this one line instead (flow.css). */}
+          <p className="test-banner-short">Practice mode, nothing saved</p>
           <button type="button" className="button quiet small" onClick={() => setRun((n) => n + 1)}>
             <Icon name="ui-rotate-ccw" />
             Start over
