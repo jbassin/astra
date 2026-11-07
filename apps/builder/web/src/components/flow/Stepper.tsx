@@ -1,9 +1,10 @@
 // The quest path: every screen that applies, as a waypoint marked done, to do or blocked, each
 // a button that jumps there. The road between two waypoints fills in gilt once the first is
-// done. On a narrow phone with every screen showing it scrolls sideways, keeping the current
-// waypoint in view; labels show under each waypoint from tablet width up.
+// done. On a laptop or tablet the waypoints run across the page with their labels; on a phone
+// a compact bar shows where you are ("3 / 8", one segment per screen) and opens the same
+// waypoints as a list, so the path never scrolls sideways.
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 import type { ViewKey, ViewStatus } from "@/domain/flow";
 import type { IconName } from "@/generated/icons";
@@ -35,21 +36,52 @@ export function Stepper({
   current: ViewKey;
   onJump: (view: ViewKey) => void;
 }) {
+  const [open, setOpen] = useState(false);
   const shown = statuses.filter((s) => s.applicable);
-  const list = useRef<HTMLOListElement>(null);
+  const at = Math.max(
+    0,
+    shown.findIndex((s) => s.key === current),
+  );
+  const here = shown[at];
   useEffect(() => {
-    // When the path scrolls: keep the current step in view, sideways only.
-    const ol = list.current;
-    const at = ol?.querySelector<HTMLElement>('[aria-current="step"]');
-    if (!ol || !at || ol.scrollWidth <= ol.clientWidth) return;
-    const li = at.parentElement ?? at;
-    ol.scrollLeft = li.offsetLeft - (ol.clientWidth - li.offsetWidth) / 2;
-  }, [current]);
-  const at = shown.findIndex((s) => s.key === current);
-  const done = shown.filter((s) => s.state === "done").length;
+    // Escape closes the opened list, wherever the focus is.
+    if (!open) return;
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", close);
+    return () => document.removeEventListener("keydown", close);
+  }, [open]);
   return (
-    <nav className="stepper" aria-label="Steps">
-      <ol ref={list}>
+    <nav className="stepper" aria-label="Steps" data-open={open ? "" : undefined}>
+      <button
+        type="button"
+        className="stepper-toggle"
+        aria-expanded={open}
+        aria-controls="steps-list"
+        aria-label={`All steps: step ${at + 1} of ${shown.length}, ${here?.label ?? ""}`}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span className="stepper-now">
+          {here && <Icon name={VIEW_ICON[here.key]} className="stepper-now-icon" />}
+          <span className="stepper-now-label">{here?.label}</span>
+          <span className="stepper-count">
+            {at + 1} / {shown.length}
+          </span>
+          <Icon name="ui-chevron-down" className="stepper-chevron" />
+        </span>
+        <span className="stepper-segments" aria-hidden="true">
+          {shown.map((s) => (
+            <span
+              key={s.key}
+              className="segment"
+              data-state={s.state}
+              data-current={s.key === current ? "" : undefined}
+            />
+          ))}
+        </span>
+      </button>
+      <ol id="steps-list">
         {shown.map((s) => (
           <li key={s.key} data-state={s.state}>
             <button
@@ -58,7 +90,10 @@ export function Stepper({
               data-state={s.state}
               aria-current={s.key === current ? "step" : undefined}
               aria-label={`${s.label} (${STATE_TEXT[s.state]})`}
-              onClick={() => onJump(s.key)}
+              onClick={() => {
+                setOpen(false);
+                onJump(s.key);
+              }}
             >
               <span className="step-mark" aria-hidden="true">
                 <Icon name={VIEW_ICON[s.key]} className="step-icon" />
@@ -71,14 +106,13 @@ export function Stepper({
               <span className="step-label" aria-hidden="true">
                 {s.label}
               </span>
+              <span className="step-state" aria-hidden="true">
+                {STATE_TEXT[s.state]}
+              </span>
             </button>
           </li>
         ))}
       </ol>
-      <p className="stepper-where">
-        Step {at + 1} of {shown.length}
-        <span className="stepper-done">{done} done</span>
-      </p>
     </nav>
   );
 }

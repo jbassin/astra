@@ -6,6 +6,7 @@
 // in a bar pinned to the bottom of the screen, within reach of a thumb.
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 
 import type { Answers } from "@/domain/character";
 import { classOf } from "@/domain/content";
@@ -191,8 +192,18 @@ export function BuilderFlow({
 
   function go(next: ViewKey) {
     moved.current = true;
-    setNotice(null);
-    setView(next);
+    const show = () => {
+      setNotice(null);
+      setView(next);
+    };
+    // A view transition slides the old screen out and the new one in (flow.css); without
+    // one, or when the player asks for less motion, the CSS entrance plays instead.
+    const calm = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    if (typeof document.startViewTransition === "function" && !calm) {
+      document.startViewTransition(() => flushSync(show));
+    } else {
+      show();
+    }
   }
 
   const screen = view === "sheet" ? undefined : SCREENS[view];

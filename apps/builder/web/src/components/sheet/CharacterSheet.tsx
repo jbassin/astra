@@ -3,12 +3,15 @@
 // the browser's print gives a clean copy with cut-out cards (print.css). While anything is
 // still to choose it lists that instead of showing numbers that would be wrong.
 
+import { useId } from "react";
+
 import type { Character } from "@/domain/engine";
 import { backgroundIcon, classTincture, hueStyle, speciesIcon } from "@/ui/heraldry";
 import { Crest, Icon } from "@/ui/Icon";
 
 import { Cards } from "./Cards";
 import { Details } from "./Details";
+import { type JumpTarget, SheetJump } from "./SheetJump";
 import { SpellSection } from "./SpellSection";
 import { OnYourTurn, Vitals } from "./TurnSection";
 
@@ -87,6 +90,21 @@ function StillToChoose({ missing, onFinish }: { missing: string[]; onFinish?: ()
   );
 }
 
+/** The jump bar's links; Spells only when the character casts any. */
+function jumpTargets(c: Character, prefix: string): JumpTarget[] {
+  const casts = c.spellcasting.some((b) => b.cantrips.length + b.spells.length > 0);
+  const spells: JumpTarget[] = casts
+    ? [{ id: `${prefix}-spells`, label: "Spells", icon: "spell-book" }]
+    : [];
+  return [
+    { id: `${prefix}-turn`, label: "Turn", icon: "sword-brandish" },
+    ...spells,
+    { id: `${prefix}-abilities`, label: "Abilities", icon: "biceps" },
+    { id: `${prefix}-gear`, label: "Gear", icon: "backpack" },
+    { id: `${prefix}-cards`, label: "Cards", icon: "scroll-unfurled" },
+  ];
+}
+
 export function CharacterSheet({
   character: c,
   onFinish,
@@ -96,6 +114,8 @@ export function CharacterSheet({
   onFinish?: () => void;
 }) {
   const hue = hueStyle(classTincture(c.class?.id));
+  // The DM page shows several sheets at once, so each one's anchors carry its own prefix.
+  const prefix = `sheet${useId().replaceAll(/[^\w-]/g, "")}`;
   if (c.missing.length > 0) {
     return (
       <article className="sheet hued" style={hue}>
@@ -116,11 +136,12 @@ export function CharacterSheet({
           <p>The cards at the end print ready to cut out.</p>
         </div>
       )}
+      <SheetJump targets={jumpTargets(c, prefix)} />
       <Vitals c={c} />
-      <OnYourTurn c={c} />
-      <SpellSection c={c} />
-      <Details c={c} />
-      <Cards c={c} />
+      <OnYourTurn c={c} id={`${prefix}-turn`} />
+      <SpellSection c={c} id={`${prefix}-spells`} />
+      <Details c={c} ids={{ abilities: `${prefix}-abilities`, gear: `${prefix}-gear` }} />
+      <Cards c={c} id={`${prefix}-cards`} />
     </article>
   );
 }

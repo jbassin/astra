@@ -67,8 +67,17 @@ the sheet banner and its cards. Phone first: most players use a phone.
   (`src/ui/Icon.tsx`); an unknown name fails the type check.
 - **Hues:** an element with the `hued` class and `hueStyle(...)` gets `--hue`, `--hue-ink`,
   `--hue-wash` and `--hue-line` (`src/styles/tokens.css`), in OKLCH, tuned per theme.
+- **Phone first:** on a phone the quest path is a compact bar ("3 / 8", one segment per
+  screen) that opens the steps as a list; from 48rem the waypoints run across the page. Pick
+  cards show a one-line gist (clamped to two lines) with the full rules behind "More", and each
+  list's name and "Pick N" count stick to the top while it scrolls. The sheet gets a sticky jump
+  bar (Turn, Spells, Abilities, Gear, Cards) and folds "Always on" and the cards until asked;
+  a laptop and paper always show everything. The bottom bar is fixed, except at the end of the
+  sheet on a laptop.
+- **Step changes** use the View Transitions API when the browser has it (`go` in
+  `BuilderFlow.tsx`), else a CSS entrance.
 - **Styles:** `src/styles/globals.css` imports, in order, `tokens.css`, `base.css` (the shell),
-  `pages.css` (home and DM), `flow.css`, `choices.css`, `sheet.css`, `sheet-details.css`,
+  `pages.css` (home and DM), `flow.css`, `path.css` (the quest path), `choices.css`, `sheet.css`, `sheet-details.css`,
   `cards.css` and `print.css`; a later file wins at equal weight. Keep each under 500 lines
   (the ratchet counts long files). Motion is short and answers the player (screen
   change, pick, save); `prefers-reduced-motion` turns it off.
@@ -210,8 +219,12 @@ takes every data-root dir by default).
 - **print.css overrides heavier screen rules,** so its rules start with `html` (and the hidden
   parts use `!important`). Its token block repeats the dark blocks' selectors so paper stays
   light.
-- **The quest path scrolls sideways when it can't fit** (eight waypoints at 360px). Each
-  waypoint stays 44px wide; `Stepper` keeps the current one in view.
+- **A card's "More" disclosure sits outside its `<label>`,** so opening the full rules never
+  picks the card. `<details>` has the ARIA role `group`, so tests that want the pick lists
+  filter `getAllByRole("group")` to fieldsets.
+- **Phone-only folds start folded on the server too.** `Fold` and `SheetJump` render the same
+  first frame everywhere (folded, nothing marked); CSS shows the content on a laptop and on
+  paper, so there is no hydration mismatch and nothing to measure.
 - **Playwright screenshots add `caret-color` to inputs,** which shows up as a hydration
   mismatch warning in the console. It isn't the app.
 - The cross-app frontend traps are in `libs/ts/site-kit/README.md`.

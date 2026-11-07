@@ -104,11 +104,11 @@ function Block({ b }: { b: SpellcastingBlock }) {
   );
 }
 
-export function SpellSection({ c }: { c: Character }) {
+export function SpellSection({ c, id }: { c: Character; id?: string }) {
   const blocks = c.spellcasting.filter((b) => b.cantrips.length + b.spells.length > 0);
   if (blocks.length === 0) return null;
   return (
-    <section className="sheet-section spells">
+    <section className="sheet-section spells" id={id}>
       <h4 className="section-title">Your spells</h4>
       <p className="sheet-note">
         A cantrip costs nothing. A level 1 spell uses a spell slot unless it says otherwise. When a

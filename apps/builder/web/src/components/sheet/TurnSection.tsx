@@ -7,6 +7,8 @@ import type { IconName } from "@/generated/icons";
 import { damageIcon, SLOT_ICON } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
+import { Fold } from "./Fold";
+
 function Medallion({
   icon,
   label,
@@ -155,10 +157,10 @@ function ActionBox({ c, plan }: { c: Character; plan: ReturnType<typeof turnPlan
   );
 }
 
-export function OnYourTurn({ c }: { c: Character }) {
+export function OnYourTurn({ c, id }: { c: Character; id?: string }) {
   const plan = turnPlan(c);
   return (
-    <section className="sheet-section turn">
+    <section className="sheet-section turn" id={id}>
       <h4 className="section-title">On your turn</h4>
       <p className="sheet-note">
         Each turn you can move up to your speed and take one action. Some things let you also take a
@@ -204,9 +206,11 @@ export function OnYourTurn({ c }: { c: Character }) {
               <Icon name={SLOT_ICON.always} className="turn-icon" />
               Always on, or when it says
             </h4>
-            <ul>
-              <Items items={plan.always} />
-            </ul>
+            <Fold show={`Show all ${plan.always.length}`} hide="Hide them">
+              <ul>
+                <Items items={plan.always} />
+              </ul>
+            </Fold>
           </div>
         )}
       </div>
