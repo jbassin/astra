@@ -22,6 +22,9 @@
     },
     "libs/ts/gothic": {
       "entry": ["scripts/*.ts"]
+    },
+    "apps/builder/web": {
+      "entry": ["scripts/*.ts"]
     }
   }
 }

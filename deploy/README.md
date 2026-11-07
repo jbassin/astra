@@ -107,7 +107,7 @@ or linguist-commit's next run (the frontend is stale against `data_sha`), deploy
 
 All runtime data lives under one root, `/ruby/data/astra-state` (`config.kdl` `data.root`), never in
 a code checkout. Each service has a flat dir directly under it (`scribe/`, `linguist/`,
-`mouthpiece/`, `heartwood/`, `codex/`, `audio/`, `postgres/`, `portal-oauth/`,
+`mouthpiece/`, `heartwood/`, `codex/`, `audio/`, `postgres/`, `portal-oauth/`, `builder/`,
 `node-exporter/`, `deploy/`, `locks/`), next to the `astra-data` clone. The full list is in the
 comment on `config.kdl`'s `data` block; `deploy.sh` creates the dirs (`init_artifacts`, also
 `just artifacts-init`). Config resolves every data path against the root, and the compose bind

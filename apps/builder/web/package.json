@@ -1,0 +1,43 @@
+{
+  "name": "@astra/builder",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --configLoader runner",
+    "build": "vite build --configLoader runner && tsdown --config-loader tsx",
+    "start": "node --import ./dist-server/register.mjs dist-server/main.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "@astra/gothic": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "@astra/service-kit": "workspace:*",
+    "@astra/site-kit": "workspace:*",
+    "@fontsource-variable/archivo": "catalog:",
+    "@fontsource-variable/literata": "catalog:",
+    "@opentelemetry/api": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
+    "tailwindcss": "catalog:",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "astra": {
+    "config": "builder"
+  }
+}

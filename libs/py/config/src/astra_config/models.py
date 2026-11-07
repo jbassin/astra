@@ -12,7 +12,7 @@ Each language validates only the namespaces its apps read:
 Ownership (who reads each block, from a grep of the apps): both languages read `data`,
 `telemetry` and `codex`. Only Python reads `llm`, `scribe`, `linguist`, `mouthpiece`,
 `heartwood`, `mouthpiece-producer` and `ops`. Only TS reads `weal`, `orator`, `strider`,
-`akasha-frontend`, `mouthpiece-frontend`, `harrow`, `portal` and `portal-headless`.
+`akasha-frontend`, `mouthpiece-frontend`, `harrow`, `portal`, `portal-headless` and `builder`.
 `TS_NAMESPACES` below lists the TS-read ones; a TS-only namespace lives here in `WholeConfig`.
 
 Every field has a reader outside the config libraries and tests: the CI test
@@ -383,6 +383,19 @@ class Config(_Base):
         return self
 
 
+class BuilderConfig(_Base):
+    # The character builder: an SSR frontend on the site-kit preset. service_name and port
+    # are the single source for server.ts and vite's dev port; service_name also derives the
+    # browser RUM name. public_origin builds the player and DM-page links.
+    service_name: str
+    port: int
+    public_origin: str
+    # roster.json and characters/<id>.json; an identical-path bind mount in compose.
+    data_dir: DataPath
+    # The DM page's secret path segment; unset, the page answers 404.
+    dm_token: Secret | None = None
+
+
 class WholeConfig(Config):
     """Every namespace in `config.kdl`: the union of what Python and TS read.
 
@@ -402,6 +415,7 @@ class WholeConfig(Config):
     harrow: HarrowConfig
     portal: PortalConfig
     portal_headless: PortalHeadlessConfig
+    builder: BuilderConfig
 
 
 #: The namespaces TS reads, in the order `libs/ts/config/src/config.gen.ts` declares them:
@@ -418,4 +432,5 @@ TS_NAMESPACES: tuple[str, ...] = (
     "portal",
     "portal_headless",
     "codex",
+    "builder",
 )

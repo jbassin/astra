@@ -606,6 +606,30 @@ services:
       - { <<: *bind, source: /ruby/data/astra-state/node-exporter/textfile, target: /textfile }
     restart: unless-stopped
 
+  # --- builder: the D&D 5e character builder for Josh's new players (SSR frontend on the
+  # site-kit preset; apps/builder/web/README.md). Port and service name come from config.kdl. ---
+  builder:
+    <<: *astra-app
+    build:
+      <<: *node-build
+      args:
+        APP: builder/web
+    image: astra-builder:local
+    container_name: astra-builder
+    # SOPS secret injected as env by `just deploy`; unset, the DM page answers 404.
+    environment:
+      BUILDER_DM_TOKEN: ${BUILDER_DM_TOKEN:-}
+    # Identical-path bind mount of builder.data-dir (config.kdl): the roster and the saved
+    # characters. The server writes characters/ (as uid 1000); deploy.sh init_artifacts
+    # creates the dir.
+    volumes:
+      - { <<: *bind, source: /ruby/data/astra-state/builder, target: /ruby/data/astra-state/builder }
+    ports:
+      - "10375:10375"
+    healthcheck:
+      <<: *node-healthcheck
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10375/').then(r=>process.exit(r.ok?0:1))"]
+
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
 # (it imports this repo's root sites.caddyfile; reload via `just caddy-reload`), so
 # the substrate runs no Caddy of its own — services are reachable on their

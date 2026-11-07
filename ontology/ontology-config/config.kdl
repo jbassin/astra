@@ -41,6 +41,7 @@ data {
     //   audio/{akasha,mouthpiece,orator}/  audio the frontends and orator serve
     //   postgres/{dagster,orator,weal}/    PGDATA (uid 70, mode 0700, set by the postgres entrypoint)
     //   portal-oauth/            portal's OAuth state
+    //   builder/                 the character builder's roster.json and characters/
     //   node-exporter/textfile/  smartmon.prom (smart-exporter writes, node-exporter serves)
     //   deploy/                  deploy.lock, history.jsonl, live/<service> (deploy.sh)
     //   locks/                   git-publish.lock (linguist-commit + the heartwood recipes)
@@ -379,4 +380,20 @@ assay {
     // data.root, holding handout.md (Homebrewery-style source, a spoiler until handed out, so
     // never in the public repo), art.* and the built <name>.pdf.
     handouts-path "handouts"
+}
+
+builder {
+    // The D&D 5e character builder for Josh's new players (apps/builder/web/README.md):
+    // an SSR frontend on the site-kit preset. server.ts binds this port and names
+    // telemetry; behind Caddy at builder.iridi.cc. service-name also derives the browser
+    // RUM name. public-origin builds the player links (`just builder-invite`) and the DM
+    // page's links.
+    service-name "astra.builder"
+    port 10375
+    public-origin "https://builder.iridi.cc"
+    // roster.json (the invited players) and characters/<id>.json (their saved answers),
+    // under data.root. The container writes it through an identical-path bind mount.
+    data-dir "builder"
+    // The secret path segment of the DM page (/dm/<token>). Unset: the page answers 404.
+    dm-token ref="sops:builder_dm_token"
 }

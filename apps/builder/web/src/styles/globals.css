@@ -1,0 +1,254 @@
+/* builder's page shell. gothic's theme.css (imported in __root through @astra/site-kit/theme)
+ * provides the reset baseline; tokens.css points its tokens at builder's colours and faces. */
+@import "./tokens.css";
+
+/* In @layer base so it sits below gothic's @layer components content styles. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+html {
+  background-color: var(--bd-page);
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bd-page);
+  color: var(--bd-ink);
+  font-family: var(--bd-serif);
+  font-optical-sizing: auto;
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--bd-accent);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--bd-accent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── header ─────────────────────────────────────────────────────────────────────── */
+.site-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--bd-rule);
+  background: var(--bd-surface);
+}
+.site-brand {
+  font: 650 1.25rem var(--bd-sans);
+  letter-spacing: 0.02em;
+  color: var(--bd-ink);
+  text-decoration: none;
+}
+
+/* ── page column ────────────────────────────────────────────────────────────────── */
+.wrap {
+  flex: 1;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+.wrap.wide {
+  max-width: 64rem;
+}
+.wrap h1 {
+  font: 650 2rem/1.2 var(--bd-sans);
+  margin-bottom: 0.5rem;
+}
+.lede {
+  color: var(--bd-muted);
+  margin-bottom: 2rem;
+}
+
+/* ── the step layout ────────────────────────────────────────────────────────────── */
+.steps {
+  display: grid;
+  gap: 1.5rem;
+}
+.step {
+  padding: 1.25rem 1.5rem 1.5rem;
+  border: 1px solid var(--bd-rule);
+  border-radius: 0.75rem;
+  background: var(--bd-surface);
+}
+.step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font: 600 1.1rem var(--bd-sans);
+}
+.step-num {
+  display: inline-grid;
+  place-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--bd-sunk);
+  color: var(--bd-muted);
+  font-size: 0.9rem;
+}
+.step.done .step-num {
+  background: var(--bd-accent);
+  color: var(--bd-surface);
+}
+.step-hint {
+  color: var(--bd-muted);
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+  border: 0;
+}
+.choice {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--bd-rule);
+  border-radius: 0.6rem;
+  background: var(--bd-page);
+  cursor: pointer;
+  transition: border-color var(--bd-ease);
+}
+.choice:hover {
+  border-color: var(--bd-muted);
+}
+.choice:has(input:checked) {
+  border-color: var(--bd-accent);
+  box-shadow: inset 0 0 0 1px var(--bd-accent);
+}
+.choice:has(input:focus-visible) {
+  outline: 2px solid var(--bd-accent);
+  outline-offset: 2px;
+}
+.choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.choice-label {
+  font: 600 1rem var(--bd-sans);
+}
+.choice-blurb {
+  color: var(--bd-muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.field {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--bd-rule);
+  border-radius: 0.5rem;
+  background: var(--bd-page);
+  color: var(--bd-ink);
+  font: inherit;
+}
+textarea.field {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+/* ── the save indicator ─────────────────────────────────────────────────────────── */
+.save-state {
+  font: 500 0.9rem var(--bd-sans);
+  color: var(--bd-muted);
+}
+.save-state[data-state="saved"] {
+  color: var(--bd-ok);
+}
+.save-state[data-state="error"] {
+  color: var(--bd-error);
+}
+
+/* ── the DM page ────────────────────────────────────────────────────────────────── */
+.dm-players {
+  display: grid;
+  gap: 1.25rem;
+}
+.dm-player {
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--bd-rule);
+  border-radius: 0.75rem;
+  background: var(--bd-surface);
+}
+.dm-player h2 {
+  font: 650 1.3rem var(--bd-sans);
+}
+.dm-meta {
+  color: var(--bd-muted);
+  font: 0.9rem var(--bd-sans);
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.dm-answers {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+}
+.dm-answers dt {
+  font: 600 0.95rem var(--bd-sans);
+  color: var(--bd-muted);
+}
+.dm-answers dd {
+  white-space: pre-wrap;
+}
+
+/* The router's error and 404 boundaries (site-kit's siteRouterOptions). */
+.route-boundary {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+.route-boundary h1 {
+  font: 650 1.75rem var(--bd-sans);
+}
+.route-boundary button {
+  justify-self: center;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--bd-accent);
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--bd-accent);
+  cursor: pointer;
+  font: 500 1rem var(--bd-sans);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 1ms !important;
+  }
+}

@@ -155,6 +155,7 @@ init_artifacts() {
     "$r"/heartwood/requests/logs \
     "$r"/codex/data/releases \
     "$r"/audio/{akasha,mouthpiece,orator} "$r"/postgres/{dagster,orator,weal} "$r"/portal-oauth \
+    "$r"/builder/characters \
     "$r"/node-exporter/textfile "$r"/deploy/live "$r"/locks
 }
 
