@@ -156,9 +156,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 
 - Character builder: walk `/test`, then send the five player names for `just builder-invite`
   — Josh.
-- Character builder: the Hellish Rebuke card shows its save but not its 2d10 Fire damage (no
-  damage field in the content); the sheet sorts features into action, bonus action and reaction
-  by their summary's wording, so a summary worded differently lands under "always on" — agent.
+- Character builder polish, small: a player who opens their link straight onto the sheet sees the
+  full greeting until their first move; the sticky progress band shows faintly against the page
+  glow on laptops; the sheet's "On your turn" spell line still uses the summary's first sentence,
+  not the curated gist; View Transitions are checked in Chromium only, not iOS Safari — agent.
 - `libs/ts/site-kit/src/scaffold.test.ts` hard-codes the last namespace in `models.py`, so it
   breaks on every `just new-frontend`; make it order-independent — agent.
 
