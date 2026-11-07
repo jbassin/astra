@@ -4,8 +4,15 @@
 import { CONTENT } from "@/domain/content";
 import type { Character, SpellcastingBlock, SpellEntry } from "@/domain/engine";
 import { ABILITY_NAMES, signed, slotLine, spellGist, spellRoll, spellUses } from "@/domain/sheet";
+import type { IconName } from "@/generated/icons";
 import { ABILITY_ICON, damageIcon, schoolIcon } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
+
+/** The damage type's icon, a heart for a heal, else the d20. */
+function rollIcon(s: SpellEntry): IconName {
+  if (s.attack?.damageType) return damageIcon(s.attack.damageType);
+  return s.healing ? "heart-plus" : "dice-twenty-faces-twenty";
+}
 
 function Spell({ s }: { s: SpellEntry }) {
   const roll = spellRoll(s);
@@ -18,7 +25,7 @@ function Spell({ s }: { s: SpellEntry }) {
         </p>
         {roll ? (
           <p className="roll">
-            <Icon name={damageIcon(s.attack?.damageType)} className="roll-icon" />
+            <Icon name={rollIcon(s)} className="roll-icon" />
             <span>{roll}</span>
           </p>
         ) : (
