@@ -53,6 +53,7 @@ function OptionGroup({ group, answers, update }: ScreenProps & { group: OptionGr
       legend={group.label}
       prompt={group.prompt}
       counter={<PickCounter count={group.count} picked={picked.length} />}
+      layout="grid"
     >
       {group.choices.map((id) => {
         const o = CONTENT.options[id];
@@ -161,6 +162,7 @@ function SpellList({ list, answers, update }: ScreenProps & { list: SpellPickLis
     <ChoiceGroup
       legend={list.label}
       counter={<PickCounter count={list.count} picked={picked.length} />}
+      layout="grid"
     >
       {list.choices.map((c) => {
         const s = CONTENT.spells[c.id];
