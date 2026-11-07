@@ -1,9 +1,11 @@
 // The player's builder: one card per step, every change auto-saved. The content here is a stub
-// (archetype, name, look) that exercises saving; the real steps replace it.
+// (archetype, name, look) that exercises saving; the real steps are to be built on top of
+// steps.ts and engine.ts.
 
 import { useState } from "react";
 
-import { ARCHETYPES, type Answers, isAnswered } from "@/domain/character";
+import { ARCHETYPES, type Answers } from "@/domain/character";
+import { isAnswered, pruneAnswers } from "@/domain/steps";
 import { saveAnswers } from "@/server/builderFns";
 
 import { type SaveState, useAutosave } from "./useAutosave";
@@ -29,7 +31,7 @@ export function BuilderFlow({
   const autosave = useAutosave((next: Answers) => saveAnswers({ data: { id, answers: next } }));
 
   function update(patch: Partial<Answers>) {
-    const next = { ...answers, ...patch };
+    const next = pruneAnswers({ ...answers, ...patch }, answers);
     setAnswers(next);
     autosave.schedule(next);
   }

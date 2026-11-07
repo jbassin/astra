@@ -30,6 +30,7 @@
     "**/assay/py/homebrew/**",
     "**/weal-engine/gen/**",
     "**/weal-engine/gen/**",
+    "**/builder/web/content/5etools/**",
     "thoughts/**",
     "deploy/signoz/rules/**",
     "**/__snapshots__/**"

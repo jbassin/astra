@@ -1,0 +1,2090 @@
+[
+ {
+  "id": "alchemists-supplies",
+  "name": "Alchemist's Supplies",
+  "kind": "tool",
+  "weight": 8,
+  "valueCp": 5000,
+  "text": [
+   "• Ability: Intelligence",
+   "• Utilize: Identify a substance (DC 15), or start a fire (DC 15)",
+   "• Craft: Acid, Alchemist's Fire, Component Pouch, Oil, Paper, Perfume"
+  ]
+ },
+ {
+  "id": "arrow",
+  "name": "Arrow",
+  "kind": "ammo",
+  "weight": 0.05,
+  "valueCp": 5,
+  "text": [
+   "Arrows are used with a weapon that has the ammunition property to make a ranged attack. Each time you attack with the weapon, you expend one piece of ammunition. Drawing the ammunition from a quiver, case, or other container is part of the attack (you need a free hand to load a one-handed weapon). At the end of the battle, you can recover half your expended ammunition by taking a minute to search the battlefield.",
+   "Arrows are typically stored in a Quiver (bought separately)."
+  ]
+ },
+ {
+  "id": "arrows-20",
+  "name": "Arrows (20)",
+  "kind": "ammo",
+  "weight": 1,
+  "valueCp": 100,
+  "text": [
+   "Arrows are used with a weapon that has the ammunition property to make a ranged attack. Each time you attack with the weapon, you expend one piece of ammunition. Drawing the ammunition from a quiver, case, or other container is part of the attack (you need a free hand to load a one-handed weapon). At the end of the battle, you can recover half your expended ammunition by taking a minute to search the battlefield.",
+   "Arrows are typically stored in a Quiver (bought separately)."
+  ],
+  "contents": [
+   {
+    "item": "arrow",
+    "quantity": 20
+   }
+  ]
+ },
+ {
+  "id": "artisans-tools",
+  "name": "Artisan's Tools",
+  "kind": "tool",
+  "text": []
+ },
+ {
+  "id": "backpack",
+  "name": "Backpack",
+  "kind": "gear",
+  "weight": 5,
+  "valueCp": 200,
+  "text": [
+   "A Backpack holds up to 30 pounds within 1 cubic foot. It can also serve as a saddlebag."
+  ]
+ },
+ {
+  "id": "bagpipes",
+  "name": "Bagpipes",
+  "kind": "instrument",
+  "weight": 6,
+  "valueCp": 3000,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "ball-bearings",
+  "name": "Ball Bearings",
+  "kind": "gear",
+  "weight": 2,
+  "valueCp": 100,
+  "text": [
+   "As a Utilize action, you can spill Ball Bearings from their pouch. They spread to cover a level, 10-foot-square area within 10 feet of yourself. A creature that enters this area for the first time on a turn must succeed on a DC 10 Dexterity saving throw or have the Prone condition. It takes 10 minutes to recover the Ball Bearings."
+  ]
+ },
+ {
+  "id": "battleaxe",
+  "name": "Battleaxe",
+  "kind": "weapon",
+  "weight": 4,
+  "valueCp": 1000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Slashing",
+   "versatile": "1d10",
+   "properties": [
+    "versatile"
+   ],
+   "mastery": "topple"
+  }
+ },
+ {
+  "id": "bedroll",
+  "name": "Bedroll",
+  "kind": "gear",
+  "weight": 7,
+  "valueCp": 100,
+  "text": [
+   "A Bedroll sleeps one Small or Medium creature. While in a Bedroll, you automatically succeed on saving throws against extreme cold (see the Dungeon Master's Guide)."
+  ]
+ },
+ {
+  "id": "bell",
+  "name": "Bell",
+  "kind": "gear",
+  "valueCp": 100,
+  "text": [
+   "When rung as a Utilize action, a Bell produces a sound that can be heard up to 60 feet away."
+  ]
+ },
+ {
+  "id": "blanket",
+  "name": "Blanket",
+  "kind": "gear",
+  "weight": 3,
+  "valueCp": 50,
+  "text": [
+   "While wrapped in a blanket, you have Advantage on saving throws against extreme cold (see the Dungeon Master's Guide)."
+  ]
+ },
+ {
+  "id": "blowgun",
+  "name": "Blowgun",
+  "kind": "weapon",
+  "weight": 1,
+  "valueCp": 1000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": true,
+   "damage": "1",
+   "damageType": "Piercing",
+   "range": "25/100",
+   "properties": [
+    "ammunition",
+    "loading"
+   ],
+   "mastery": "vex"
+  }
+ },
+ {
+  "id": "bolt",
+  "name": "Bolt",
+  "kind": "ammo",
+  "weight": 0.075,
+  "valueCp": 5,
+  "text": [
+   "Crossbow bolts are used with a weapon that has the ammunition property to make a ranged attack. Each time you attack with the weapon, you expend one piece of ammunition. Drawing the ammunition from a quiver, case, or other container is part of the attack (you need a free hand to load a one-handed weapon). At the end of the battle, you can recover half your expended ammunition by taking a minute to search the battlefield.",
+   "Bolts are typically stored in a Crossbow Bolt Case (bought separately)."
+  ]
+ },
+ {
+  "id": "bolts-20",
+  "name": "Bolts (20)",
+  "kind": "ammo",
+  "weight": 1.5,
+  "valueCp": 100,
+  "text": [
+   "Crossbow bolts are used with a weapon that has the ammunition property to make a ranged attack. Each time you attack with the weapon, you expend one piece of ammunition. Drawing the ammunition from a quiver, case, or other container is part of the attack (you need a free hand to load a one-handed weapon). At the end of the battle, you can recover half your expended ammunition by taking a minute to search the battlefield.",
+   "Bolts are typically stored in a Crossbow Bolt Case (bought separately)."
+  ],
+  "contents": [
+   {
+    "item": "bolt",
+    "quantity": 20
+   }
+  ]
+ },
+ {
+  "id": "book",
+  "name": "Book",
+  "kind": "gear",
+  "weight": 5,
+  "valueCp": 2500,
+  "text": [
+   "A Book contains fiction or nonfiction. If you consult an accurate nonfiction Book about its topic, you gain a +5 bonus to Intelligence (Arcana, History, Nature, or Religion) checks you make about that topic."
+  ]
+ },
+ {
+  "id": "breastplate",
+  "name": "Breastplate",
+  "kind": "armor",
+  "weight": 20,
+  "valueCp": 40000,
+  "text": [],
+  "armor": {
+   "type": "medium",
+   "ac": 14,
+   "stealthDisadvantage": false
+  }
+ },
+ {
+  "id": "brewers-supplies",
+  "name": "Brewer's Supplies",
+  "kind": "tool",
+  "weight": 9,
+  "valueCp": 2000,
+  "text": [
+   "• Ability: Intelligence",
+   "• Utilize: Detect poisoned drink (DC 15), or identify alcohol (DC 10)",
+   "• Craft: Antitoxin"
+  ]
+ },
+ {
+  "id": "bullseye-lantern",
+  "name": "Bullseye Lantern",
+  "kind": "gear",
+  "weight": 2,
+  "valueCp": 1000,
+  "text": [
+   "A Bullseye Lantern burns Oil as fuel to cast Bright Light in a 60-foot Cone and Dim Light for an additional 60 feet."
+  ]
+ },
+ {
+  "id": "burglars-pack",
+  "name": "Burglar's Pack",
+  "kind": "gear",
+  "weight": 47.5,
+  "valueCp": 1600,
+  "text": [
+   "A Burglar's Pack contains the following items: Backpack, Ball Bearings, Bell, 10 Candles, Crowbar, Hooded Lantern, 7 flasks of Oil, 5 days of Rations, Rope, Tinderbox, and Waterskin."
+  ],
+  "contents": [
+   {
+    "item": "backpack",
+    "quantity": 1
+   },
+   {
+    "item": "ball-bearings",
+    "quantity": 1
+   },
+   {
+    "item": "bell",
+    "quantity": 1
+   },
+   {
+    "item": "candle",
+    "quantity": 10
+   },
+   {
+    "item": "crowbar",
+    "quantity": 1
+   },
+   {
+    "item": "hooded-lantern",
+    "quantity": 1
+   },
+   {
+    "item": "oil",
+    "quantity": 7
+   },
+   {
+    "item": "rations",
+    "quantity": 5
+   },
+   {
+    "item": "rope",
+    "quantity": 1
+   },
+   {
+    "item": "tinderbox",
+    "quantity": 1
+   },
+   {
+    "item": "waterskin",
+    "quantity": 1
+   }
+  ]
+ },
+ {
+  "id": "calligraphers-supplies",
+  "name": "Calligrapher's Supplies",
+  "kind": "tool",
+  "weight": 5,
+  "valueCp": 1000,
+  "text": [
+   "• Ability: Dexterity",
+   "• Utilize: Write text with impressive flourishes that guard against forgery (DC 15)",
+   "• Craft: Ink, Spell Scroll"
+  ]
+ },
+ {
+  "id": "caltrops",
+  "name": "Caltrops",
+  "kind": "gear",
+  "weight": 2,
+  "valueCp": 100,
+  "text": [
+   "As a Utilize action, you can spread Caltrops from their bag to cover a 5-foot-square area within 5 feet of yourself. A creature that enters this area for the first time on a turn must succeed on a DC 15 Dexterity saving throw or take 1 Piercing damage and have its Speed reduced to 0 until the start of its next turn. It takes 10 minutes to recover the Caltrops."
+  ]
+ },
+ {
+  "id": "candle",
+  "name": "Candle",
+  "kind": "gear",
+  "valueCp": 1,
+  "text": [
+   "For 1 hour, a lit Candle sheds Bright Light in a 5-foot radius and Dim Light for an additional 5 feet."
+  ]
+ },
+ {
+  "id": "carpenters-tools",
+  "name": "Carpenter's Tools",
+  "kind": "tool",
+  "weight": 6,
+  "valueCp": 800,
+  "text": [
+   "• Ability: Strength",
+   "• Utilize: Seal or pry open a door or container (DC 20)",
+   "• Craft: Club, Greatclub, Quarterstaff, Barrel, Chest, Ladder, Pole, Portable Ram, Torch"
+  ]
+ },
+ {
+  "id": "cartographers-tools",
+  "name": "Cartographer's Tools",
+  "kind": "tool",
+  "weight": 6,
+  "valueCp": 1500,
+  "text": [
+   "• Ability: Wisdom",
+   "• Utilize: Draft a map of a small area (DC 15)",
+   "• Craft: Map"
+  ]
+ },
+ {
+  "id": "chain-mail",
+  "name": "Chain Mail",
+  "kind": "armor",
+  "weight": 55,
+  "valueCp": 7500,
+  "text": [],
+  "armor": {
+   "type": "heavy",
+   "ac": 16,
+   "strength": 13,
+   "stealthDisadvantage": true
+  }
+ },
+ {
+  "id": "chain-shirt",
+  "name": "Chain Shirt",
+  "kind": "armor",
+  "weight": 20,
+  "valueCp": 5000,
+  "text": [],
+  "armor": {
+   "type": "medium",
+   "ac": 13,
+   "stealthDisadvantage": false
+  }
+ },
+ {
+  "id": "club",
+  "name": "Club",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 10,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d4",
+   "damageType": "Bludgeoning",
+   "properties": [
+    "light"
+   ],
+   "mastery": "slow"
+  }
+ },
+ {
+  "id": "cobblers-tools",
+  "name": "Cobbler's Tools",
+  "kind": "tool",
+  "weight": 5,
+  "valueCp": 500,
+  "text": [
+   "• Ability: Dexterity",
+   "• Utilize: Modify footwear to give Advantage on the wearer's next Dexterity (Acrobatics) check (DC 10)",
+   "• Craft: Climber's Kit"
+  ]
+ },
+ {
+  "id": "cooks-utensils",
+  "name": "Cook's Utensils",
+  "kind": "tool",
+  "weight": 8,
+  "valueCp": 100,
+  "text": [
+   "• Ability: Wisdom",
+   "• Utilize: Improve food's flavor (DC 10), or detect spoiled or poisoned food (DC 15)",
+   "• Craft: Rations"
+  ]
+ },
+ {
+  "id": "costume",
+  "name": "Costume",
+  "kind": "gear",
+  "weight": 4,
+  "valueCp": 500,
+  "text": [
+   "While wearing a Costume, you have Advantage on any ability check you make to impersonate the person or type of person it represents."
+  ]
+ },
+ {
+  "id": "crowbar",
+  "name": "Crowbar",
+  "kind": "gear",
+  "weight": 5,
+  "valueCp": 200,
+  "text": [
+   "Using a Crowbar gives you Advantage on Strength checks where the Crowbar's leverage can be applied."
+  ]
+ },
+ {
+  "id": "crystal",
+  "name": "Crystal",
+  "kind": "focus",
+  "weight": 1,
+  "valueCp": 1000,
+  "text": []
+ },
+ {
+  "id": "dagger",
+  "name": "Dagger",
+  "kind": "weapon",
+  "weight": 1,
+  "valueCp": 200,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d4",
+   "damageType": "Piercing",
+   "range": "20/60",
+   "properties": [
+    "finesse",
+    "light",
+    "thrown"
+   ],
+   "mastery": "nick"
+  }
+ },
+ {
+  "id": "dart",
+  "name": "Dart",
+  "kind": "weapon",
+  "weight": 0.25,
+  "valueCp": 5,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": true,
+   "damage": "1d4",
+   "damageType": "Piercing",
+   "range": "20/60",
+   "properties": [
+    "finesse",
+    "thrown"
+   ],
+   "mastery": "vex"
+  }
+ },
+ {
+  "id": "dice-set",
+  "name": "Dice Set",
+  "kind": "gaming",
+  "valueCp": 10,
+  "text": [
+   "• Ability: Wisdom",
+   "• Utilize: Discern whether someone is cheating (DC 10), or win the game (DC 20)"
+  ]
+ },
+ {
+  "id": "disguise-kit",
+  "name": "Disguise Kit",
+  "kind": "tool",
+  "weight": 3,
+  "valueCp": 2500,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Apply makeup (DC 10)",
+   "• Craft: Costume"
+  ]
+ },
+ {
+  "id": "dragonchess-set",
+  "name": "Dragonchess Set",
+  "kind": "gaming",
+  "valueCp": 100,
+  "text": [
+   "• Ability: Wisdom",
+   "• Utilize: Discern whether someone is cheating (DC 10), or win the game (DC 20)"
+  ]
+ },
+ {
+  "id": "druidic-focus",
+  "name": "Druidic Focus",
+  "kind": "focus",
+  "text": []
+ },
+ {
+  "id": "drum",
+  "name": "Drum",
+  "kind": "instrument",
+  "weight": 3,
+  "valueCp": 600,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "dulcimer",
+  "name": "Dulcimer",
+  "kind": "instrument",
+  "weight": 10,
+  "valueCp": 2500,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "dungeoneers-pack",
+  "name": "Dungeoneer's Pack",
+  "kind": "gear",
+  "weight": 55,
+  "valueCp": 1200,
+  "text": [
+   "A Dungeoneer's Pack contains the following items: Backpack, Caltrops, Crowbar, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin."
+  ],
+  "contents": [
+   {
+    "item": "backpack",
+    "quantity": 1
+   },
+   {
+    "item": "caltrops",
+    "quantity": 1
+   },
+   {
+    "item": "crowbar",
+    "quantity": 1
+   },
+   {
+    "item": "oil",
+    "quantity": 2
+   },
+   {
+    "item": "rations",
+    "quantity": 10
+   },
+   {
+    "item": "rope",
+    "quantity": 1
+   },
+   {
+    "item": "tinderbox",
+    "quantity": 1
+   },
+   {
+    "item": "torch",
+    "quantity": 10
+   },
+   {
+    "item": "waterskin",
+    "quantity": 1
+   }
+  ]
+ },
+ {
+  "id": "entertainers-pack",
+  "name": "Entertainer's Pack",
+  "kind": "gear",
+  "weight": 58.5,
+  "valueCp": 4000,
+  "text": [
+   "An Entertainer's Pack contains the following items: Backpack, Bedroll, Bell, Bullseye Lantern, 3 Costumes, Mirror, 8 flasks of Oil, 9 days of Rations, Tinderbox, and Waterskin."
+  ],
+  "contents": [
+   {
+    "item": "backpack",
+    "quantity": 1
+   },
+   {
+    "item": "bedroll",
+    "quantity": 1
+   },
+   {
+    "item": "bell",
+    "quantity": 1
+   },
+   {
+    "item": "bullseye-lantern",
+    "quantity": 1
+   },
+   {
+    "item": "costume",
+    "quantity": 3
+   },
+   {
+    "item": "mirror",
+    "quantity": 1
+   },
+   {
+    "item": "oil",
+    "quantity": 8
+   },
+   {
+    "item": "rations",
+    "quantity": 9
+   },
+   {
+    "item": "tinderbox",
+    "quantity": 1
+   },
+   {
+    "item": "waterskin",
+    "quantity": 1
+   }
+  ]
+ },
+ {
+  "id": "explorers-pack",
+  "name": "Explorer's Pack",
+  "kind": "gear",
+  "weight": 55,
+  "valueCp": 1000,
+  "text": [
+   "An Explorer's Pack contains the following items: Backpack, Bedroll, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin."
+  ],
+  "contents": [
+   {
+    "item": "backpack",
+    "quantity": 1
+   },
+   {
+    "item": "bedroll",
+    "quantity": 1
+   },
+   {
+    "item": "oil",
+    "quantity": 2
+   },
+   {
+    "item": "rations",
+    "quantity": 10
+   },
+   {
+    "item": "rope",
+    "quantity": 1
+   },
+   {
+    "item": "tinderbox",
+    "quantity": 1
+   },
+   {
+    "item": "torch",
+    "quantity": 10
+   },
+   {
+    "item": "waterskin",
+    "quantity": 1
+   }
+  ]
+ },
+ {
+  "id": "fine-clothes",
+  "name": "Fine Clothes",
+  "kind": "gear",
+  "weight": 6,
+  "valueCp": 1500,
+  "text": [
+   "Fine Clothes are made of expensive fabrics and adorned with expertly crafted details. Some events and locations admit only people wearing these clothes."
+  ]
+ },
+ {
+  "id": "flail",
+  "name": "Flail",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 1000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Bludgeoning",
+   "properties": [],
+   "mastery": "sap"
+  }
+ },
+ {
+  "id": "flute",
+  "name": "Flute",
+  "kind": "instrument",
+  "weight": 1,
+  "valueCp": 200,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "forgery-kit",
+  "name": "Forgery Kit",
+  "kind": "tool",
+  "weight": 5,
+  "valueCp": 1500,
+  "text": [
+   "• Ability: Dexterity",
+   "• Utilize: Mimic 10 or fewer words of someone else's handwriting (DC 15), or duplicate a wax seal (DC 20)"
+  ]
+ },
+ {
+  "id": "gaming-set",
+  "name": "Gaming Set",
+  "kind": "gaming",
+  "text": []
+ },
+ {
+  "id": "glaive",
+  "name": "Glaive",
+  "kind": "weapon",
+  "weight": 6,
+  "valueCp": 2000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d10",
+   "damageType": "Slashing",
+   "properties": [
+    "heavy",
+    "reach",
+    "two-handed"
+   ],
+   "mastery": "graze"
+  }
+ },
+ {
+  "id": "glassblowers-tools",
+  "name": "Glassblower's Tools",
+  "kind": "tool",
+  "weight": 5,
+  "valueCp": 3000,
+  "text": [
+   "• Ability: Intelligence",
+   "• Utilize: Discern what a glass object held in the past 24 hours (DC 15)",
+   "• Craft: Glass Bottle, Magnifying Glass, Spyglass, Vial"
+  ]
+ },
+ {
+  "id": "greataxe",
+  "name": "Greataxe",
+  "kind": "weapon",
+  "weight": 7,
+  "valueCp": 3000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d12",
+   "damageType": "Slashing",
+   "properties": [
+    "heavy",
+    "two-handed"
+   ],
+   "mastery": "cleave"
+  }
+ },
+ {
+  "id": "greatclub",
+  "name": "Greatclub",
+  "kind": "weapon",
+  "weight": 10,
+  "valueCp": 20,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Bludgeoning",
+   "properties": [
+    "two-handed"
+   ],
+   "mastery": "push"
+  }
+ },
+ {
+  "id": "greatsword",
+  "name": "Greatsword",
+  "kind": "weapon",
+  "weight": 6,
+  "valueCp": 5000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "2d6",
+   "damageType": "Slashing",
+   "properties": [
+    "heavy",
+    "two-handed"
+   ],
+   "mastery": "graze"
+  }
+ },
+ {
+  "id": "halberd",
+  "name": "Halberd",
+  "kind": "weapon",
+  "weight": 6,
+  "valueCp": 2000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d10",
+   "damageType": "Slashing",
+   "properties": [
+    "heavy",
+    "reach",
+    "two-handed"
+   ],
+   "mastery": "cleave"
+  }
+ },
+ {
+  "id": "half-plate-armor",
+  "name": "Half Plate Armor",
+  "kind": "armor",
+  "weight": 40,
+  "valueCp": 75000,
+  "text": [],
+  "armor": {
+   "type": "medium",
+   "ac": 15,
+   "stealthDisadvantage": true
+  }
+ },
+ {
+  "id": "hand-crossbow",
+  "name": "Hand Crossbow",
+  "kind": "weapon",
+  "weight": 3,
+  "valueCp": 7500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": true,
+   "damage": "1d6",
+   "damageType": "Piercing",
+   "range": "30/120",
+   "properties": [
+    "ammunition",
+    "light",
+    "loading"
+   ],
+   "mastery": "vex"
+  }
+ },
+ {
+  "id": "handaxe",
+  "name": "Handaxe",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 500,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d6",
+   "damageType": "Slashing",
+   "range": "20/60",
+   "properties": [
+    "light",
+    "thrown"
+   ],
+   "mastery": "vex"
+  }
+ },
+ {
+  "id": "healers-kit",
+  "name": "Healer's Kit",
+  "kind": "gear",
+  "weight": 3,
+  "valueCp": 500,
+  "text": [
+   "A Healer's Kit has ten uses. As a Utilize action, you can expend one of its uses to stabilize an Unconscious creature that has 0 Hit Points without needing to make a Wisdom (Medicine) check."
+  ]
+ },
+ {
+  "id": "heavy-crossbow",
+  "name": "Heavy Crossbow",
+  "kind": "weapon",
+  "weight": 18,
+  "valueCp": 5000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": true,
+   "damage": "1d10",
+   "damageType": "Piercing",
+   "range": "100/400",
+   "properties": [
+    "ammunition",
+    "heavy",
+    "loading",
+    "two-handed"
+   ],
+   "mastery": "push"
+  }
+ },
+ {
+  "id": "herbalism-kit",
+  "name": "Herbalism Kit",
+  "kind": "tool",
+  "weight": 3,
+  "valueCp": 500,
+  "text": [
+   "• Ability: Intelligence",
+   "• Utilize: Identify a plant (DC 10)",
+   "• Craft: Antitoxin, Candle, Healer's Kit, Potion of Healing"
+  ]
+ },
+ {
+  "id": "hide-armor",
+  "name": "Hide Armor",
+  "kind": "armor",
+  "weight": 12,
+  "valueCp": 1000,
+  "text": [],
+  "armor": {
+   "type": "medium",
+   "ac": 12,
+   "stealthDisadvantage": false
+  }
+ },
+ {
+  "id": "holy-symbol",
+  "name": "Holy Symbol",
+  "kind": "focus",
+  "text": []
+ },
+ {
+  "id": "holy-water",
+  "name": "Holy Water",
+  "kind": "gear",
+  "weight": 1,
+  "valueCp": 2500,
+  "text": [
+   "When you take the Attack action, you can replace one of your attacks with throwing a flask of Holy Water. Target one creature you can see within 20 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or take 2d8 Radiant damage if it is a Fiend or an Undead."
+  ]
+ },
+ {
+  "id": "hooded-lantern",
+  "name": "Hooded Lantern",
+  "kind": "gear",
+  "weight": 2,
+  "valueCp": 500,
+  "text": [
+   "A Hooded Lantern burns Oil as fuel to cast Bright Light in a 30-foot radius and Dim Light for an additional 30 feet. As a Bonus Action, you can lower the hood, reducing the light to Dim Light in a 5-foot radius, or raise it again."
+  ]
+ },
+ {
+  "id": "horn",
+  "name": "Horn",
+  "kind": "instrument",
+  "weight": 2,
+  "valueCp": 300,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "ink",
+  "name": "Ink",
+  "kind": "gear",
+  "valueCp": 1000,
+  "text": [
+   "Ink comes in a 1-ounce bottle, which provides enough ink to write about 500 pages."
+  ]
+ },
+ {
+  "id": "ink-pen",
+  "name": "Ink Pen",
+  "kind": "gear",
+  "valueCp": 2,
+  "text": [
+   "Using Ink, an Ink Pen is used to write or draw."
+  ]
+ },
+ {
+  "id": "iron-pot",
+  "name": "Iron Pot",
+  "kind": "gear",
+  "weight": 10,
+  "valueCp": 200,
+  "text": [
+   "An Iron Pot holds up to 1 gallon."
+  ]
+ },
+ {
+  "id": "javelin",
+  "name": "Javelin",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 50,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d6",
+   "damageType": "Piercing",
+   "range": "30/120",
+   "properties": [
+    "thrown"
+   ],
+   "mastery": "slow"
+  }
+ },
+ {
+  "id": "jewelers-tools",
+  "name": "Jeweler's Tools",
+  "kind": "tool",
+  "weight": 2,
+  "valueCp": 2500,
+  "text": [
+   "• Ability: Intelligence",
+   "• Utilize: Discern a gem's value (DC 15)",
+   "• Craft: Arcane Focus, Holy Symbol"
+  ]
+ },
+ {
+  "id": "lamp",
+  "name": "Lamp",
+  "kind": "gear",
+  "weight": 1,
+  "valueCp": 50,
+  "text": [
+   "A Lamp burns Oil as fuel to cast Bright Light in a 15-foot radius and Dim Light for an additional 30 feet."
+  ]
+ },
+ {
+  "id": "lance",
+  "name": "Lance",
+  "kind": "weapon",
+  "weight": 6,
+  "valueCp": 1000,
+  "text": [
+   "A Lance requires two hands to wield when you aren't mounted."
+  ],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d10",
+   "damageType": "Piercing",
+   "properties": [
+    "heavy",
+    "reach",
+    "two-handed"
+   ],
+   "mastery": "topple"
+  }
+ },
+ {
+  "id": "leather-armor",
+  "name": "Leather Armor",
+  "kind": "armor",
+  "weight": 10,
+  "valueCp": 1000,
+  "text": [],
+  "armor": {
+   "type": "light",
+   "ac": 11,
+   "stealthDisadvantage": false
+  }
+ },
+ {
+  "id": "leatherworkers-tools",
+  "name": "Leatherworker's Tools",
+  "kind": "tool",
+  "weight": 5,
+  "valueCp": 500,
+  "text": [
+   "• Ability: Dexterity",
+   "• Utilize: Add a design to a leather item (DC 10)",
+   "• Craft: Sling, Whip, Hide Armor, Leather Armor, Studded Leather Armor, Backpack, Crossbow Bolt Case, Map or Scroll Case, Parchment, Pouch, Quiver, Waterskin"
+  ]
+ },
+ {
+  "id": "light-crossbow",
+  "name": "Light Crossbow",
+  "kind": "weapon",
+  "weight": 5,
+  "valueCp": 2500,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": true,
+   "damage": "1d8",
+   "damageType": "Piercing",
+   "range": "80/320",
+   "properties": [
+    "ammunition",
+    "loading",
+    "two-handed"
+   ],
+   "mastery": "slow"
+  }
+ },
+ {
+  "id": "light-hammer",
+  "name": "Light Hammer",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 200,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d4",
+   "damageType": "Bludgeoning",
+   "range": "20/60",
+   "properties": [
+    "light",
+    "thrown"
+   ],
+   "mastery": "nick"
+  }
+ },
+ {
+  "id": "longbow",
+  "name": "Longbow",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 5000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": true,
+   "damage": "1d8",
+   "damageType": "Piercing",
+   "range": "150/600",
+   "properties": [
+    "ammunition",
+    "heavy",
+    "two-handed"
+   ],
+   "mastery": "slow"
+  }
+ },
+ {
+  "id": "longsword",
+  "name": "Longsword",
+  "kind": "weapon",
+  "weight": 3,
+  "valueCp": 1500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Slashing",
+   "versatile": "1d10",
+   "properties": [
+    "versatile"
+   ],
+   "mastery": "sap"
+  }
+ },
+ {
+  "id": "lute",
+  "name": "Lute",
+  "kind": "instrument",
+  "weight": 2,
+  "valueCp": 3500,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "lyre",
+  "name": "Lyre",
+  "kind": "instrument",
+  "weight": 2,
+  "valueCp": 3000,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "mace",
+  "name": "Mace",
+  "kind": "weapon",
+  "weight": 4,
+  "valueCp": 500,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d6",
+   "damageType": "Bludgeoning",
+   "properties": [],
+   "mastery": "sap"
+  }
+ },
+ {
+  "id": "manacles",
+  "name": "Manacles",
+  "kind": "gear",
+  "weight": 6,
+  "valueCp": 200,
+  "text": [
+   "As a Utilize action, you can use Manacles to bind an unwilling Small or Medium creature within 5 feet of yourself that has the Grappled, Incapacitated, or Restrained condition if you succeed on a DC 13 Dexterity (Sleight of Hand) check. While bound, a creature has Disadvantage on attack rolls, and the creature is Restrained if the Manacles are attached to a chain or hook that is fixed in place. Escaping the Manacles requires a successful DC 20 Dexterity (Sleight of Hand) check as an action. Bursting them requires a successful DC 25 Strength (Athletics) check as an action.",
+   "Each set of Manacles comes with a key. Without the key, a creature can use Thieves' Tools to pick the Manacles' lock with a successful DC 15 Dexterity (Sleight of Hand) check."
+  ]
+ },
+ {
+  "id": "masons-tools",
+  "name": "Mason's Tools",
+  "kind": "tool",
+  "weight": 8,
+  "valueCp": 1000,
+  "text": [
+   "• Ability: Strength",
+   "• Utilize: Chisel a symbol or hole in stone (DC 10)",
+   "• Craft: Block and Tackle"
+  ]
+ },
+ {
+  "id": "maul",
+  "name": "Maul",
+  "kind": "weapon",
+  "weight": 10,
+  "valueCp": 1000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "2d6",
+   "damageType": "Bludgeoning",
+   "properties": [
+    "heavy",
+    "two-handed"
+   ],
+   "mastery": "topple"
+  }
+ },
+ {
+  "id": "mirror",
+  "name": "Mirror",
+  "kind": "gear",
+  "weight": 0.5,
+  "valueCp": 500,
+  "text": [
+   "A handheld steel Mirror is useful for personal cosmetics but also for peeking around corners and reflecting light as a signal."
+  ]
+ },
+ {
+  "id": "morningstar",
+  "name": "Morningstar",
+  "kind": "weapon",
+  "weight": 4,
+  "valueCp": 1500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Piercing",
+   "properties": [],
+   "mastery": "sap"
+  }
+ },
+ {
+  "id": "musical-instrument",
+  "name": "Musical Instrument",
+  "kind": "instrument",
+  "text": []
+ },
+ {
+  "id": "musket",
+  "name": "Musket",
+  "kind": "weapon",
+  "weight": 10,
+  "valueCp": 50000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": true,
+   "damage": "1d12",
+   "damageType": "Piercing",
+   "range": "40/120",
+   "properties": [
+    "ammunition",
+    "loading",
+    "two-handed"
+   ],
+   "mastery": "slow"
+  }
+ },
+ {
+  "id": "navigators-tools",
+  "name": "Navigator's Tools",
+  "kind": "tool",
+  "weight": 2,
+  "valueCp": 2500,
+  "text": [
+   "• Ability: Wisdom",
+   "• Utilize: Plot a course (DC 10), or determine position by stargazing (DC 15)"
+  ]
+ },
+ {
+  "id": "oil",
+  "name": "Oil",
+  "kind": "gear",
+  "weight": 1,
+  "valueCp": 10,
+  "text": [
+   "You can douse a creature, object, or space with Oil or use it as fuel, as detailed below.",
+   "Dousing a Creature or an Object. When you take the Attack action, you can replace one of your attacks with throwing an Oil flask. Target one creature or object within 20 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or be covered in oil. If the target takes Fire damage before the oil dries (after 1 minute), the target takes an extra 5 Fire damage from burning oil.",
+   "Dousing a Space. You can take the Utilize action to pour an Oil flask on level ground to cover a 5-foot-square area within 5 feet of yourself. If lit, the oil burns until the end of the turn 2 rounds from when the oil was lit (or 12 seconds) and deals 5 Fire damage to any creature that enters the area or ends its turn there. A creature can take this damage only once per turn.",
+   "Fuel. Oil serves as fuel for Lamps and Lanterns. Once lit, a flask of Oil burns for 6 hours in a Lamp or Lantern. That duration doesn't need to be consecutive; you can extinguish the burning Oil (as a Utilize action) and rekindle it again until it has burned for a total of 6 hours."
+  ]
+ },
+ {
+  "id": "orb",
+  "name": "Orb",
+  "kind": "focus",
+  "weight": 3,
+  "valueCp": 2000,
+  "text": []
+ },
+ {
+  "id": "padded-armor",
+  "name": "Padded Armor",
+  "kind": "armor",
+  "weight": 8,
+  "valueCp": 500,
+  "text": [],
+  "armor": {
+   "type": "light",
+   "ac": 11,
+   "stealthDisadvantage": true
+  }
+ },
+ {
+  "id": "painters-supplies",
+  "name": "Painter's Supplies",
+  "kind": "tool",
+  "weight": 5,
+  "valueCp": 1000,
+  "text": [
+   "• Ability: Wisdom",
+   "• Utilize: Paint a recognizable image of something you've seen (DC 10)",
+   "• Craft: Druidic Focus, Holy Symbol"
+  ]
+ },
+ {
+  "id": "pan-flute",
+  "name": "Pan Flute",
+  "kind": "instrument",
+  "weight": 2,
+  "valueCp": 1200,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "parchment",
+  "name": "Parchment",
+  "kind": "gear",
+  "valueCp": 10,
+  "text": [
+   "One sheet of Parchment can hold about 250 handwritten words."
+  ]
+ },
+ {
+  "id": "perfume",
+  "name": "Perfume",
+  "kind": "gear",
+  "valueCp": 500,
+  "text": [
+   "Perfume comes in a 4-ounce vial. For 1 hour after applying Perfume to yourself, you have Advantage on Charisma (Persuasion) checks made to influence an Indifferent Humanoid within 5 feet of yourself."
+  ]
+ },
+ {
+  "id": "pike",
+  "name": "Pike",
+  "kind": "weapon",
+  "weight": 18,
+  "valueCp": 500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d10",
+   "damageType": "Piercing",
+   "properties": [
+    "heavy",
+    "reach",
+    "two-handed"
+   ],
+   "mastery": "push"
+  }
+ },
+ {
+  "id": "pistol",
+  "name": "Pistol",
+  "kind": "weapon",
+  "weight": 3,
+  "valueCp": 25000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": true,
+   "damage": "1d10",
+   "damageType": "Piercing",
+   "range": "30/90",
+   "properties": [
+    "ammunition",
+    "loading"
+   ],
+   "mastery": "vex"
+  }
+ },
+ {
+  "id": "plate-armor",
+  "name": "Plate Armor",
+  "kind": "armor",
+  "weight": 65,
+  "valueCp": 150000,
+  "text": [],
+  "armor": {
+   "type": "heavy",
+   "ac": 18,
+   "strength": 15,
+   "stealthDisadvantage": true
+  }
+ },
+ {
+  "id": "playing-cards",
+  "name": "Playing Cards",
+  "kind": "gaming",
+  "valueCp": 50,
+  "text": [
+   "• Ability: Wisdom",
+   "• Utilize: Discern whether someone is cheating (DC 10), or win the game (DC 20)"
+  ]
+ },
+ {
+  "id": "poisoners-kit",
+  "name": "Poisoner's Kit",
+  "kind": "tool",
+  "weight": 2,
+  "valueCp": 5000,
+  "text": [
+   "• Ability: Intelligence",
+   "• Utilize: Detect a poisoned object (DC 10)",
+   "• Craft: Basic Poison"
+  ]
+ },
+ {
+  "id": "potters-tools",
+  "name": "Potter's Tools",
+  "kind": "tool",
+  "weight": 3,
+  "valueCp": 1000,
+  "text": [
+   "• Ability: Intelligence",
+   "• Utilize: Discern what a ceramic object held in the past 24 hours (DC 15)",
+   "• Craft: Jug, Lamp"
+  ]
+ },
+ {
+  "id": "pouch",
+  "name": "Pouch",
+  "kind": "gear",
+  "weight": 1,
+  "valueCp": 50,
+  "text": [
+   "A Pouch holds up to 6 pounds within one-fifth of a cubic foot."
+  ]
+ },
+ {
+  "id": "priests-pack",
+  "name": "Priest's Pack",
+  "kind": "gear",
+  "weight": 29,
+  "valueCp": 3300,
+  "text": [
+   "A Priest's Pack contains the following items: Backpack, Blanket, Holy Water, Lamp, 7 days of Rations, Robe, and Tinderbox."
+  ],
+  "contents": [
+   {
+    "item": "backpack",
+    "quantity": 1
+   },
+   {
+    "item": "blanket",
+    "quantity": 1
+   },
+   {
+    "item": "holy-water",
+    "quantity": 1
+   },
+   {
+    "item": "lamp",
+    "quantity": 1
+   },
+   {
+    "item": "rations",
+    "quantity": 7
+   },
+   {
+    "item": "robe",
+    "quantity": 1
+   },
+   {
+    "item": "tinderbox",
+    "quantity": 1
+   }
+  ]
+ },
+ {
+  "id": "psychic-blade",
+  "name": "Psychic Blade",
+  "kind": "weapon",
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d6",
+   "damageType": "Y",
+   "range": "60/120",
+   "properties": [
+    "finesse",
+    "thrown"
+   ],
+   "mastery": "object-object"
+  }
+ },
+ {
+  "id": "quarterstaff",
+  "name": "Quarterstaff",
+  "kind": "weapon",
+  "weight": 4,
+  "valueCp": 20,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d6",
+   "damageType": "Bludgeoning",
+   "versatile": "1d8",
+   "properties": [
+    "versatile"
+   ],
+   "mastery": "topple"
+  }
+ },
+ {
+  "id": "quiver",
+  "name": "Quiver",
+  "kind": "gear",
+  "weight": 1,
+  "valueCp": 100,
+  "text": [
+   "A Quiver holds up to 20 Arrows."
+  ]
+ },
+ {
+  "id": "rapier",
+  "name": "Rapier",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 2500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Piercing",
+   "properties": [
+    "finesse"
+   ],
+   "mastery": "vex"
+  }
+ },
+ {
+  "id": "rations",
+  "name": "Rations",
+  "kind": "gear",
+  "weight": 2,
+  "valueCp": 50,
+  "text": [
+   "Rations consist of travel-ready food, including jerky, dried fruit, hardtack, and nuts. See \"Malnutrition\" for the risks of not eating."
+  ]
+ },
+ {
+  "id": "ring-mail",
+  "name": "Ring Mail",
+  "kind": "armor",
+  "weight": 40,
+  "valueCp": 3000,
+  "text": [],
+  "armor": {
+   "type": "heavy",
+   "ac": 14,
+   "stealthDisadvantage": true
+  }
+ },
+ {
+  "id": "robe",
+  "name": "Robe",
+  "kind": "gear",
+  "weight": 4,
+  "valueCp": 100,
+  "text": [
+   "A Robe has vocational or ceremonial significance. Some events and locations admit only people wearing a Robe bearing certain colors or symbols."
+  ]
+ },
+ {
+  "id": "rope",
+  "name": "Rope",
+  "kind": "gear",
+  "weight": 5,
+  "valueCp": 100,
+  "text": [
+   "As a Utilize action, you can tie a knot with Rope if you succeed on a DC 10 Dexterity (Sleight of Hand) check. The Rope can be burst with a successful DC 20 Strength (Athletics) check.",
+   "You can bind an unwilling creature with the Rope only if the creature has the Grappled, Incapacitated, or Restrained condition. If the creature's legs are bound, the creature has the Restrained condition until it escapes. Escaping the Rope requires the creature to make a successful DC 15 Dexterity (Acrobatics) check as an action."
+  ]
+ },
+ {
+  "id": "scale-mail",
+  "name": "Scale Mail",
+  "kind": "armor",
+  "weight": 45,
+  "valueCp": 5000,
+  "text": [],
+  "armor": {
+   "type": "medium",
+   "ac": 14,
+   "stealthDisadvantage": true
+  }
+ },
+ {
+  "id": "scholars-pack",
+  "name": "Scholar's Pack",
+  "kind": "gear",
+  "weight": 22,
+  "valueCp": 4000,
+  "text": [
+   "A Scholar's Pack contains the following items: Backpack, Book, Ink, Ink Pen, Lamp, 10 flasks of Oil, 10 sheets of Parchment, and Tinderbox."
+  ],
+  "contents": [
+   {
+    "item": "backpack",
+    "quantity": 1
+   },
+   {
+    "item": "book",
+    "quantity": 1
+   },
+   {
+    "item": "ink",
+    "quantity": 1
+   },
+   {
+    "item": "ink-pen",
+    "quantity": 1
+   },
+   {
+    "item": "lamp",
+    "quantity": 1
+   },
+   {
+    "item": "oil",
+    "quantity": 10
+   },
+   {
+    "item": "parchment",
+    "quantity": 10
+   },
+   {
+    "item": "tinderbox",
+    "quantity": 1
+   }
+  ]
+ },
+ {
+  "id": "scimitar",
+  "name": "Scimitar",
+  "kind": "weapon",
+  "weight": 3,
+  "valueCp": 2500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d6",
+   "damageType": "Slashing",
+   "properties": [
+    "finesse",
+    "light"
+   ],
+   "mastery": "nick"
+  }
+ },
+ {
+  "id": "shawm",
+  "name": "Shawm",
+  "kind": "instrument",
+  "weight": 1,
+  "valueCp": 200,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "shield",
+  "name": "Shield",
+  "kind": "shield",
+  "weight": 6,
+  "valueCp": 1000,
+  "text": [],
+  "shieldAc": 2
+ },
+ {
+  "id": "shortbow",
+  "name": "Shortbow",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 2500,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": true,
+   "damage": "1d6",
+   "damageType": "Piercing",
+   "range": "80/320",
+   "properties": [
+    "ammunition",
+    "two-handed"
+   ],
+   "mastery": "vex"
+  }
+ },
+ {
+  "id": "shortsword",
+  "name": "Shortsword",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 1000,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d6",
+   "damageType": "Piercing",
+   "properties": [
+    "finesse",
+    "light"
+   ],
+   "mastery": "vex"
+  }
+ },
+ {
+  "id": "shovel",
+  "name": "Shovel",
+  "kind": "gear",
+  "weight": 5,
+  "valueCp": 200,
+  "text": [
+   "Working for 1 hour, you can use a Shovel to dig a hole that is 5 feet on each side in soil or similar material."
+  ]
+ },
+ {
+  "id": "sickle",
+  "name": "Sickle",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 100,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d4",
+   "damageType": "Slashing",
+   "properties": [
+    "light"
+   ],
+   "mastery": "nick"
+  }
+ },
+ {
+  "id": "sling",
+  "name": "Sling",
+  "kind": "weapon",
+  "valueCp": 10,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": true,
+   "damage": "1d4",
+   "damageType": "Bludgeoning",
+   "range": "30/120",
+   "properties": [
+    "ammunition"
+   ],
+   "mastery": "slow"
+  }
+ },
+ {
+  "id": "smiths-tools",
+  "name": "Smith's Tools",
+  "kind": "tool",
+  "weight": 8,
+  "valueCp": 2000,
+  "text": [
+   "• Ability: Strength",
+   "• Utilize: Pry open a door or container (DC 20)",
+   "• Craft: Any Melee weapon (except Club, Greatclub, Quarterstaff, and Whip), Medium armor (except Hide), Heavy armor, Ball Bearings, Bucket, Caltrops, Chain, Crowbar, Firearm Bullets, Grappling Hook, Iron Pot, Iron Spikes, Sling Bullets"
+  ]
+ },
+ {
+  "id": "spear",
+  "name": "Spear",
+  "kind": "weapon",
+  "weight": 3,
+  "valueCp": 100,
+  "text": [],
+  "weapon": {
+   "category": "simple",
+   "ranged": false,
+   "damage": "1d6",
+   "damageType": "Piercing",
+   "versatile": "1d8",
+   "range": "20/60",
+   "properties": [
+    "thrown",
+    "versatile"
+   ],
+   "mastery": "sap"
+  }
+ },
+ {
+  "id": "splint-armor",
+  "name": "Splint Armor",
+  "kind": "armor",
+  "weight": 60,
+  "valueCp": 20000,
+  "text": [],
+  "armor": {
+   "type": "heavy",
+   "ac": 17,
+   "strength": 15,
+   "stealthDisadvantage": true
+  }
+ },
+ {
+  "id": "sprig-of-mistletoe",
+  "name": "Sprig of Mistletoe",
+  "kind": "focus",
+  "valueCp": 100,
+  "text": []
+ },
+ {
+  "id": "studded-leather-armor",
+  "name": "Studded Leather Armor",
+  "kind": "armor",
+  "weight": 13,
+  "valueCp": 4500,
+  "text": [],
+  "armor": {
+   "type": "light",
+   "ac": 12,
+   "stealthDisadvantage": false
+  }
+ },
+ {
+  "id": "tent",
+  "name": "Tent",
+  "kind": "gear",
+  "weight": 20,
+  "valueCp": 200,
+  "text": [
+   "A Tent sleeps up to two Small or Medium creatures."
+  ]
+ },
+ {
+  "id": "thieves-tools",
+  "name": "Thieves' Tools",
+  "kind": "tool",
+  "weight": 1,
+  "valueCp": 2500,
+  "text": [
+   "• Ability: Dexterity",
+   "• Utilize: Pick a lock (DC 15), or disarm a trap (DC 15)"
+  ]
+ },
+ {
+  "id": "three-dragon-ante-set",
+  "name": "Three-Dragon Ante Set",
+  "kind": "gaming",
+  "valueCp": 100,
+  "text": [
+   "• Ability: Wisdom",
+   "• Utilize: Discern whether someone is cheating (DC 10), or win the game (DC 20)"
+  ]
+ },
+ {
+  "id": "tinderbox",
+  "name": "Tinderbox",
+  "kind": "gear",
+  "weight": 1,
+  "valueCp": 50,
+  "text": [
+   "A Tinderbox is a small container holding flint, fire steel, and tinder (usually dry cloth soaked in light oil) used to kindle a fire. Using it to light a Candle, Lamp, Lantern, or Torch—or anything else with exposed fuel—takes a Bonus Action. Lighting any other fire takes 1 minute."
+  ]
+ },
+ {
+  "id": "tinkers-tools",
+  "name": "Tinker's Tools",
+  "kind": "tool",
+  "weight": 10,
+  "valueCp": 5000,
+  "text": [
+   "• Ability: Dexterity",
+   "• Utilize: Assemble a Tiny item composed of scrap, which falls apart in 1 minute (DC 20)",
+   "• Craft: Musket, Pistol, Bell, Bullseye Lantern, Flask, Hooded Lantern, Hunting Trap, Lock, Manacles, Mirror, Shovel, Signal Whistle, Tinderbox"
+  ]
+ },
+ {
+  "id": "torch",
+  "name": "Torch",
+  "kind": "gear",
+  "weight": 1,
+  "valueCp": 1,
+  "text": [
+   "A Torch burns for 1 hour, casting Bright Light in a 20-foot radius and Dim Light for an additional 20 feet. When you take the Attack action, you can attack with the Torch, using it as a Simple Melee weapon. On a hit, the target takes 1 Fire damage."
+  ]
+ },
+ {
+  "id": "travelers-clothes",
+  "name": "Traveler's Clothes",
+  "kind": "gear",
+  "weight": 4,
+  "valueCp": 200,
+  "text": [
+   "Traveler's Clothes are resilient garments designed for travel in various environments."
+  ]
+ },
+ {
+  "id": "trident",
+  "name": "Trident",
+  "kind": "weapon",
+  "weight": 4,
+  "valueCp": 500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Piercing",
+   "versatile": "1d10",
+   "range": "20/60",
+   "properties": [
+    "thrown",
+    "versatile"
+   ],
+   "mastery": "topple"
+  }
+ },
+ {
+  "id": "viol",
+  "name": "Viol",
+  "kind": "instrument",
+  "weight": 1,
+  "valueCp": 3000,
+  "text": [
+   "• Ability: Charisma",
+   "• Utilize: Play a known tune (DC 10), or improvise a song (DC 15)"
+  ]
+ },
+ {
+  "id": "war-pick",
+  "name": "War Pick",
+  "kind": "weapon",
+  "weight": 2,
+  "valueCp": 500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Piercing",
+   "versatile": "1d10",
+   "properties": [
+    "versatile"
+   ],
+   "mastery": "sap"
+  }
+ },
+ {
+  "id": "warhammer",
+  "name": "Warhammer",
+  "kind": "weapon",
+  "weight": 5,
+  "valueCp": 1500,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d8",
+   "damageType": "Bludgeoning",
+   "versatile": "1d10",
+   "properties": [
+    "versatile"
+   ],
+   "mastery": "push"
+  }
+ },
+ {
+  "id": "waterskin",
+  "name": "Waterskin",
+  "kind": "gear",
+  "weight": 5,
+  "valueCp": 20,
+  "text": [
+   "A Waterskin holds up to 4 pints. If you don't drink sufficient water, you risk dehydration."
+  ]
+ },
+ {
+  "id": "weavers-tools",
+  "name": "Weaver's Tools",
+  "kind": "tool",
+  "weight": 5,
+  "valueCp": 100,
+  "text": [
+   "• Ability: Dexterity",
+   "• Utilize: Mend a tear in clothing (DC 10), or sew a Tiny design (DC 10)",
+   "• Craft: Padded Armor, Basket, Bedroll, Blanket, Fine Clothes, Net, Robe, Rope, Sack, String, Tent, Traveler's Clothes"
+  ]
+ },
+ {
+  "id": "whip",
+  "name": "Whip",
+  "kind": "weapon",
+  "weight": 3,
+  "valueCp": 200,
+  "text": [],
+  "weapon": {
+   "category": "martial",
+   "ranged": false,
+   "damage": "1d4",
+   "damageType": "Slashing",
+   "properties": [
+    "finesse",
+    "reach"
+   ],
+   "mastery": "slow"
+  }
+ },
+ {
+  "id": "woodcarvers-tools",
+  "name": "Woodcarver's Tools",
+  "kind": "tool",
+  "weight": 5,
+  "valueCp": 100,
+  "text": [
+   "• Ability: Dexterity",
+   "• Utilize: Carve a pattern in wood (DC 10)",
+   "• Craft: Club, Greatclub, Quarterstaff, Ranged weapons (except Pistol, Musket, and Sling), Arcane Focus, Arrows, Bolts, Druidic Focus, Ink Pen, Needles"
+  ]
+ }
+]

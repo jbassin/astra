@@ -13,6 +13,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "scripts", "*.ts"],
+  "include": ["src", "scripts", "content", "*.ts"],
   "exclude": ["node_modules", "dist", ".output", ".nitro"]
 }

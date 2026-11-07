@@ -35,14 +35,27 @@ green. This file is the plan; this section is the checklist.
 - [ ] `builder_dm_token` added to `deploy/sops/secrets.enc.yaml` (main session), then remove it
   from `OPTIONAL` in `deploy/tests/test_sops_refs.py` if the page should be required.
 
-**Slice 2: content and the full flow.** Waits on Josh's data source.
-- [ ] Load classes, species, backgrounds, spells and gear from Josh's data source at build time
-  (the strider content pattern: `scripts/build-content.ts` to `src/generated/`).
-- [ ] Archetype to class: Josh's allowed classes per archetype.
-- [ ] Steps for species, background, spells and gear; extend `Answers` (optional fields, so
-  slice 1 documents stay valid).
-- [ ] Derived stats (ability scores, HP, AC, attacks, spell slots).
-- [ ] The "on your turn" sheet and ability cards, with print styles.
+**Slice 2a: content and rules engine.** Data source: the public 5etools data, XPHB only, content
+committed (Josh's decision). Characters are level 2.
+- [x] Importer `scripts/import-5etools.ts` (`just builder-import <data> <commit>`) to trimmed,
+  plain-text JSON in `content/5etools/`, pinned commit in `meta.json`; `{@tag}` converter with
+  tests.
+- [x] Curation in `content/*.ts`: Josh's archetype → class table, blurbs and primary ability;
+  per class the ability priority, skills, expertise, masteries, tools and option and spell
+  shortlists; species, background, feat, option, mastery and spell summaries.
+- [x] `scripts/build-content.ts` → `src/generated/content.ts`, failing on dangling ids, missing
+  summaries and shortlists that can run out; counts read from the class table.
+- [x] `Answers` extended (optional, bounded; slice 1 documents still parse); `pruneAnswers`,
+  `stepStatuses`/`nextStep`; DM progress counts only the steps that apply.
+- [x] `buildCharacter` in `src/domain/engine.ts`, with one hand-checked character per class.
+- [ ] Josh reviews the shortlists (in the slice 2a pull request).
+
+**Slice 2b: the player flow and the sheet.** Builds on `content.ts`, `steps.ts` and
+`engine.ts` (the app README lists the API).
+- [ ] Steps for class, species and sub-choice, background, class options, spells, name, look and
+  personality; replace the slice 1 stub in `BuilderFlow.tsx`; call `pruneAnswers` on change.
+- [ ] The "on your turn" sheet and ability cards from `buildCharacter`, with print styles.
+- [ ] DM page: show each player's class, species and background.
 
 **Go live.**
 - [ ] Merge, `just deploy builder`, `just caddy-reload`.

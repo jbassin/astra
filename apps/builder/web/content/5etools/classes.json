@@ -1,0 +1,1935 @@
+[
+ {
+  "id": "barbarian",
+  "name": "Barbarian",
+  "hitDie": 12,
+  "saves": [
+   "str",
+   "con"
+  ],
+  "primaryAbility": [
+   {
+    "str": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "animal-handling",
+    "athletics",
+    "intimidation",
+    "nature",
+    "perception",
+    "survival"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple",
+   "martial"
+  ],
+  "armor": [
+   "light",
+   "medium",
+   "shield"
+  ],
+  "tools": [],
+  "equipmentA": [
+   {
+    "item": "greataxe",
+    "quantity": 1
+   },
+   {
+    "item": "handaxe",
+    "quantity": 4
+   },
+   {
+    "item": "explorers-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1500
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Greataxe, 4 Handaxes, Explorer's Pack, and 15 GP; or (B) 75 GP",
+  "table": {
+   "Rages": [
+    "2",
+    "2"
+   ],
+   "Rage Damage": [
+    "+2",
+    "+2"
+   ],
+   "Weapon Mastery": [
+    "2",
+    "2"
+   ]
+  },
+  "featProgression": [],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   2,
+   2
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "barbarian-rage",
+    "name": "Rage",
+    "level": 1,
+    "text": [
+     "You can imbue yourself with a primal power called Rage, a force that grants you extraordinary might and resilience. You can enter it as a Bonus Action if you aren't wearing Heavy armor.",
+     "You can enter your Rage the number of times shown for your Barbarian level in the Rages column of the Barbarian Features table. You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest.",
+     "While active, your Rage follows the rules below.",
+     "Damage Resistance. You have Resistance to Bludgeoning, Piercing, and Slashing damage.",
+     "Rage Damage. When you make an attack using Strength—with either a weapon or an Unarmed Strike—and deal damage to the target, you gain a bonus to the damage that increases as you gain levels as a Barbarian, as shown in the Rage Damage column of the Barbarian Features table.",
+     "Strength Advantage. You have Advantage on Strength checks and Strength saving throws.",
+     "No Concentration or Spells. You can't maintain Concentration, and you can't cast spells.",
+     "Duration. The Rage lasts until the end of your next turn, and it ends early if you don Heavy armor or have the Incapacitated condition. If your Rage is still active on your next turn, you can extend the Rage for another round by doing one of the following:",
+     "• Make an attack roll against an enemy.",
+     "• Force an enemy to make a saving throw.",
+     "• Take a Bonus Action to extend your Rage.",
+     "Each time the Rage is extended, it lasts until the end of your next turn. You can maintain a Rage for up to 10 minutes."
+    ]
+   },
+   {
+    "id": "barbarian-unarmored-defense",
+    "name": "Unarmored Defense",
+    "level": 1,
+    "text": [
+     "While you aren't wearing any armor, your base Armor Class equals 10 plus your Dexterity and Constitution modifiers. You can use a Shield and still gain this benefit."
+    ]
+   },
+   {
+    "id": "barbarian-weapon-mastery",
+    "name": "Weapon Mastery",
+    "level": 1,
+    "text": [
+     "Your training with weapons allows you to use the mastery properties of two kinds of Simple or Martial Melee weapons of your choice, such as Greataxes and Handaxes. Whenever you finish a Long Rest, you can practice weapon drills and change one of those weapon choices.",
+     "When you reach certain Barbarian levels, you gain the ability to use the mastery properties of more kinds of weapons, as shown in the Weapon Mastery column of the Barbarian Features table."
+    ]
+   },
+   {
+    "id": "barbarian-danger-sense",
+    "name": "Danger Sense",
+    "level": 2,
+    "text": [
+     "You gain an uncanny sense of when things aren't as they should be, giving you an edge when you dodge perils. You have Advantage on Dexterity saving throws unless you have the Incapacitated condition."
+    ]
+   },
+   {
+    "id": "barbarian-reckless-attack",
+    "name": "Reckless Attack",
+    "level": 2,
+    "text": [
+     "You can throw aside all concern for defense to attack with increased ferocity. When you make your first attack roll on your turn, you can decide to attack recklessly. Doing so gives you Advantage on attack rolls using Strength until the start of your next turn, but attack rolls against you have Advantage during that time."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "bard",
+  "name": "Bard",
+  "hitDie": 8,
+  "saves": [
+   "dex",
+   "cha"
+  ],
+  "primaryAbility": [
+   {
+    "cha": true
+   }
+  ],
+  "skillChoice": {
+   "any": 3
+  },
+  "weapons": [
+   "simple"
+  ],
+  "armor": [
+   "light"
+  ],
+  "tools": [
+   "Choose three Musical Instruments"
+  ],
+  "equipmentA": [
+   {
+    "item": "leather-armor",
+    "quantity": 1
+   },
+   {
+    "item": "dagger",
+    "quantity": 2
+   },
+   {
+    "choice": "instrumentMusical",
+    "quantity": 1
+   },
+   {
+    "item": "entertainers-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1900
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Leather Armor, 2 Dagger, Musical Instrument of your choice, Entertainer's Pack, 19 GP; or (B) 90 GP",
+  "table": {
+   "Bardic Die": [
+    "1d6",
+    "1d6"
+   ],
+   "Cantrips": [
+    "2",
+    "2"
+   ],
+   "Prepared Spells": [
+    "4",
+    "5"
+   ]
+  },
+  "spellSlots": [
+   [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "spellcastingAbility": "cha",
+  "casterProgression": "full",
+  "featProgression": [],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   0,
+   0
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "bard-bardic-inspiration",
+    "name": "Bardic Inspiration",
+    "level": 1,
+    "text": [
+     "You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.",
+     "Using Bardic Inspiration. As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.",
+     "Once within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it's rolled.",
+     "Number of Uses. You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.",
+     "At Higher Levels. Your Bardic Inspiration die changes when you reach certain Bard levels, as shown in the Bardic Die column of the Bard Features table. The die becomes a d8 at level 5, a d10 at level 10, and a d12 at level 15."
+    ]
+   },
+   {
+    "id": "bard-spellcasting",
+    "name": "Spellcasting",
+    "level": 1,
+    "text": [
+     "You have learned to cast spells through your bardic arts. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Bard spells, which appear in the Bard spell list later in the class's description.",
+     "Cantrips. You know two cantrips of your choice from the Bard spell list. Dancing Lights and Vicious Mockery are recommended.",
+     "Whenever you gain a Bard level, you can replace one of your cantrips with another cantrip of your choice from the Bard spell list.",
+     "When you reach Bard levels 4 and 10, you learn another cantrip of your choice from the Bard spell list, as shown in the Cantrips column of the Bard Features table.",
+     "Spell Slots. The Bard Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.",
+     "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose four level 1 spells from the Bard spell list. Charm Person, Color Spray, Dissonant Whispers, and Healing Word are recommended.",
+     "The number of spells on your list increases as you gain Bard levels, as shown in the Prepared Spells column of the Bard Features table. Whenever that number increases, choose additional spells from the Bard spell list until the number of spells on your list matches the number on the table. The chosen spells must be of a level for which you have spell slots. For example, if you're a level 3 Bard, your list of prepared spells can include six spells of levels 1 and 2 in any combination.",
+     "If another Bard feature gives you spells that you always have prepared, those spells don't count against the number of spells you can prepare with this feature, but those spells otherwise count as Bard spells for you.",
+     "Changing Your Prepared Spells. Whenever you gain a Bard level, you can replace one spell on your list with another Bard spell for which you have spell slots.",
+     "Spellcasting Ability. Charisma is your spellcasting ability for your Bard spells.",
+     "Spellcasting Focus. You can use a Musical Instrument as a Spellcasting Focus for your Bard spells."
+    ]
+   },
+   {
+    "id": "bard-expertise",
+    "name": "Expertise",
+    "level": 2,
+    "text": [
+     "You gain Expertise in two of your skill proficiencies of your choice. Performance and Persuasion are recommended if you have proficiency in them.",
+     "At Bard level 9, you gain Expertise in two more of your skill proficiencies of your choice."
+    ]
+   },
+   {
+    "id": "bard-jack-of-all-trades",
+    "name": "Jack of All Trades",
+    "level": 2,
+    "text": [
+     "You can add half your Proficiency Bonus (round down) to any ability check you make that uses a skill proficiency you lack and that doesn't otherwise use your Proficiency Bonus.",
+     "For example, if you make a Strength (Athletics) check and lack Athletics proficiency, you can add half your Proficiency Bonus to the check."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "cleric",
+  "name": "Cleric",
+  "hitDie": 8,
+  "saves": [
+   "wis",
+   "cha"
+  ],
+  "primaryAbility": [
+   {
+    "wis": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "history",
+    "insight",
+    "medicine",
+    "persuasion",
+    "religion"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple"
+  ],
+  "armor": [
+   "light",
+   "medium",
+   "shield"
+  ],
+  "tools": [],
+  "equipmentA": [
+   {
+    "item": "chain-shirt",
+    "quantity": 1
+   },
+   {
+    "item": "shield",
+    "quantity": 1
+   },
+   {
+    "item": "mace",
+    "quantity": 1
+   },
+   {
+    "item": "holy-symbol",
+    "quantity": 1
+   },
+   {
+    "item": "priests-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 700
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Chain Shirt, Shield, Mace, Holy Symbol, Priest's Pack, 7 GP; or (B) 110 GP",
+  "table": {
+   "Channel Divinity": [
+    "0",
+    "2"
+   ],
+   "Cantrips": [
+    "3",
+    "3"
+   ],
+   "Prepared Spells": [
+    "4",
+    "5"
+   ]
+  },
+  "spellSlots": [
+   [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "spellcastingAbility": "wis",
+  "casterProgression": "full",
+  "featProgression": [],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   0,
+   0
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "cleric-divine-order",
+    "name": "Divine Order",
+    "level": 1,
+    "text": [
+     "You have dedicated yourself to one of the following sacred roles of your choice."
+    ]
+   },
+   {
+    "id": "cleric-protector",
+    "name": "Protector",
+    "level": 1,
+    "text": [
+     "Trained for battle, you gain proficiency with Martial weapons and training with Heavy armor."
+    ]
+   },
+   {
+    "id": "cleric-spellcasting",
+    "name": "Spellcasting",
+    "level": 1,
+    "text": [
+     "You have learned to cast spells through prayer and meditation. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Cleric spells, which appear on the Cleric spell list later in the class's description.",
+     "Cantrips. You know three cantrips of your choice from the Cleric spell list. Guidance, Sacred Flame, and Thaumaturgy are recommended.",
+     "Whenever you gain a Cleric level, you can replace one of your cantrips with another cantrip of your choice from the Cleric spell list.",
+     "When you reach Cleric levels 4 and 10, you learn another cantrip of your choice from the Cleric spell list, as shown in the Cantrips column of the Cleric Features table.",
+     "Spell Slots. The Cleric Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.",
+     "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose four level 1 spells from the Cleric spell list. Bless, Cure Wounds, Guiding Bolt, and Shield of Faith are recommended.",
+     "The number of spells on your list increases as you gain Cleric levels, as shown in the Prepared Spells column of the Cleric Features table. Whenever that number increases, choose additional spells from the Cleric spell list until the number of spells on your list matches the number on the table. The chosen spells must be of a level for which you have spell slots. For example, if you're a level 3 Cleric, your list of prepared spells can include six spells of levels 1 and 2 in any combination.",
+     "If another Cleric feature gives you spells that you always have prepared, those spells don't count against the number of spells you can prepare with this feature, but those spells otherwise count as Cleric spells for you.",
+     "Changing Your Prepared Spells. Whenever you finish a Long Rest, you can change your list of prepared spells, replacing any of the spells there with other Cleric spells for which you have spell slots.",
+     "Spellcasting Ability. Wisdom is your spellcasting ability for your Cleric spells.",
+     "Spellcasting Focus. You can use a Holy Symbol as a Spellcasting Focus for your Cleric spells."
+    ]
+   },
+   {
+    "id": "cleric-thaumaturge",
+    "name": "Thaumaturge",
+    "level": 1,
+    "text": [
+     "You know one extra cantrip from the Cleric spell list. In addition, your mystical connection to the divine gives you a bonus to your Intelligence (Arcana or Religion) checks. The bonus equals your Wisdom modifier (minimum of +1)."
+    ]
+   },
+   {
+    "id": "cleric-channel-divinity",
+    "name": "Channel Divinity",
+    "level": 2,
+    "text": [
+     "You can channel divine energy directly from the Outer Planes to fuel magical effects. You start with two such effects: Divine Spark and Turn Undead, each of which is described below. Each time you use this class's Channel Divinity, choose which Channel Divinity effect from this class to create. You gain additional effect options at higher Cleric levels.",
+     "You can use this class's Channel Divinity twice. You regain one of its expended uses when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest. You gain additional uses when you reach certain Cleric levels, as shown in the Channel Divinity column of the Cleric Features table.",
+     "If a Channel Divinity effect requires a saving throw, the DC equals the spell save DC from this class's Spellcasting feature."
+    ]
+   },
+   {
+    "id": "cleric-divine-spark",
+    "name": "Divine Spark",
+    "level": 2,
+    "text": [
+     "As a Magic action, you point your Holy Symbol at another creature you can see within 30 feet of yourself and focus divine energy at it. Roll 1d8 and add your Wisdom modifier. You either restore Hit Points to the creature equal to that total or force the creature to make a Constitution saving throw. On a failed save, the creature takes Necrotic or Radiant damage (your choice) equal to that total. On a successful save, the creature takes half as much damage (round down).",
+     "You roll an additional d8 when you reach Cleric levels 7 (2d8), 13 (3d8), and 18 (4d8)."
+    ]
+   },
+   {
+    "id": "cleric-turn-undead",
+    "name": "Turn Undead",
+    "level": 2,
+    "text": [
+     "As a Magic action, you present your Holy Symbol and censure Undead creatures. Each Undead of your choice within 30 feet of you must make a Wisdom saving throw. If the creature fails its save, it has the Frightened and Incapacitated conditions for 1 minute. For that duration, it tries to move as far from you as it can on its turns. This effect ends early on the creature if it takes any damage, if you have the Incapacitated condition, or if you die."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "druid",
+  "name": "Druid",
+  "hitDie": 8,
+  "saves": [
+   "int",
+   "wis"
+  ],
+  "primaryAbility": [
+   {
+    "wis": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "arcana",
+    "animal-handling",
+    "insight",
+    "medicine",
+    "nature",
+    "perception",
+    "religion",
+    "survival"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple"
+  ],
+  "armor": [
+   "light",
+   "shield"
+  ],
+  "tools": [
+   "Herbalism Kit"
+  ],
+  "equipmentA": [
+   {
+    "item": "leather-armor",
+    "quantity": 1
+   },
+   {
+    "item": "shield",
+    "quantity": 1
+   },
+   {
+    "item": "sickle",
+    "quantity": 1
+   },
+   {
+    "item": "druidic-focus",
+    "quantity": 1
+   },
+   {
+    "item": "explorers-pack",
+    "quantity": 1
+   },
+   {
+    "item": "herbalism-kit",
+    "quantity": 1
+   },
+   {
+    "valueCp": 900
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Leather Armor, Shield, Sickle, Druidic Focus (Quarterstaff), Explorer's Pack, Herbalism kit, 9 GP; or (B) 50 GP",
+  "table": {
+   "Wild Shape": [
+    "0",
+    "2"
+   ],
+   "Cantrips": [
+    "2",
+    "2"
+   ],
+   "Prepared Spells": [
+    "4",
+    "5"
+   ]
+  },
+  "spellSlots": [
+   [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "spellcastingAbility": "wis",
+  "casterProgression": "full",
+  "featProgression": [],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   0,
+   0
+  ],
+  "alwaysPrepared": [
+   {
+    "level": 1,
+    "spell": "speak-with-animals"
+   },
+   {
+    "level": 2,
+    "spell": "find-familiar"
+   }
+  ],
+  "features": [
+   {
+    "id": "druid-druidic",
+    "name": "Druidic",
+    "level": 1,
+    "text": [
+     "You know Druidic, the secret language of Druids. While learning this ancient tongue, you also unlocked the magic of communicating with animals; you always have the Speak with Animals spell prepared.",
+     "You can use Druidic to leave hidden messages. You and others who know Druidic automatically spot such a message. Others spot the message's presence with a successful DC 15 Intelligence (Investigation) check but can't decipher it without magic."
+    ]
+   },
+   {
+    "id": "druid-magician",
+    "name": "Magician",
+    "level": 1,
+    "text": [
+     "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1)."
+    ]
+   },
+   {
+    "id": "druid-primal-order",
+    "name": "Primal Order",
+    "level": 1,
+    "text": [
+     "You have dedicated yourself to one of the following sacred roles of your choice."
+    ]
+   },
+   {
+    "id": "druid-spellcasting",
+    "name": "Spellcasting",
+    "level": 1,
+    "text": [
+     "You have learned to cast spells through studying the mystical forces of nature. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Druid spells, which appear on the Druid spell list later in the class's description.",
+     "Cantrips. You know two cantrips of your choice from the Druid spell list. Druidcraft and Produce Flame are recommended.",
+     "Whenever you gain a Druid level, you can replace one of your cantrips with another cantrip of your choice from the Druid spell list.",
+     "When you reach Druid levels 4 and 10, you learn another cantrip of your choice from the Druid spell list, as shown in the Cantrips column of the Druid Features table.",
+     "Spell Slots. The Druid Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.",
+     "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose four level 1 spells from the Druid spell list. Animal Friendship, Cure Wounds, Faerie Fire, and Thunderwave are recommended.",
+     "The number of spells on your list increases as you gain Druid levels, as shown in the Prepared Spells column of the Druid Features table. Whenever that number increases, choose additional spells from the Druid spell list until the number of spells on your list matches the number on the table. The chosen spells must be of a level for which you have spell slots. For example, if you're a level 3 Druid, your list of prepared spells can include six spells of levels 1 and 2 in any combination.",
+     "If another Druid feature gives you spells that you always have prepared, those spells don't count against the number of spells you can prepare with this feature, but those spells otherwise count as Druid spells for you.",
+     "Changing Your Prepared Spells. Whenever you finish a Long Rest, you can change your list of prepared spells, replacing any of the spells with other Druid spells for which you have spell slots.",
+     "Spellcasting Ability. Wisdom is your spellcasting ability for your Druid spells.",
+     "Spellcasting Focus. You can use a Druidic Focus as a Spellcasting Focus for your Druid spells."
+    ]
+   },
+   {
+    "id": "druid-warden",
+    "name": "Warden",
+    "level": 1,
+    "text": [
+     "Trained for battle, you gain proficiency with Martial weapons and training with Medium armor."
+    ]
+   },
+   {
+    "id": "druid-wild-companion",
+    "name": "Wild Companion",
+    "level": 2,
+    "text": [
+     "You can summon a nature spirit that assumes an animal form to aid you. As a Magic action, you can expend a spell slot or a use of Wild Shape to cast the Find Familiar spell without Material components.",
+     "When you cast the spell in this way, the familiar is Fey and disappears when you finish a Long Rest."
+    ]
+   },
+   {
+    "id": "druid-wild-shape",
+    "name": "Wild Shape",
+    "level": 2,
+    "text": [
+     "The power of nature allows you to assume the form of an animal. As a Bonus Action, you shape-shift into a Beast form that you have learned for this feature (see \"Known Forms\" below). You stay in that form for a number of hours equal to half your Druid level or until you use Wild Shape again, have the Incapacitated condition, or die. You can also leave the form early as a Bonus Action.",
+     "Number of Uses. You can use Wild Shape twice. You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest.",
+     "You gain additional uses when you reach certain Druid levels, as shown in the Wild Shape column of the Druid Features table.",
+     "Known Forms. You know four Beast forms for this feature, chosen from among Beast stat blocks that have a maximum Challenge Rating of 1/4 and that lack a Fly Speed (see appendix B for stat block options). The Rat, Riding Horse, Spider, and Wolf are recommended. Whenever you finish a Long Rest, you can replace one of your known forms with another eligible form.",
+     "When you reach certain Druid levels, your number of known forms and the maximum Challenge Rating for those forms increases, as shown in the Beast Shapes table. In addition, starting at level 8, you can adopt a form that has a Fly Speed.",
+     "When choosing known forms, you may look in the Monster Manual or elsewhere for eligible Beasts if the Dungeon Master permits you to do so.",
+     "Druid Level | Known Forms | Max CR | Fly Speed",
+     "2 | 4 | 1/4 | No",
+     "4 | 6 | 1/2 | No",
+     "8 | 8 | 1 | Yes",
+     "Rules While Shape-Shifted. While in a form, you retain your personality, memories, and ability to speak, and the following rules apply:",
+     "• Temporary Hit Points: When you assume a Wild Shape form, you gain a number of Temporary Hit Points equal to your Druid level.",
+     "• Game Statistics: Your game statistics are replaced by the Beast's stat block, but you retain your creature type; Hit Points; Hit Point Dice; Intelligence, Wisdom, and Charisma scores; class features; languages; and feats. You also retain your skill and saving throw proficiencies and use your Proficiency Bonus for them, in addition to gaining the proficiencies of the creature. If a skill or saving throw modifier in the Beast's stat block is higher than yours, use the one in the stat block.",
+     "• No Spellcasting: You can't cast spells, but shape-shifting doesn't break your Concentration or otherwise interfere with a spell you've already cast.",
+     "• Objects: Your ability to handle objects is determined by the form's limbs rather than your own. In addition, you choose whether your equipment falls in your space, merges into your new form, or is worn by it. Worn equipment functions as normal, but the DM decides whether it's practical for the new form to wear a piece of equipment based on the creature's size and shape. Your equipment doesn't change size or shape to match the new form, and any equipment that the new form can't wear must either fall to the ground or merge with the form. Equipment that merges with the form has no effect while you're in that form."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fighter",
+  "name": "Fighter",
+  "hitDie": 10,
+  "saves": [
+   "str",
+   "con"
+  ],
+  "primaryAbility": [
+   {
+    "str": true
+   },
+   {
+    "dex": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "acrobatics",
+    "animal-handling",
+    "athletics",
+    "history",
+    "insight",
+    "intimidation",
+    "persuasion",
+    "perception",
+    "survival"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple",
+   "martial"
+  ],
+  "armor": [
+   "light",
+   "medium",
+   "heavy",
+   "shield"
+  ],
+  "tools": [],
+  "equipmentA": [
+   {
+    "item": "chain-mail",
+    "quantity": 1
+   },
+   {
+    "item": "greatsword",
+    "quantity": 1
+   },
+   {
+    "item": "flail",
+    "quantity": 1
+   },
+   {
+    "item": "javelin",
+    "quantity": 8
+   },
+   {
+    "item": "dungeoneers-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 400
+   }
+  ],
+  "equipmentText": "Choose A, B, or C: (A) Chain Mail, Greatsword, Flail, 8 Javelins, Dungeoneer's Pack, and 4 GP; (B) Studded Leather Armor, Scimitar, Shortsword, Longbow, 20 Arrows, Quiver, Dungeoneer's Pack, and 11 GP; or (C) 155 GP",
+  "table": {
+   "Second Wind": [
+    "2",
+    "2"
+   ],
+   "Weapon Mastery": [
+    "3",
+    "3"
+   ]
+  },
+  "featProgression": [
+   {
+    "name": "Fighting Style",
+    "categories": [
+     "FS"
+    ],
+    "level": 1,
+    "count": 1
+   }
+  ],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   3,
+   3
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "fighter-fighting-style",
+    "name": "Fighting Style",
+    "level": 1,
+    "text": [
+     "You have honed your martial prowess and gain a Fighting Style feat of your choice. Defense is recommended.",
+     "Whenever you gain a Fighter level, you can replace the feat you chose with a different Fighting Style feat."
+    ]
+   },
+   {
+    "id": "fighter-second-wind",
+    "name": "Second Wind",
+    "level": 1,
+    "text": [
+     "You have a limited well of physical and mental stamina that you can draw on. As a Bonus Action, you can use it to regain Hit Points equal to 1d10 plus your Fighter level.",
+     "You can use this feature twice. You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest.",
+     "When you reach certain Fighter levels, you gain more uses of this feature, as shown in the Second Wind column of the Fighter Features table."
+    ]
+   },
+   {
+    "id": "fighter-weapon-mastery",
+    "name": "Weapon Mastery",
+    "level": 1,
+    "text": [
+     "Your training with weapons allows you to use the mastery properties of three kinds of Simple or Martial weapons of your choice. Whenever you finish a Long Rest, you can practice weapon drills and change one of those weapon choices.",
+     "When you reach certain Fighter levels, you gain the ability to use the mastery properties of more kinds of weapons, as shown in the Weapon Mastery column of the Fighter Features table."
+    ]
+   },
+   {
+    "id": "fighter-action-surge",
+    "name": "Action Surge",
+    "level": 2,
+    "text": [
+     "You can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action, except the Magic action.",
+     "Once you use this feature, you can't do so again until you finish a Short or Long Rest. Starting at level 17, you can use it twice before a rest but only once on a turn."
+    ]
+   },
+   {
+    "id": "fighter-tactical-mind",
+    "name": "Tactical Mind",
+    "level": 2,
+    "text": [
+     "You have a mind for tactics on and off the battlefield. When you fail an ability check, you can expend a use of your Second Wind to push yourself toward success. Rather than regaining Hit Points, you roll 1d10 and add the number rolled to the ability check, potentially turning it into a success. If the check still fails, this use of Second Wind isn't expended."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "monk",
+  "name": "Monk",
+  "hitDie": 8,
+  "saves": [
+   "str",
+   "dex"
+  ],
+  "primaryAbility": [
+   {
+    "dex": true,
+    "wis": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "acrobatics",
+    "athletics",
+    "history",
+    "insight",
+    "religion",
+    "stealth"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple",
+   "Martial weapons that have the Light property"
+  ],
+  "armor": [],
+  "tools": [
+   "Choose one type of Artisan's Tools or Musical Instrument"
+  ],
+  "equipmentA": [
+   {
+    "item": "spear",
+    "quantity": 1
+   },
+   {
+    "item": "dagger",
+    "quantity": 5
+   },
+   {
+    "choice": "instrumentMusical|toolArtisan",
+    "quantity": 1
+   },
+   {
+    "item": "explorers-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1100
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Spear, 5 Daggers, Artisan's Tools or Musical Instrument chosen for the tool proficiency above, Explorer's Pack, and 11 GP; or (B) 50 GP",
+  "table": {
+   "Martial Arts": [
+    "1d6",
+    "1d6"
+   ],
+   "Focus Points": [
+    "0",
+    "2"
+   ],
+   "Unarmored Movement": [
+    "+0 ft.",
+    "+10 ft."
+   ]
+  },
+  "featProgression": [],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   0,
+   0
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "monk-bonus-unarmed-strike",
+    "name": "Bonus Unarmed Strike",
+    "level": 1,
+    "text": [
+     "You can make an Unarmed Strike as a Bonus Action."
+    ]
+   },
+   {
+    "id": "monk-dexterous-attacks",
+    "name": "Dexterous Attacks",
+    "level": 1,
+    "text": [
+     "You can use your Dexterity modifier instead of your Strength modifier for the attack and damage rolls of your Unarmed Strikes and Monk weapons. In addition, when you use the Grapple or Shove option of your Unarmed Strike, you can use your Dexterity modifier instead of your Strength modifier to determine the save DC."
+    ]
+   },
+   {
+    "id": "monk-martial-arts",
+    "name": "Martial Arts",
+    "level": 1,
+    "text": [
+     "Your practice of martial arts gives you mastery of combat styles that use your Unarmed Strike and Monk weapons, which are the following:",
+     "• Simple Melee Weapons",
+     "• Martial Melee Weapons that have the Light property",
+     "You gain the following benefits while you are unarmed or wielding only Monk weapons and you aren't wearing armor or wielding a Shield."
+    ]
+   },
+   {
+    "id": "monk-martial-arts-die",
+    "name": "Martial Arts Die",
+    "level": 1,
+    "text": [
+     "You can roll 1d6 in place of the normal damage of your Unarmed Strike or Monk weapons. This die changes as you gain Monk levels, as shown in the Martial Arts column of the Monk Features table."
+    ]
+   },
+   {
+    "id": "monk-unarmored-defense",
+    "name": "Unarmored Defense",
+    "level": 1,
+    "text": [
+     "While you aren't wearing armor or wielding a Shield, your base Armor Class equals 10 plus your Dexterity and Wisdom modifiers."
+    ]
+   },
+   {
+    "id": "monk-flurry-of-blows",
+    "name": "Flurry of Blows",
+    "level": 2,
+    "text": [
+     "You can expend 1 Focus Point to make two Unarmed Strikes as a Bonus Action."
+    ]
+   },
+   {
+    "id": "monk-monks-focus",
+    "name": "Monk's Focus",
+    "level": 2,
+    "text": [
+     "Your focus and martial training allow you to harness a well of extraordinary energy within yourself. This energy is represented by Focus Points. Your Monk level determines the number of points you have, as shown in the Focus Points column of the Monk Features table.",
+     "You can expend these points to enhance or fuel certain Monk features. You start knowing three such features: Flurry of Blows, Patient Defense, and Step of the Wind, each of which is detailed below.",
+     "When you expend a Focus Point, it is unavailable until you finish a Short or Long Rest, at the end of which you regain all your expended points.",
+     "Some features that use Focus Points require your target to make a saving throw. The save DC equals 8 plus your Wisdom modifier and Proficiency Bonus."
+    ]
+   },
+   {
+    "id": "monk-patient-defense",
+    "name": "Patient Defense",
+    "level": 2,
+    "text": [
+     "You can take the Disengage action as a Bonus Action. Alternatively, you can expend 1 Focus Point to take both the Disengage and the Dodge actions as a Bonus Action."
+    ]
+   },
+   {
+    "id": "monk-step-of-the-wind",
+    "name": "Step of the Wind",
+    "level": 2,
+    "text": [
+     "You can take the Dash action as a Bonus Action. Alternatively, you can expend 1 Focus Point to take both the Disengage and Dash actions as a Bonus Action, and your jump distance is doubled for the turn."
+    ]
+   },
+   {
+    "id": "monk-unarmored-movement",
+    "name": "Unarmored Movement",
+    "level": 2,
+    "text": [
+     "Your speed increases by 10 feet while you aren't wearing armor or wielding a Shield. This bonus increases when you reach certain Monk levels, as shown on the Monk Features table."
+    ]
+   },
+   {
+    "id": "monk-uncanny-metabolism",
+    "name": "Uncanny Metabolism",
+    "level": 2,
+    "text": [
+     "When you roll Initiative, you can regain all expended Focus Points. When you do so, roll your Martial Arts die, and regain a number of Hit Points equal to your Monk level plus the number rolled.",
+     "Once you use this feature, you can't use it again until you finish a Long Rest."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "paladin",
+  "name": "Paladin",
+  "hitDie": 10,
+  "saves": [
+   "wis",
+   "cha"
+  ],
+  "primaryAbility": [
+   {
+    "str": true,
+    "cha": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "athletics",
+    "insight",
+    "intimidation",
+    "medicine",
+    "persuasion",
+    "religion"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple",
+   "martial"
+  ],
+  "armor": [
+   "light",
+   "medium",
+   "heavy",
+   "shield"
+  ],
+  "tools": [],
+  "equipmentA": [
+   {
+    "item": "chain-mail",
+    "quantity": 1
+   },
+   {
+    "item": "shield",
+    "quantity": 1
+   },
+   {
+    "item": "longsword",
+    "quantity": 1
+   },
+   {
+    "item": "javelin",
+    "quantity": 6
+   },
+   {
+    "item": "holy-symbol",
+    "quantity": 1
+   },
+   {
+    "item": "priests-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 900
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Chain Mail, Shield, Longsword, 6 Javelins, Holy Symbol, Priest's Pack, and 9 GP; or (B) 150 GP",
+  "table": {
+   "Channel Divinity": [
+    "0",
+    "0"
+   ],
+   "Prepared Spells": [
+    "2",
+    "3"
+   ]
+  },
+  "spellSlots": [
+   [
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    2,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "spellcastingAbility": "cha",
+  "casterProgression": "artificer",
+  "featProgression": [
+   {
+    "name": "Fighting Style",
+    "categories": [
+     "FS",
+     "FS:P"
+    ],
+    "level": 2,
+    "count": 1
+   }
+  ],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   2,
+   2
+  ],
+  "alwaysPrepared": [
+   {
+    "level": 2,
+    "spell": "divine-smite"
+   }
+  ],
+  "features": [
+   {
+    "id": "paladin-lay-on-hands",
+    "name": "Lay on Hands",
+    "level": 1,
+    "text": [
+     "Your blessed touch can heal wounds. You have a pool of healing power that replenishes when you finish a Long Rest. With that pool, you can restore a total number of Hit Points equal to five times your Paladin level.",
+     "As a Bonus Action, you can touch a creature (which could be yourself) and draw power from the pool of healing to restore a number of Hit Points to that creature, up to the maximum amount remaining in the pool.",
+     "You can also expend 5 Hit Points from the pool of healing power to remove the Poisoned condition from the creature; those points don't also restore Hit Points to the creature."
+    ]
+   },
+   {
+    "id": "paladin-spellcasting",
+    "name": "Spellcasting",
+    "level": 1,
+    "text": [
+     "You have learned to cast spells through prayer and meditation. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Paladin spells, which appear in the Paladin spell list later in the class's description.",
+     "Spell Slots. The Paladin Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.",
+     "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose two level 1 Paladin spells. Heroism and Searing Smite are recommended.",
+     "The number of spells on your list increases as you gain Paladin levels, as shown in the Prepared Spells column of the Paladin Features table. Whenever that number increases, choose additional Paladin spells until the number of spells on your list matches the number in the Paladin Features table. The chosen spells must be of a level for which you have spell slots. For example, if you're a level 5 Paladin, your list of prepared spells can include six Paladin spells of level 1 or 2 in any combination.",
+     "If another Paladin feature gives you spells that you always have prepared, those spells don't count against the number of spells you can prepare with this feature, but those spells otherwise count as Paladin spells for you.",
+     "Changing Your Prepared Spells. Whenever you finish a Long Rest, you can replace one spell on your list with another Paladin spell for which you have spell slots.",
+     "Spellcasting Ability. Charisma is your spellcasting ability for your Paladin spells.",
+     "Spellcasting Focus. You can use a Holy Symbol as a Spellcasting Focus for your Paladin spells."
+    ]
+   },
+   {
+    "id": "paladin-weapon-mastery",
+    "name": "Weapon Mastery",
+    "level": 1,
+    "text": [
+     "Your training with weapons allows you to use the mastery properties of two kinds of weapons of your choice with which you have proficiency, such as Longswords and Javelins.",
+     "Whenever you finish a Long Rest, you can change the kinds of weapons you chose. For example, you could switch to using the mastery properties of Halberds and Flails."
+    ]
+   },
+   {
+    "id": "paladin-fighting-style",
+    "name": "Fighting Style",
+    "level": 2,
+    "text": [
+     "You gain a Fighting Style feat of your choice. Instead of choosing one of those feats, you can choose the option below."
+    ]
+   },
+   {
+    "id": "paladin-paladins-smite",
+    "name": "Paladin's Smite",
+    "level": 2,
+    "text": [
+     "You always have the Divine Smite spell prepared. In addition, you can cast it without expending a spell slot, but you must finish a Long Rest before you can cast it in this way again."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ranger",
+  "name": "Ranger",
+  "hitDie": 10,
+  "saves": [
+   "str",
+   "dex"
+  ],
+  "primaryAbility": [
+   {
+    "dex": true,
+    "wis": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "animal-handling",
+    "athletics",
+    "insight",
+    "investigation",
+    "nature",
+    "perception",
+    "stealth",
+    "survival"
+   ],
+   "count": 3
+  },
+  "weapons": [
+   "simple",
+   "martial"
+  ],
+  "armor": [
+   "light",
+   "medium",
+   "shield"
+  ],
+  "tools": [],
+  "equipmentA": [
+   {
+    "item": "studded-leather-armor",
+    "quantity": 1
+   },
+   {
+    "item": "scimitar",
+    "quantity": 1
+   },
+   {
+    "item": "shortsword",
+    "quantity": 1
+   },
+   {
+    "item": "longbow",
+    "quantity": 1
+   },
+   {
+    "item": "arrows-20",
+    "quantity": 1
+   },
+   {
+    "item": "quiver",
+    "quantity": 1
+   },
+   {
+    "item": "sprig-of-mistletoe",
+    "quantity": 1
+   },
+   {
+    "item": "explorers-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 700
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Studded Leather Armor, Scimitar, Shortsword, Longbow, 20 Arrows, Quiver, Druidic Focus (sprig of mistletoe), Explorer's Pack, and 7 GP; or (B) 150 GP",
+  "table": {
+   "Favored Enemy": [
+    "2",
+    "2"
+   ],
+   "Prepared Spells": [
+    "2",
+    "3"
+   ]
+  },
+  "spellSlots": [
+   [
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    2,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "spellcastingAbility": "wis",
+  "casterProgression": "artificer",
+  "featProgression": [
+   {
+    "name": "Fighting Style",
+    "categories": [
+     "FS",
+     "FS:R"
+    ],
+    "level": 2,
+    "count": 1
+   }
+  ],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   2,
+   2
+  ],
+  "alwaysPrepared": [
+   {
+    "level": 1,
+    "spell": "hunters-mark"
+   }
+  ],
+  "features": [
+   {
+    "id": "ranger-favored-enemy",
+    "name": "Favored Enemy",
+    "level": 1,
+    "text": [
+     "You always have the Hunter's Mark spell prepared. You can cast it twice without expending a spell slot, and you regain all expended uses of this ability when you finish a Long Rest.",
+     "The number of times you can cast the spell without a spell slot increases when you reach certain Ranger levels, as shown in the Favored Enemy column of the Ranger Features table."
+    ]
+   },
+   {
+    "id": "ranger-spellcasting",
+    "name": "Spellcasting",
+    "level": 1,
+    "text": [
+     "You have learned to channel the magical essence of nature to cast spells. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Ranger spells, which appear in the Ranger spell list later in the class's description.",
+     "Spell Slots. The Ranger Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.",
+     "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose two level 1 Ranger spells. Cure Wounds and Ensnaring Strike are recommended.",
+     "The number of spells on your list increases as you gain Ranger levels, as shown in the Prepared Spells column of the Ranger Features table. Whenever that number increases, choose additional Ranger spells until the number of spells on your list matches the number in the Ranger Features table. The chosen spells must be of a level for which you have spell slots. For example, if you're a level 5 Ranger, your list of prepared spells can include six Ranger spells of level 1 or 2 in any combination.",
+     "If another Ranger feature gives you spells that you always have prepared, those spells don't count against the number of spells you can prepare with this feature, but those spells otherwise count as Ranger spells for you.",
+     "Changing Your Prepared Spells. Whenever you finish a Long Rest, you can replace one spell on your list with another Ranger spell for which you have spell slots.",
+     "Spellcasting Ability. Wisdom is your spellcasting ability for your Ranger spells.",
+     "Spellcasting Focus. You can use a Druidic Focus as a Spellcasting Focus for your Ranger spells."
+    ]
+   },
+   {
+    "id": "ranger-weapon-mastery",
+    "name": "Weapon Mastery",
+    "level": 1,
+    "text": [
+     "Your training with weapons allows you to use the mastery properties of two kinds of weapons of your choice with which you have proficiency, such as Longbows and Shortswords.",
+     "Whenever you finish a Long Rest, you can change the kinds of weapons you chose. For example, you could switch to using the mastery properties of Scimitars and Longswords."
+    ]
+   },
+   {
+    "id": "ranger-deft-explorer",
+    "name": "Deft Explorer",
+    "level": 2,
+    "text": [
+     "Thanks to your travels, you gain the following benefits.",
+     "Expertise. Choose one of your skill proficiencies with which you lack Expertise. You gain Expertise in that skill.",
+     "Languages. You know two languages of your choice from the language tables in chapter 2."
+    ]
+   },
+   {
+    "id": "ranger-fighting-style",
+    "name": "Fighting Style",
+    "level": 2,
+    "text": [
+     "You gain a Fighting Style feat of your choice. Instead of choosing one of those feats, you can choose the option below."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rogue",
+  "name": "Rogue",
+  "hitDie": 8,
+  "saves": [
+   "dex",
+   "int"
+  ],
+  "primaryAbility": [
+   {
+    "dex": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "acrobatics",
+    "athletics",
+    "deception",
+    "insight",
+    "intimidation",
+    "investigation",
+    "perception",
+    "persuasion",
+    "sleight-of-hand",
+    "stealth"
+   ],
+   "count": 4
+  },
+  "weapons": [
+   "simple",
+   "Martial weapons that have the Finesse or Light property"
+  ],
+  "armor": [
+   "light"
+  ],
+  "tools": [
+   "Thieves' Tools"
+  ],
+  "equipmentA": [
+   {
+    "item": "leather-armor",
+    "quantity": 1
+   },
+   {
+    "item": "dagger",
+    "quantity": 2
+   },
+   {
+    "item": "shortsword",
+    "quantity": 1
+   },
+   {
+    "item": "shortbow",
+    "quantity": 1
+   },
+   {
+    "item": "arrows-20",
+    "quantity": 1
+   },
+   {
+    "item": "quiver",
+    "quantity": 1
+   },
+   {
+    "item": "thieves-tools",
+    "quantity": 1
+   },
+   {
+    "item": "burglars-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 800
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Leather Armor, 2 Daggers, Shortsword, Shortbow, 20 Arrows, Quiver, Thieves' Tools, Burglar's Pack, and 8 GP; or (B) 100 GP",
+  "table": {
+   "Sneak Attack": [
+    "1d6",
+    "1d6"
+   ]
+  },
+  "featProgression": [],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   2,
+   2
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "rogue-expertise",
+    "name": "Expertise",
+    "level": 1,
+    "text": [
+     "You gain Expertise in two of your skill proficiencies of your choice. Sleight of Hand and Stealth are recommended if you have proficiency in them.",
+     "At Rogue level 6, you gain Expertise in two more of your skill proficiencies of your choice."
+    ]
+   },
+   {
+    "id": "rogue-sneak-attack",
+    "name": "Sneak Attack",
+    "level": 1,
+    "text": [
+     "You know how to strike subtly and exploit a foe's distraction. Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack roll if you have Advantage on the roll and the attack uses a Finesse or a Ranged weapon. The extra damage's type is the same as the weapon's type.",
+     "You don't need Advantage on the attack roll if at least one of your allies is within 5 feet of the target, the ally doesn't have the Incapacitated condition, and you don't have Disadvantage on the attack roll.",
+     "The extra damage increases as you gain Rogue levels, as shown in the Sneak Attack column of the Rogue Features table."
+    ]
+   },
+   {
+    "id": "rogue-thieves-cant",
+    "name": "Thieves' Cant",
+    "level": 1,
+    "text": [
+     "You picked up various languages in the communities where you plied your roguish talents. You know Thieves' Cant and one other language of your choice, which you choose from the language tables in chapter 2."
+    ]
+   },
+   {
+    "id": "rogue-weapon-mastery",
+    "name": "Weapon Mastery",
+    "level": 1,
+    "text": [
+     "Your training with weapons allows you to use the mastery properties of two kinds of weapons of your choice with which you have proficiency, such as Daggers and Shortbows.",
+     "Whenever you finish a Long Rest, you can change the kinds of weapons you chose. For example, you could switch to using the mastery properties of Scimitars and Shortswords."
+    ]
+   },
+   {
+    "id": "rogue-cunning-action",
+    "name": "Cunning Action",
+    "level": 2,
+    "text": [
+     "Your quick thinking and agility allow you to move and act quickly. On your turn, you can take one of the following actions as a Bonus Action: Dash, Disengage, or Hide."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sorcerer",
+  "name": "Sorcerer",
+  "hitDie": 6,
+  "saves": [
+   "con",
+   "cha"
+  ],
+  "primaryAbility": [
+   {
+    "cha": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "arcana",
+    "deception",
+    "insight",
+    "intimidation",
+    "persuasion",
+    "religion"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple"
+  ],
+  "armor": [],
+  "tools": [],
+  "equipmentA": [
+   {
+    "item": "spear",
+    "quantity": 1
+   },
+   {
+    "item": "dagger",
+    "quantity": 2
+   },
+   {
+    "item": "crystal",
+    "quantity": 1
+   },
+   {
+    "item": "dungeoneers-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 2800
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Spear, 2 Daggers, Arcane Focus (crystal), Dungeoneer's Pack, and 28 GP; or (B) 50 GP",
+  "table": {
+   "Sorcery Points": [
+    "0",
+    "2"
+   ],
+   "Cantrips": [
+    "4",
+    "4"
+   ],
+   "Prepared Spells": [
+    "2",
+    "4"
+   ]
+  },
+  "spellSlots": [
+   [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "spellcastingAbility": "cha",
+  "casterProgression": "full",
+  "featProgression": [],
+  "optionalFeatureProgression": [
+   {
+    "name": "Metamagic",
+    "featureTypes": [
+     "MM"
+    ],
+    "counts": [
+     0,
+     2
+    ]
+   }
+  ],
+  "masteries": [
+   0,
+   0
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "sorcerer-innate-sorcery",
+    "name": "Innate Sorcery",
+    "level": 1,
+    "text": [
+     "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:",
+     "• The spell save DC of your Sorcerer spells increases by 1.",
+     "• You have Advantage on the attack rolls of Sorcerer spells you cast.",
+     "You can use this feature twice, and you regain all expended uses of it when you finish a Long Rest."
+    ]
+   },
+   {
+    "id": "sorcerer-spellcasting",
+    "name": "Spellcasting",
+    "level": 1,
+    "text": [
+     "Drawing from your innate magic, you can cast spells. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Sorcerer spells, which appear in the Sorcerer spell list later in the class's description.",
+     "Cantrips. You know four Sorcerer cantrips of your choice. Light, Prestidigitation, Shocking Grasp, and Sorcerous Burst are recommended. Whenever you gain a Sorcerer level, you can replace one of your cantrips from this feature with another Sorcerer cantrip of your choice.",
+     "When you reach Sorcerer levels 4 and 10, you learn another Sorcerer cantrip of your choice, as shown in the Cantrips column of the Sorcerer Features table.",
+     "Spell Slots. The Sorcerer Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.",
+     "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose two level 1 Sorcerer spells. Burning Hands and Detect Magic are recommended.",
+     "The number of spells on your list increases as you gain Sorcerer levels, as shown in the Prepared Spells column of the Sorcerer Features table. Whenever that number increases, choose additional Sorcerer spells until the number of spells on your list matches the number in the Sorcerer Features table. The chosen spells must be of a level for which you have spell slots. For example, if you're a level 3 Sorcerer, your list of prepared spells can include six Sorcerer spells of level 1 or 2 in any combination.",
+     "If another Sorcerer feature gives you spells that you always have prepared, those spells don't count against the number of spells you can prepare with this feature, but those spells otherwise count as Sorcerer spells for you.",
+     "Changing Your Prepared Spells. Whenever you gain a Sorcerer level, you can replace one spell on your list with another Sorcerer spell for which you have spell slots.",
+     "Spellcasting Ability. Charisma is your spellcasting ability for your Sorcerer spells.",
+     "Spellcasting Focus. You can use an Arcane Focus as a Spellcasting Focus for your Sorcerer spells."
+    ]
+   },
+   {
+    "id": "sorcerer-font-of-magic",
+    "name": "Font of Magic",
+    "level": 2,
+    "text": [
+     "You can tap into the wellspring of magic within yourself. This wellspring is represented by Sorcery Points, which allow you to create a variety of magical effects.",
+     "You have 2 Sorcery Points, and you gain more as you reach higher levels, as shown in the Sorcery Points column of the Sorcerer Features table. You can't have more Sorcery Points than the number shown in the table for your level. You regain all expended Sorcery Points when you finish a Long Rest.",
+     "You can use your Sorcery Points to fuel the options below, along with other features, such as Metamagic, that use those points.",
+     "Converting Spell Slots to Sorcery Points. You can expend a spell slot to gain a number of Sorcery Points equal to the slot's level (no action required).",
+     "Creating Spell Slots. As a Bonus Action, you can transform unexpended Sorcery Points into one spell slot. The Creating Spell Slots table shows the cost of creating a spell slot of a given level, and it lists the minimum Sorcerer level you must be to create a slot. You can create a spell slot no higher than level 5.",
+     "Any spell slot you create with this feature vanishes when you finish a Long Rest.",
+     "Spell Slot Level | Sorcery Point Cost | Min. Sorcerer Level",
+     "1 | 2 | 2",
+     "2 | 3 | 3",
+     "3 | 5 | 5",
+     "4 | 6 | 7",
+     "5 | 7 | 9"
+    ]
+   },
+   {
+    "id": "sorcerer-metamagic",
+    "name": "Metamagic",
+    "level": 2,
+    "text": [
+     "Because your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from \"Metamagic Options\" later in this class's description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.",
+     "You can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.",
+     "Whenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don't know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17."
+    ]
+   },
+   {
+    "id": "sorcerer-metamagic-options",
+    "name": "Metamagic Options",
+    "level": 2,
+    "text": [
+     "The following options are available to your Metamagic feature. The options are presented in alphabetical order."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "warlock",
+  "name": "Warlock",
+  "hitDie": 8,
+  "saves": [
+   "wis",
+   "cha"
+  ],
+  "primaryAbility": [
+   {
+    "cha": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "arcana",
+    "deception",
+    "history",
+    "intimidation",
+    "investigation",
+    "nature",
+    "religion"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple"
+  ],
+  "armor": [
+   "light"
+  ],
+  "tools": [],
+  "equipmentA": [
+   {
+    "item": "leather-armor",
+    "quantity": 1
+   },
+   {
+    "item": "sickle",
+    "quantity": 1
+   },
+   {
+    "item": "dagger",
+    "quantity": 2
+   },
+   {
+    "item": "orb",
+    "quantity": 1
+   },
+   {
+    "item": "book",
+    "quantity": 1
+   },
+   {
+    "item": "scholars-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 1500
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) Leather Armor, Sickle, 2 Daggers, Arcane Focus (orb), Book (occult lore), Scholar's Pack, and 15 GP; or (B) 100 GP",
+  "table": {
+   "Invocations": [
+    "1",
+    "3"
+   ],
+   "Cantrips": [
+    "2",
+    "2"
+   ],
+   "Prepared Spells": [
+    "2",
+    "3"
+   ],
+   "Spell Slots": [
+    "1",
+    "2"
+   ],
+   "Slot Level": [
+    "1",
+    "1"
+   ]
+  },
+  "spellcastingAbility": "cha",
+  "casterProgression": "pact",
+  "featProgression": [],
+  "optionalFeatureProgression": [
+   {
+    "name": "Eldritch Invocations",
+    "featureTypes": [
+     "EI"
+    ],
+    "counts": [
+     1,
+     3
+    ]
+   }
+  ],
+  "masteries": [
+   0,
+   0
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "warlock-eldritch-invocation-options",
+    "name": "Eldritch Invocation Options",
+    "level": 1,
+    "text": [
+     "Eldritch Invocation options appear in alphabetical order."
+    ]
+   },
+   {
+    "id": "warlock-eldritch-invocations",
+    "name": "Eldritch Invocations",
+    "level": 1,
+    "text": [
+     "You have unearthed Eldritch Invocations, pieces of forbidden knowledge that imbue you with an abiding magical ability or other lessons. You gain one invocation of your choice, such as Pact of the Tome. Invocations are described in the \"Eldritch Invocation Options\" section later in this class's description.",
+     "Prerequisites. If an invocation has a prerequisite, you must meet it to learn that invocation. For example, if an invocation requires you to be a level 5+ Warlock, you can select the invocation once you reach Warlock level 5.",
+     "Replacing and Gaining Invocations. Whenever you gain a Warlock level, you can replace one of your invocations with another one for which you qualify. You can't replace an invocation if it's a prerequisite for another invocation that you have.",
+     "When you gain certain Warlock levels, you gain more invocations of your choice, as shown in the Invocations column of the Warlock Features table.",
+     "You can't pick the same invocation more than once unless its description says otherwise."
+    ]
+   },
+   {
+    "id": "warlock-pact-magic",
+    "name": "Pact Magic",
+    "level": 1,
+    "text": [
+     "Through occult ceremony, you have formed a pact with a mysterious entity to gain magical powers. The entity is a voice in the shadows—its identity unclear—but its boon to you is concrete: the ability to cast spells. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Warlock spells, which appear in the Warlock spell list later in the class's description.",
+     "Cantrips. You know two Warlock cantrips of your choice. Eldritch Blast and Prestidigitation are recommended. Whenever you gain a Warlock level, you can replace one of your cantrips from this feature with another Warlock cantrip of your choice.",
+     "When you reach Warlock levels 4 and 10, you learn another Warlock cantrip of your choice, as shown in the Cantrips column of the Warlock Features table.",
+     "Spell Slots. The Warlock Features table shows how many spell slots you have to cast your Warlock spells of levels 1–5. The table also shows the level of those slots, all of which are the same level. You regain all expended Pact Magic spell slots when you finish a Short or Long Rest.",
+     "For example, when you're a level 5 Warlock, you have two level 3 spell slots. To cast the level 1 spell Witch Bolt, you must spend one of those slots, and you cast it as a level 3 spell.",
+     "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose two level 1 Warlock spells. Charm Person and Hex are recommended.",
+     "The number of spells on your list increases as you gain Warlock levels, as shown in the Prepared Spells column of the Warlock Features table. Whenever that number increases, choose additional Warlock spells until the number of spells on your list matches the number in the table. The chosen spells must be of a level no higher than what's shown in the table's Slot Level column for your level. When you reach level 6, for example, you learn a new Warlock spell, which can be of levels 1–3.",
+     "If another Warlock feature gives you spells that you always have prepared, those spells don't count against the number of spells you can prepare with this feature, but those spells otherwise count as Warlock spells for you.",
+     "Changing Your Prepared Spells. Whenever you gain a Warlock level, you can replace one spell on your list with another Warlock spell of an eligible level.",
+     "Spellcasting Ability. Charisma is the spellcasting ability for your Warlock spells.",
+     "Spellcasting Focus. You can use an Arcane Focus as a Spellcasting Focus for your Warlock spells."
+    ]
+   },
+   {
+    "id": "warlock-magical-cunning",
+    "name": "Magical Cunning",
+    "level": 2,
+    "text": [
+     "You can perform an esoteric rite for 1 minute. At the end of it, you regain expended Pact Magic spell slots but no more than a number equal to half your maximum (round up). Once you use this feature, you can't do so again until you finish a Long Rest."
+    ]
+   }
+  ]
+ },
+ {
+  "id": "wizard",
+  "name": "Wizard",
+  "hitDie": 6,
+  "saves": [
+   "int",
+   "wis"
+  ],
+  "primaryAbility": [
+   {
+    "int": true
+   }
+  ],
+  "skillChoice": {
+   "from": [
+    "arcana",
+    "history",
+    "insight",
+    "investigation",
+    "medicine",
+    "nature",
+    "religion"
+   ],
+   "count": 2
+  },
+  "weapons": [
+   "simple"
+  ],
+  "armor": [],
+  "tools": [],
+  "equipmentA": [
+   {
+    "item": "dagger",
+    "quantity": 2
+   },
+   {
+    "item": "quarterstaff",
+    "quantity": 1
+   },
+   {
+    "item": "robe",
+    "quantity": 1
+   },
+   {
+    "special": "Spellbook",
+    "quantity": 1
+   },
+   {
+    "item": "scholars-pack",
+    "quantity": 1
+   },
+   {
+    "valueCp": 500
+   }
+  ],
+  "equipmentText": "Choose A or B: (A) 2 Daggers, Arcane Focus (Quarterstaff), Robe, Spellbook, Scholar's Pack, and 5 GP; or (B) 55 GP",
+  "table": {
+   "Cantrips": [
+    "3",
+    "3"
+   ],
+   "Prepared Spells": [
+    "4",
+    "5"
+   ]
+  },
+  "spellSlots": [
+   [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "spellcastingAbility": "int",
+  "casterProgression": "full",
+  "featProgression": [],
+  "optionalFeatureProgression": [],
+  "masteries": [
+   0,
+   0
+  ],
+  "alwaysPrepared": [],
+  "features": [
+   {
+    "id": "wizard-arcane-recovery",
+    "name": "Arcane Recovery",
+    "level": 1,
+    "text": [
+     "You can regain some of your magical energy by studying your spellbook. When you finish a Short Rest, you can choose expended spell slots to recover. The spell slots can have a combined level equal to no more than half your Wizard level (round up), and none of the slots can be level 6 or higher. For example, if you're a level 4 Wizard, you can recover up to two levels' worth of spell slots, regaining either one level 2 spell slot or two level 1 spell slots.",
+     "Once you use this feature, you can't do so again until you finish a Long Rest."
+    ]
+   },
+   {
+    "id": "wizard-ritual-adept",
+    "name": "Ritual Adept",
+    "level": 1,
+    "text": [
+     "You can cast any spell as a Ritual if that spell has the Ritual tag and the spell is in your spellbook. You needn't have the spell prepared, but you must read from the book to cast a spell in this way."
+    ]
+   },
+   {
+    "id": "wizard-spellcasting",
+    "name": "Spellcasting",
+    "level": 1,
+    "text": [
+     "As a student of arcane magic, you have learned to cast spells. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Wizard spells, which appear in the Wizard spell list later in the class's description.",
+     "Cantrips. You know three Wizard cantrips of your choice. Light, Mage Hand, and Ray of Frost are recommended. Whenever you finish a Long Rest, you can replace one of your cantrips from this feature with another Wizard cantrip of your choice.",
+     "When you reach Wizard levels 4 and 10, you learn another Wizard cantrip of your choice, as shown in the Cantrips column of the Wizard Features table.",
+     "Spellbook. Your wizardly apprenticeship culminated in the creation of a unique book: your spellbook. It is a Tiny object that weighs 3 pounds, contains 100 pages, and can be read only by you or someone casting Identify. You determine the book's appearance and materials, such as a gilt-edged tome or a collection of vellum bound with twine.",
+     "The book contains the level 1+ spells you know. It starts with six level 1 Wizard spells of your choice. Detect Magic, Feather Fall, Mage Armor, Magic Missile, Sleep, and Thunderwave are recommended.",
+     "Whenever you gain a Wizard level after 1, add two Wizard spells of your choice to your spellbook. Each of these spells must be of a level for which you have spell slots, as shown in the Wizard Features table. The spells are the culmination of arcane research you do regularly.",
+     "Spell Slots. The Wizard Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.",
+     "Prepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To do so, choose four spells from your spellbook. The chosen spells must be of a level for which you have spell slots.",
+     "The number of spells on your list increases as you gain Wizard levels, as shown in the Prepared Spells column of the Wizard Features table. Whenever that number increases, choose additional Wizard spells until the number of spells on your list matches the number in the table. The chosen spells must be of a level for which you have spell slots. For example, if you're a level 3 Wizard, your list of prepared spells can include six spells of levels 1 and 2 in any combination, chosen from your spellbook.",
+     "If another Wizard feature gives you spells that you always have prepared, those spells don't count against the number of spells you can prepare with this feature, but those spells otherwise count as Wizard spells for you.",
+     "Changing Your Prepared Spells. Whenever you finish a Long Rest, you can change your list of prepared spells, replacing any of the spells there with spells from your spellbook.",
+     "Spellcasting Ability. Intelligence is your spellcasting ability for your Wizard spells.",
+     "Spellcasting Focus. You can use an Arcane Focus or your spellbook as a Spellcasting Focus for your Wizard spells."
+    ]
+   },
+   {
+    "id": "wizard-scholar",
+    "name": "Scholar",
+    "level": 2,
+    "text": [
+     "While studying magic, you also specialized in another field of study. Choose one of the following skills in which you have proficiency: Arcana, History, Investigation, Medicine, Nature, or Religion. You have Expertise in the chosen skill."
+    ]
+   }
+  ]
+ }
+]

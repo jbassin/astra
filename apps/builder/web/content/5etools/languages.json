@@ -1,0 +1,97 @@
+[
+ {
+  "id": "abyssal",
+  "name": "Abyssal",
+  "type": "rare"
+ },
+ {
+  "id": "celestial",
+  "name": "Celestial",
+  "type": "rare"
+ },
+ {
+  "id": "common",
+  "name": "Common",
+  "type": "standard"
+ },
+ {
+  "id": "common-sign-language",
+  "name": "Common Sign Language",
+  "type": "standard"
+ },
+ {
+  "id": "deep-speech",
+  "name": "Deep Speech",
+  "type": "rare"
+ },
+ {
+  "id": "draconic",
+  "name": "Draconic",
+  "type": "standard"
+ },
+ {
+  "id": "druidic",
+  "name": "Druidic",
+  "type": "rare"
+ },
+ {
+  "id": "dwarvish",
+  "name": "Dwarvish",
+  "type": "standard"
+ },
+ {
+  "id": "elvish",
+  "name": "Elvish",
+  "type": "standard"
+ },
+ {
+  "id": "giant",
+  "name": "Giant",
+  "type": "standard"
+ },
+ {
+  "id": "gnomish",
+  "name": "Gnomish",
+  "type": "standard"
+ },
+ {
+  "id": "goblin",
+  "name": "Goblin",
+  "type": "standard"
+ },
+ {
+  "id": "halfling",
+  "name": "Halfling",
+  "type": "standard"
+ },
+ {
+  "id": "infernal",
+  "name": "Infernal",
+  "type": "rare"
+ },
+ {
+  "id": "orc",
+  "name": "Orc",
+  "type": "standard"
+ },
+ {
+  "id": "primordial",
+  "name": "Primordial",
+  "type": "rare"
+ },
+ {
+  "id": "sylvan",
+  "name": "Sylvan",
+  "type": "rare"
+ },
+ {
+  "id": "thieves-cant",
+  "name": "Thieves' Cant",
+  "type": "rare"
+ },
+ {
+  "id": "undercommon",
+  "name": "Undercommon",
+  "type": "rare"
+ }
+]
