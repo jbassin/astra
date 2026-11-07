@@ -105,8 +105,10 @@ function SpeciesOption({ answers, update }: ScreenProps) {
           title={c.name}
           hue={classHue(answers)}
           icon={<Icon name={SPECIES_ICON[species.id]} className="emblem-icon" />}
+          more={<p>{c.summary}</p>}
+          moreLabel="Read all of it"
         >
-          <span className="choice-blurb">{c.summary}</span>
+          <span className="choice-blurb">{c.gist}</span>
         </Choice>
       ))}
     </ChoiceGroup>

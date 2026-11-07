@@ -7,8 +7,9 @@
 // imported level 1–2 feature or species trait with no summary (or explicit `hidden` reason), a
 // shortlist smaller than its pick count, a spell that isn't on the class's list, a pick count
 // the class table doesn't give, a shown feature, trait, option or feat with no activation, or a
-// spell whose rules text rolls damage or healing dice its sheet entry doesn't carry. Pick
-// counts come from the class table, never from here.
+// spell whose rules text rolls damage or healing dice its sheet entry doesn't carry, or a
+// spell, class option or species option (anything a player picks from cards) whose gist is
+// missing or longer than GIST_MAX. Pick counts come from the class table, never from here.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -23,8 +24,8 @@ import { LANGUAGE_FILL, TOOL_FALLBACK } from "../content/general";
 import { MASTERY_SUMMARIES } from "../content/masteries";
 import { OPTIONS } from "../content/options";
 import { SPECIES } from "../content/species";
-import { CANTRIP_SUMMARIES } from "../content/spells/cantrips";
-import { LEVEL1_SUMMARIES } from "../content/spells/level1";
+import { CANTRIPS } from "../content/spells/cantrips";
+import { LEVEL1_SPELLS } from "../content/spells/level1";
 import { SPELL_ROLLS } from "../content/spells/rolls";
 import { ARCHETYPES } from "../src/domain/character";
 import {
@@ -43,6 +44,7 @@ import {
   type DamageOn,
   type EquipmentLine,
   type FeatContent,
+  GIST_MAX,
   type ItemContent,
   type OptionContent,
   type OptionGroupContent,
@@ -65,6 +67,7 @@ import type {
   CuratedFeat,
   CuratedOption,
   CuratedSpecies,
+  CuratedSpell,
   CuratedSpellPick,
   CuratedSpellRoll,
   CuratedUses,
@@ -76,6 +79,7 @@ import {
   type ImportedEquipment,
 } from "../src/domain/imported";
 import { iconSource } from "./icons";
+import { unshownRolls } from "./spell-rolls";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
@@ -97,36 +101,6 @@ function overlap(a: SpellChoice[], b: SpellChoice[], cap: number): number {
   return Math.min(cap, a.filter((x) => b.some((y) => y.id === x.id)).length);
 }
 
-/** Dice like "2d10" or "1d4 + 1". */
-const DICE = /\b\d+d\d+(?: \+ \d+)?\b/g;
-/** A sentence about damage or healing (not Bless's 1d4 on a roll). */
-const DAMAGE_OR_HEALING = /\bdamage\b|\bHit Points?\b|\bregains?\b|\brestores?\b/i;
-
-/**
- * The damage and healing rolls a spell's sheet entry leaves out: every roll in a sentence of
- * its rules text that deals damage or heals, and every `extra` roll (the importer's structured
- * ones), must appear in its damage, healing or roll note. Empty when nothing is missing.
- */
-export function unshownRolls(
-  s: Pick<SpellContent, "rulesText" | "damage" | "healing" | "rollNote">,
-  extra: string[] = [],
-): string[] {
-  const shown = [s.damage, s.healing, s.rollNote].filter(Boolean).join(" | ");
-  const shownDice = new Set(shown.match(DICE) ?? []);
-  const wanted = new Set(extra);
-  for (const sentence of s.rulesText.join(" ").split(/(?<=[.!?])\s+/)) {
-    if (!DAMAGE_OR_HEALING.test(sentence)) continue;
-    for (const d of sentence.match(DICE) ?? []) wanted.add(d);
-  }
-  return [...wanted]
-    .filter((d) => !shownDice.has(d))
-    .map(
-      (d) =>
-        `its rules text rolls ${d} for damage or healing, but the sheet shows no ${d} ` +
-        "(add it to content/spells/rolls.ts as a note)",
-    );
-}
-
 /** Reads the imported JSON from content/5etools/. */
 export function loadImported(dir = IMPORT_DIR): ImportedData {
   const out: Partial<Record<keyof ImportedData, unknown>> = {};
@@ -144,8 +118,8 @@ export interface Curation {
   feats: Record<string, CuratedFeat>;
   options: Record<string, CuratedOption>;
   masteries: Record<string, string>;
-  cantrips: Record<string, string>;
-  level1: Record<string, string>;
+  cantrips: Record<string, CuratedSpell>;
+  level1: Record<string, CuratedSpell>;
   spellRolls: Record<string, CuratedSpellRoll>;
 }
 
@@ -156,8 +130,8 @@ export const CURATION: Curation = {
   feats: FEATS,
   options: OPTIONS,
   masteries: MASTERY_SUMMARIES,
-  cantrips: CANTRIP_SUMMARIES,
-  level1: LEVEL1_SUMMARIES,
+  cantrips: CANTRIPS,
+  level1: LEVEL1_SPELLS,
   spellRolls: SPELL_ROLLS,
 };
 
@@ -212,6 +186,13 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       return "passive";
     }
     return a;
+  }
+
+  /** A pick card's gist, checked: a missing or over-long one fails the build. */
+  function gist(g: string | undefined, ctx: string): string {
+    if (!g?.trim()) fail(`${ctx}: no gist (one short line for its pick card)`);
+    else if (g.length > GIST_MAX) fail(`${ctx}: gist has ${g.length} characters (max ${GIST_MAX})`);
+    return g ?? "";
   }
 
   function spellChoices(
@@ -322,6 +303,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       id,
       name,
       kind: o.kind,
+      gist: gist(o.gist, ctx),
       summary: o.summary,
       rulesText,
       activation: activation(o.activation, ctx),
@@ -662,6 +644,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
         return {
           id: o.id,
           name: o.name,
+          gist: c ? gist(c.gist, `${ctx} ${o.id}`) : "",
           summary: c?.summary ?? "",
           rulesText: o.text,
           activation: c ? activation(c.activation, `${ctx} ${o.id}`) : ("passive" as const),
@@ -791,7 +774,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
 
   // ---- spells, items, the rest ----------------------------------------------------------------
 
-  const summaries: Record<string, string> = { ...curation.cantrips, ...curation.level1 };
+  const summaries: Record<string, CuratedSpell> = { ...curation.cantrips, ...curation.level1 };
   const spells: Record<string, SpellContent> = {};
   for (const id of [...usedSpells].sort()) {
     const s = importedSpells.get(id);
@@ -800,7 +783,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       continue;
     }
     const ctx = `spell ${id}`;
-    const summary = summaries[id];
+    const summary = summaries[id]?.summary;
     if (!summary) fail(`spell "${id}" has no summary in content/spells/`);
     const text = s.text.join(" ");
     const roll = curation.spellRolls[id] ?? {};
@@ -832,6 +815,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
     const out: SpellContent = {
       id,
       name: s.name,
+      gist: gist(summaries[id]?.gist, ctx),
       summary: summary ?? "",
       rulesText: s.text,
       activation: spellActivation,

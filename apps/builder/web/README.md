@@ -69,8 +69,8 @@ the sheet banner and its cards. Phone first: most players use a phone.
   `--hue-wash` and `--hue-line` (`src/styles/tokens.css`), in OKLCH, tuned per theme.
 - **Phone first:** on a phone the quest path is a compact bar ("3 / 8", one segment per
   screen) that opens the steps as a list; from 48rem the waypoints run across the page. Pick
-  cards show a one-line gist (clamped to two lines) with the full rules behind "More", and each
-  list's name and "Pick N" count stick to the top while it scrolls. The sheet gets a sticky jump
+  cards show their curated gist (clamped to two lines) with the full summary behind "More", and
+  each list's name and "Pick N" count stick to the top while it scrolls. The sheet gets a sticky jump
   bar (Turn, Spells, Abilities, Gear, Cards) and folds "Always on" and the cards until asked;
   a laptop and paper always show everything. The bottom bar is fixed, except at the end of the
   sheet on a laptop.
@@ -100,14 +100,20 @@ layers, each feeding the next:
    - `species.ts`, `backgrounds.ts`, `feats.ts`, `options.ts`, `masteries.ts`, `spells/*.ts`:
      one-liners and summaries; Magic Initiate shortlists live with their background;
      `spells/rolls.ts` holds what a spell's roll line can't read from the data.
+   - **Gists:** every spell (`spells/*.ts`), class option (`options.ts`) and species sub-option
+     (`species.ts`) also carries a `gist`, the one line its pick card shows. Write one short,
+     vivid, plain sentence of what it does for the player (aim for 70 characters; the build stops
+     at `GIST_MAX`, 90). Leave out what the card's chips already say (casting time, range, the
+     roll, the save), and state a number only when it matches the rules text: "Three glowing
+     darts that always hit.", "Snap up a barrier: +5 AC until your next turn."
    - `general.ts`: the language and tool fallback orders.
 3. **Build** (`scripts/build-content.ts`, run by vite, vitest and `typecheck`): joins the two into
    `src/generated/content.ts` (gitignored), typed by `src/domain/contentTypes.ts`. It fails,
    listing every problem, on a curated id the import lacks, an imported feature or trait with no
    summary, a shortlist smaller than its pick count (in the worst case, after repeats of species
    cantrips and earlier picks are removed), a spell off the class's list, a count the class
-   table doesn't give, a shown item with no `activation`, or a spell whose damage or healing
-   dice its entry doesn't carry.
+   table doesn't give, a shown item with no `activation`, a spell whose damage or healing
+   dice its entry doesn't carry, or a missing or over-long `gist`.
 
 Pick counts (cantrips, prepared spells, slots, invocations, metamagic, masteries, expertise)
 always come from the imported class table or feature text, never from the curation.
@@ -184,7 +190,7 @@ takes every data-root dir by default).
   preference lists; the engine takes the first entries the character doesn't already have. A
   new class or background needs those lists, not new UI.
 - **Summaries are checked by number.** `src/domain/summaries.test.ts` fails when a summary
-  states a number (dice, feet, minutes, uses) its rules text doesn't. A right number from
+  or a gist states a number (dice, feet, minutes, uses) its rules text doesn't. A right number from
   elsewhere (the character's level, the general ritual rule) goes in its `ALLOWED` with a reason.
 - **Some 5etools data is wrong.** The Abyssal Tiefling version claims 120-foot darkvision that its
   text doesn't grant; the importer reads darkvision from the trait text, never the field.
@@ -215,7 +221,7 @@ takes every data-root dir by default).
   5etools casting unit (an hour reads `minute`). The build fails on a shown item without one.
   Changing a summary's wording moves nothing; change the field. `minute` items stay off "On your
   turn" but keep their card. Spell summaries open with "Action." or "Bonus action.", which
-  `spellGist` skips.
+  `spellGist` skips for the sheet's "On your turn" line; pick cards show the curated gist.
 - **print.css overrides heavier screen rules,** so its rules start with `html` (and the hidden
   parts use `!important`). Its token block repeats the dark blocks' selectors so paper stays
   light.

@@ -1,12 +1,15 @@
 // Guards Josh's rule that every summary matches the rules text it summarizes: each number a
-// summary states (dice like 1d10, distances, durations, counts) must also appear in that rules
-// text. A number that is right but comes from elsewhere (the character's level, the general
+// summary or a pick card's gist states (dice like 1d10, distances, durations, counts) must also
+// appear in that rules text. A number that is right but comes from elsewhere (the character's level, the general
 // rules) goes in ALLOWED with the reason.
 
 import { describe, expect, it } from "vitest";
 
 import { CONTENT } from "./content";
-import type { Summarized } from "./contentTypes";
+import { GIST_MAX, type Summarized } from "./contentTypes";
+
+/** A summarized item, with its gist when a player picks it from cards. */
+type Checked = Summarized & { gist?: string };
 
 /** id → numbers the summary may state that its own rules text doesn't, and why. */
 const ALLOWED: Record<string, { numbers: string[]; why: string }> = {
@@ -46,9 +49,9 @@ function numbersIn(text: string): string[] {
 /** Everything with a summary, with the rules text to check it against. A spell's range,
  * duration and casting time count as rules text; so do a species' own traits for its options
  * ("120 feet instead of 60"). */
-function everything(): Array<{ item: Summarized; rules: string }> {
-  const out: Array<{ item: Summarized; rules: string }> = [];
-  const add = (item: Summarized, ...more: string[]): void => {
+function everything(): Array<{ item: Checked; rules: string }> {
+  const out: Array<{ item: Checked; rules: string }> = [];
+  const add = (item: Checked, ...more: string[]): void => {
     out.push({ item, rules: item.rulesText.concat(more).join(" ") });
   };
   for (const c of Object.values(CONTENT.classes)) for (const f of c.features) add(f);
@@ -70,14 +73,26 @@ describe("summaries", () => {
     for (const { item } of everything()) expect(item.summary.trim(), item.id).not.toBe("");
   });
 
-  it("state only numbers their rules text gives", () => {
+  it("give every pick card a short gist", () => {
+    const picked = [
+      ...Object.values(CONTENT.options),
+      ...Object.values(CONTENT.species).flatMap((s) => s.option?.choices ?? []),
+      ...Object.values(CONTENT.spells),
+    ];
+    for (const { id, gist } of picked) {
+      expect(gist.trim(), id).not.toBe("");
+      expect(gist.length, `${id}: "${gist}"`).toBeLessThanOrEqual(GIST_MAX);
+    }
+  });
+
+  it("state only numbers their rules text gives, in the summary and the gist", () => {
     const problems: string[] = [];
     for (const { item, rules } of everything()) {
       const known = new Set(numbersIn(rules));
       const allowed = new Set(ALLOWED[item.id]?.numbers ?? []);
-      for (const n of numbersIn(item.summary)) {
-        if (!known.has(n) && !allowed.has(n))
-          problems.push(`${item.id}: "${n}" in "${item.summary}"`);
+      for (const text of [item.summary, item.gist ?? ""]) {
+        for (const n of numbersIn(text))
+          if (!known.has(n) && !allowed.has(n)) problems.push(`${item.id}: "${n}" in "${text}"`);
       }
     }
     expect(problems).toEqual([]);
