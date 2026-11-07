@@ -258,6 +258,18 @@ textarea.field {
     font-size: 0.8rem;
   }
 }
+/* On any phone "Practice" is just its flask: the strip at the top already says it, and the
+ * long Next labels need the room. */
+@media (max-width: 29rem) {
+  .bar-status .save-state[data-state="practice"] > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
 @media (min-width: 60rem) {
   .flow-head h1 {
     font-size: 2rem;
