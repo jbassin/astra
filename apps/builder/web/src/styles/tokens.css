@@ -1,0 +1,82 @@
+/* builder's design tokens, copied from akasha's (apps/akasha/web/src/styles/tokens.css):
+   colours in light and dark, the faces, and gothic's tokens pointed at them so gothic's
+   route boundaries follow the theme.
+
+   Dark applies for an explicit `data-theme="dark"` on <html> and for a dark system setting
+   when `data-theme="light"` is not set. builder has no theme switch yet, so today only the
+   system setting decides; the two dark blocks below must stay identical. Every text colour
+   reaches 4.5:1 on page and surface in its theme. */
+
+:root {
+  color-scheme: light;
+
+  --bd-page: #f3f3f7;
+  --bd-surface: #ffffff;
+  --bd-sunk: #ebebf1;
+  --bd-ink: #1e1d2e;
+  --bd-muted: #55536c;
+  --bd-faint: #6b6983;
+  --bd-rule: #dadae4;
+  --bd-accent: #4e59b1;
+  --bd-ok: #2f751d;
+  --bd-error: #a43b38;
+
+  /* Faces: Literata for reading, Archivo for the interface. */
+  --bd-serif: "Literata Variable", Georgia, serif;
+  --bd-sans: "Archivo Variable", system-ui, sans-serif;
+
+  --bd-ease: 120ms ease;
+
+  /* gothic's tokens, pointed at builder's (unlayered, so they beat gothic's @theme). */
+  --color-page: var(--bd-page);
+  --color-void: var(--bd-page);
+  --color-panel: var(--bd-surface);
+  --color-elevated: var(--bd-surface);
+  --color-hover: var(--bd-sunk);
+  --color-fg: var(--bd-ink);
+  --color-ink: var(--bd-ink);
+  --color-fg-muted: var(--bd-muted);
+  --color-ink-dim: var(--bd-muted);
+  --color-fg-faint: var(--bd-faint);
+  --color-ink-faint: var(--bd-faint);
+  --color-rule: var(--bd-rule);
+  --color-rule-strong: var(--bd-rule);
+  --color-rule-bright: var(--bd-rule);
+  --color-accent: var(--bd-accent);
+  --color-accent-secondary: var(--bd-muted);
+  --color-accent-amber: var(--bd-muted);
+  --font-body: var(--bd-serif);
+  --font-display: var(--bd-sans);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bd-page: #16152a;
+  --bd-surface: #1e1d35;
+  --bd-sunk: #121124;
+  --bd-ink: #ecebf4;
+  --bd-muted: #aeacc6;
+  --bd-faint: #8f8dab;
+  --bd-rule: #302e4d;
+  --bd-accent: #a9b8ff;
+  --bd-ok: #98cf8b;
+  --bd-error: #fda19a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bd-page: #16152a;
+    --bd-surface: #1e1d35;
+    --bd-sunk: #121124;
+    --bd-ink: #ecebf4;
+    --bd-muted: #aeacc6;
+    --bd-faint: #8f8dab;
+    --bd-rule: #302e4d;
+    --bd-accent: #a9b8ff;
+    --bd-ok: #98cf8b;
+    --bd-error: #fda19a;
+  }
+}

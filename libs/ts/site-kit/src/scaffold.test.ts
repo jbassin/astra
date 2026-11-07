@@ -81,11 +81,9 @@ describe("the shared-file stubs, applied to the real files", () => {
     const py = addPydanticModel(real("models"), names);
     expect(py).toContain("class DemoSiteConfig(_Base):\n");
     expect(py.indexOf("class DemoSiteConfig(")).toBeLessThan(py.indexOf("class WholeConfig("));
-    expect(py).toContain(
-      "    portal_headless: PortalHeadlessConfig\n    demo_site: DemoSiteConfig\n\n\n",
-    );
-    expect(py).toMatch(/TS_NAMESPACES[^)]*"codex",\n {4}"demo_site",\n\)/);
-    expect(py).toMatch(/`portal`, `portal-headless`\s+and `demo-site`\./);
+    expect(py).toContain("    builder: BuilderConfig\n    demo_site: DemoSiteConfig\n\n\n");
+    expect(py).toMatch(/TS_NAMESPACES[^)]*"builder",\n {4}"demo_site",\n\)/);
+    expect(py).toMatch(/`portal-headless`,\s+`builder`\s+and `demo-site`\./);
     for (const line of py.split("\n")) expect(line.length).toBeLessThanOrEqual(100);
     expect(() => addPydanticModel(py, names)).toThrow(/already has DemoSiteConfig/);
   });

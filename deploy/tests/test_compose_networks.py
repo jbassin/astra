@@ -44,6 +44,7 @@ SERVICE_NETWORKS: dict[str, frozenset[str]] = {
     "harrow": TELEMETRY,
     "portal": TELEMETRY,
     "portal-headless": TELEMETRY,
+    "builder": TELEMETRY,
 }
 
 # Services on no compose network: node-exporter needs the host's netns for its NIC counters,

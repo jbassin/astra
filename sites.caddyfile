@@ -267,3 +267,10 @@ dagster.iridi.cc {
 	import local_only
 	reverse_proxy localhost:10350
 }
+
+# builder: an SSR frontend on the site-kit preset (`just new-frontend`), port 10375.
+# (*.iridi.cc wildcard: no DNS record needed; the certificate is issued on the first request.)
+builder.iridi.cc {
+	import astra_site
+	reverse_proxy localhost:10375
+}

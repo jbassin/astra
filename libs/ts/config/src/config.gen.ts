@@ -128,6 +128,16 @@ export const Codex = z
   })
   .strict();
 
+export const Builder = z
+  .object({
+    serviceName: z.string(),
+    port: z.number().int(),
+    publicOrigin: z.string(),
+    dataDir: dataPath(),
+    dmToken: secret(),
+  })
+  .strict();
+
 // Not `.strict()`: Zod's default strip drops the namespaces only Python reads.
 export const ConfigSchema = z.object({
   data: Data,
@@ -141,4 +151,5 @@ export const ConfigSchema = z.object({
   portal: Portal,
   portalHeadless: PortalHeadless,
   codex: Codex,
+  builder: Builder,
 });

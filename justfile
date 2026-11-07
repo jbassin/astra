@@ -9,6 +9,7 @@
 #   mouthpiece     the producer experiments
 #   backups        snapshot, restore test, SigNoz rules
 #   codex, builds  corpus refresh and search index; portal module, assay book, weal wasm
+#   builder        the character builder's player links
 #   edge           the shared reverse proxy
 #
 # The ops recipes are one-line wrappers over the astra-ops CLI (libs/py/ops): its README lists
@@ -785,6 +786,12 @@ weal-engine-build:
     if strings -n 8 "$gen/weal_engine_bg.wasm" | grep -qF "$HOME"; then echo "FATAL: the wasm embeds $HOME (path remapping failed)" >&2; exit 1; fi
     tools/gen-stamp.sh write {{quote(weal_stamp)}}
     sha256sum "$gen"/weal_engine_bg.wasm "$gen"/weal_engine.js
+
+# ==== builder: the character builder's player links (apps/builder/web/README.md) ============
+# Writes <builder.data-dir>/roster.json (under data.root; ASTRA_DATA_ROOT overrides it).
+# Invite a player to the character builder and print their private link.
+builder-invite +name:
+    cd apps/builder/web && node --import tsx scripts/invite.ts "$@"
 
 # ==== edge: the SHARED reverse proxy at /ruby/data/reverse-proxy =============================
 # A custom `caddy` binary with the cloudflare-dns plugin (the stock /usr/bin/caddy lacks it)

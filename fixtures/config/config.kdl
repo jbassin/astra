@@ -139,3 +139,14 @@ portal-headless {
     gm-username "Portal"
     reload-interval-hours 24
 }
+
+builder {
+    // Builder: an SSR frontend on the site-kit preset (`just new-frontend`).
+    // server.ts binds this port and names telemetry; behind Caddy at
+    // builder.iridi.cc. service-name also derives the browser RUM name.
+    service-name "astra.builder"
+    port 10375
+    public-origin "https://builder.iridi.cc"
+    data-dir "builder"
+    dm-token ref="sops:builder_dm_token"
+}

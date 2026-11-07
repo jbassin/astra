@@ -59,6 +59,7 @@ live in the 10350 to 10399 band.
 | `codex.iridi.cc`, `2e.iridi.cc` | codex (PF2e reference, noindexed) | 10374 |
 | `strider.iridi.cc` | strider (faction map; editor is local network only) | 10360 |
 | `harrow.iridi.cc` | harrow (tarot reader) | 10369 |
+| `builder.iridi.cc` | builder (D&D 5e character builder; private player and DM links) | 10375 |
 | `orator.iridi.cc` | orator-backend (music bot API and web UI) | 10363 |
 | `portal.iridi.cc` | portal server (MCP bridge to FoundryVTT) | 10372 |
 | `otel.iridi.cc` | OTel collector OTLP/HTTP, for browser RUM and desktop clients | 10353 |
