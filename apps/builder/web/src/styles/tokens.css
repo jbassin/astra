@@ -1,82 +1,117 @@
-/* builder's design tokens, copied from akasha's (apps/akasha/web/src/styles/tokens.css):
-   colours in light and dark, the faces, and gothic's tokens pointed at them so gothic's
-   route boundaries follow the theme.
+/* builder's design tokens: "the guild charter". Cool linen and deep ink by day, lantern-lit
+   slate by night, old gilt for the path and the main buttons, and one heraldic hue per class.
 
    Dark applies for an explicit `data-theme="dark"` on <html> and for a dark system setting
-   when `data-theme="light"` is not set. builder has no theme switch yet, so today only the
-   system setting decides; the two dark blocks below must stay identical. Every text colour
-   reaches 4.5:1 on page and surface in its theme. */
+   when `data-theme="light"` is not set. There is no theme switch, so today only the system
+   setting decides; the two dark blocks below must stay identical. Every text colour reaches
+   4.5:1 on page, surface and raised in its theme. */
 
 :root {
   color-scheme: light;
 
-  --bd-page: #f3f3f7;
-  --bd-surface: #ffffff;
-  --bd-sunk: #ebebf1;
-  --bd-ink: #1e1d2e;
-  --bd-muted: #55536c;
-  --bd-faint: #6b6983;
-  --bd-rule: #dadae4;
-  --bd-accent: #4e59b1;
-  --bd-ok: #2f751d;
-  --bd-error: #a43b38;
+  --page: #e4e9e6;
+  --surface: #f7f9f8;
+  --raised: #ffffff;
+  --sunk: #edf1ef;
+  --ink: #16212b;
+  --muted: #4b5a66;
+  --faint: #566571;
+  --rule: #c6d0cc;
+  --rule-strong: #9eaba6;
+  --gilt: #7e5b12;
+  --gilt-ink: #ffffff;
+  --gilt-glow: #c9a24a;
+  --action: #1f3a5f;
+  --action-ink: #ffffff;
+  --ok: #2d6a2f;
+  --error: #a3261c;
+  --shadow: 0 1px 0 rgb(22 33 43 / 0.05), 0 2px 6px -2px rgb(22 33 43 / 0.12);
+  --shadow-lift: 0 2px 0 rgb(22 33 43 / 0.04), 0 12px 24px -10px rgb(22 33 43 / 0.28);
 
-  /* Faces: Literata for reading, Archivo for the interface. */
-  --bd-serif: "Literata Variable", Georgia, serif;
-  --bd-sans: "Archivo Variable", system-ui, sans-serif;
+  /* Heraldic hues: an element with `.hued` and inline `--h`/`--c` (heraldry.ts) gets
+     --hue (fills, white text on it), --hue-ink (text and icons on the page), --hue-wash
+     (a tinted ground) and --hue-line (a tinted border). These four numbers tune them. */
+  --h: 75;
+  --c: 0.1;
+  --hue-ink-l: 0.5;
+  --hue-ink-cf: 1;
+  --hue-wash-pct: 9%;
+  --hue-line-pct: 55%;
 
-  --bd-ease: 120ms ease;
+  /* Faces: Texturina for display (names, titles, numbers that matter), Atkinson Hyperlegible
+     Next for everything a player reads. */
+  --display: "Texturina Variable", "Iowan Old Style", Georgia, serif;
+  --text: "Atkinson Hyperlegible Next Variable", system-ui, sans-serif;
 
-  /* gothic's tokens, pointed at builder's (unlayered, so they beat gothic's @theme). */
-  --color-page: var(--bd-page);
-  --color-void: var(--bd-page);
-  --color-panel: var(--bd-surface);
-  --color-elevated: var(--bd-surface);
-  --color-hover: var(--bd-sunk);
-  --color-fg: var(--bd-ink);
-  --color-ink: var(--bd-ink);
-  --color-fg-muted: var(--bd-muted);
-  --color-ink-dim: var(--bd-muted);
-  --color-fg-faint: var(--bd-faint);
-  --color-ink-faint: var(--bd-faint);
-  --color-rule: var(--bd-rule);
-  --color-rule-strong: var(--bd-rule);
-  --color-rule-bright: var(--bd-rule);
-  --color-accent: var(--bd-accent);
-  --color-accent-secondary: var(--bd-muted);
-  --color-accent-amber: var(--bd-muted);
-  --font-body: var(--bd-serif);
-  --font-display: var(--bd-sans);
+  --radius-s: 0.5rem;
+  --radius-m: 0.875rem;
+  --radius-l: 1.25rem;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --pop: cubic-bezier(0.3, 1.6, 0.5, 1);
+  --bar-h: 4.75rem;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bd-page: #16152a;
-  --bd-surface: #1e1d35;
-  --bd-sunk: #121124;
-  --bd-ink: #ecebf4;
-  --bd-muted: #aeacc6;
-  --bd-faint: #8f8dab;
-  --bd-rule: #302e4d;
-  --bd-accent: #a9b8ff;
-  --bd-ok: #98cf8b;
-  --bd-error: #fda19a;
+  --page: #0e1318;
+  --surface: #161d24;
+  --raised: #1d2630;
+  --sunk: #0a0e12;
+  --ink: #e8edef;
+  --muted: #a7b3bc;
+  --faint: #8c99a3;
+  --rule: #2a3540;
+  --rule-strong: #43515e;
+  --gilt: #e2b55a;
+  --gilt-ink: #0e1318;
+  --gilt-glow: #e2b55a;
+  --action: #e2b55a;
+  --action-ink: #0e1318;
+  --ok: #8fcb8a;
+  --error: #f4a097;
+  --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 2px 8px -2px rgb(0 0 0 / 0.5);
+  --shadow-lift: 0 2px 0 rgb(0 0 0 / 0.3), 0 14px 28px -12px rgb(0 0 0 / 0.75);
+  --hue-ink-l: 0.8;
+  --hue-ink-cf: 0.75;
+  --hue-wash-pct: 20%;
+  --hue-line-pct: 70%;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --bd-page: #16152a;
-    --bd-surface: #1e1d35;
-    --bd-sunk: #121124;
-    --bd-ink: #ecebf4;
-    --bd-muted: #aeacc6;
-    --bd-faint: #8f8dab;
-    --bd-rule: #302e4d;
-    --bd-accent: #a9b8ff;
-    --bd-ok: #98cf8b;
-    --bd-error: #fda19a;
+    --page: #0e1318;
+    --surface: #161d24;
+    --raised: #1d2630;
+    --sunk: #0a0e12;
+    --ink: #e8edef;
+    --muted: #a7b3bc;
+    --faint: #8c99a3;
+    --rule: #2a3540;
+    --rule-strong: #43515e;
+    --gilt: #e2b55a;
+    --gilt-ink: #0e1318;
+    --gilt-glow: #e2b55a;
+    --action: #e2b55a;
+    --action-ink: #0e1318;
+    --ok: #8fcb8a;
+    --error: #f4a097;
+    --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 2px 8px -2px rgb(0 0 0 / 0.5);
+    --shadow-lift: 0 2px 0 rgb(0 0 0 / 0.3), 0 14px 28px -12px rgb(0 0 0 / 0.75);
+    --hue-ink-l: 0.8;
+    --hue-ink-cf: 0.75;
+    --hue-wash-pct: 20%;
+    --hue-line-pct: 70%;
   }
+}
+
+/* Declared where --h and --c are set, so each hued element resolves its own colours. */
+:root,
+.hued {
+  --hue: oklch(0.5 var(--c) var(--h));
+  --hue-ink: oklch(var(--hue-ink-l) calc(var(--c) * var(--hue-ink-cf)) var(--h));
+  --hue-wash: color-mix(in oklab, var(--hue) var(--hue-wash-pct), var(--surface));
+  --hue-line: color-mix(in oklab, var(--hue-ink) var(--hue-line-pct), var(--rule));
 }

@@ -2,8 +2,23 @@
 // Each shows its choices with Josh's plain summaries, so no player needs a rulebook.
 
 import { ARCHETYPES, type Answers } from "@/domain/character";
-import { backgroundsForClass, CONTENT, classesForArchetype, speciesOf } from "@/domain/content";
+import {
+  backgroundsForClass,
+  CONTENT,
+  classesForArchetype,
+  classOf,
+  speciesOf,
+} from "@/domain/content";
 import { ABILITY_NAMES } from "@/domain/sheet";
+import {
+  ABILITY_ICON,
+  ARCHETYPE_HERALDRY,
+  BACKGROUND_ICON,
+  CLASS_HERALDRY,
+  hueStyle,
+  SPECIES_ICON,
+} from "@/ui/heraldry";
+import { Crest, Icon } from "@/ui/Icon";
 
 import { Choice, ChoiceGroup } from "./Choice";
 
@@ -14,50 +29,71 @@ export interface ScreenProps {
 
 export function ArchetypeScreen({ answers, update }: ScreenProps) {
   return (
-    <ChoiceGroup legend="Kind of hero">
-      {ARCHETYPES.map((a) => (
-        <Choice
-          key={a.id}
-          type="radio"
-          name="archetype"
-          value={a.id}
-          checked={answers.archetype === a.id}
-          onChange={() => update({ archetype: a.id })}
-          title={a.label}
-        >
-          <span className="choice-blurb">{a.blurb}</span>
-        </Choice>
-      ))}
+    <ChoiceGroup legend="Kind of hero" layout="tiles" quietLegend>
+      {ARCHETYPES.map((a) => {
+        const h = ARCHETYPE_HERALDRY[a.id];
+        return (
+          <Choice
+            key={a.id}
+            type="radio"
+            name="archetype"
+            value={a.id}
+            checked={answers.archetype === a.id}
+            onChange={() => update({ archetype: a.id })}
+            title={a.label}
+            size="tile"
+            hue={hueStyle(h)}
+            icon={<Crest icon={h.icon} />}
+          >
+            <span className="choice-blurb">{a.blurb}</span>
+          </Choice>
+        );
+      })}
     </ChoiceGroup>
   );
 }
 
 export function ClassScreen({ answers, update }: ScreenProps) {
   return (
-    <ChoiceGroup legend="Class">
-      {classesForArchetype(answers.archetype).map((c) => (
-        <Choice
-          key={c.id}
-          type="radio"
-          name="class"
-          value={c.id}
-          checked={answers.classId === c.id}
-          onChange={() => update({ classId: c.id })}
-          title={c.name}
-        >
-          <span className="choice-blurb">{c.blurb}</span>
-          <span className="choice-meta">Main ability: {ABILITY_NAMES[c.primary]}</span>
-        </Choice>
-      ))}
+    <ChoiceGroup legend="Class" layout="grid" quietLegend>
+      {classesForArchetype(answers.archetype).map((c) => {
+        const h = CLASS_HERALDRY[c.id];
+        return (
+          <Choice
+            key={c.id}
+            type="radio"
+            name="class"
+            value={c.id}
+            checked={answers.classId === c.id}
+            onChange={() => update({ classId: c.id })}
+            title={c.name}
+            hue={hueStyle(h)}
+            icon={<Crest icon={h.icon} />}
+          >
+            <span className="choice-blurb">{c.blurb}</span>
+            <span className="choice-meta">
+              <Icon name={ABILITY_ICON[c.primary]} />
+              Main ability: {ABILITY_NAMES[c.primary]}
+            </span>
+          </Choice>
+        );
+      })}
     </ChoiceGroup>
   );
 }
 
+/** The chosen class's hue, so later screens keep its colour. */
+function classHue(answers: Answers) {
+  const id = classOf(answers)?.id;
+  return hueStyle(id ? CLASS_HERALDRY[id] : undefined);
+}
+
 function SpeciesOption({ answers, update }: ScreenProps) {
-  const option = speciesOf(answers)?.option;
-  if (!option) return null;
+  const species = speciesOf(answers);
+  const option = species?.option;
+  if (!species || !option) return null;
   return (
-    <ChoiceGroup legend={option.label} prompt={option.prompt}>
+    <ChoiceGroup legend={option.label} prompt={option.prompt} layout="grid">
       {option.choices.map((c) => (
         <Choice
           key={c.id}
@@ -67,6 +103,8 @@ function SpeciesOption({ answers, update }: ScreenProps) {
           checked={answers.speciesOption === c.id}
           onChange={() => update({ speciesOption: c.id })}
           title={c.name}
+          hue={classHue(answers)}
+          icon={<Icon name={SPECIES_ICON[species.id]} className="emblem-icon" />}
         >
           <span className="choice-blurb">{c.summary}</span>
         </Choice>
@@ -79,9 +117,13 @@ function SpeciesGifts({ answers }: { answers: Answers }) {
   const species = speciesOf(answers);
   if (!species) return null;
   return (
-    <details className="gifts">
+    <details className="gifts hued" style={classHue(answers)}>
       <summary>
-        What being {/^[aeiou]/i.test(species.name) ? "an" : "a"} {species.name} gives you
+        <Icon name={SPECIES_ICON[species.id]} className="gifts-icon" />
+        <span>
+          What being {/^[aeiou]/i.test(species.name) ? "an" : "a"} {species.name} gives you
+        </span>
+        <Icon name="ui-chevron-down" className="gifts-chevron" />
       </summary>
       <ul>
         {species.traits.map((t) => (
@@ -97,7 +139,7 @@ function SpeciesGifts({ answers }: { answers: Answers }) {
 export function SpeciesScreen({ answers, update }: ScreenProps) {
   return (
     <>
-      <ChoiceGroup legend="Species">
+      <ChoiceGroup legend="Species" layout="grid">
         {Object.values(CONTENT.species).map((s) => (
           <Choice
             key={s.id}
@@ -107,6 +149,8 @@ export function SpeciesScreen({ answers, update }: ScreenProps) {
             checked={answers.speciesId === s.id}
             onChange={() => update({ speciesId: s.id })}
             title={s.name}
+            hue={classHue(answers)}
+            icon={<Icon name={SPECIES_ICON[s.id]} className="emblem-icon" />}
           >
             <span className="choice-blurb">{s.blurb}</span>
           </Choice>
@@ -120,7 +164,12 @@ export function SpeciesScreen({ answers, update }: ScreenProps) {
 
 export function BackgroundScreen({ answers, update }: ScreenProps) {
   return (
-    <ChoiceGroup legend="Background" prompt="These backgrounds suit your class.">
+    <ChoiceGroup
+      legend="Background"
+      prompt="These backgrounds suit your class."
+      layout="grid"
+      quietLegend
+    >
       {backgroundsForClass(answers).map((b) => {
         const feat = CONTENT.feats[b.feat];
         return (
@@ -132,11 +181,13 @@ export function BackgroundScreen({ answers, update }: ScreenProps) {
             checked={answers.backgroundId === b.id}
             onChange={() => update({ backgroundId: b.id })}
             title={b.name}
+            hue={classHue(answers)}
+            icon={<Icon name={BACKGROUND_ICON[b.id]} className="emblem-icon" />}
           >
             <span className="choice-blurb">{b.story}</span>
             {feat && (
-              <span className="choice-meta">
-                Special talent: {feat.name}. {feat.summary}
+              <span className="choice-talent">
+                <strong>Special talent: {feat.name}.</strong> {feat.summary}
               </span>
             )}
           </Choice>

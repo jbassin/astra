@@ -1,0 +1,311 @@
+/* builder's page shell: reset, type, buttons, the header and footer, the home page, the DM
+ * page and the router's boundaries. The flow and the sheet have their own files. */
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  img,
+  svg {
+    display: block;
+  }
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+  ul,
+  ol {
+    list-style: none;
+  }
+  fieldset {
+    border: 0;
+    min-width: 0;
+  }
+}
+
+html {
+  background-color: var(--page);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--page);
+  /* A faint engraved grain, so the page reads as stock rather than a flat fill. */
+  background-image:
+    radial-gradient(
+      120% 60% at 50% -10%,
+      color-mix(in oklab, var(--gilt-glow) 14%, transparent),
+      transparent 70%
+    ),
+    repeating-linear-gradient(
+      115deg,
+      transparent 0 7px,
+      color-mix(in oklab, var(--ink) 2.2%, transparent) 7px 8px
+    );
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 3px solid var(--gilt);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+a {
+  color: var(--gilt);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+  fill: currentColor;
+}
+
+/* The crest: a shield in the element's heraldic hue (tokens.css). */
+.crest {
+  overflow: visible;
+}
+.crest-field {
+  fill: var(--hue);
+}
+.crest-rule {
+  fill: none;
+  stroke: color-mix(in oklab, white 55%, var(--hue));
+  stroke-width: 1.6;
+}
+.crest-charge {
+  color: #ffffff;
+  fill: #ffffff;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── buttons ────────────────────────────────────────────────────────────────────── */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 3rem;
+  padding: 0.6rem 1.15rem;
+  border: 1.5px solid var(--action);
+  border-radius: 999px;
+  background: var(--action);
+  color: var(--action-ink);
+  font: 700 1rem/1.2 var(--text);
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition:
+    transform 150ms var(--ease-out),
+    box-shadow 150ms var(--ease-out),
+    background-color 150ms var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
+}
+.button:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: none;
+}
+.button .icon {
+  width: 1.2em;
+  height: 1.2em;
+}
+.button.quiet {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule-strong);
+  box-shadow: none;
+}
+.button.quiet:hover {
+  background: var(--sunk);
+}
+.button.small {
+  min-height: 2.75rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.95rem;
+}
+.link-button {
+  border: 0;
+  background: none;
+  color: var(--gilt);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── header and footer ──────────────────────────────────────────────────────────── */
+.site-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  padding-top: max(0.6rem, env(safe-area-inset-top));
+}
+.site-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  color: var(--ink);
+  font: 700 1.15rem/1 var(--display);
+  text-decoration: none;
+}
+.brand-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  color: var(--gilt);
+}
+.site-foot {
+  padding: 2rem 1rem 1.5rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+.site-foot a {
+  color: inherit;
+}
+
+/* ── page column ────────────────────────────────────────────────────────────────── */
+.lede {
+  color: var(--muted);
+  font-size: 1.125rem;
+  max-width: 38rem;
+}
+
+/* ── the save indicator (in the flow's bottom bar) ──────────────────────────────── */
+.save-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.save-state .icon {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+.save-state[data-state="saved"] {
+  color: var(--ok);
+}
+.save-state[data-state="saved"] .icon {
+  animation: pop 320ms var(--pop);
+}
+.save-state[data-state="pending"] .icon,
+.save-state[data-state="saving"] .icon {
+  animation: spin 900ms linear infinite;
+}
+.save-state[data-state="error"] {
+  color: var(--error);
+}
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes pop {
+  0% {
+    scale: 0.4;
+  }
+  60% {
+    scale: 1.2;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+/* The router's error and 404 boundaries (site-kit's siteRouterOptions) and the unknown link. */
+.route-boundary {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.9rem;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+.route-boundary h1 {
+  font-size: 2rem;
+}
+.route-boundary p {
+  color: var(--muted);
+  max-width: 30rem;
+}
+.route-boundary a,
+.route-boundary button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.5rem 1.25rem;
+  border: 1.5px solid var(--gilt);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--gilt);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,10 +1,14 @@
 // The player's builder: one screen at a time, driven by steps.ts through flow.ts, ending on
 // the character sheet. It never saves anything itself: the page passes `persist`, which gets
 // every change (the player page's debounced server save; a no-op in test mode).
+//
+// Phone first: the quest path sits above the screen, and Back, the save state and Next live
+// in a bar pinned to the bottom of the screen, within reach of a thumb.
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import type { Answers } from "@/domain/character";
+import { classOf } from "@/domain/content";
 import { buildCharacter } from "@/domain/engine";
 import {
   clearedSummary,
@@ -17,6 +21,8 @@ import {
   viewStatuses,
 } from "@/domain/flow";
 import { pruneAnswers } from "@/domain/steps";
+import { CLASS_HERALDRY, hueStyle } from "@/ui/heraldry";
+import { Icon } from "@/ui/Icon";
 
 import {
   ArchetypeScreen,
@@ -77,38 +83,48 @@ function labelOf(view: ViewKey): string {
 function Blocked({ status, go }: { status: ViewStatus; go: (v: ViewKey) => void }) {
   const first = status.blockedBy ?? "archetype";
   return (
-    <p className="blocked">
-      This depends on an earlier choice.{" "}
-      <button type="button" className="link-button" onClick={() => go(first)}>
+    <div className="blocked">
+      <Icon name="ui-lock" className="blocked-icon" />
+      <p>This depends on an earlier choice.</p>
+      <button type="button" className="button" onClick={() => go(first)}>
         Go to {labelOf(first)}
       </button>
-    </p>
+    </div>
   );
 }
 
-function FlowNav({
+function FlowBar({
   answers,
   view,
   go,
+  status,
 }: {
   answers: Answers;
   view: ViewKey;
   go: (v: ViewKey) => void;
+  status?: ReactNode;
 }) {
   const back = viewBefore(answers, view);
   const next = view === "sheet" ? undefined : viewAfter(answers, view);
   return (
-    <div className="flow-nav">
-      {back && (
-        <button type="button" className="button quiet" onClick={() => go(back)}>
-          Back
-        </button>
-      )}
-      {next && (
-        <button type="button" className="button" onClick={() => go(next)}>
-          Next: {labelOf(next)}
-        </button>
-      )}
+    <div className="flow-bar">
+      <div className="flow-bar-inner">
+        {back ? (
+          <button type="button" className="button quiet bar-back" onClick={() => go(back)}>
+            <Icon name="ui-chevron-left" />
+            Back
+          </button>
+        ) : (
+          <span className="bar-spacer" />
+        )}
+        <div className="bar-status">{status}</div>
+        {next && (
+          <button type="button" className="button bar-next" onClick={() => go(next)}>
+            Next: {labelOf(next)}
+            <Icon name="ui-chevron-right" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -141,12 +157,15 @@ export function BuilderFlow({
   title,
   intro,
   banner,
+  status,
 }: {
   initial: Answers;
   persist: (answers: Answers) => void;
   title: ReactNode;
   intro: ReactNode;
   banner?: ReactNode;
+  /** Shown in the bottom bar between Back and Next: the save state. */
+  status?: ReactNode;
 }) {
   const [answers, setAnswers] = useState<Answers>(initial);
   const [view, setView] = useState<ViewKey>(() => startView(initial));
@@ -156,8 +175,10 @@ export function BuilderFlow({
   const statuses = viewStatuses(answers);
 
   useEffect(() => {
-    // Move focus (and the scroll position) to the new screen's heading, but not on first load.
-    if (moved.current) heading.current?.focus();
+    // Bring the new screen to the top and its heading into focus, but not on first load.
+    if (!moved.current) return;
+    document.documentElement.scrollTop = 0;
+    heading.current?.focus({ preventScroll: true });
   }, [view]);
 
   function update(patch: Partial<Answers>) {
@@ -175,25 +196,33 @@ export function BuilderFlow({
   }
 
   const screen = view === "sheet" ? undefined : SCREENS[view];
+  const cls = classOf(answers);
   return (
-    <main className="flow">
-      <header className="flow-head">
-        <h1>{title}</h1>
-        <div className="lede">{intro}</div>
-      </header>
-      {banner}
-      <div className="flow-body">
+    <main className="flow hued" style={hueStyle(cls ? CLASS_HERALDRY[cls.id] : undefined)}>
+      <div className="flow-top">
+        <header className="flow-head">
+          <h1>{title}</h1>
+          <div className="flow-intro">{intro}</div>
+        </header>
+        {banner}
         <Stepper statuses={statuses} current={view} onJump={go} />
-        <section className="flow-screen" aria-labelledby="screen-title">
+      </div>
+      <section className="flow-screen" aria-labelledby="screen-title" data-view={view}>
+        <div className="screen-enter" key={view}>
           <h2 id="screen-title" ref={heading} tabIndex={-1} className="screen-title">
             {screen?.title ?? "Your character sheet"}
           </h2>
           {screen && <p className="screen-hint">{screen.hint}</p>}
-          {notice && <output className="notice">{notice}</output>}
+          {notice && (
+            <output className="notice">
+              <Icon name="ui-info" />
+              <span>{notice}</span>
+            </output>
+          )}
           <Screen answers={answers} update={update} view={view} statuses={statuses} go={go} />
-          <FlowNav answers={answers} view={view} go={go} />
-        </section>
-      </div>
+        </div>
+      </section>
+      <FlowBar answers={answers} view={view} go={go} status={status} />
     </main>
   );
 }

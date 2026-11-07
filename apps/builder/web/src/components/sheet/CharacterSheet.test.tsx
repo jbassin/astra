@@ -43,7 +43,8 @@ describe("CharacterSheet", () => {
     expect(c.missing).toEqual([]);
     render(<CharacterSheet character={c} />);
     expect(screen.getByRole("heading", { name: "Brakka" })).toBeTruthy();
-    expect(screen.getByText("Level 2 Orc Barbarian · Soldier background")).toBeTruthy();
+    expect(screen.getByText("Level 2 Orc Barbarian")).toBeTruthy();
+    expect(screen.getByText("Soldier background")).toBeTruthy();
     const action = box("Your action");
     const greataxe = c.attacks.find((a) => a.name.startsWith("Greataxe"));
     expect(greataxe).toBeTruthy();
@@ -66,7 +67,8 @@ describe("CharacterSheet", () => {
     expect(c.missing).toEqual([]);
     render(<CharacterSheet character={c} />);
     const dc = c.spellcasting[0]?.saveDc;
-    expect(screen.getAllByText(new RegExp(`Spell save DC ${dc}`)).length).toBeGreaterThan(0);
+    const dcStat = screen.getAllByText("Spell save DC")[0]?.parentElement;
+    expect(dcStat?.textContent).toBe(`Spell save DC${dc}`);
     expect(within(box("Your bonus action")).getByText("Healing Word")).toBeTruthy();
     expect(
       screen.getAllByText(

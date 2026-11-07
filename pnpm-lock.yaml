@@ -15,7 +15,13 @@ catalogs:
     '@fontsource-variable/archivo':
       specifier: ^5.3.0
       version: 5.3.0
+    '@fontsource-variable/atkinson-hyperlegible-next':
+      specifier: ^5.3.0
+      version: 5.3.0
     '@fontsource-variable/literata':
+      specifier: ^5.3.0
+      version: 5.3.0
+    '@fontsource-variable/texturina':
       specifier: ^5.3.0
       version: 5.3.0
     '@fontsource/cinzel':
@@ -282,9 +288,6 @@ importers:
       '@astra/content-build':
         specifier: workspace:*
         version: link:../../../libs/ts/content-build
-      '@astra/gothic':
-        specifier: workspace:*
-        version: link:../../../libs/ts/gothic
       '@astra/observe':
         specifier: workspace:*
         version: link:../../../libs/ts/observe
@@ -294,10 +297,10 @@ importers:
       '@astra/site-kit':
         specifier: workspace:*
         version: link:../../../libs/ts/site-kit
-      '@fontsource-variable/archivo':
+      '@fontsource-variable/atkinson-hyperlegible-next':
         specifier: 'catalog:'
         version: 5.3.0
-      '@fontsource-variable/literata':
+      '@fontsource-variable/texturina':
         specifier: 'catalog:'
         version: 5.3.0
       '@opentelemetry/api':
@@ -319,6 +322,12 @@ importers:
         specifier: ^4.4.3
         version: 4.6.7
     devDependencies:
+      '@iconify-json/game-icons':
+        specifier: ^1.2.4
+        version: 1.2.4
+      '@iconify-json/lucide':
+        specifier: ^1.2.151
+        version: 1.2.151
       '@testing-library/dom':
         specifier: 'catalog:'
         version: 10.4.1
@@ -334,9 +343,6 @@ importers:
       jsdom:
         specifier: 'catalog:'
         version: 29.1.1
-      tailwindcss:
-        specifier: 'catalog:'
-        version: 4.3.2
       tsdown:
         specifier: 'catalog:'
         version: 0.22.3(oxc-resolver@11.23.0)(tsx@4.23.15)(typescript@5.9.3)
@@ -1776,8 +1782,14 @@ packages:
   '@fontsource-variable/archivo@5.3.0':
     resolution: {integrity: sha512-HogK8FJelrD1o7TlZlkIVtHgc20bO5PZRWE7mUeUTdMN055alznQV6/00J00IBeu8FQAH4s3zW9UJNvKExXf+g==}
 
+  '@fontsource-variable/atkinson-hyperlegible-next@5.3.0':
+    resolution: {integrity: sha512-UnLzNUy1RWoLDfydAatP4NaRm99X/WbQEph7q/PymJnCFIOOwKOx3pBmp5ys8trO0dM+CKGuJgeZP9fAR4mQpA==}
+
   '@fontsource-variable/literata@5.3.0':
     resolution: {integrity: sha512-1Jw7xvOcoGyB83lxB2nG4bfNbqtX2/TTbdh9sHAOmU064SvmSdulDtA5RBu5JYWf64fdaKX7xU+z3GO1T2bCHA==}
+
+  '@fontsource-variable/texturina@5.3.0':
+    resolution: {integrity: sha512-YnH5DJHrENmPYdWZ19GJj4A/ujzLf060FuQmrpxvwivNjnCqEP0zW21XbU+b6sWzpHtAcxRjaEOx/HlHjuLlag==}
 
   '@fontsource/cinzel@5.2.8':
     resolution: {integrity: sha512-B9WeF/jPlOJOrcXfX96cy4KfM+s1QcU2C9W2hE3azBOBzPvzFkNpBovT5JmhAeicE/s4HZWKF9LF5hmEcqlbsw==}
@@ -1799,6 +1811,15 @@ packages:
     engines: {node: '>=20'}
     peerDependencies:
       hono: ^4 || ^5.0.0-0
+
+  '@iconify-json/game-icons@1.2.4':
+    resolution: {integrity: sha512-/HDDZxowXgDJcOEwPspUCq5RuDdl25OyZKdtxqqiPJQNTrWIym7r4StLzIVs77DyNzOWWhH5wDqwYR3WHeDfkg==}
+
+  '@iconify-json/lucide@1.2.151':
+    resolution: {integrity: sha512-OCp+cNzynOlOI7zHq8bFGhBBzmSSWFICvOSTxZrajhFJC4YizvlLiBJMbaLzzlpMaGRidmZmAA8GpovoDKiy/w==}
+
+  '@iconify/types@2.0.0':
+    resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
 
   '@joshwooding/vite-plugin-react-docgen-typescript@0.7.0':
     resolution: {integrity: sha512-qvsTEwEFefhdirGOPnu9Wp6ChfIwy2dBCRuETU3uE+4cC+PFoxMSiiEhxk4lOluA34eARHA0OxqsEUYDqRMgeQ==}
@@ -6380,7 +6401,11 @@ snapshots:
 
   '@fontsource-variable/archivo@5.3.0': {}
 
+  '@fontsource-variable/atkinson-hyperlegible-next@5.3.0': {}
+
   '@fontsource-variable/literata@5.3.0': {}
+
+  '@fontsource-variable/texturina@5.3.0': {}
 
   '@fontsource/cinzel@5.2.8': {}
 
@@ -6395,6 +6420,16 @@ snapshots:
   '@hono/node-server@2.1.5(hono@4.13.13)':
     dependencies:
       hono: 4.13.13
+
+  '@iconify-json/game-icons@1.2.4':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/lucide@1.2.151':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify/types@2.0.0': {}
 
   '@joshwooding/vite-plugin-react-docgen-typescript@0.7.0(typescript@5.9.3)(vite@8.1.6(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.23.15)(yaml@2.9.0))':
     dependencies:

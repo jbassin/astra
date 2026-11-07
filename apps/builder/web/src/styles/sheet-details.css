@@ -1,0 +1,240 @@
+/* The sheet below the turn: spells, the six ability medallions, skills, features and gear,
+ * and the list of what is still to choose. */
+
+/* ── spells ─────────────────────────────────────────────────────────────────────── */
+.spell-blocks {
+  display: grid;
+  gap: 1rem;
+}
+.spell-block {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+.spell-block h5 {
+  font-size: 1.4rem;
+}
+.spell-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.spell-stats li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--hue-line);
+  border-radius: 999px;
+  font-size: 0.95rem;
+}
+.spell-stats .icon {
+  color: var(--hue-ink);
+}
+.stat-label {
+  color: var(--muted);
+}
+.stat-num {
+  font: 800 1.2rem/1 var(--display);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.slot-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  color: var(--muted);
+}
+.slot-pips {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+.slot-pip {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid var(--hue-ink);
+  border-radius: 50%;
+}
+.spell-level {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+  color: var(--hue-ink);
+  font-size: 1.05rem;
+}
+.spell-list {
+  display: grid;
+  gap: 0.75rem;
+}
+.spell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+}
+.spell-icon {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.35rem;
+  border-radius: 50%;
+  background: var(--hue-wash);
+  color: var(--hue-ink);
+}
+.spell-main {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+@media (min-width: 60rem) {
+  .spell-list {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.5rem;
+  }
+}
+
+/* ── abilities ──────────────────────────────────────────────────────────────────── */
+.detail-box {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.ability-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+.ability {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  padding: 0.85rem 0.35rem 0.75rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 50% 50% var(--radius-m) var(--radius-m) / 2.25rem 2.25rem var(--radius-m)
+    var(--radius-m);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.ability[data-save] {
+  border-color: var(--hue-line);
+}
+.ability dt {
+  display: grid;
+  justify-items: center;
+  gap: 0.2rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+.ability-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--hue-ink);
+}
+.ability-mod {
+  font: 800 2rem/1.1 var(--display);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.ability-score {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+@media (min-width: 44rem) {
+  .ability-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* ── skills, features, gear ─────────────────────────────────────────────────────── */
+.detail-grid {
+  gap: 1.75rem;
+}
+.detail-grid .section-title {
+  font-size: 1.45rem;
+}
+.skill-list,
+.feature-list,
+.gear-list {
+  display: grid;
+  border-top: 1px solid var(--rule);
+}
+.skill-list li,
+.feature-list li,
+.gear-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.1rem;
+  border-bottom: 1px solid var(--rule);
+}
+.skill-name {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.expert {
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--hue);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.skill-bonus {
+  font: 800 1.2rem/1 var(--display);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.qty {
+  color: var(--muted);
+  font-weight: 700;
+}
+.gear-list .gold {
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+.gear-list .gold .icon {
+  color: var(--gilt);
+}
+.feature-list .uses {
+  text-align: right;
+}
+@media (min-width: 60rem) {
+  .detail-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ── still to choose ────────────────────────────────────────────────────────────── */
+.still {
+  justify-items: start;
+  padding: 1.25rem;
+  border: 1.5px dashed var(--rule-strong);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+}
+.still ul {
+  display: grid;
+  gap: 0.5rem;
+}
+.still li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.still-box {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid var(--rule-strong);
+  border-radius: 0.3rem;
+  flex: none;
+}

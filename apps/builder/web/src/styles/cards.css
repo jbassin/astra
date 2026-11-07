@@ -1,0 +1,117 @@
+/* The trading cards at the end of the sheet: a hued header with the emblem and name, chips
+ * for when and how often, the roll, the text and the small print. */
+
+/* ── trading cards ──────────────────────────────────────────────────────────────── */
+.cards {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 36rem) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 60rem) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border: 1.5px solid var(--hue-line);
+  border-radius: var(--radius-m);
+  background: var(--raised);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition:
+    transform 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out);
+}
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-3px) rotate(-0.4deg);
+    box-shadow: var(--shadow-lift);
+  }
+}
+.card-head {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.15rem 0.7rem;
+  padding: 0.75rem 0.9rem;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 8px, rgb(255 255 255 / 0.05) 8px 9px),
+    var(--hue);
+  color: #ffffff;
+}
+.card[data-kind="Feature"] .card-head {
+  background:
+    repeating-linear-gradient(135deg, transparent 0 8px, rgb(255 255 255 / 0.05) 8px 9px),
+    color-mix(in oklab, black 18%, var(--hue));
+}
+.card-emblem {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1.5px solid rgb(255 255 255 / 0.55);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.18);
+}
+.card-emblem .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.card-name {
+  font-size: 1.25rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.card-kind {
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0.92;
+}
+.card-body {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: 0.85rem 0.9rem 1rem;
+}
+.card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.card-when {
+  border-color: var(--hue-line);
+  color: var(--ink);
+}
+.card-when .icon {
+  color: var(--hue-ink);
+}
+.card-roll {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-s);
+  background: var(--hue-wash);
+  font-weight: 700;
+}
+.card-roll .icon {
+  margin-top: 0.15rem;
+  color: var(--hue-ink);
+}
+.card-text {
+  line-height: 1.5;
+}
+.card-meta {
+  padding-top: 0.55rem;
+  border-top: 1px dashed var(--rule);
+  color: var(--muted);
+  font-size: 0.875rem;
+}

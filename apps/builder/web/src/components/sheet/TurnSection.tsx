@@ -1,45 +1,88 @@
-// The top of the sheet: the four numbers a player checks most, then "On your turn", which
-// sorts every attack, feature and spell by when it's used.
+// The top of the sheet: the four numbers a player checks most, as medallions, then "On your
+// turn", which sorts every attack, feature and spell by when it's used into three columns.
 
 import type { AttackLine, Character } from "@/domain/engine";
 import { attackRoll, signed, type TurnItem, turnPlan } from "@/domain/sheet";
+import type { IconName } from "@/generated/icons";
+import { damageIcon, SLOT_ICON } from "@/ui/heraldry";
+import { Icon } from "@/ui/Icon";
+
+function Medallion({
+  icon,
+  label,
+  value,
+  note,
+}: {
+  icon: IconName;
+  label: string;
+  value: string;
+  note: string;
+}) {
+  return (
+    <div className="vital">
+      <dt>
+        <Icon name={icon} className="vital-icon" />
+        {label}
+      </dt>
+      <dd className="vital-value">{value}</dd>
+      <dd className="vital-note">{note}</dd>
+    </div>
+  );
+}
 
 export function Vitals({ c }: { c: Character }) {
-  const extras = [
-    `Passive Perception ${c.passivePerception}`,
-    c.darkvision ? `Darkvision ${c.darkvision} ft.` : undefined,
-    c.resistances.length > 0 ? `You take half damage from: ${c.resistances.join(", ")}` : undefined,
-  ].filter(Boolean);
   return (
     <section className="sheet-section vitals" aria-label="Key numbers">
       <dl className="vital-grid">
-        <div className="vital">
-          <dt>Hit Points</dt>
-          <dd>{c.hitPoints.max}</dd>
-          <span className="vital-note">Hit Dice {c.hitPoints.hitDice}</span>
-        </div>
-        <div className="vital">
-          <dt>Armor Class</dt>
-          <dd>{c.armorClass.value}</dd>
-          <span className="vital-note">What enemies must roll to hit you</span>
-        </div>
-        <div className="vital">
-          <dt>Speed</dt>
-          <dd>{c.speed.walk} ft.</dd>
-          <span className="vital-note">How far you move each turn</span>
-        </div>
-        <div className="vital">
-          <dt>Initiative</dt>
-          <dd>{signed(c.initiative)}</dd>
-          <span className="vital-note">Add it to a d20 when a fight starts</span>
-        </div>
+        <Medallion
+          icon="heart-plus"
+          label="Hit Points"
+          value={String(c.hitPoints.max)}
+          note={`Hit Dice ${c.hitPoints.hitDice}`}
+        />
+        <Medallion
+          icon="checked-shield"
+          label="Armor Class"
+          value={String(c.armorClass.value)}
+          note="What enemies must roll to hit you"
+        />
+        <Medallion
+          icon="run"
+          label="Speed"
+          value={`${c.speed.walk} ft.`}
+          note="How far you move each turn"
+        />
+        <Medallion
+          icon="hourglass"
+          label="Initiative"
+          value={signed(c.initiative)}
+          note="Add it to a d20 when a fight starts"
+        />
       </dl>
-      {c.armorClass.alternatives.map((a) => (
-        <p key={a.label} className="sheet-note">
-          Armor Class {a.label}
-        </p>
-      ))}
-      <p className="sheet-note">{extras.join(" · ")}</p>
+      <ul className="vital-extras">
+        {c.armorClass.alternatives.map((a) => (
+          <li key={a.label}>
+            <Icon name="checked-shield" />
+            Armor Class {a.label}
+          </li>
+        ))}
+        <li>
+          <Icon name="eye-target" />
+          Passive Perception {c.passivePerception}
+        </li>
+        {c.darkvision ? (
+          <li>
+            <Icon name="owl" />
+            Darkvision {c.darkvision} ft.
+          </li>
+        ) : null}
+        {c.resistances.length > 0 && (
+          <li>
+            <Icon name="magic-shield" />
+            You take half damage from: {c.resistances.join(", ")}
+          </li>
+        )}
+      </ul>
     </section>
   );
 }
@@ -47,13 +90,16 @@ export function Vitals({ c }: { c: Character }) {
 function Attack({ a }: { a: AttackLine }) {
   return (
     <li className="turn-item attack">
-      <p>
-        <strong>{a.name}</strong> <span className="turn-range">({a.range})</span>
+      <p className="turn-name">
+        <strong>{a.name}</strong> <span className="turn-range">{a.range}</span>
       </p>
-      <p className="roll">{attackRoll(a)}</p>
+      <p className="roll">
+        <Icon name={damageIcon(a.damageType)} className="roll-icon" />
+        <span>{attackRoll(a)}</span>
+      </p>
       {a.mastery && (
         <p className="turn-detail">
-          Mastery, {a.mastery.name}: {a.mastery.summary}
+          <span className="mastery">Mastery, {a.mastery.name}:</span> {a.mastery.summary}
         </p>
       )}
       {a.notes.map((n) => (
@@ -68,9 +114,9 @@ function Attack({ a }: { a: AttackLine }) {
 function Items({ items }: { items: TurnItem[] }) {
   return items.map((i) => (
     <li key={i.id} className="turn-item">
-      <p>
+      <p className="turn-name">
         <strong>{i.name}</strong>
-        {i.uses && <span className="uses"> {i.uses}</span>}
+        {i.uses && <span className="uses">{i.uses}</span>}
       </p>
       <p className="turn-detail">{i.detail}</p>
     </li>
@@ -79,8 +125,11 @@ function Items({ items }: { items: TurnItem[] }) {
 
 function ActionBox({ c, plan }: { c: Character; plan: ReturnType<typeof turnPlan> }) {
   return (
-    <div className="turn-box">
-      <h4>Your action</h4>
+    <div className="turn-box" data-slot="action">
+      <h4>
+        <Icon name={SLOT_ICON.action} className="turn-icon" />
+        Your action
+      </h4>
       <p className="turn-hint">Pick one each turn. Most often: attack.</p>
       <ul>
         {c.attacks.map((a) => (
@@ -95,7 +144,7 @@ function ActionBox({ c, plan }: { c: Character; plan: ReturnType<typeof turnPlan
           </li>
         )}
         <Items items={plan.action} />
-        <li className="turn-item">
+        <li className="turn-item turn-other">
           <p className="turn-detail">
             Or: Dash (move again), Disengage (move away safely), Dodge (enemies have a harder time
             hitting you), Help a friend, or Hide.
@@ -109,7 +158,7 @@ function ActionBox({ c, plan }: { c: Character; plan: ReturnType<typeof turnPlan
 export function OnYourTurn({ c }: { c: Character }) {
   const plan = turnPlan(c);
   return (
-    <section className="sheet-section">
+    <section className="sheet-section turn">
       <h4 className="section-title">On your turn</h4>
       <p className="sheet-note">
         Each turn you can move up to your speed and take one action. Some things let you also take a
@@ -117,23 +166,29 @@ export function OnYourTurn({ c }: { c: Character }) {
       </p>
       <div className="turn-grid">
         <ActionBox c={c} plan={plan} />
-        <div className="turn-box">
-          <h4>Your bonus action</h4>
+        <div className="turn-box" data-slot="bonus">
+          <h4>
+            <Icon name={SLOT_ICON.bonus} className="turn-icon" />
+            Your bonus action
+          </h4>
           <p className="turn-hint">Optional, at most one each turn.</p>
           <ul>
             {plan.bonus.length > 0 ? (
               <Items items={plan.bonus} />
             ) : (
-              <li className="turn-detail">Nothing yet.</li>
+              <li className="turn-empty">Nothing yet.</li>
             )}
           </ul>
         </div>
-        <div className="turn-box">
-          <h4>Your reaction</h4>
+        <div className="turn-box" data-slot="reaction">
+          <h4>
+            <Icon name={SLOT_ICON.reaction} className="turn-icon" />
+            Your reaction
+          </h4>
           <p className="turn-hint">At most one each round, when its trigger happens.</p>
           <ul>
             <li className="turn-item">
-              <p>
+              <p className="turn-name">
                 <strong>Opportunity attack</strong>
               </p>
               <p className="turn-detail">
@@ -144,8 +199,11 @@ export function OnYourTurn({ c }: { c: Character }) {
           </ul>
         </div>
         {plan.always.length > 0 && (
-          <div className="turn-box wide">
-            <h4>Always on, or when it says</h4>
+          <div className="turn-box wide" data-slot="always">
+            <h4>
+              <Icon name={SLOT_ICON.always} className="turn-icon" />
+              Always on, or when it says
+            </h4>
             <ul>
               <Items items={plan.always} />
             </ul>

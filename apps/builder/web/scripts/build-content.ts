@@ -75,6 +75,7 @@ import {
   type ImportedData,
   type ImportedEquipment,
 } from "../src/domain/imported";
+import { iconSource } from "./icons";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
@@ -976,7 +977,7 @@ const contentSource = defineContentSource({
 });
 
 async function main(): Promise<void> {
-  const summaries = await buildContent(OUT_DIR, [contentSource]);
+  const summaries = await buildContent(OUT_DIR, [contentSource, iconSource(OUT_DIR)]);
   console.log(`[build-content] ${summaries.join(", ")}`);
 }
 
