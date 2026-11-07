@@ -82,4 +82,15 @@ describe("summaries", () => {
     }
     expect(problems).toEqual([]);
   });
+
+  it("give spell roll notes only numbers their rules text gives", () => {
+    const problems: string[] = [];
+    for (const sp of Object.values(CONTENT.spells)) {
+      if (!sp.rollNote) continue;
+      const known = new Set(numbersIn(sp.rulesText.join(" ")));
+      for (const n of numbersIn(sp.rollNote))
+        if (!known.has(n)) problems.push(`${sp.id}: "${n}" in "${sp.rollNote}"`);
+    }
+    expect(problems).toEqual([]);
+  });
 });

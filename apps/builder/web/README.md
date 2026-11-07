@@ -66,14 +66,16 @@ layers, each feeding the next:
      the option shortlists (fighting styles and the rest) and spell shortlists; and a summary for
      every level 1–2 feature (or `hidden` with the reason).
    - `species.ts`, `backgrounds.ts`, `feats.ts`, `options.ts`, `masteries.ts`, `spells/*.ts`:
-     one-liners and summaries; Magic Initiate shortlists live with their background.
+     one-liners and summaries; Magic Initiate shortlists live with their background;
+     `spells/rolls.ts` holds what a spell's roll line can't read from the data.
    - `general.ts`: the language and tool fallback orders.
 3. **Build** (`scripts/build-content.ts`, run by vite, vitest and `typecheck`): joins the two into
    `src/generated/content.ts` (gitignored), typed by `src/domain/contentTypes.ts`. It fails,
    listing every problem, on a curated id the import lacks, an imported feature or trait with no
    summary, a shortlist smaller than its pick count (in the worst case, after repeats of species
-   cantrips and earlier picks are removed), a spell off the class's list, or a count the class
-   table doesn't give.
+   cantrips and earlier picks are removed), a spell off the class's list, a count the class
+   table doesn't give, a shown item with no `activation`, or a spell whose damage or healing
+   dice its entry doesn't carry.
 
 Pick counts (cantrips, prepared spells, slots, invocations, metamagic, masteries, expertise)
 always come from the imported class table or feature text, never from the curation.
@@ -154,8 +156,15 @@ takes every data-root dir by default).
   elsewhere (the character's level, the general ritual rule) goes in its `ALLOWED` with a reason.
 - **Some 5etools data is wrong.** The Abyssal Tiefling version claims 120-foot darkvision that its
   text doesn't grant; the importer reads darkvision from the trait text, never the field.
-- **Cantrip damage has no structured field for Eldritch Blast** (beams, not scaling dice); the
-  build falls back to the first "NdN Type damage" in the text. Toll the Dead reads "1d8 or 1d12".
+- **Spell rolls come from 5etools markup.** The importer keeps each spell's `{@damage}` rolls
+  (`damageDice`), the `{@dice}` rolls of healing spells (`healDice`, `miscTags` HL) and whether it
+  adds to a weapon hit (`attackRider`, `miscTags` AAD). The build takes a cantrip's scaling dice,
+  else the first damage roll (Eldritch Blast has no scaling field, so it uses its text), and
+  decides how it lands: spell attack, else weapon rider, else save, else no roll.
+  `content/spells/rolls.ts` corrects that (`on`) and words every roll past the first (`note`);
+  the build fails when a damage or healing roll in a spell's rules text appears nowhere on its
+  sheet entry. Flat numbers (Armor of Agathys's 5 Cold damage, Goodberry's 1 Hit Point) aren't
+  dice and aren't checked. Toll the Dead reads "1d8 or 1d12".
 
 - **The theme follows the system setting.** `src/styles/tokens.css` is copied from akasha's and
   keeps both dark blocks (`data-theme="dark"` and the media query); they must stay identical.
@@ -165,10 +174,13 @@ takes every data-root dir by default).
   `config.kdl`. Without the token the DM check would try `sops -d`, which CI cannot run.
 - **SSR HTML splits text around expressions** (`Hi, <!-- -->Ada`), so smoke assertions match the
   pieces, not the joined sentence.
-- **The sheet sorts by plain words.** `featureSlot` reads "bonus action", "reaction" or "as an
-  action" from a feature's summary, and `spellSlot` reads the spell's casting time. A new summary
-  that names its action differently lands under "Always on"; check the sheet after editing one.
-  Spell summaries open with "Action." or "Bonus action.", which `spellGist` skips.
+- **The sheet sorts by `activation`, never by wording.** Every shown feature, trait, sub-option,
+  class option and feat carries a curated `activation` (`action`, `bonus`, `reaction`, `minute`
+  for a minute or more, `passive` for always on or triggered); spells take theirs from the
+  5etools casting unit (an hour reads `minute`). The build fails on a shown item without one.
+  Changing a summary's wording moves nothing; change the field. `minute` items stay off "On your
+  turn" but keep their card. Spell summaries open with "Action." or "Bonus action.", which
+  `spellGist` skips.
 - **print.css comes before globals.css's own rules** (it is one of globals.css's `@import`s), so
   a print rule that overrides a globals.css rule needs more weight: `html …`, or `!important` for
   the hidden parts. Its token block repeats the dark blocks' selectors so paper stays light.

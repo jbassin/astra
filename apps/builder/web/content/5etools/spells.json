@@ -20,12 +20,16 @@
    "sorcerer",
    "wizard"
   ],
+  "damageTypes": [
+   "acid"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d6"
+  ],
   "cantripDice": "1d6",
   "save": [
    "dex"
-  ],
-  "damageTypes": [
-   "acid"
   ]
  },
  {
@@ -49,7 +53,8 @@
    "ranger",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "minute"
  },
  {
   "id": "animal-friendship",
@@ -73,10 +78,11 @@
    "druid",
    "ranger"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "wis"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "armor-of-agathys",
@@ -100,7 +106,8 @@
   ],
   "damageTypes": [
    "cold"
-  ]
+  ],
+  "activation": "bonus"
  },
  {
   "id": "arms-of-hadar",
@@ -122,11 +129,15 @@
   "classes": [
    "warlock"
   ],
-  "save": [
-   "str"
-  ],
   "damageTypes": [
    "necrotic"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "2d6"
+  ],
+  "save": [
+   "str"
   ]
  },
  {
@@ -151,10 +162,11 @@
    "cleric",
    "warlock"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "cha"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "blade-ward",
@@ -177,7 +189,8 @@
    "warlock",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "bless",
@@ -200,7 +213,8 @@
    "cleric",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "burning-hands",
@@ -224,11 +238,15 @@
    "sorcerer",
    "wizard"
   ],
-  "save": [
-   "dex"
-  ],
   "damageTypes": [
    "fire"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "3d6"
+  ],
+  "save": [
+   "dex"
   ]
  },
  {
@@ -255,10 +273,11 @@
    "warlock",
    "wizard"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "wis"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "chill-touch",
@@ -282,11 +301,15 @@
    "warlock",
    "wizard"
   ],
-  "cantripDice": "1d10",
-  "spellAttack": "melee",
   "damageTypes": [
    "necrotic"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d10"
+  ],
+  "cantripDice": "1d10",
+  "spellAttack": "melee"
  },
  {
   "id": "chromatic-orb",
@@ -310,7 +333,6 @@
    "sorcerer",
    "wizard"
   ],
-  "spellAttack": "ranged",
   "damageTypes": [
    "acid",
    "cold",
@@ -318,7 +340,12 @@
    "lightning",
    "poison",
    "thunder"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "3d8"
+  ],
+  "spellAttack": "ranged"
  },
  {
   "id": "color-spray",
@@ -340,10 +367,11 @@
    "sorcerer",
    "wizard"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "con"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "command",
@@ -372,10 +400,11 @@
    "cleric",
    "paladin"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "wis"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "compelled-duel",
@@ -396,10 +425,11 @@
   "classes": [
    "paladin"
   ],
+  "damageTypes": [],
+  "activation": "bonus",
   "save": [
    "wis"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "comprehend-languages",
@@ -422,7 +452,8 @@
    "warlock",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "create-or-destroy-water",
@@ -447,7 +478,8 @@
    "cleric",
    "druid"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "cure-wounds",
@@ -473,7 +505,11 @@
    "ranger",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action",
+  "healDice": [
+   "2d8"
+  ]
  },
  {
   "id": "dancing-lights",
@@ -496,7 +532,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "detect-evil-and-good",
@@ -518,7 +555,8 @@
    "cleric",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "detect-magic",
@@ -546,7 +584,8 @@
    "wizard",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "detect-poison-and-disease",
@@ -570,7 +609,8 @@
    "ranger",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "disguise-self",
@@ -594,7 +634,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "dissonant-whispers",
@@ -616,11 +657,15 @@
   "classes": [
    "bard"
   ],
-  "save": [
-   "wis"
-  ],
   "damageTypes": [
    "psychic"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "3d6"
+  ],
+  "save": [
+   "wis"
   ]
  },
  {
@@ -643,7 +688,12 @@
   ],
   "damageTypes": [
    "radiant"
-  ]
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "1d4"
+  ],
+  "attackRider": true
  },
  {
   "id": "divine-smite",
@@ -667,7 +717,13 @@
   ],
   "damageTypes": [
    "radiant"
-  ]
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "2d8",
+   "1d8"
+  ],
+  "attackRider": true
  },
  {
   "id": "druidcraft",
@@ -691,7 +747,8 @@
   "classes": [
    "druid"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "eldritch-blast",
@@ -713,10 +770,14 @@
   "classes": [
    "warlock"
   ],
-  "spellAttack": "ranged",
   "damageTypes": [
    "force"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d10"
+  ],
+  "spellAttack": "ranged"
  },
  {
   "id": "elementalism",
@@ -743,7 +804,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "ensnaring-strike",
@@ -766,11 +828,15 @@
   "classes": [
    "ranger"
   ],
-  "save": [
-   "str"
-  ],
   "damageTypes": [
    "piercing"
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "1d6"
+  ],
+  "save": [
+   "str"
   ]
  },
  {
@@ -793,10 +859,11 @@
    "druid",
    "ranger"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "str"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "expeditious-retreat",
@@ -818,7 +885,8 @@
    "warlock",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "bonus"
  },
  {
   "id": "faerie-fire",
@@ -840,10 +908,11 @@
    "bard",
    "druid"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "dex"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "false-life",
@@ -866,7 +935,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "feather-fall",
@@ -888,7 +958,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "reaction"
  },
  {
   "id": "find-familiar",
@@ -913,7 +984,8 @@
   "classes": [
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "minute"
  },
  {
   "id": "fire-bolt",
@@ -936,11 +1008,15 @@
    "sorcerer",
    "wizard"
   ],
-  "cantripDice": "1d10",
-  "spellAttack": "ranged",
   "damageTypes": [
    "fire"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d10"
+  ],
+  "cantripDice": "1d10",
+  "spellAttack": "ranged"
  },
  {
   "id": "fog-cloud",
@@ -965,7 +1041,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "friends",
@@ -989,10 +1066,11 @@
    "warlock",
    "wizard"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "wis"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "goodberry",
@@ -1014,7 +1092,8 @@
    "druid",
    "ranger"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "grease",
@@ -1036,10 +1115,11 @@
    "sorcerer",
    "wizard"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "dex"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "guidance",
@@ -1060,7 +1140,8 @@
    "cleric",
    "druid"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "guiding-bolt",
@@ -1082,10 +1163,14 @@
   "classes": [
    "cleric"
   ],
-  "spellAttack": "ranged",
   "damageTypes": [
    "radiant"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "4d6"
+  ],
+  "spellAttack": "ranged"
  },
  {
   "id": "hail-of-thorns",
@@ -1107,11 +1192,15 @@
   "classes": [
    "ranger"
   ],
-  "save": [
-   "dex"
-  ],
   "damageTypes": [
    "piercing"
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "1d10"
+  ],
+  "save": [
+   "dex"
   ]
  },
  {
@@ -1136,7 +1225,11 @@
    "cleric",
    "druid"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "bonus",
+  "healDice": [
+   "2d4"
+  ]
  },
  {
   "id": "hellish-rebuke",
@@ -1158,11 +1251,15 @@
   "classes": [
    "warlock"
   ],
-  "save": [
-   "dex"
-  ],
   "damageTypes": [
    "fire"
+  ],
+  "activation": "reaction",
+  "damageDice": [
+   "2d10"
+  ],
+  "save": [
+   "dex"
   ]
  },
  {
@@ -1186,7 +1283,8 @@
    "bard",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "hex",
@@ -1211,7 +1309,12 @@
   ],
   "damageTypes": [
    "necrotic"
-  ]
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "1d6"
+  ],
+  "attackRider": true
  },
  {
   "id": "hunters-mark",
@@ -1236,7 +1339,12 @@
   ],
   "damageTypes": [
    "force"
-  ]
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "1d6"
+  ],
+  "attackRider": true
  },
  {
   "id": "ice-knife",
@@ -1260,13 +1368,18 @@
    "sorcerer",
    "wizard"
   ],
-  "spellAttack": "ranged",
-  "save": [
-   "dex"
-  ],
   "damageTypes": [
    "cold",
    "piercing"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d10",
+   "2d6"
+  ],
+  "spellAttack": "ranged",
+  "save": [
+   "dex"
   ]
  },
  {
@@ -1289,7 +1402,8 @@
    "bard",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "minute"
  },
  {
   "id": "illusory-script",
@@ -1313,7 +1427,8 @@
    "warlock",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "minute"
  },
  {
   "id": "inflict-wounds",
@@ -1335,11 +1450,15 @@
   "classes": [
    "cleric"
   ],
-  "save": [
-   "con"
-  ],
   "damageTypes": [
    "necrotic"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "2d10"
+  ],
+  "save": [
+   "con"
   ]
  },
  {
@@ -1365,7 +1484,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "bonus"
  },
  {
   "id": "light",
@@ -1389,7 +1509,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "longstrider",
@@ -1414,7 +1535,8 @@
    "ranger",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "mage-armor",
@@ -1435,7 +1557,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "mage-hand",
@@ -1461,7 +1584,8 @@
    "warlock",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "magic-missile",
@@ -1486,6 +1610,10 @@
   ],
   "damageTypes": [
    "force"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d4 + 1"
   ]
  },
  {
@@ -1511,7 +1639,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "minute"
  },
  {
   "id": "message",
@@ -1535,7 +1664,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "mind-sliver",
@@ -1559,12 +1689,16 @@
    "warlock",
    "wizard"
   ],
+  "damageTypes": [
+   "psychic"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d6"
+  ],
   "cantripDice": "1d6",
   "save": [
    "int"
-  ],
-  "damageTypes": [
-   "psychic"
   ]
  },
  {
@@ -1591,7 +1725,8 @@
    "warlock",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "poison-spray",
@@ -1616,11 +1751,15 @@
    "warlock",
    "wizard"
   ],
-  "cantripDice": "1d12",
-  "spellAttack": "ranged",
   "damageTypes": [
    "poison"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d12"
+  ],
+  "cantripDice": "1d12",
+  "spellAttack": "ranged"
  },
  {
   "id": "prestidigitation",
@@ -1649,7 +1788,8 @@
    "warlock",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "produce-flame",
@@ -1672,11 +1812,15 @@
   "classes": [
    "druid"
   ],
-  "cantripDice": "1d8",
-  "spellAttack": "ranged",
   "damageTypes": [
    "fire"
-  ]
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "1d8"
+  ],
+  "cantripDice": "1d8",
+  "spellAttack": "ranged"
  },
  {
   "id": "protection-from-evil-and-good",
@@ -1700,7 +1844,8 @@
    "wizard",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "purify-food-and-drink",
@@ -1722,7 +1867,8 @@
    "druid",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "ray-of-frost",
@@ -1745,11 +1891,15 @@
    "sorcerer",
    "wizard"
   ],
-  "cantripDice": "1d8",
-  "spellAttack": "ranged",
   "damageTypes": [
    "cold"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d8"
+  ],
+  "cantripDice": "1d8",
+  "spellAttack": "ranged"
  },
  {
   "id": "ray-of-sickness",
@@ -1772,10 +1922,14 @@
    "sorcerer",
    "wizard"
   ],
-  "spellAttack": "ranged",
   "damageTypes": [
    "poison"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "2d8"
+  ],
+  "spellAttack": "ranged"
  },
  {
   "id": "resistance",
@@ -1796,7 +1950,8 @@
    "cleric",
    "druid"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "sacred-flame",
@@ -1818,12 +1973,16 @@
   "classes": [
    "cleric"
   ],
+  "damageTypes": [
+   "radiant"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d8"
+  ],
   "cantripDice": "1d8",
   "save": [
    "dex"
-  ],
-  "damageTypes": [
-   "radiant"
   ]
  },
  {
@@ -1845,10 +2004,11 @@
   "classes": [
    "cleric"
   ],
+  "damageTypes": [],
+  "activation": "bonus",
   "save": [
    "wis"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "searing-smite",
@@ -1870,11 +2030,17 @@
   "classes": [
    "paladin"
   ],
-  "save": [
-   "con"
-  ],
   "damageTypes": [
    "fire"
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "1d6",
+   "1d6"
+  ],
+  "attackRider": true,
+  "save": [
+   "con"
   ]
  },
  {
@@ -1896,7 +2062,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "reaction"
  },
  {
   "id": "shield-of-faith",
@@ -1917,7 +2084,8 @@
    "cleric",
    "paladin"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "bonus"
  },
  {
   "id": "shillelagh",
@@ -1940,10 +2108,12 @@
   "classes": [
    "druid"
   ],
-  "cantripDice": "1d8",
   "damageTypes": [
    "force"
-  ]
+  ],
+  "activation": "bonus",
+  "attackRider": true,
+  "cantripDice": "1d8"
  },
  {
   "id": "shocking-grasp",
@@ -1966,11 +2136,15 @@
    "sorcerer",
    "wizard"
   ],
-  "cantripDice": "1d8",
-  "spellAttack": "melee",
   "damageTypes": [
    "lightning"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d8"
+  ],
+  "cantripDice": "1d8",
+  "spellAttack": "melee"
  },
  {
   "id": "silent-image",
@@ -1994,7 +2168,8 @@
    "sorcerer",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "sleep",
@@ -2017,10 +2192,11 @@
    "sorcerer",
    "wizard"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "wis"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "sorcerous-burst",
@@ -2043,8 +2219,6 @@
   "classes": [
    "sorcerer"
   ],
-  "cantripDice": "1d8",
-  "spellAttack": "ranged",
   "damageTypes": [
    "acid",
    "cold",
@@ -2053,7 +2227,13 @@
    "poison",
    "psychic",
    "thunder"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d8"
+  ],
+  "cantripDice": "1d8",
+  "spellAttack": "ranged"
  },
  {
   "id": "spare-the-dying",
@@ -2076,7 +2256,8 @@
    "cleric",
    "druid"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "speak-with-animals",
@@ -2100,7 +2281,8 @@
    "ranger",
    "warlock"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "starry-wisp",
@@ -2123,11 +2305,15 @@
    "bard",
    "druid"
   ],
-  "cantripDice": "1d8",
-  "spellAttack": "ranged",
   "damageTypes": [
    "radiant"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d8"
+  ],
+  "cantripDice": "1d8",
+  "spellAttack": "ranged"
  },
  {
   "id": "tashas-hideous-laughter",
@@ -2152,10 +2338,11 @@
    "warlock",
    "wizard"
   ],
+  "damageTypes": [],
+  "activation": "action",
   "save": [
    "wis"
-  ],
-  "damageTypes": []
+  ]
  },
  {
   "id": "tensers-floating-disk",
@@ -2177,7 +2364,8 @@
   "classes": [
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "thaumaturgy",
@@ -2203,7 +2391,8 @@
   "classes": [
    "cleric"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "thorn-whip",
@@ -2225,11 +2414,15 @@
   "classes": [
    "druid"
   ],
-  "cantripDice": "1d6",
-  "spellAttack": "melee",
   "damageTypes": [
    "piercing"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d6"
+  ],
+  "cantripDice": "1d6",
+  "spellAttack": "melee"
  },
  {
   "id": "thunderclap",
@@ -2255,12 +2448,16 @@
    "warlock",
    "wizard"
   ],
+  "damageTypes": [
+   "thunder"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d6"
+  ],
   "cantripDice": "1d6",
   "save": [
    "con"
-  ],
-  "damageTypes": [
-   "thunder"
   ]
  },
  {
@@ -2283,11 +2480,16 @@
   "classes": [
    "paladin"
   ],
-  "save": [
-   "str"
-  ],
   "damageTypes": [
    "thunder"
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "2d6"
+  ],
+  "attackRider": true,
+  "save": [
+   "str"
   ]
  },
  {
@@ -2314,11 +2516,15 @@
    "sorcerer",
    "wizard"
   ],
-  "save": [
-   "con"
-  ],
   "damageTypes": [
    "thunder"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "2d8"
+  ],
+  "save": [
+   "con"
   ]
  },
  {
@@ -2343,12 +2549,17 @@
    "warlock",
    "wizard"
   ],
+  "damageTypes": [
+   "necrotic"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d8",
+   "1d12"
+  ],
   "cantripDice": "1d8 or 1d12",
   "save": [
    "wis"
-  ],
-  "damageTypes": [
-   "necrotic"
   ]
  },
  {
@@ -2374,10 +2585,12 @@
    "warlock",
    "wizard"
   ],
-  "cantripDice": "",
   "damageTypes": [
    "radiant"
-  ]
+  ],
+  "activation": "action",
+  "attackRider": true,
+  "cantripDice": ""
  },
  {
   "id": "unseen-servant",
@@ -2401,7 +2614,8 @@
    "warlock",
    "wizard"
   ],
-  "damageTypes": []
+  "damageTypes": [],
+  "activation": "action"
  },
  {
   "id": "vicious-mockery",
@@ -2423,12 +2637,16 @@
   "classes": [
    "bard"
   ],
+  "damageTypes": [
+   "psychic"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d6"
+  ],
   "cantripDice": "1d6",
   "save": [
    "wis"
-  ],
-  "damageTypes": [
-   "psychic"
   ]
  },
  {
@@ -2455,10 +2673,15 @@
    "warlock",
    "wizard"
   ],
-  "spellAttack": "ranged",
   "damageTypes": [
    "lightning"
-  ]
+  ],
+  "activation": "action",
+  "damageDice": [
+   "2d12",
+   "1d12"
+  ],
+  "spellAttack": "ranged"
  },
  {
   "id": "word-of-radiance",
@@ -2480,12 +2703,16 @@
   "classes": [
    "cleric"
   ],
+  "damageTypes": [
+   "radiant"
+  ],
+  "activation": "action",
+  "damageDice": [
+   "1d6"
+  ],
   "cantripDice": "1d6",
   "save": [
    "con"
-  ],
-  "damageTypes": [
-   "radiant"
   ]
  },
  {
@@ -2508,11 +2735,16 @@
   "classes": [
    "paladin"
   ],
-  "save": [
-   "wis"
-  ],
   "damageTypes": [
    "necrotic"
+  ],
+  "activation": "bonus",
+  "damageDice": [
+   "1d6"
+  ],
+  "attackRider": true,
+  "save": [
+   "wis"
   ]
  }
 ]

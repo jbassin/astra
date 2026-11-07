@@ -38,6 +38,7 @@ export const CLASSES: CuratedClass[] = [
     features: {
       "fighter-fighting-style": { hidden: "Shown as the Fighting Style the player picks." },
       "fighter-second-wind": {
+        activation: "bonus",
         summary:
           "As a bonus action, catch your breath and regain 1d10 + 2 Hit Points (1d10 plus your Fighter level). Use it when you're hurt in a fight.",
         uses: {
@@ -47,15 +48,18 @@ export const CLASSES: CuratedClass[] = [
         },
       },
       "fighter-weapon-mastery": {
+        activation: "passive",
         summary:
           "You can use the special mastery property of three kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can swap one of them.",
       },
       "fighter-action-surge": {
+        activation: "action",
         summary:
           "On your turn, take one extra action, such as a second Attack. It can't be the Magic action (casting a spell).",
         uses: { count: 1, per: "short" },
       },
       "fighter-tactical-mind": {
+        activation: "passive",
         summary:
           "When you fail an ability check, you can spend a use of Second Wind to roll 1d10 and add it to the check. If you still fail, you keep that use.",
       },
@@ -89,6 +93,7 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["tough", "alert"],
     features: {
       "barbarian-rage": {
+        activation: "bonus",
         summary:
           "As a bonus action, fly into a Rage (not while wearing Heavy armor). While raging you take half damage from Bludgeoning, Piercing and Slashing attacks, add +2 to the damage of attacks that use Strength, and have advantage on Strength checks and saves, but you can't cast spells or concentrate. It lasts until the end of your next turn and keeps going each turn you attack an enemy, force an enemy to make a save, or spend a bonus action, for up to 10 minutes.",
         uses: {
@@ -98,18 +103,22 @@ export const CLASSES: CuratedClass[] = [
         },
       },
       "barbarian-unarmored-defense": {
+        activation: "passive",
         summary:
           "While you wear no armor, your Armor Class is 10 + your Dexterity modifier + your Constitution modifier. You can still use a shield.",
       },
       "barbarian-weapon-mastery": {
+        activation: "passive",
         summary:
           "You can use the special mastery property of two kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can swap one of them.",
       },
       "barbarian-danger-sense": {
+        activation: "passive",
         summary:
           "You have advantage on Dexterity saving throws (dodging traps, explosions and the like) unless you are Incapacitated.",
       },
       "barbarian-reckless-attack": {
+        activation: "passive",
         summary:
           "When you make your first attack on your turn, you can attack recklessly: you get advantage on attack rolls that use Strength until your next turn, but attacks against you have advantage too.",
       },
@@ -128,6 +137,7 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["tough", "alert"],
     features: {
       "monk-martial-arts": {
+        activation: "bonus",
         summary:
           "While you wear no armor, carry no shield and fight unarmed or with monk weapons (simple melee weapons, and martial melee weapons with the Light property): you can make an Unarmed Strike as a bonus action, you can roll 1d6 for the damage of those attacks, and you can use Dexterity instead of Strength for their attack and damage rolls.",
       },
@@ -135,29 +145,36 @@ export const CLASSES: CuratedClass[] = [
       "monk-martial-arts-die": { hidden: "Part of Martial Arts." },
       "monk-dexterous-attacks": { hidden: "Part of Martial Arts." },
       "monk-unarmored-defense": {
+        activation: "passive",
         summary:
           "While you wear no armor and carry no shield, your Armor Class is 10 + your Dexterity modifier + your Wisdom modifier.",
       },
       "monk-monks-focus": {
+        activation: "passive",
         summary:
           "You have Focus Points to fuel Flurry of Blows, Patient Defense and Step of the Wind. All of them come back when you finish a Short or Long Rest.",
         uses: { count: { table: "Focus Points" }, per: "short", unit: "Focus Point" },
       },
       "monk-flurry-of-blows": {
+        activation: "bonus",
         summary: "Spend 1 Focus Point to make two Unarmed Strikes as a bonus action.",
       },
       "monk-patient-defense": {
+        activation: "bonus",
         summary:
           "Take the Disengage action as a bonus action, or spend 1 Focus Point to take both Disengage and Dodge as a bonus action.",
       },
       "monk-step-of-the-wind": {
+        activation: "bonus",
         summary:
           "Take the Dash action as a bonus action, or spend 1 Focus Point to take both Disengage and Dash as a bonus action and double your jump distance for the turn.",
       },
       "monk-unarmored-movement": {
+        activation: "passive",
         summary: "Your speed goes up by 10 feet while you wear no armor and carry no shield.",
       },
       "monk-uncanny-metabolism": {
+        activation: "passive",
         summary:
           "When you roll Initiative, you can regain all your spent Focus Points and heal 1d6 + 2 Hit Points (your Martial Arts die plus your Monk level).",
         uses: { count: 1, per: "long" },
@@ -189,21 +206,26 @@ export const CLASSES: CuratedClass[] = [
     languages: { fixed: ["thieves-cant"], extra: 1 },
     features: {
       "rogue-expertise": {
+        activation: "passive",
         summary:
           "You're extra good at two of your skills: you add double your Proficiency Bonus to them (the builder picked them; they're marked on your sheet).",
       },
       "rogue-sneak-attack": {
+        activation: "passive",
         summary:
           "Once per turn, deal an extra 1d6 damage when you hit with a finesse or ranged weapon and you have advantage on the attack, or when an ally of yours is within 5 feet of the target (and you don't have disadvantage).",
       },
       "rogue-thieves-cant": {
+        activation: "passive",
         summary: "You know Thieves' Cant, the secret slang of criminals, plus one more language.",
       },
       "rogue-weapon-mastery": {
+        activation: "passive",
         summary:
           "You can use the special mastery property of two kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can change them.",
       },
       "rogue-cunning-action": {
+        activation: "bonus",
         summary: "On your turn, you can take the Dash, Disengage or Hide action as a bonus action.",
       },
     },
@@ -231,18 +253,22 @@ export const CLASSES: CuratedClass[] = [
     languages: { fixed: [], extra: 2 },
     features: {
       "ranger-favored-enemy": {
+        activation: "passive",
         summary:
           "You always have Hunter's Mark prepared, and you can cast it without using a spell slot a few times per Long Rest.",
         uses: { count: { table: "Favored Enemy" }, per: "long", unit: "free cast" },
       },
       "ranger-spellcasting": {
+        activation: "passive",
         summary: `You cast Ranger spells using Wisdom. ${SPELLCASTING_NOTE} After a Long Rest you can swap one prepared spell. A druidic focus is your spellcasting focus.`,
       },
       "ranger-weapon-mastery": {
+        activation: "passive",
         summary:
           "You can use the special mastery property of two kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can change them.",
       },
       "ranger-deft-explorer": {
+        activation: "passive",
         summary:
           "You gain Expertise in one of your skills (double your Proficiency Bonus; the builder picked it) and learn two more languages.",
       },
@@ -299,18 +325,22 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["lucky", "alert"],
     features: {
       "bard-bardic-inspiration": {
+        activation: "bonus",
         summary:
           "As a bonus action, inspire a creature within 60 feet that can see or hear you: it gets a d6. Once within the next hour, when it fails a d20 roll (an attack, check or save), it can roll the d6 and add it, maybe turning the failure into a success.",
         uses: { count: "cha", per: "long" },
       },
       "bard-spellcasting": {
+        activation: "passive",
         summary: `You cast Bard spells using Charisma. ${SPELLCASTING_NOTE} A musical instrument is your spellcasting focus.`,
       },
       "bard-expertise": {
+        activation: "passive",
         summary:
           "You're extra good at two of your skills: you add double your Proficiency Bonus to them (the builder picked them; they're marked on your sheet).",
       },
       "bard-jack-of-all-trades": {
+        activation: "passive",
         summary:
           "Add half your Proficiency Bonus (rounded down) to any ability check that uses a skill you aren't proficient in.",
       },
@@ -349,19 +379,23 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["alert", "tough"],
     features: {
       "sorcerer-innate-sorcery": {
+        activation: "bonus",
         summary:
           "As a bonus action, unleash your inner magic for 1 minute: the save DC of your Sorcerer spells goes up by 1 and you have advantage on their attack rolls.",
         uses: { count: 2, per: "long" },
       },
       "sorcerer-spellcasting": {
+        activation: "passive",
         summary: `You cast Sorcerer spells using Charisma. ${SPELLCASTING_NOTE} An arcane focus is your spellcasting focus.`,
       },
       "sorcerer-font-of-magic": {
+        activation: "bonus",
         summary:
           "You have Sorcery Points to spend on Metamagic. You can also turn a spell slot into Sorcery Points equal to its level (no action), or spend 2 points as a bonus action to make a level 1 spell slot, which vanishes when you finish a Long Rest.",
         uses: { count: { table: "Sorcery Points" }, per: "long", unit: "Sorcery Point" },
       },
       "sorcerer-metamagic": {
+        activation: "passive",
         summary:
           "You know two Metamagic options (your picks). Each one changes a spell as you cast it for a cost in Sorcery Points. Normally only one option per spell.",
       },
@@ -424,6 +458,7 @@ export const CLASSES: CuratedClass[] = [
     languages: { fixed: ["druidic"], extra: 0 },
     features: {
       "druid-druidic": {
+        activation: "passive",
         summary:
           "You know Druidic, the secret language of druids, and can leave hidden messages in it. You always have Speak with Animals prepared.",
       },
@@ -431,13 +466,16 @@ export const CLASSES: CuratedClass[] = [
       "druid-magician": { hidden: "Shown through the Primal Order pick." },
       "druid-warden": { hidden: "Shown through the Primal Order pick." },
       "druid-spellcasting": {
+        activation: "passive",
         summary: `You cast Druid spells using Wisdom. ${SPELLCASTING_NOTE} After a Long Rest you can change your prepared spells. A druidic focus is your spellcasting focus.`,
       },
       "druid-wild-companion": {
+        activation: "action",
         summary:
           "As an action, spend a spell slot or a use of Wild Shape to cast Find Familiar without its material component: a nature spirit appears as a small animal helper. It disappears when you finish a Long Rest.",
       },
       "druid-wild-shape": {
+        activation: "bonus",
         summary:
           "As a bonus action, turn into a beast form you know (you know four, such as Rat, Riding Horse, Spider or Wolf) for up to 1 hour. You gain 2 Temporary Hit Points and use the beast's body, but keep your own Hit Points, mind and skills. You can't cast spells in beast form. Turn back early as a bonus action.",
         uses: {
@@ -508,18 +546,22 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["alert", "tough"],
     features: {
       "wizard-arcane-recovery": {
+        activation: "passive",
         summary:
           "Once per Long Rest, when you finish a Short Rest, recover spent spell slots whose levels add up to 1 (half your Wizard level, rounded up): one level 1 slot.",
         uses: { count: 1, per: "long" },
       },
       "wizard-ritual-adept": {
+        activation: "passive",
         summary:
           "You can cast any spell in your spellbook that has the Ritual tag as a ritual, without preparing it, by reading it from the book. A ritual takes longer but uses no spell slot.",
       },
       "wizard-spellcasting": {
+        activation: "passive",
         summary: `You cast Wizard spells using Intelligence. Your spellbook holds your level 1 spells; after each Long Rest you choose which of them to prepare. ${SPELLCASTING_NOTE} Your spellbook or an arcane focus is your spellcasting focus.`,
       },
       "wizard-scholar": {
+        activation: "passive",
         summary:
           "You have Expertise in one knowledge skill you're proficient in (double your Proficiency Bonus; the builder picked it).",
       },
@@ -568,6 +610,7 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["alert", "tough"],
     features: {
       "warlock-eldritch-invocations": {
+        activation: "passive",
         summary:
           "You know Eldritch Invocations (your picks): pieces of forbidden lore that each give you a lasting magical trick.",
       },
@@ -575,10 +618,12 @@ export const CLASSES: CuratedClass[] = [
         hidden: "The list the player picks invocations from.",
       },
       "warlock-pact-magic": {
+        activation: "passive",
         summary:
           "You cast Warlock spells using Charisma. Cast a cantrip as often as you like. A level 1 spell uses up one of your few spell slots, but they all come back when you finish a Short or Long Rest, so use them freely. An arcane focus is your spellcasting focus.",
       },
       "warlock-magical-cunning": {
+        activation: "minute",
         summary:
           "Perform a 1-minute eerie rite to regain spent Pact Magic spell slots, up to half your maximum (rounded up).",
         uses: { count: 1, per: "long" },
@@ -633,9 +678,11 @@ export const CLASSES: CuratedClass[] = [
       "cleric-protector": { hidden: "Shown through the Divine Order pick." },
       "cleric-thaumaturge": { hidden: "Shown through the Divine Order pick." },
       "cleric-spellcasting": {
+        activation: "passive",
         summary: `You cast Cleric spells using Wisdom. ${SPELLCASTING_NOTE} After a Long Rest you can change your prepared spells. A holy symbol is your spellcasting focus.`,
       },
       "cleric-channel-divinity": {
+        activation: "passive",
         summary:
           "You can channel divine power. Each use creates one effect of your choice: Divine Spark or Turn Undead.",
         uses: {
@@ -645,10 +692,12 @@ export const CLASSES: CuratedClass[] = [
         },
       },
       "cleric-divine-spark": {
+        activation: "action",
         summary:
           "Channel Divinity, as an action: point your holy symbol at a creature within 30 feet and roll 1d8 + your Wisdom modifier. Either heal it that much, or it makes a Constitution save and takes that much Necrotic or Radiant damage (half on a success).",
       },
       "cleric-turn-undead": {
+        activation: "action",
         summary:
           "Channel Divinity, as an action: each Undead you choose within 30 feet makes a Wisdom save. On a failure it is Frightened and Incapacitated for 1 minute and tries to flee from you; this ends early if it takes damage.",
       },
@@ -697,19 +746,23 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["tough", "alert"],
     features: {
       "paladin-lay-on-hands": {
+        activation: "bonus",
         summary:
           "You have a pool of healing that holds 10 Hit Points (5 times your Paladin level) and refills when you finish a Long Rest. As a bonus action, touch a creature (or yourself) and spend any amount from the pool to heal it, or spend 5 to end the Poisoned condition.",
         uses: { count: 10, per: "long", unit: "Hit Point" },
       },
       "paladin-spellcasting": {
+        activation: "passive",
         summary: `You cast Paladin spells using Charisma. ${SPELLCASTING_NOTE} After a Long Rest you can swap one prepared spell. A holy symbol is your spellcasting focus.`,
       },
       "paladin-weapon-mastery": {
+        activation: "passive",
         summary:
           "You can use the special mastery property of two kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can change them.",
       },
       "paladin-fighting-style": { hidden: "Shown as the Fighting Style the player picks." },
       "paladin-paladins-smite": {
+        activation: "passive",
         summary:
           "You always have Divine Smite prepared, and you can cast it once without using a spell slot.",
         uses: { count: 1, per: "long", unit: "free cast" },

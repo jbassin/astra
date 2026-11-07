@@ -4,9 +4,11 @@
 
 import type {
   Ability,
+  Activation,
   ArchetypeId,
   BackgroundId,
   ClassId,
+  DamageOn,
   OptionGroupKey,
   OptionKind,
   SpeciesId,
@@ -25,8 +27,8 @@ export interface CuratedUses extends Omit<Uses, "count"> {
 
 /** A summary for an imported feature or trait, or `hidden` with the reason it isn't shown. */
 export type CuratedSummary =
-  | { summary: string; uses?: CuratedUses; hidden?: undefined }
-  | { hidden: string; summary?: undefined; uses?: undefined };
+  | { summary: string; activation: Activation; uses?: CuratedUses; hidden?: undefined }
+  | { hidden: string; summary?: undefined; activation?: undefined; uses?: undefined };
 
 export interface CuratedSpellPick {
   id: string;
@@ -81,6 +83,7 @@ export interface CuratedOption {
   /** Where the rules text comes from. */
   from: { feat: string } | { optionalFeature: string } | { classFeature: string };
   summary: string;
+  activation: Activation;
   uses?: CuratedUses;
   /** Metamagic: the Sorcery Point cost (the build checks it against the data). */
   cost?: number;
@@ -93,6 +96,7 @@ export interface CuratedOption {
 
 export interface CuratedSpeciesOption {
   summary: string;
+  activation: Activation;
   uses?: CuratedUses;
 }
 
@@ -118,6 +122,17 @@ export interface CuratedBackground {
 
 export interface CuratedFeat {
   summary: string;
+  activation: Activation;
   uses?: CuratedUses;
   tools?: string[];
+}
+
+/**
+ * What the build can't read from a spell's data about its rolls: how the damage lands, when
+ * the default (spell attack, else weapon rider, else save, else no roll) is wrong, and plain
+ * words for any roll beyond the first.
+ */
+export interface CuratedSpellRoll {
+  on?: DamageOn;
+  note?: string;
 }
