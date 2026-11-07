@@ -1,6 +1,6 @@
-/* The character sheet as a dossier: a hero banner in the class's hue, medallions for the key
- * numbers and the six abilities, "On your turn" in three columns (stacked on a phone), the
- * spells, the details, then trading cards. */
+/* The top of the character sheet, a dossier: the hero banner in the class's hue, section
+ * titles, medallions for the key numbers, and "On your turn" in three columns (stacked on a
+ * phone). sheet-details.css and cards.css hold the rest. */
 
 .sheet {
   display: grid;

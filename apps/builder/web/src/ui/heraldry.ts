@@ -34,7 +34,7 @@ export const ARCHETYPE_HERALDRY: Record<ArchetypeId, Tincture> = {
   warrior: { icon: "crossed-swords", hue: 28, chroma: 0.15 },
   scoundrel: { icon: "cloak-dagger", hue: 260, chroma: 0.03 },
   mage: { icon: "wizard-staff", hue: 290, chroma: 0.16 },
-  healer: { icon: "healing", hue: 150, chroma: 0.12 },
+  healer: { icon: "caduceus", hue: 150, chroma: 0.12 },
 };
 
 /** The neutral tincture: the page's gilt, for things with no class of their own. */
