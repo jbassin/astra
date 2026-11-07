@@ -1,0 +1,97 @@
+/* Paper: the browser's print gives the sheet alone, black on white, with the cards on their
+ * own pages in a grid of dashed cut lines. The header, rail, buttons and banners are hidden.
+ * globals.css imports this file, so its own rules come later: overrides of them need more
+ * weight (`html …`, or `!important` for the hidden parts). */
+
+@media print {
+  /* As heavy as tokens.css's dark blocks, and later, so paper is light in a dark theme too. */
+  :root,
+  :root:not([data-theme="light"]),
+  :root[data-theme] {
+    color-scheme: light;
+    --bd-page: #ffffff;
+    --bd-surface: #ffffff;
+    --bd-sunk: #f1f1f1;
+    --bd-ink: #000000;
+    --bd-muted: #333333;
+    --bd-faint: #555555;
+    --bd-rule: #999999;
+    --bd-accent: #000000;
+  }
+  @page {
+    margin: 12mm;
+  }
+  body {
+    font-size: 11pt;
+  }
+  .site-head,
+  .stepper,
+  .flow-head,
+  .flow-nav,
+  .test-banner,
+  .screen-title,
+  .screen-hint,
+  .notice,
+  .sheet-print,
+  .still .button,
+  .dm-sheet > summary,
+  .dm-meta {
+    /* globals.css comes later in the cascade (its imports, this file, sit at the top). */
+    display: none !important;
+  }
+  html .flow,
+  html .wrap {
+    max-width: none;
+    padding: 0;
+  }
+  .flow-body {
+    display: block;
+  }
+  .flow-screen,
+  .dm-player {
+    padding: 0;
+    border: 0;
+  }
+  .vital,
+  .turn-box,
+  .spell-block,
+  .ability {
+    break-inside: avoid;
+  }
+  .roll,
+  .card-roll {
+    border: 1px solid #999999;
+  }
+  .vital-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .turn-grid {
+    grid-template-columns: 1.4fr 1fr 1fr;
+  }
+  .turn-box.wide {
+    grid-column: 1 / -1;
+  }
+  .detail-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* The cards start a new page, three across, with dashed lines to cut along. */
+  .cards-section {
+    break-before: page;
+  }
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .card {
+    break-inside: avoid;
+    border: 1px dashed #000000;
+    border-radius: 0;
+    font-size: 9pt;
+  }
+  .dm-player {
+    break-after: page;
+  }
+  .dm-sheet:not([open]) {
+    display: none;
+  }
+}

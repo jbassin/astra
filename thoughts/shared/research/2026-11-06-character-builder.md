@@ -52,10 +52,21 @@ committed (Josh's decision). Characters are level 2.
 
 **Slice 2b: the player flow and the sheet.** Builds on `content.ts`, `steps.ts` and
 `engine.ts` (the app README lists the API).
-- [ ] Steps for class, species and sub-choice, background, class options, spells, name, look and
-  personality; replace the slice 1 stub in `BuilderFlow.tsx`; call `pruneAnswers` on change.
-- [ ] The "on your turn" sheet and ability cards from `buildCharacter`, with print styles.
-- [ ] DM page: show each player's class, species and background.
+- [x] Screens for kind of hero, class, species and sub-choice, background, class options, spells
+  (every `spellPickLists` list), and About you (name, look, personality), with a progress rail
+  (done, to do, blocked) and resume at the first unfinished screen; `pruneAnswers` on every
+  change, with one plain line naming what it cleared.
+- [x] Nothing preselected, no class-option recommendation, a Recommended badge on curated
+  spells, live "Pick N" counts, greyed-out repeats with the reason, requirement issues shown.
+- [x] The "on your turn" sheet and one card per feature and spell from `buildCharacter`, with
+  print styles (cards on their own page, dashed cut lines); what's left to choose instead of
+  numbers while `missing` is non-empty.
+- [x] `/test`: the same flow and sheet with no saves (persistence injected; a test proves the
+  save function is never called), linked from the home page.
+- [x] DM page: each player's class, species and background, and their full sheet.
+- [x] Tests: Fighter and Wizard picked through the flow, pruning on class change, recommended
+  markers and nothing preselected, test mode never saves, sheets for a Barbarian and a Cleric,
+  SSR smoke for `/test`.
 
 **Go live.**
 - [ ] Merge, `just deploy builder`, `just caddy-reload`.

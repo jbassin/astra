@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
-import { BuilderFlow } from "@/components/BuilderFlow";
+import { PlayerBuilder } from "@/components/PlayerBuilder";
 import { getPlayerPage } from "@/server/builderFns";
 
 export const Route = createFileRoute("/c/$id")({
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/c/$id")({
 function PlayerComponent() {
   const { id } = Route.useParams();
   const page = Route.useLoaderData();
-  return <BuilderFlow id={id} playerName={page.name} initial={page.character?.answers ?? {}} />;
+  return <PlayerBuilder id={id} playerName={page.name} initial={page.character?.answers ?? {}} />;
 }
 
 function UnknownLink() {

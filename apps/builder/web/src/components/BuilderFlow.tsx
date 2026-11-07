@@ -1,102 +1,197 @@
-// The player's builder: one card per step, every change auto-saved. The content here is a stub
-// (archetype, name, look) that exercises saving; the real steps are to be built on top of
-// steps.ts and engine.ts.
+// The player's builder: one screen at a time, driven by steps.ts through flow.ts, ending on
+// the character sheet. It never saves anything itself: the page passes `persist`, which gets
+// every change (the player page's debounced server save; a no-op in test mode).
 
-import { useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
-import { ARCHETYPES, type Answers } from "@/domain/character";
-import { isAnswered, pruneAnswers } from "@/domain/steps";
-import { saveAnswers } from "@/server/builderFns";
+import type { Answers } from "@/domain/character";
+import { buildCharacter } from "@/domain/engine";
+import {
+  clearedSummary,
+  startView,
+  VIEWS,
+  type ViewKey,
+  type ViewStatus,
+  viewAfter,
+  viewBefore,
+  viewStatuses,
+} from "@/domain/flow";
+import { pruneAnswers } from "@/domain/steps";
 
-import { type SaveState, useAutosave } from "./useAutosave";
+import {
+  ArchetypeScreen,
+  BackgroundScreen,
+  ClassScreen,
+  type ScreenProps,
+  SpeciesScreen,
+} from "./flow/OriginScreens";
+import { AboutScreen, OptionsScreen, SpellsScreen } from "./flow/PickScreens";
+import { Stepper } from "./flow/Stepper";
+import { CharacterSheet } from "./sheet/CharacterSheet";
 
-const SAVE_LABEL: Record<SaveState, string> = {
-  idle: "",
-  pending: "Saving…",
-  saving: "Saving…",
-  saved: "Saved",
-  error: "Couldn’t save. Check your connection; your next change tries again.",
+const SCREENS: Record<
+  Exclude<ViewKey, "sheet">,
+  { title: string; hint: string; Body: (p: ScreenProps) => ReactNode }
+> = {
+  archetype: {
+    title: "What kind of hero do you want to be?",
+    hint: "Pick the one that sounds most fun. You can change it later.",
+    Body: ArchetypeScreen,
+  },
+  class: {
+    title: "Pick your class",
+    hint: "Your class is your hero’s calling: how they fight and what they’re best at.",
+    Body: ClassScreen,
+  },
+  species: {
+    title: "Pick your species",
+    hint: "The people your hero was born into. Each gives a few natural gifts.",
+    Body: SpeciesScreen,
+  },
+  background: {
+    title: "Pick your background",
+    hint: "What your hero did before adventuring. It adds skills, gear and a special talent.",
+    Body: BackgroundScreen,
+  },
+  options: {
+    title: "Make your class choices",
+    hint: "Read each one and pick what sounds most like your hero. None is wrong.",
+    Body: OptionsScreen,
+  },
+  spells: {
+    title: "Pick your spells",
+    hint: "Cantrips are small spells you can cast as often as you like. Level 1 spells are stronger: each cast uses a spell slot, and your slots come back when you rest.",
+    Body: SpellsScreen,
+  },
+  about: {
+    title: "Tell us about your hero",
+    hint: "Give them a name and a little life. There are no rules here.",
+    Body: AboutScreen,
+  },
 };
 
-export function BuilderFlow({
-  id,
-  playerName,
-  initial,
+function labelOf(view: ViewKey): string {
+  return VIEWS.find((v) => v.key === view)?.label ?? view;
+}
+
+function Blocked({ status, go }: { status: ViewStatus; go: (v: ViewKey) => void }) {
+  const first = status.blockedBy ?? "archetype";
+  return (
+    <p className="blocked">
+      This depends on an earlier choice.{" "}
+      <button type="button" className="link-button" onClick={() => go(first)}>
+        Go to {labelOf(first)}
+      </button>
+    </p>
+  );
+}
+
+function FlowNav({
+  answers,
+  view,
+  go,
 }: {
-  id: string;
-  playerName: string;
+  answers: Answers;
+  view: ViewKey;
+  go: (v: ViewKey) => void;
+}) {
+  const back = viewBefore(answers, view);
+  const next = view === "sheet" ? undefined : viewAfter(answers, view);
+  return (
+    <div className="flow-nav">
+      {back && (
+        <button type="button" className="button quiet" onClick={() => go(back)}>
+          Back
+        </button>
+      )}
+      {next && (
+        <button type="button" className="button" onClick={() => go(next)}>
+          Next: {labelOf(next)}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function Screen({
+  answers,
+  update,
+  view,
+  statuses,
+  go,
+}: ScreenProps & {
+  view: ViewKey;
+  statuses: ViewStatus[];
+  go: (v: ViewKey) => void;
+}) {
+  if (view === "sheet") {
+    return (
+      <CharacterSheet character={buildCharacter(answers)} onFinish={() => go(startView(answers))} />
+    );
+  }
+  const status = statuses.find((s) => s.key === view);
+  const { Body } = SCREENS[view];
+  if (status?.state === "blocked") return <Blocked status={status} go={go} />;
+  return <Body answers={answers} update={update} />;
+}
+
+export function BuilderFlow({
+  initial,
+  persist,
+  title,
+  intro,
+  banner,
+}: {
   initial: Answers;
+  persist: (answers: Answers) => void;
+  title: ReactNode;
+  intro: ReactNode;
+  banner?: ReactNode;
 }) {
   const [answers, setAnswers] = useState<Answers>(initial);
-  const autosave = useAutosave((next: Answers) => saveAnswers({ data: { id, answers: next } }));
+  const [view, setView] = useState<ViewKey>(() => startView(initial));
+  const [notice, setNotice] = useState<string | null>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const moved = useRef(false);
+  const statuses = viewStatuses(answers);
+
+  useEffect(() => {
+    // Move focus (and the scroll position) to the new screen's heading, but not on first load.
+    if (moved.current) heading.current?.focus();
+  }, [view]);
 
   function update(patch: Partial<Answers>) {
-    const next = pruneAnswers({ ...answers, ...patch }, answers);
+    const merged = { ...answers, ...patch };
+    const next = pruneAnswers(merged, answers);
+    setNotice(clearedSummary(merged, next));
     setAnswers(next);
-    autosave.schedule(next);
+    persist(next);
   }
 
+  function go(next: ViewKey) {
+    moved.current = true;
+    setNotice(null);
+    setView(next);
+  }
+
+  const screen = view === "sheet" ? undefined : SCREENS[view];
   return (
-    <main className="wrap">
-      <h1>Hi, {playerName}</h1>
-      <p className="lede">
-        Make your choices below. Everything saves as you go, so you can close this page and come
-        back to the same link any time.{" "}
-        <output className="save-state" data-state={autosave.state} title={autosave.error}>
-          {SAVE_LABEL[autosave.state]}
-        </output>
-      </p>
-
-      <div className="steps">
-        <section className={`step${isAnswered(answers, "archetype") ? " done" : ""}`}>
-          <h2 className="step-head">
-            <span className="step-num">1</span> What kind of hero?
+    <main className="flow">
+      <header className="flow-head">
+        <h1>{title}</h1>
+        <div className="lede">{intro}</div>
+      </header>
+      {banner}
+      <div className="flow-body">
+        <Stepper statuses={statuses} current={view} onJump={go} />
+        <section className="flow-screen" aria-labelledby="screen-title">
+          <h2 id="screen-title" ref={heading} tabIndex={-1} className="screen-title">
+            {screen?.title ?? "Your character sheet"}
           </h2>
-          <p className="step-hint">Pick the one that sounds most fun. You can change it later.</p>
-          <fieldset className="choices">
-            <legend className="sr-only">Archetype</legend>
-            {ARCHETYPES.map((a) => (
-              <label key={a.id} className="choice">
-                <input
-                  type="radio"
-                  name="archetype"
-                  value={a.id}
-                  checked={answers.archetype === a.id}
-                  onChange={() => update({ archetype: a.id })}
-                />
-                <span className="choice-label">{a.label}</span>
-                <span className="choice-blurb">{a.blurb}</span>
-              </label>
-            ))}
-          </fieldset>
-        </section>
-
-        <section className={`step${isAnswered(answers, "name") ? " done" : ""}`}>
-          <h2 className="step-head">
-            <span className="step-num">2</span> Your character’s name
-          </h2>
-          <input
-            className="field"
-            type="text"
-            aria-label="Character name"
-            maxLength={80}
-            value={answers.name ?? ""}
-            onChange={(e) => update({ name: e.target.value })}
-          />
-        </section>
-
-        <section className={`step${isAnswered(answers, "look") ? " done" : ""}`}>
-          <h2 className="step-head">
-            <span className="step-num">3</span> What do they look like?
-          </h2>
-          <p className="step-hint">A sentence or two is plenty: height, hair, clothes, a scar.</p>
-          <textarea
-            className="field"
-            aria-label="Character look"
-            maxLength={2000}
-            value={answers.look ?? ""}
-            onChange={(e) => update({ look: e.target.value })}
-          />
+          {screen && <p className="screen-hint">{screen.hint}</p>}
+          {notice && <output className="notice">{notice}</output>}
+          <Screen answers={answers} update={update} view={view} statuses={statuses} go={go} />
+          <FlowNav answers={answers} view={view} go={go} />
         </section>
       </div>
     </main>

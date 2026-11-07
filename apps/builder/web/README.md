@@ -7,19 +7,48 @@ frontend on the site-kit preset (`libs/ts/site-kit/README.md`), running as the C
 `builder` on port 10375 (`service.name=astra.builder`) behind Caddy at `https://builder.iridi.cc`.
 The plan and checklist are in `thoughts/shared/research/2026-11-06-character-builder.md`.
 
-The game content and the rules engine are in place (slice 2a): twelve level 2 classes from the
-2024 Player's Handbook, with Josh's archetypes, curated shortlists and plain-language summaries,
-and `buildCharacter` derives the whole sheet. The player page is still the slice 1 stub
-(archetype, name, look); slice 2b builds the real steps and the printable sheet on the API below.
+It covers twelve level 2 classes from the 2024 Player's Handbook, with Josh's archetypes,
+curated shortlists and plain-language summaries. `buildCharacter` derives the whole sheet, and the
+player page walks through every choice to a printable "On your turn" sheet with cut-out cards.
 
 ## Routes
 
-- `/`: a short welcome that points players at their link.
+- `/`: a short welcome that points players at their link, and at `/test`.
 - `/c/<id>`: a player's builder. An id not on the roster gets a friendly 404. Every change saves
   after a short pause (the `saveAnswers` server function); the page shows Saving…, Saved or an
-  error.
-- `/dm/<token>`: every invited player with their link, last save, progress and answers. A wrong
-  or missing token, or no token configured, gets the same plain 404 as any unknown URL.
+  error. Reopening the link resumes at the first screen with something left to do.
+- `/test`: test mode, public. The same flow and sheet with nothing saved: the answers live only
+  in the tab's React state, a banner says so, and Start over clears them.
+- `/dm/<token>`: every invited player with their link, last save, progress, class, species and
+  background, and each player's full sheet in a fold-out. A wrong or missing token, or no token
+  configured, gets the same plain 404 as any unknown URL.
+
+## The flow and the sheet
+
+`src/components/BuilderFlow.tsx` runs the flow; it never saves anything itself. The page passes
+`persist`, which gets every change: `PlayerBuilder` passes the debounced server save
+(`useAutosave`), `TestBuilder` a no-op. `TestBuilder.tsx` must not import `@/server/builderFns`;
+`TestBuilder.test.tsx` checks both that and that the save function is never called.
+
+- **Screens** (`src/domain/flow.ts`): kind of hero, class, species (and its sub-choice),
+  background, class choices, spells, About you (name, look and personality), then the sheet.
+  Each screen groups one or more steps from `steps.ts`; `viewStatuses` marks each done, to do
+  or blocked, and hides the ones a class doesn't have. The rail (`flow/Stepper.tsx`) jumps to
+  any screen; Next and Back skip the ones that don't apply.
+- **Every change** goes through `pruneAnswers(next, previous)`, and `clearedSummary` tells the
+  player in one line what that cleared ("That change cleared your spells.").
+- **Josh's calls:** nothing is preselected; class options carry no recommendation; spells the
+  curation marks `recommended` show a Recommended badge. Each list shows "Pick N · M picked";
+  a full multi-pick list disables the rest, and `unavailableSpellIds` are greyed out with the
+  reason. `optionRequirementIssues` show above the spell lists. No ability-score math anywhere.
+- **The sheet** (`src/components/sheet/`, wording in `src/domain/sheet.ts`): the four key
+  numbers, "On your turn" (action, bonus action, reaction, always on), spells per source with
+  DC, attack bonus and slots, "Things you're good at" (proficient skills), abilities, features
+  with uses, gear, and one card per feature and spell. While `missing` is non-empty it lists
+  what's left to choose instead of numbers.
+- **Print:** `src/styles/print.css`. The browser's print gives the sheet alone on white, with
+  the cards on a new page in a grid of dashed cut lines. The DM page prints each open sheet on
+  its own page.
 
 ## Content pipeline
 
@@ -49,7 +78,7 @@ layers, each feeding the next:
 Pick counts (cantrips, prepared spells, slots, invocations, metamagic, masteries, expertise)
 always come from the imported class table or feature text, never from the curation.
 
-### The API slice 2b builds on
+### The domain API
 
 - `src/domain/content.ts`: `CONTENT` (the generated module) and lookups: `classOf`, `speciesOf`,
   `speciesOptionOf`, `backgroundOf`, `classesForArchetype`, `backgroundsForClass`,
@@ -57,7 +86,7 @@ always come from the imported class table or feature text, never from the curati
   with its count and `Answers` field), `unavailableSpellIds` (choices to grey out),
   `optionRequirementIssues`.
 - `src/domain/steps.ts`: `stepStatuses` (per step: applicable, complete, blockedBy, issues),
-  `nextStep`, `isAnswered`, `answeredSteps`, `applicableStepCount`, and `pruneAnswers(next,
+  `nextStep`, `answeredSteps`, `applicableStepCount`, and `pruneAnswers(next,
   previous)`, which the UI calls on every change to drop picks an upstream change made invalid.
 - `src/domain/engine.ts`: `buildCharacter(answers)` → `Character`, the derived level 2 sheet
   (abilities, saves, skills, HP, AC with alternatives, speed, initiative, attacks with mastery,
@@ -136,5 +165,16 @@ takes every data-root dir by default).
   `config.kdl`. Without the token the DM check would try `sops -d`, which CI cannot run.
 - **SSR HTML splits text around expressions** (`Hi, <!-- -->Ada`), so smoke assertions match the
   pieces, not the joined sentence.
+- **The sheet sorts by plain words.** `featureSlot` reads "bonus action", "reaction" or "as an
+  action" from a feature's summary, and `spellSlot` reads the spell's casting time. A new summary
+  that names its action differently lands under "Always on"; check the sheet after editing one.
+  Spell summaries open with "Action." or "Bonus action.", which `spellGist` skips.
+- **print.css comes before globals.css's own rules** (it is one of globals.css's `@import`s), so
+  a print rule that overrides a globals.css rule needs more weight: `html …`, or `!important` for
+  the hidden parts. Its token block repeats the dark blocks' selectors so paper stays light.
+- **The phone rail is a sideways strip.** `.flow-body` uses `minmax(0, 1fr)`; with a plain
+  `1fr` the rail's nowrap buttons widen the page past the screen.
+- **Playwright screenshots add `caret-color` to inputs,** which shows up as a hydration
+  mismatch warning in the console. It isn't the app.
 - The cross-app frontend traps are in `libs/ts/site-kit/README.md` and
   `libs/ts/gothic/README.md`.
