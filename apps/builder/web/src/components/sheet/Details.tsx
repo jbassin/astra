@@ -78,11 +78,11 @@ function Features({ c }: { c: Character }) {
   );
 }
 
-function Gear({ c }: { c: Character }) {
+function Gear({ c, id }: { c: Character; id?: string }) {
   const prof = c.proficiencies;
   const trained = [...prof.armor, ...prof.weapons, ...prof.tools];
   return (
-    <div className="detail-box">
+    <div className="detail-box" id={id}>
       <h4 className="section-title">Gear</h4>
       <ul className="gear-list">
         {c.equipment.map((e) => (
@@ -102,16 +102,16 @@ function Gear({ c }: { c: Character }) {
   );
 }
 
-export function Details({ c }: { c: Character }) {
+export function Details({ c, ids }: { c: Character; ids?: { abilities: string; gear: string } }) {
   return (
     <>
-      <section className="sheet-section">
+      <section className="sheet-section" id={ids?.abilities}>
         <Abilities c={c} />
       </section>
       <section className="sheet-section detail-grid">
         <GoodAt c={c} />
         <Features c={c} />
-        <Gear c={c} />
+        <Gear c={c} id={ids?.gear} />
       </section>
     </>
   );

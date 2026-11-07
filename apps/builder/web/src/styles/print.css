@@ -51,7 +51,9 @@
   .dm-progress,
   .dm-answers,
   .dm-link,
-  .dm-sheet > summary {
+  .dm-sheet > summary,
+  .sheet-jump,
+  .fold-toggle {
     display: none !important;
   }
   html .flow,
@@ -73,6 +75,9 @@
   }
   .dm-player:not(:has(.dm-sheet[open])) {
     display: none;
+  }
+  html .fold .fold-body {
+    display: block !important;
   }
   html .sheet {
     gap: 1rem;

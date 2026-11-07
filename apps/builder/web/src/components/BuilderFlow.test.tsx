@@ -30,9 +30,14 @@ function heading(): string {
   return screen.getByRole("heading", { level: 2 }).textContent ?? "";
 }
 
+/** The pick lists: fieldsets (a card's "full rules" disclosure is a group too). */
+function lists(): HTMLElement[] {
+  return screen.getAllByRole("group").filter((g) => g.tagName === "FIELDSET");
+}
+
 /** In every group with a "Pick N" counter, picks the first N choices that are still open. */
 function pickEveryList() {
-  for (const group of screen.getAllByRole("group")) {
+  for (const group of lists()) {
     const n = Number(/Pick (\d+)/.exec(group.textContent ?? "")?.[1] ?? 0);
     for (let i = 0; i < n; i++) {
       const open = [...group.querySelectorAll("input")].find((el) => !el.checked && !el.disabled);
@@ -87,14 +92,12 @@ describe("picking a whole character", () => {
     choose("radio", /^Sage/);
     next();
     expect(heading()).toBe("Pick your spells"); // a Wizard has no class choices screen
-    expect(screen.getAllByRole("group").map((g) => g.querySelector("legend")?.textContent)).toEqual(
-      [
-        "Wizard cantrips",
-        "Prepared level 1 spells",
-        "Magic Initiate cantrips",
-        "Magic Initiate level 1 spell",
-      ],
-    );
+    expect(lists().map((g) => g.querySelector("legend")?.textContent)).toEqual([
+      "Wizard cantrips",
+      "Prepared level 1 spells",
+      "Magic Initiate cantrips",
+      "Magic Initiate level 1 spell",
+    ]);
     pickEveryList();
     expect(screen.getAllByText(/Pick \d+ · \d+ picked/).map((el) => el.textContent)).toEqual([
       "Pick 3 · 3 picked",
@@ -152,6 +155,17 @@ describe("what the player sees on the pick screens", () => {
     const radios = screen.getAllByRole("radio");
     expect(radios.length).toBeGreaterThan(1);
     expect(radios.some((el) => el instanceof HTMLInputElement && el.checked)).toBe(false);
+  });
+
+  it("shows a spell's full rules without picking it", () => {
+    const { persist } = renderFlow({ archetype: "mage", classId: "wizard" });
+    fireEvent.click(screen.getByRole("button", { name: /^Spells/ }));
+    const more = screen.getAllByText(/^Read the full rules: /)[0];
+    if (!more) throw new Error("no full-rules disclosure");
+    fireEvent.click(more);
+    const input = more.closest(".choice")?.querySelector("input");
+    expect(input?.checked).toBe(false);
+    expect(persist).not.toHaveBeenCalled();
   });
 
   it("greys out a cantrip the species already teaches, with the reason", () => {

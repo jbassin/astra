@@ -7,7 +7,7 @@
   width: 100%;
   max-width: 64rem;
   margin: 0 auto;
-  padding: 0 1rem calc(var(--bar-h) + 2rem + env(safe-area-inset-bottom));
+  padding: 0 1rem 2rem;
 }
 
 /* ── the greeting ───────────────────────────────────────────────────────────────── */
@@ -58,147 +58,6 @@
   }
 }
 
-/* ── the quest path ─────────────────────────────────────────────────────────────── */
-.stepper {
-  display: grid;
-  gap: 0.35rem;
-}
-.stepper ol {
-  /* The offset parent for Stepper's scroll-into-view. */
-  position: relative;
-  display: flex;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding: 0.25rem 0.1rem;
-}
-.stepper ol::-webkit-scrollbar {
-  display: none;
-}
-.stepper li {
-  position: relative;
-  flex: 1 0 2.75rem;
-  display: flex;
-  justify-content: center;
-}
-/* The road from the previous waypoint to this one; gilt once the previous one is done. */
-.stepper li + li::before {
-  content: "";
-  position: absolute;
-  top: calc(1.375rem + 0.25rem - 1.5px);
-  right: calc(50% + 1.1rem);
-  left: calc(-50% + 1.1rem);
-  height: 3px;
-  border-radius: 3px;
-  background: repeating-linear-gradient(90deg, var(--rule-strong) 0 5px, transparent 5px 9px);
-  transition: background 300ms var(--ease-out);
-}
-.stepper li[data-state="done"] + li::before {
-  background: var(--gilt);
-}
-.step-link {
-  display: grid;
-  justify-items: center;
-  gap: 0.3rem;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  border: 0;
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.step-link:focus-visible {
-  outline: none;
-}
-.step-link:focus-visible .step-mark {
-  outline: 3px solid var(--gilt);
-  outline-offset: 2px;
-}
-.step-mark {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 1.5px solid var(--rule-strong);
-  border-radius: 50%;
-  background: var(--surface);
-  transition:
-    background-color 200ms var(--ease-out),
-    border-color 200ms var(--ease-out),
-    transform 200ms var(--ease-out);
-}
-.step-icon {
-  width: 1.35rem;
-  height: 1.35rem;
-}
-.step-done {
-  position: absolute;
-  right: -0.2rem;
-  bottom: -0.2rem;
-  display: grid;
-  place-items: center;
-  width: 1.15rem;
-  height: 1.15rem;
-  border-radius: 50%;
-  background: var(--ok);
-  color: var(--surface);
-  animation: pop 320ms var(--pop);
-}
-.step-done .icon {
-  width: 0.8rem;
-  height: 0.8rem;
-  fill: none;
-  stroke-width: 3;
-}
-.step-link[data-state="done"] .step-mark {
-  border-color: var(--gilt);
-  color: var(--gilt);
-}
-.step-link[data-state="blocked"] {
-  opacity: 0.55;
-}
-.step-link[data-state="blocked"] .step-mark {
-  border-style: dashed;
-}
-.step-link[aria-current="step"] .step-mark {
-  border-color: var(--action);
-  background: var(--action);
-  color: var(--action-ink);
-  transform: scale(1.08);
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--gilt-glow) 30%, transparent);
-}
-.step-link:hover .step-mark {
-  border-color: var(--gilt);
-}
-.step-label {
-  display: none;
-  font-size: 0.8rem;
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
-  white-space: nowrap;
-}
-.step-link[aria-current="step"] .step-label {
-  color: var(--ink);
-  font-weight: 800;
-}
-.stepper-where {
-  display: flex;
-  justify-content: space-between;
-  color: var(--muted);
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-@media (min-width: 48rem) {
-  .step-label {
-    display: block;
-  }
-  .stepper-where {
-    display: none;
-  }
-}
-
 /* ── a screen ───────────────────────────────────────────────────────────────────── */
 .flow-screen {
   margin-top: 1.5rem;
@@ -208,6 +67,33 @@
   display: grid;
   gap: 1.25rem;
   animation: screen-in 240ms var(--ease-out) both;
+}
+/* With the View Transitions API, BuilderFlow's `go` slides the screens instead. */
+.flow-screen {
+  view-transition-name: flow-screen;
+}
+@supports (view-transition-name: none) {
+  .screen-enter {
+    animation: none;
+  }
+}
+::view-transition-old(flow-screen) {
+  animation: vt-out 150ms var(--ease-out) both;
+}
+::view-transition-new(flow-screen) {
+  animation: vt-in 240ms var(--ease-out) both;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    translate: 0 -8px;
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
 }
 @keyframes screen-in {
   from {
@@ -377,5 +263,25 @@ textarea.field {
   }
   .flow-screen {
     margin-top: 2rem;
+  }
+}
+
+/* The bar is fixed, so the footer under the last screen keeps clear of it. */
+body:has(.flow-bar) .site-foot {
+  padding-bottom: calc(var(--bar-h) + 1.5rem + env(safe-area-inset-bottom));
+}
+/* On a laptop the sheet ends with the bar in place, so it never covers the sheet. */
+@media (min-width: 60rem) {
+  .flow:has(.flow-screen[data-view="sheet"]) .flow-bar {
+    position: static;
+    margin-top: 2rem;
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--rule);
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  body:has(.flow-screen[data-view="sheet"]) .site-foot {
+    padding-bottom: 1.5rem;
   }
 }

@@ -13,9 +13,10 @@ import {
   spellPickLists,
   unavailableSpellIds,
 } from "@/domain/content";
-import type { OptionGroupContent, OptionGroupKey } from "@/domain/contentTypes";
+import type { OptionGroupContent, OptionGroupKey, SpellContent } from "@/domain/contentTypes";
+import { ABILITY_NAMES, spellGist } from "@/domain/sheet";
 import type { IconName } from "@/generated/icons";
-import { CLASS_HERALDRY, hueStyle, schoolIcon } from "@/ui/heraldry";
+import { CLASS_HERALDRY, damageIcon, hueStyle, schoolIcon } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
 import { Choice, ChoiceGroup, PickCounter } from "./Choice";
@@ -69,8 +70,10 @@ function OptionGroup({ group, answers, update }: ScreenProps & { group: OptionGr
             title={o.name}
             hue={classHue(answers)}
             icon={<Icon name={GROUP_ICON[group.key]} className="emblem-icon" />}
+            more={gist(o.summary) === o.summary ? undefined : <p>{o.summary}</p>}
+            moreLabel="Read all of it"
           >
-            <span className="choice-blurb">{o.summary}</span>
+            <span className="choice-blurb">{gist(o.summary)}</span>
           </Choice>
         );
       })}
@@ -94,19 +97,45 @@ function picksOf(answers: Answers, field: SpellPickList["field"]): string[] {
   return answers[field] ?? [];
 }
 
-function SpellMeta({ id }: { id: string }) {
-  const s = CONTENT.spells[id];
-  if (!s) return null;
-  const parts = [s.level === 0 ? "Cantrip" : "Level 1", s.time.split(",")[0] ?? s.time, s.range];
-  if (s.concentration) parts.push("Concentration");
+/** The first sentence, for a compact card; the rest sits behind "Read all of it". */
+function gist(summary: string): string {
+  return spellGist(summary);
+}
+
+/** The chips under a spell's name: what it rolls and how it reaches its target. (The list's
+ * name already says cantrip or level 1.) */
+function SpellChips({ s }: { s: SpellContent }) {
   return (
     <span className="chips">
-      {parts.map((p) => (
-        <span key={p} className="chip">
-          {p}
+      {s.damage && (
+        <span className="chip chip-roll">
+          <Icon name={damageIcon(s.damageType)} />
+          {s.damage} {s.damageType}
         </span>
-      ))}
+      )}
+      {s.healing && (
+        <span className="chip chip-roll">
+          <Icon name="heart-plus" />
+          Heals {s.healing}
+        </span>
+      )}
+      {s.save && <span className="chip">{ABILITY_NAMES[s.save]} save</span>}
+      {s.spellAttack && <span className="chip">Spell attack</span>}
+      {s.concentration && <span className="chip">Concentration</span>}
     </span>
+  );
+}
+
+/** The full rules text and the small print, behind the disclosure. */
+function SpellDetails({ s }: { s: SpellContent }) {
+  const time = s.time.split(",")[0] ?? s.time;
+  return (
+    <>
+      <p>{s.summary}</p>
+      <p className="choice-small">
+        {time}. Range {s.range}. {s.duration}.
+      </p>
+    </>
   );
 }
 
@@ -150,6 +179,7 @@ function SpellList({ list, answers, update }: ScreenProps & { list: SpellPickLis
             title={s.name}
             hue={classHue(answers)}
             icon={<Icon name={schoolIcon(s.school)} className="emblem-icon" />}
+            more={<SpellDetails s={s} />}
             badge={
               c.recommended && (
                 <span className="badge">
@@ -159,8 +189,8 @@ function SpellList({ list, answers, update }: ScreenProps & { list: SpellPickLis
               )
             }
           >
-            <SpellMeta id={c.id} />
-            <span className="choice-blurb">{s.summary}</span>
+            <SpellChips s={s} />
+            <span className="choice-blurb">{gist(s.summary)}</span>
             {taken && (
               <span className="choice-reason">
                 <Icon name="ui-lock" />

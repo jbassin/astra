@@ -1,0 +1,244 @@
+/* ── the quest path ─────────────────────────────────────────────────────────────── */
+/* Phone: a compact bar (where you are, one segment per screen) that opens the waypoints as a
+ * list. From 48rem: the waypoints run across the page and the bar goes away. */
+.stepper {
+  position: relative;
+}
+.stepper-toggle {
+  display: grid;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.55rem 0.8rem 0.65rem;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.stepper-now {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+.stepper-now-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--gilt);
+}
+.stepper-now-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font: 700 1.1rem/1.2 var(--display);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stepper-count {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.stepper-chevron {
+  color: var(--muted);
+  transition: rotate 200ms var(--ease-out);
+}
+.stepper[data-open] .stepper-chevron {
+  rotate: 180deg;
+}
+.stepper-segments {
+  display: flex;
+  gap: 4px;
+}
+.segment {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rule);
+  transition: background-color 300ms var(--ease-out);
+}
+.segment[data-state="done"] {
+  background: var(--gilt);
+}
+.segment[data-current] {
+  background: var(--action);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--gilt-glow) 35%, transparent);
+}
+.stepper ol {
+  display: none;
+}
+/* The opened list on a phone: one 52px row per screen. */
+.stepper[data-open] ol {
+  position: absolute;
+  inset: calc(100% + 0.4rem) 0 auto;
+  z-index: 20;
+  display: grid;
+  padding: 0.35rem;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--raised);
+  box-shadow: var(--shadow-lift);
+  animation: screen-in 160ms var(--ease-out) both;
+}
+.step-link {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: none;
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.step-link:hover {
+  background: var(--sunk);
+}
+.step-link:focus-visible {
+  outline: none;
+}
+.step-link:focus-visible .step-mark {
+  outline: 3px solid var(--gilt);
+  outline-offset: 2px;
+}
+.step-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  transition:
+    background-color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+.step-icon {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+.step-done {
+  position: absolute;
+  right: -0.2rem;
+  bottom: -0.2rem;
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: var(--ok);
+  color: var(--surface);
+  animation: pop 320ms var(--pop);
+}
+.step-done .icon {
+  width: 0.8rem;
+  height: 0.8rem;
+  stroke-width: 3;
+}
+.step-link[data-state="done"] .step-mark {
+  border-color: var(--gilt);
+  color: var(--gilt);
+}
+.step-link[data-state="blocked"] {
+  opacity: 0.6;
+}
+.step-link[data-state="blocked"] .step-mark {
+  border-style: dashed;
+}
+.step-link[aria-current="step"] .step-mark {
+  border-color: var(--action);
+  background: var(--action);
+  color: var(--action-ink);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--gilt-glow) 30%, transparent);
+}
+.step-label {
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.step-state {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.step-link[aria-current="step"] .step-label {
+  font-weight: 800;
+}
+@media (min-width: 48rem) {
+  .stepper-toggle {
+    display: none;
+  }
+  .stepper ol,
+  .stepper[data-open] ol {
+    position: static;
+    display: flex;
+    padding: 0.25rem 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    animation: none;
+  }
+  .stepper li {
+    position: relative;
+    flex: 1 0 0;
+    display: flex;
+    justify-content: center;
+  }
+  /* The road from the previous waypoint to this one; gilt once the previous one is done. */
+  .stepper li + li::before {
+    content: "";
+    position: absolute;
+    top: calc(1.375rem + 0.25rem - 1.5px);
+    right: calc(50% + 1.1rem);
+    left: calc(-50% + 1.1rem);
+    height: 3px;
+    border-radius: 3px;
+    background: repeating-linear-gradient(90deg, var(--rule-strong) 0 5px, transparent 5px 9px);
+    transition: background 300ms var(--ease-out);
+  }
+  .stepper li[data-state="done"] + li::before {
+    background: var(--gilt);
+  }
+  .step-link {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 0.3rem;
+    width: auto;
+    padding: 0;
+    text-align: center;
+  }
+  .step-link:hover {
+    background: none;
+  }
+  .step-link:hover .step-mark {
+    border-color: var(--gilt);
+  }
+  .step-mark {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  .step-link[aria-current="step"] .step-mark {
+    transform: scale(1.08);
+  }
+  .step-label {
+    color: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .step-link[aria-current="step"] .step-label {
+    color: var(--ink);
+  }
+  .step-state {
+    display: none;
+  }
+}

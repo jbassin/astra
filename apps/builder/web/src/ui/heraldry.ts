@@ -24,15 +24,15 @@ export const CLASS_HERALDRY: Record<ClassId, Tincture> = {
   monk: { icon: "mailed-fist", hue: 185, chroma: 0.1 },
   paladin: { icon: "templar-shield", hue: 262, chroma: 0.16 },
   ranger: { icon: "bow-arrow", hue: 125, chroma: 0.11 },
-  rogue: { icon: "hooded-assassin", hue: 260, chroma: 0.025 },
-  sorcerer: { icon: "fire-spell-cast", hue: 50, chroma: 0.15 },
+  rogue: { icon: "hooded-assassin", hue: 62, chroma: 0.075 },
+  sorcerer: { icon: "fire-spell-cast", hue: 42, chroma: 0.17 },
   warlock: { icon: "warlock-eye", hue: 322, chroma: 0.15 },
   wizard: { icon: "pointy-hat", hue: 290, chroma: 0.16 },
 };
 
 export const ARCHETYPE_HERALDRY: Record<ArchetypeId, Tincture> = {
   warrior: { icon: "crossed-swords", hue: 28, chroma: 0.15 },
-  scoundrel: { icon: "cloak-dagger", hue: 260, chroma: 0.03 },
+  scoundrel: { icon: "cloak-dagger", hue: 62, chroma: 0.075 },
   mage: { icon: "wizard-staff", hue: 290, chroma: 0.16 },
   healer: { icon: "caduceus", hue: 150, chroma: 0.12 },
 };

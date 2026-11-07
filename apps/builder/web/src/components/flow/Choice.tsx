@@ -1,6 +1,7 @@
 // One pickable card: a radio or checkbox with an icon, a title, an optional badge and a plain
-// summary. The input is visually hidden; the whole card is the touch target, and the tick in
-// the corner (absolutely placed, so picking never shifts the layout) shows it is picked.
+// summary. The input is visually hidden and the label is the touch target; the tick in the
+// corner (absolutely placed, so picking never shifts the layout) shows it is picked. `more`
+// adds a "full rules" disclosure below the label, outside it, so opening it never picks.
 
 import type { CSSProperties, ReactNode } from "react";
 
@@ -18,6 +19,8 @@ export function Choice({
   icon,
   hue,
   size = "row",
+  more,
+  moreLabel = "Read the full rules",
   children,
 }: {
   type: "radio" | "checkbox";
@@ -34,39 +37,56 @@ export function Choice({
   hue?: CSSProperties;
   /** "tile": the big emblem-first card; "row": emblem beside the text. */
   size?: "tile" | "row";
+  /** The full text, behind a disclosure under the card. */
+  more?: ReactNode;
+  moreLabel?: string;
   children?: ReactNode;
 }) {
   return (
-    <label
+    <div
       className={`choice hued${disabled ? " is-disabled" : ""}`}
       data-size={size}
       data-type={type}
       style={hue}
     >
-      <input
-        type={type}
-        name={name}
-        value={value}
-        checked={checked}
-        disabled={disabled}
-        onChange={onChange}
-      />
-      {icon && <span className="choice-emblem">{icon}</span>}
-      <span className="choice-main">
-        <span className="choice-title">
-          <span className="choice-label">{title}</span>
-          {badge}
+      <label className="choice-hit">
+        <input
+          type={type}
+          name={name}
+          value={value}
+          checked={checked}
+          disabled={disabled}
+          onChange={onChange}
+        />
+        {icon && <span className="choice-emblem">{icon}</span>}
+        <span className="choice-main">
+          <span className="choice-title">
+            <span className="choice-label">{title}</span>
+            {badge}
+          </span>
+          {children}
         </span>
-        {children}
-      </span>
-      <span className="choice-tick" aria-hidden="true">
-        <Icon name="ui-check" />
-      </span>
-    </label>
+        <span className="choice-tick" aria-hidden="true">
+          <Icon name="ui-check" />
+        </span>
+      </label>
+      {more && (
+        <details className="choice-more">
+          <summary>
+            <span className="more-close" aria-hidden="true">
+              Less
+            </span>
+            <span className="sr-only">{`${moreLabel}: ${title}`}</span>
+            <Icon name="ui-chevron-down" className="more-chevron" />
+          </summary>
+          <div className="choice-more-body">{more}</div>
+        </details>
+      )}
+    </div>
   );
 }
 
-/** A group of choices with a visible question and an optional live "pick N" counter. */
+/** A group of choices with a visible question and an optional live, sticky "pick N" counter. */
 export function ChoiceGroup({
   legend,
   prompt,
@@ -86,10 +106,17 @@ export function ChoiceGroup({
 }) {
   return (
     <fieldset className="choice-group">
-      <legend className={quietLegend ? "group-legend sr-only" : "group-legend"}>{legend}</legend>
-      {(prompt ?? counter) && (
-        <div className="group-prompt">
-          {prompt && <p>{prompt}</p>}
+      {/* With a counter, the sticky row below shows the name, so the legend is read, not seen. */}
+      <legend className={quietLegend || counter ? "group-legend sr-only" : "group-legend"}>
+        {legend}
+      </legend>
+      {prompt && <p className="group-prompt">{prompt}</p>}
+      {counter && (
+        // Sticks under the top of the screen while the list scrolls, so the count stays in view.
+        <div className="group-sticky">
+          <span className="group-sticky-name" aria-hidden="true">
+            {legend}
+          </span>
           {counter}
         </div>
       )}
