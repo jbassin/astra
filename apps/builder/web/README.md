@@ -68,7 +68,9 @@ the sheet banner and its cards. Phone first: most players use a phone.
 - **Hues:** an element with the `hued` class and `hueStyle(...)` gets `--hue`, `--hue-ink`,
   `--hue-wash` and `--hue-line` (`src/styles/tokens.css`), in OKLCH, tuned per theme.
 - **Styles:** `src/styles/globals.css` imports, in order, `tokens.css`, `base.css` (the shell),
-  `flow.css`, `sheet.css` and `print.css`. Motion is short and answers the player (screen
+  `pages.css` (home and DM), `flow.css`, `choices.css`, `sheet.css`, `sheet-details.css`,
+  `cards.css` and `print.css`; a later file wins at equal weight. Keep each under 500 lines
+  (the ratchet counts long files). Motion is short and answers the player (screen
   change, pick, save); `prefers-reduced-motion` turns it off.
 
 ## Content pipeline

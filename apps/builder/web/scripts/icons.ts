@@ -16,7 +16,7 @@ const GAME_ICONS = [
   "crossed-swords",
   "cloak-dagger",
   "wizard-staff",
-  "healing",
+  "caduceus",
   // classes
   "battle-axe",
   "lyre",
