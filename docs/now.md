@@ -4,14 +4,19 @@ Updated 2026-11-07.
 
 ## In flight
 
-- **Character builder is live at builder.iridi.cc (2026-11-07, #207 to #210).** A D&D 5e
-  (2024) level 2 builder for Josh's one-shot with five new players: archetype, class, species,
-  background, class choices, spells and an about-you step, then a plain-language "On your turn"
-  sheet with printable cards. Content comes from the 2024 entries of 5etools (pinned commit
-  87471edd), with curated shortlists and plain summaries. Each player gets a private link from
-  `just builder-invite <name>`; answers save to `/ruby/data/astra-state/builder/`. Josh sees
-  everyone at `/dm/<token>` (SOPS `builder_dm_token`); `/test` runs the flow without saving.
-  Next: Josh walks `/test`, then the five invites. Plan and checklist:
+- **Character builder is live at builder.iridi.cc and redesigned (2026-11-07, #207 to #216).**
+  A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players: archetype, class,
+  species, background, class choices, spells and an about-you step, then a plain-language "On
+  your turn" sheet with printable cards. Content comes from the 2024 entries of 5etools (pinned
+  commit 87471edd) with curated shortlists, plain summaries and one-line gists; every shown
+  spell carries its damage or healing dice, and the sheet groups by a curated activation. The
+  look was rebuilt phone first (#213, #214, #216): a "guild charter" identity with a heraldic
+  hue and game-icons emblem per class, Texturina and Atkinson Hyperlegible Next, a sticky
+  progress bar, compact pick cards, and a sheet with a jump bar; gothic and Tailwind are gone
+  from the builder. Each player gets a private link from `just builder-invite <name>`; answers
+  save to `/ruby/data/astra-state/builder/`; Josh sees everyone at `/dm/<token>` (SOPS
+  `builder_dm_token`); `/test` runs the flow without saving. Next: Josh walks `/test`, then
+  the five invites. Plan:
   [`thoughts/shared/research/2026-11-06-character-builder.md`](../thoughts/shared/research/2026-11-06-character-builder.md).
 - **Unused web apps removed from the repo (2026-11-04): menhir, ledger, the vellum site
   and weal-overlay.** weal-bot no longer posts rolls to an overlay. Code, config, compose, Caddy,
