@@ -212,8 +212,8 @@ export const CLASSES: CuratedClass[] = [
     id: "ranger",
     archetype: "scoundrel",
     blurb: "Mark your enemies for the hunt, then run them down. Entrap others with nature magic.",
-    primary: "wis",
-    abilityPriority: ["wis", "dex", "con", "str", "int", "cha"],
+    primary: "dex",
+    abilityPriority: ["dex", "wis", "con", "str", "int", "cha"],
     skillPreference: [
       "perception",
       "stealth",
