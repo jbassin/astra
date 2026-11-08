@@ -53,7 +53,7 @@ import {
   SPECIES_IDS,
   type SpeciesContent,
   type SpeciesId,
-  type SpellChoice,
+  type SpellList,
   type SpellContent,
   type SpellcastingContent,
   type Summarized,
@@ -68,7 +68,7 @@ import type {
   CuratedOption,
   CuratedSpecies,
   CuratedSpell,
-  CuratedSpellPick,
+  CuratedSpellList,
   CuratedSpellRoll,
   CuratedUses,
 } from "../src/domain/curationTypes";
@@ -97,8 +97,8 @@ const GROUP_KIND: Record<OptionGroupKey, OptionKind> = {
 const NUMBER_WORDS: Record<string, number> = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
 
 /** How many of `a` also appear in `b`, at most `cap`. */
-function overlap(a: SpellChoice[], b: SpellChoice[], cap: number): number {
-  return Math.min(cap, a.filter((x) => b.some((y) => y.id === x.id)).length);
+function overlap(a: SpellList, b: SpellList, cap: number): number {
+  return Math.min(cap, a.filter((x) => b.includes(x)).length);
 }
 
 /** Reads the imported JSON from content/5etools/. */
@@ -195,32 +195,26 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
     return g ?? "";
   }
 
-  function spellChoices(
-    picks: CuratedSpellPick[],
+  function spellList(
+    ids: CuratedSpellList,
     ctx: string,
     want: { level: number; list?: string; min: number },
-  ): SpellChoice[] {
+  ): SpellList {
     const seen = new Set<string>();
-    for (const p of picks) {
-      const s = importedSpells.get(p.id);
-      if (!s) fail(`${ctx}: spell "${p.id}" is not in the imported data`);
+    for (const id of ids) {
+      const s = importedSpells.get(id);
+      if (!s) fail(`${ctx}: spell "${id}" is not in the imported data`);
       else {
-        if (s.level !== want.level)
-          fail(`${ctx}: "${p.id}" is level ${s.level}, not ${want.level}`);
+        if (s.level !== want.level) fail(`${ctx}: "${id}" is level ${s.level}, not ${want.level}`);
         if (want.list && !s.classes.includes(want.list))
-          fail(`${ctx}: "${p.id}" is not on the ${want.list} list`);
+          fail(`${ctx}: "${id}" is not on the ${want.list} list`);
       }
-      if (seen.has(p.id)) fail(`${ctx}: "${p.id}" is listed twice`);
-      seen.add(p.id);
-      usedSpells.add(p.id);
+      if (seen.has(id)) fail(`${ctx}: "${id}" is listed twice`);
+      seen.add(id);
+      usedSpells.add(id);
     }
-    if (picks.length < want.min)
-      fail(`${ctx}: shortlist has ${picks.length}, needs at least ${want.min}`);
-    const recommended = picks.filter((p) => p.recommended).length;
-    if (picks.length > 0 && (recommended < 1 || recommended > 3)) {
-      fail(`${ctx}: ${recommended} spells marked recommended (want 1–3)`);
-    }
-    return picks.map((p) => ({ id: p.id, recommended: p.recommended === true }));
+    if (ids.length < want.min) fail(`${ctx}: list has ${ids.length}, needs at least ${want.min}`);
+    return [...ids];
   }
 
   function equipment(
@@ -315,10 +309,10 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       const g = o.grantsCantrips;
       out.grantsCantrips = {
         ...g,
-        choices: spellChoices(g.choices, `${ctx} cantrips`, {
+        cantrips: spellList(g.cantrips, `${ctx} cantrips`, {
           level: 0,
           list: g.list,
-          min: g.count + 1,
+          min: g.count,
         }),
       };
     }
@@ -519,15 +513,15 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
         preparedCount,
         slots,
         ...(pactSlotLevel !== undefined && { pactSlotLevel }),
-        cantrips: spellChoices(sp?.cantrips ?? [], `${ctx} cantrips`, {
+        cantrips: spellList(sp?.cantrips ?? [], `${ctx} cantrips`, {
           level: 0,
           list: id,
-          min: cantripCount === 0 ? 0 : cantripCount + extra + 2,
+          min: cantripCount === 0 ? 0 : cantripCount + extra,
         }),
-        level1: spellChoices(sp?.level1 ?? [], `${ctx} level 1`, {
+        level1: spellList(sp?.level1 ?? [], `${ctx} level 1`, {
           level: 1,
           list: id,
-          min: Math.max(preparedCount + 3, spellbookSize ?? 0),
+          min: Math.max(preparedCount, spellbookSize ?? 0),
         }),
         alwaysPrepared,
         ...(spellbookSize !== undefined && { spellbookSize }),
@@ -746,15 +740,15 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
         list: list ?? "wizard",
         cantripCount,
         spellCount,
-        cantrips: spellChoices(cur.initiate?.cantrips ?? [], `${ctx} initiate cantrips`, {
+        cantrips: spellList(cur.initiate?.cantrips ?? [], `${ctx} initiate cantrips`, {
           level: 0,
           ...(list && { list }),
-          min: cantripCount + 2,
+          min: cantripCount,
         }),
-        spells: spellChoices(cur.initiate?.spells ?? [], `${ctx} initiate spells`, {
+        spells: spellList(cur.initiate?.spells ?? [], `${ctx} initiate spells`, {
           level: 1,
           ...(list && { list }),
-          min: spellCount + 2,
+          min: spellCount,
         }),
       };
     } else if (cur.initiate) fail(`${ctx}: initiate shortlists without Magic Initiate`);
@@ -876,8 +870,23 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
     );
     const classCount = (sc?.cantripCount ?? 0) + (sc && sc.cantripCount > 0 ? extra : 0);
     const classCantrips = sc?.cantrips ?? [];
-    if (sc && classCantrips.length - speciesOverlap(classCantrips.map((x) => x.id)) < classCount) {
-      fail(`class ${c.id}: cantrip shortlist can run out once a species cantrip repeats one`);
+    if (sc && classCantrips.length - speciesOverlap(classCantrips) < classCount) {
+      fail(`class ${c.id}: cantrip list can run out once a species cantrip repeats one`);
+    }
+    // Agonizing and Repelling Blast need a damaging (or attack-roll) class cantrip. The builder
+    // always gives the first one no species teaches, so one of those must qualify.
+    const sure = classCantrips
+      .slice(0, sc?.cantripCount ?? 0)
+      .filter((id) => !speciesCantripSets.some((set) => set.includes(id)))
+      .flatMap((id) => (spells[id] ? [spells[id]] : []));
+    for (const g of c.optionGroups) {
+      for (const id of g.choices) {
+        const req = options[id]?.requires;
+        if (req?.damageCantrip && !sure.some((s) => s.damage && (s.spellAttack || s.save)))
+          fail(`class ${c.id}: ${id} needs a damaging cantrip the builder always gives`);
+        if (req?.attackCantrip && !sure.some((s) => s.damage && s.spellAttack))
+          fail(`class ${c.id}: ${id} needs an attack cantrip the builder always gives`);
+      }
     }
     const styles = c.optionGroups.flatMap((g) =>
       g.choices.flatMap((id) => {
@@ -887,9 +896,9 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
     );
     for (const g of styles) {
       const left =
-        g.choices.length -
-        overlap(g.choices, classCantrips, classCount) -
-        speciesOverlap(g.choices.map((x) => x.id));
+        g.cantrips.length -
+        overlap(g.cantrips, classCantrips, classCount) -
+        speciesOverlap(g.cantrips);
       if (left < g.count)
         fail(`class ${c.id}: ${g.list} style cantrips can run out (${left} left for ${g.count})`);
     }
@@ -898,13 +907,13 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       if (!mi) continue;
       const styleTaken = Math.max(
         0,
-        ...styles.map((g) => overlap(mi.cantrips, g.choices, g.count)),
+        ...styles.map((g) => overlap(mi.cantrips, g.cantrips, g.count)),
       );
       const left =
         mi.cantrips.length -
         overlap(mi.cantrips, classCantrips, classCount) -
         styleTaken -
-        speciesOverlap(mi.cantrips.map((x) => x.id));
+        speciesOverlap(mi.cantrips);
       if (left < mi.cantripCount)
         fail(`${c.id} + ${b}: Magic Initiate cantrips can run out (${left} left)`);
       const spellsLeft =

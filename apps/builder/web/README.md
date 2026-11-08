@@ -8,7 +8,7 @@ frontend on the site-kit preset (`libs/ts/site-kit/README.md`), running as the C
 The plan and checklist are in `thoughts/shared/research/2026-11-06-character-builder.md`.
 
 It covers twelve level 2 classes from the 2024 Player's Handbook, with Josh's archetypes,
-curated shortlists and plain-language summaries. `buildCharacter` derives the whole sheet, and the
+curated shortlists, spells the builder chooses, and plain-language summaries. `buildCharacter` derives the whole sheet, and the
 player page walks through every choice to a printable "On your turn" sheet with cut-out cards.
 
 ## Routes
@@ -31,17 +31,19 @@ player page walks through every choice to a printable "On your turn" sheet with 
 `TestBuilder.test.tsx` checks both that and that the save function is never called.
 
 - **Screens** (`src/domain/flow.ts`): kind of hero, class, species (and its sub-choice),
-  background, class choices, spells, About you (name, look and personality), then the sheet.
+  background, class choices, About you (name, look and personality), then the sheet. There is
+  no spells screen: the builder chooses every spell (Josh's call, 2026-11-07), and the sheet
+  shows them.
   Each screen groups one or more steps from `steps.ts`; `viewStatuses` marks each done, to do
   or blocked, and hides the ones a class doesn't have. The quest path (`flow/Stepper.tsx`)
   jumps to any screen; Next and Back, in the bar pinned to the bottom of the screen with the
   save state, skip the ones that don't apply.
 - **Every change** goes through `pruneAnswers(next, previous)`, and `clearedSummary` tells the
-  player in one line what that cleared ("That change cleared your spells.").
-- **Josh's calls:** nothing is preselected; class options carry no recommendation; spells the
-  curation marks `recommended` show a Recommended badge. Each list shows "Pick N · M picked";
-  a full multi-pick list disables the rest, and `unavailableSpellIds` are greyed out with the
-  reason. `optionRequirementIssues` show above the spell lists. No ability-score math anywhere.
+  player in one line what that cleared ("That change cleared your class choices.").
+- **Josh's calls:** nothing is preselected; class options carry no recommendation. Each list
+  shows "Pick N · M picked", and a full multi-pick list disables the rest. The builder chooses
+  every spell: class cantrips and level 1 spells, a fighting style's cantrips and Magic
+  Initiate's (`spellPicks`). No ability-score math anywhere.
 - **The sheet** (`src/components/sheet/`, wording in `src/domain/sheet.ts`): the four key
   numbers, "On your turn" (action, bonus action, reaction, always on), spells per source with
   DC, attack bonus and slots, "Things you're good at" (proficient skills), abilities, features
@@ -99,13 +101,20 @@ layers, each feeding the next:
 2. **Curation** (`content/*.ts`, hand-written, typed by `src/domain/curationTypes.ts`):
    - `classes.ts`: Josh's archetype, pitch and primary ability per class; the ability priority,
      skill and expertise preferences, weapon masteries, tools and Human feat the builder decides;
-     the option shortlists (fighting styles and the rest) and spell shortlists; and a summary for
+     the option shortlists (fighting styles and the rest) and spell lists; and a summary for
      every level 1–2 feature (or `hidden` with the reason).
    - `species.ts`, `backgrounds.ts`, `feats.ts`, `options.ts`, `masteries.ts`, `spells/*.ts`:
-     one-liners and summaries; Magic Initiate shortlists live with their background;
+     one-liners and summaries; Magic Initiate spell lists live with their background;
      `spells/rolls.ts` holds what a spell's roll line can't read from the data.
+   - **Spell lists** (`CuratedSpellList`) are what the builder gives, best first. It takes the
+     first entries up to the pick count, skipping a cantrip the character already has from the
+     species or an earlier list (class, then fighting style, then Magic Initiate) and a Magic
+     Initiate spell the class already prepares; entries past the count are backups for those
+     repeats, and the build proves there are enough. A Wizard's spellbook is the first
+     `spellbookSize` level 1 spells. Changing a character's spells means reordering a list.
    - **Gists:** every spell (`spells/*.ts`), class option (`options.ts`) and species sub-option
-     (`species.ts`) also carries a `gist`, the one line its pick card shows. Write one short,
+     (`species.ts`) also carries a `gist`, the one line its pick card shows (spells have no pick
+     cards now; their gists wait for a use). Write one short,
      vivid, plain sentence of what it does for the player (aim for 70 characters; the build stops
      at `GIST_MAX`, 90). Leave out what the card's chips already say (casting time, range, the
      roll, the save), and state a number only when it matches the rules text: "Three glowing
@@ -114,8 +123,9 @@ layers, each feeding the next:
 3. **Build** (`scripts/build-content.ts`, run by vite, vitest and `typecheck`): joins the two into
    `src/generated/content.ts` (gitignored), typed by `src/domain/contentTypes.ts`. It fails,
    listing every problem, on a curated id the import lacks, an imported feature or trait with no
-   summary, a shortlist smaller than its pick count (in the worst case, after repeats of species
-   cantrips and earlier picks are removed), a spell off the class's list, a count the class
+   summary, a list smaller than its pick count (in the worst case, after repeats of species
+   cantrips and earlier lists are removed), a blast invocation whose class doesn't always get a
+   damaging cantrip, a curated spell or roll no list uses, a spell off the class's list, a count the class
    table doesn't give, a shown item with no `activation`, a spell whose damage or healing
    dice its entry doesn't carry, or a missing or over-long `gist`.
 
@@ -126,9 +136,7 @@ always come from the imported class table or feature text, never from the curati
 
 - `src/domain/content.ts`: `CONTENT` (the generated module) and lookups: `classOf`, `speciesOf`,
   `speciesOptionOf`, `backgroundOf`, `classesForArchetype`, `backgroundsForClass`,
-  `pickedOptions`, `chosenOptions`, `spellPickLists` (every spell list the player picks from,
-  with its count and `Answers` field), `unavailableSpellIds` (choices to grey out),
-  `optionRequirementIssues`.
+  `pickedOptions`, `chosenOptions`, `spellPicks` (every spell the builder gives, by source).
 - `src/domain/steps.ts`: `stepStatuses` (per step: applicable, complete, blockedBy, issues),
   `nextStep`, `answeredSteps`, `applicableStepCount`, and `pruneAnswers(next,
   previous)`, which the UI calls on every change to drop picks an upstream change made invalid.
@@ -225,7 +233,7 @@ takes every data-root dir by default).
   5etools casting unit (an hour reads `minute`). The build fails on a shown item without one.
   Changing a summary's wording moves nothing; change the field. `minute` items stay off "On your
   turn" but keep their card. Spell summaries open with "Action." or "Bonus action.", which
-  `spellGist` skips for the sheet's "On your turn" line; pick cards show the curated gist.
+  `spellGist` skips for the sheet's "On your turn" line.
 - **print.css overrides heavier screen rules,** so its rules start with `html` (and the hidden
   parts use `!important`). Its token block repeats the dark blocks' selectors so paper stays
   light.

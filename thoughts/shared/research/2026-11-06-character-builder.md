@@ -68,6 +68,14 @@ committed (Josh's decision). Characters are level 2.
   markers and nothing preselected, test mode never saves, sheets for a Barbarian and a Cleric,
   SSR smoke for `/test`.
 
+**Slice 3: the builder chooses every spell (Josh's call, 2026-11-07).** New players were
+offered too many choices.
+- [x] Curated spell lists become ordered lists the builder takes in order (`spellPicks`), with
+  backups for cantrips the species or an earlier list already gives; class spells, fighting-style
+  cantrips and Magic Initiate alike. The spells screen and the spell answers are gone.
+- [x] A test resolves spells for every class, species, background and spell-changing option.
+- [ ] Josh reviews the eight class sets (and the Magic Initiate and fighting-style order).
+
 **Go live.**
 - [x] Merged, `just deploy builder`, `just caddy-reload` (2026-11-07).
 - [x] SOPS secret added (#210); the DM link answers 200 and a wrong token 404.

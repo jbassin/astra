@@ -14,7 +14,6 @@ import {
   type OptionGroupContent,
   type SpeciesContent,
   type SpeciesOptionContent,
-  type SpellChoice,
 } from "./contentTypes";
 
 export { CONTENT };
@@ -66,110 +65,63 @@ export function chosenOptions(answers: Answers): OptionContent[] {
   );
 }
 
-/** One list of spells the player picks from, with how many they pick. */
-export interface SpellPickList {
-  /** The `Answers` field these picks are saved in. */
-  field: "cantrips" | "spells" | "bonusCantrips" | "initiateCantrips" | "initiateSpell";
-  label: string;
-  count: number;
-  choices: SpellChoice[];
-  picked: string[];
+/** The spells the builder chose for the character, by where they come from. */
+interface SpellPicks {
+  /** Class cantrips (Thaumaturge and Magician add one). */
+  cantrips: string[];
+  /** Class level 1 spells, prepared (for a Wizard, the prepared ones from the spellbook). */
+  spells: string[];
+  /** Cantrips from a fighting style (Blessed Warrior, Druidic Warrior). */
+  bonusCantrips: string[];
+  /** Magic Initiate (Acolyte, Guide, Sage backgrounds). */
+  initiateCantrips: string[];
+  initiateSpell: string[];
 }
 
-/**
- * Every spell list the player picks from right now, in the order the UI should show them:
- * class cantrips, class level 1 spells, fighting-style cantrips, Magic Initiate cantrips and
- * spell. Counts come from the class table plus any option that adds cantrips (Thaumaturge).
- */
-export function spellPickLists(answers: Answers): SpellPickList[] {
-  const lists: SpellPickList[] = [];
-  const cls = classOf(answers);
-  const sc = cls?.spellcasting;
-  const options = chosenOptions(answers);
-  if (cls && sc) {
-    const extra = options.reduce((n, o) => n + (o.extraCantrips ?? 0), 0);
-    if (sc.cantripCount > 0) {
-      lists.push({
-        field: "cantrips",
-        label: `${cls.name} cantrips`,
-        count: sc.cantripCount + extra,
-        choices: sc.cantrips,
-        picked: answers.cantrips ?? [],
-      });
-    }
-    lists.push({
-      field: "spells",
-      label: cls.id === "wizard" ? "Prepared level 1 spells" : `${cls.name} level 1 spells`,
-      count: sc.preparedCount,
-      choices: sc.level1,
-      picked: answers.spells ?? [],
-    });
-  }
-  const grant = options.find((o) => o.grantsCantrips)?.grantsCantrips;
-  const style = options.find((o) => o.grantsCantrips);
-  if (grant && style) {
-    lists.push({
-      field: "bonusCantrips",
-      label: `${style.name} cantrips`,
-      count: grant.count,
-      choices: grant.choices,
-      picked: answers.bonusCantrips ?? [],
-    });
-  }
-  const initiate = backgroundOf(answers)?.initiate;
-  if (initiate) {
-    lists.push({
-      field: "initiateCantrips",
-      label: "Magic Initiate cantrips",
-      count: initiate.cantripCount,
-      choices: initiate.cantrips,
-      picked: answers.initiateCantrips ?? [],
-    });
-    lists.push({
-      field: "initiateSpell",
-      label: "Magic Initiate level 1 spell",
-      count: initiate.spellCount,
-      choices: initiate.spells,
-      picked: answers.initiateSpell ? [answers.initiateSpell] : [],
-    });
-  }
-  return lists;
-}
-
-/** Cantrips the species (and its sub-choice) already teaches; picking them again is wasted. */
-export function speciesCantripIds(answers: Answers): string[] {
+/** Cantrips the species (and its sub-choice) already teaches. */
+function speciesCantripIds(answers: Answers): string[] {
   return [...(speciesOf(answers)?.cantrips ?? []), ...(speciesOptionOf(answers)?.cantrips ?? [])];
 }
 
-/**
- * Spell ids a list can't offer right now because the character already has them from the
- * species or from an earlier list (class cantrips, then fighting-style cantrips, then Magic
- * Initiate). `pruneAnswers` drops such repeats; the UI should grey them out.
- */
-export function unavailableSpellIds(answers: Answers, field: SpellPickList["field"]): string[] {
-  const order: Array<SpellPickList["field"]> = ["cantrips", "bonusCantrips", "initiateCantrips"];
-  if (field === "spells") return [];
-  if (field === "initiateSpell") return answers.spells ?? [];
-  const earlier = order.slice(0, order.indexOf(field));
-  return [...speciesCantripIds(answers), ...earlier.flatMap((f) => answers[f] ?? [])];
+/** The first `count` ids of `list` that aren't in `known`. */
+function firstNew(list: string[], count: number, known: Set<string>): string[] {
+  return list.filter((id) => !known.has(id)).slice(0, count);
 }
 
 /**
- * Plain-language problems with the picks that counts alone don't catch. Agonizing and Repelling
- * Blast need a damaging (or attack-roll) cantrip from the class's own list.
+ * Every spell the builder gives the character, chosen from the curated lists in order: class
+ * cantrips, fighting-style cantrips, then Magic Initiate. A cantrip the character already has
+ * (from the species or an earlier list) is skipped for the next one on the list, as is a Magic
+ * Initiate spell the class already prepares. Counts come from the class table plus any option
+ * that adds cantrips (Thaumaturge); a list waits (stays empty) until its class, option or
+ * background is chosen.
  */
-export function optionRequirementIssues(answers: Answers): string[] {
-  const issues: string[] = [];
-  const cantrips = (answers.cantrips ?? []).flatMap((id) =>
-    CONTENT.spells[id] ? [CONTENT.spells[id]] : [],
-  );
-  for (const o of chosenOptions(answers)) {
-    if (o.requires?.damageCantrip && !cantrips.some((s) => s.damage && (s.spellAttack || s.save))) {
-      issues.push(`${o.name} needs a cantrip that deals damage, such as Eldritch Blast.`);
-    }
-    if (o.requires?.attackCantrip && !cantrips.some((s) => s.damage && s.spellAttack)) {
-      issues.push(`${o.name} needs a cantrip that makes an attack roll, such as Eldritch Blast.`);
-    }
+export function spellPicks(answers: Answers): SpellPicks {
+  const picks: SpellPicks = {
+    cantrips: [],
+    spells: [],
+    bonusCantrips: [],
+    initiateCantrips: [],
+    initiateSpell: [],
+  };
+  const known = new Set(speciesCantripIds(answers));
+  const learn = (ids: string[]) => {
+    for (const id of ids) known.add(id);
+    return ids;
+  };
+  const sc = classOf(answers)?.spellcasting;
+  const options = chosenOptions(answers);
+  if (sc) {
+    const extra = sc.cantripCount > 0 ? options.reduce((n, o) => n + (o.extraCantrips ?? 0), 0) : 0;
+    picks.cantrips = learn(firstNew(sc.cantrips, sc.cantripCount + extra, known));
+    picks.spells = sc.level1.slice(0, sc.preparedCount);
   }
-  return issues;
+  const grant = options.find((o) => o.grantsCantrips)?.grantsCantrips;
+  if (grant) picks.bonusCantrips = learn(firstNew(grant.cantrips, grant.count, known));
+  const initiate = backgroundOf(answers)?.initiate;
+  if (initiate) {
+    picks.initiateCantrips = learn(firstNew(initiate.cantrips, initiate.cantripCount, known));
+    picks.initiateSpell = firstNew(initiate.spells, initiate.spellCount, new Set(picks.spells));
+  }
+  return picks;
 }

@@ -6,8 +6,10 @@
 // scripts/build-content.ts reads them from the imported class table.
 //
 // Summaries are checked against the rules text in content/5etools/classes.json; keep every
-// number exact when editing. Spell shortlists: `recommended` marks a good first pick (2–3 per
-// list); nothing is ever preselected.
+// number exact when editing. Spells: the builder chooses them, taking each list in order
+// (`CuratedSpellList`): the first entries up to the pick count are the character's spells, and
+// any after them are backups for a cantrip the species already gives. A Wizard's spellbook is
+// the first eight level 1 spells, of which the first five are prepared.
 
 import type { CuratedClass } from "../src/domain/curationTypes";
 
@@ -284,14 +286,7 @@ export const CLASSES: CuratedClass[] = [
       },
     ],
     spells: {
-      level1: [
-        { id: "cure-wounds", recommended: true },
-        { id: "entangle", recommended: true },
-        { id: "ensnaring-strike" },
-        { id: "goodberry" },
-        { id: "hail-of-thorns" },
-        { id: "longstrider" },
-      ],
+      level1: ["cure-wounds", "entangle", "goodberry"],
       alwaysPrepared: [
         {
           id: "hunters-mark",
@@ -346,25 +341,8 @@ export const CLASSES: CuratedClass[] = [
       },
     },
     spells: {
-      cantrips: [
-        { id: "vicious-mockery", recommended: true },
-        { id: "starry-wisp", recommended: true },
-        { id: "minor-illusion" },
-        { id: "mage-hand" },
-        { id: "prestidigitation" },
-        { id: "light" },
-      ],
-      level1: [
-        { id: "healing-word", recommended: true },
-        { id: "dissonant-whispers", recommended: true },
-        { id: "faerie-fire", recommended: true },
-        { id: "charm-person" },
-        { id: "thunderwave" },
-        { id: "sleep" },
-        { id: "heroism" },
-        { id: "command" },
-        { id: "disguise-self" },
-      ],
+      cantrips: ["vicious-mockery", "starry-wisp"],
+      level1: ["healing-word", "dissonant-whispers", "faerie-fire", "sleep", "charm-person"],
     },
   },
   {
@@ -411,26 +389,8 @@ export const CLASSES: CuratedClass[] = [
       },
     ],
     spells: {
-      cantrips: [
-        { id: "fire-bolt", recommended: true },
-        { id: "shocking-grasp", recommended: true },
-        { id: "mage-hand", recommended: true },
-        { id: "ray-of-frost" },
-        { id: "thunderclap" },
-        { id: "light" },
-        { id: "prestidigitation" },
-        { id: "minor-illusion" },
-      ],
-      level1: [
-        { id: "magic-missile", recommended: true },
-        { id: "shield", recommended: true },
-        { id: "burning-hands", recommended: true },
-        { id: "thunderwave" },
-        { id: "sleep" },
-        { id: "mage-armor" },
-        { id: "charm-person" },
-        { id: "ice-knife" },
-      ],
+      cantrips: ["fire-bolt", "shocking-grasp", "mage-hand", "minor-illusion", "ray-of-frost"],
+      level1: ["magic-missile", "shield", "burning-hands", "mage-armor"],
     },
   },
   {
@@ -495,25 +455,8 @@ export const CLASSES: CuratedClass[] = [
       },
     ],
     spells: {
-      cantrips: [
-        { id: "produce-flame", recommended: true },
-        { id: "guidance", recommended: true },
-        { id: "shillelagh" },
-        { id: "thorn-whip" },
-        { id: "starry-wisp" },
-        { id: "druidcraft" },
-      ],
-      level1: [
-        { id: "entangle", recommended: true },
-        { id: "healing-word", recommended: true },
-        { id: "thunderwave", recommended: true },
-        { id: "cure-wounds" },
-        { id: "goodberry" },
-        { id: "faerie-fire" },
-        { id: "ice-knife" },
-        { id: "fog-cloud" },
-        { id: "animal-friendship" },
-      ],
+      cantrips: ["produce-flame", "guidance", "thorn-whip"],
+      level1: ["entangle", "healing-word", "thunderwave", "cure-wounds", "goodberry"],
       alwaysPrepared: [
         {
           id: "speak-with-animals",
@@ -567,25 +510,16 @@ export const CLASSES: CuratedClass[] = [
       },
     },
     spells: {
-      cantrips: [
-        { id: "fire-bolt", recommended: true },
-        { id: "mage-hand", recommended: true },
-        { id: "ray-of-frost" },
-        { id: "shocking-grasp" },
-        { id: "light" },
-        { id: "prestidigitation" },
-        { id: "minor-illusion" },
-      ],
+      cantrips: ["fire-bolt", "mage-hand", "ray-of-frost", "shocking-grasp"],
       level1: [
-        { id: "magic-missile", recommended: true },
-        { id: "shield", recommended: true },
-        { id: "sleep", recommended: true },
-        { id: "mage-armor" },
-        { id: "burning-hands" },
-        { id: "thunderwave" },
-        { id: "find-familiar" },
-        { id: "detect-magic" },
-        { id: "feather-fall" },
+        "magic-missile",
+        "shield",
+        "sleep",
+        "mage-armor",
+        "burning-hands",
+        "thunderwave",
+        "find-familiar",
+        "detect-magic",
       ],
       // Six level 1 spells at level 1, plus two at level 2 ("Spellbook" in the rules text).
       spellbookSize: 8,
@@ -646,22 +580,8 @@ export const CLASSES: CuratedClass[] = [
       },
     ],
     spells: {
-      cantrips: [
-        { id: "eldritch-blast", recommended: true },
-        { id: "prestidigitation", recommended: true },
-        { id: "mage-hand" },
-        { id: "minor-illusion" },
-        { id: "chill-touch" },
-        { id: "toll-the-dead" },
-      ],
-      level1: [
-        { id: "hex", recommended: true },
-        { id: "hellish-rebuke", recommended: true },
-        { id: "armor-of-agathys" },
-        { id: "charm-person" },
-        { id: "tashas-hideous-laughter" },
-        { id: "expeditious-retreat" },
-      ],
+      cantrips: ["eldritch-blast", "prestidigitation", "mage-hand"],
+      level1: ["hex", "hellish-rebuke", "armor-of-agathys"],
     },
   },
   {
@@ -712,26 +632,8 @@ export const CLASSES: CuratedClass[] = [
       },
     ],
     spells: {
-      cantrips: [
-        { id: "sacred-flame", recommended: true },
-        { id: "guidance", recommended: true },
-        { id: "toll-the-dead", recommended: true },
-        { id: "light" },
-        { id: "thaumaturgy" },
-        { id: "spare-the-dying" },
-        { id: "word-of-radiance" },
-      ],
-      level1: [
-        { id: "bless", recommended: true },
-        { id: "healing-word", recommended: true },
-        { id: "guiding-bolt", recommended: true },
-        { id: "cure-wounds" },
-        { id: "shield-of-faith" },
-        { id: "sanctuary" },
-        { id: "command" },
-        { id: "inflict-wounds" },
-        { id: "bane" },
-      ],
+      cantrips: ["sacred-flame", "guidance", "toll-the-dead", "light", "thaumaturgy"],
+      level1: ["bless", "healing-word", "guiding-bolt", "cure-wounds", "shield-of-faith"],
     },
   },
   {
@@ -778,14 +680,7 @@ export const CLASSES: CuratedClass[] = [
       },
     ],
     spells: {
-      level1: [
-        { id: "bless", recommended: true },
-        { id: "cure-wounds", recommended: true },
-        { id: "searing-smite" },
-        { id: "shield-of-faith" },
-        { id: "heroism" },
-        { id: "command" },
-      ],
+      level1: ["bless", "cure-wounds", "shield-of-faith"],
       alwaysPrepared: [
         {
           id: "divine-smite",

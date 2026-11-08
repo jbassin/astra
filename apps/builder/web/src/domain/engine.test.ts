@@ -125,8 +125,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesId: "elf",
       speciesOption: "wood-elf",
       backgroundId: "guide",
-      initiateCantrips: ["guidance", "produce-flame"],
-      initiateSpell: "goodberry",
       ...DONE,
     });
     // Priority dex wis con str int cha → 15 14 13 12 10 8; Guide (Dex Con Wis): Dex +2, Wis +1.
@@ -211,8 +209,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesId: "human",
       backgroundId: "wayfarer",
       options: { fightingStyle: ["druidic-warrior"] },
-      bonusCantrips: ["guidance", "starry-wisp"],
-      spells: ["cure-wounds", "entangle", "goodberry"],
       ...DONE,
     });
     // Priority dex wis con str int cha → 15 14 13 12 10 8; Wayfarer (Dex Wis Cha): Dex +2, Wis +1.
@@ -269,8 +265,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesId: "tiefling",
       speciesOption: "infernal",
       backgroundId: "entertainer",
-      cantrips: ["vicious-mockery", "mage-hand"],
-      spells: ["healing-word", "dissonant-whispers", "faerie-fire", "charm-person", "sleep"],
       ...DONE,
     });
     // Priority cha dex con wis int str → 15 14 13 12 10 8; Entertainer (Str Dex Cha): Cha +2, Dex +1.
@@ -316,8 +310,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesOption: "gold",
       backgroundId: "noble",
       options: { metamagic: ["quickened-spell", "seeking-spell"] },
-      cantrips: ["fire-bolt", "shocking-grasp", "mage-hand", "light"],
-      spells: ["magic-missile", "shield", "burning-hands", "sleep"],
       ...DONE,
     });
     // Priority cha con dex wis int str → 15 14 13 12 10 8; Noble (Str Int Cha): Cha +2, Int +1.
@@ -360,8 +352,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesOption: "forest-gnome",
       backgroundId: "hermit",
       options: { primalOrder: ["magician"] },
-      cantrips: ["produce-flame", "guidance", "thorn-whip"],
-      spells: ["entangle", "healing-word", "thunderwave", "cure-wounds", "goodberry"],
       ...DONE,
     });
     // Priority wis con dex int str cha → 15 14 13 12 10 8; Hermit (Con Wis Cha): Wis +2, Con +1.
@@ -404,10 +394,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesId: "elf",
       speciesOption: "high-elf",
       backgroundId: "sage",
-      cantrips: ["fire-bolt", "mage-hand", "light"],
-      spells: ["magic-missile", "shield", "sleep", "mage-armor", "burning-hands"],
-      initiateCantrips: ["ray-of-frost", "minor-illusion"],
-      initiateSpell: "thunderwave",
       ...DONE,
     });
     // Priority int con dex wis cha str → 15 14 13 12 10 8; Sage (Con Int Wis): Int +2, Con +1.
@@ -452,8 +438,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesId: "orc",
       backgroundId: "charlatan",
       options: { invocations: ["agonizing-blast", "armor-of-shadows", "pact-of-the-chain"] },
-      cantrips: ["eldritch-blast", "prestidigitation"],
-      spells: ["hex", "hellish-rebuke", "armor-of-agathys"],
       ...DONE,
     });
     // Priority cha con dex wis int str → 15 14 13 12 10 8; Charlatan (Dex Con Cha): Cha +2, Con +1.
@@ -490,10 +474,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesId: "dwarf",
       backgroundId: "acolyte",
       options: { divineOrder: ["thaumaturge"] },
-      cantrips: ["sacred-flame", "guidance", "toll-the-dead", "light"],
-      spells: ["bless", "healing-word", "guiding-bolt", "cure-wounds", "shield-of-faith"],
-      initiateCantrips: ["spare-the-dying", "thaumaturgy"],
-      initiateSpell: "sanctuary",
       ...DONE,
     });
     // Priority wis con dex str cha int → 15 14 13 12 10 8; Acolyte (Int Wis Cha): Wis +2, Cha +1.
@@ -527,7 +507,6 @@ describe("buildCharacter: one worked character per class", () => {
       speciesId: "aasimar",
       backgroundId: "noble",
       options: { fightingStyle: ["dueling"] },
-      spells: ["bless", "cure-wounds", "searing-smite"],
       ...DONE,
     });
     // Priority str con cha wis dex int → 15 14 13 12 10 8; Noble (Str Int Cha): Str +2, Cha +1.
@@ -570,14 +549,5 @@ describe("buildCharacter: partial characters", () => {
     expect(c.speed.walk).toBe(30);
     expect(c.missing).toContain("Pick a species.");
     expect(c.missing).toContain("Pick a background.");
-  });
-
-  it("ignores picks the shortlist doesn't offer", () => {
-    const c = buildCharacter({
-      archetype: "mage",
-      classId: "wizard",
-      cantrips: ["eldritch-blast", "fire-bolt"],
-    });
-    expect(c.spellcasting[0]?.cantrips.map((s) => s.id)).toEqual(["fire-bolt"]);
   });
 });

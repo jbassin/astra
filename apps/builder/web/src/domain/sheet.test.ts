@@ -31,8 +31,6 @@ const WIZARD: Answers = {
   classId: "wizard",
   speciesId: "human",
   backgroundId: "scribe",
-  cantrips: ["fire-bolt", "mage-hand", "light"],
-  spells: ["magic-missile", "shield", "sleep", "mage-armor", "detect-magic"],
   ...DONE,
 };
 
@@ -122,8 +120,6 @@ const WARLOCK: Answers = {
   speciesId: "orc",
   backgroundId: "charlatan",
   options: { invocations: ["agonizing-blast", "armor-of-shadows", "pact-of-the-chain"] },
-  cantrips: ["eldritch-blast", "prestidigitation"],
-  spells: ["hex", "hellish-rebuke", "armor-of-agathys"],
   ...DONE,
 };
 
@@ -152,11 +148,11 @@ describe("spell rolls", () => {
   it("writes healing, no-roll damage and second rolls", () => {
     expect(rollOf("cure-wounds")).toBe("The creature regains 2d8 + 3 Hit Points.");
     expect(rollOf("magic-missile")).toMatch(/^It hits with no roll: roll 1d4 \+ 1 Force damage\./);
-    expect(rollOf("ice-knife")).toBe(
-      "Roll a d20 + 5 to hit. On a hit, roll 1d10 Piercing damage. Hit or miss, the target and each creature within 5 feet of it then make a Dexterity save or take 2d6 Cold damage. The Dexterity save is against DC 13.",
+    expect(rollOf("divine-smite")).toBe(
+      "When your attack hits, add 2d8 Radiant damage. 1d8 more if the target is a Fiend or an Undead.",
     );
-    expect(rollOf("ensnaring-strike")).toBe(
-      "Targets make a Strength save against DC 13. On a failure, the target takes 1d6 Piercing damage at the start of each of its turns while the spell lasts.",
+    expect(rollOf("toll-the-dead")).toBe(
+      "Targets make a Wisdom save against DC 13. On a failure, roll 1d8 or 1d12 Necrotic damage. 1d12 instead if the target is missing any Hit Points.",
     );
     expect(rollOf("sleep")).toBe("Targets make a Wisdom save against DC 13.");
     expect(rollOf("bless")).toBeUndefined();

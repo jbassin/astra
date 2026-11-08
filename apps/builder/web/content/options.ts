@@ -1,7 +1,8 @@
 // The class option picks a player chooses from (fighting styles, Divine and Primal Orders,
 // Eldritch Invocations, Metamagic), keyed by option id. Each has a gist (the pick card's short
 // line) and a plain summary; the shortlist per class is in classes.ts, and nothing here is
-// recommended or preselected.
+// recommended or preselected. A fighting style's cantrips are chosen by the builder, in order
+// (`CuratedSpellList`).
 
 import type { CuratedOption } from "../src/domain/curationTypes";
 
@@ -71,12 +72,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
       list: "cleric",
       count: 2,
       ability: "cha",
-      choices: [
-        { id: "guidance", recommended: true },
-        { id: "sacred-flame", recommended: true },
-        { id: "light" },
-        { id: "thaumaturgy" },
-      ],
+      cantrips: ["guidance", "sacred-flame"],
     },
   },
   "druidic-warrior": {
@@ -90,12 +86,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
       list: "druid",
       count: 2,
       ability: "wis",
-      choices: [
-        { id: "guidance", recommended: true },
-        { id: "starry-wisp", recommended: true },
-        { id: "thorn-whip" },
-        { id: "druidcraft" },
-      ],
+      cantrips: ["guidance", "starry-wisp"],
     },
   },
 

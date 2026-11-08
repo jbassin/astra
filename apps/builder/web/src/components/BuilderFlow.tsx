@@ -32,7 +32,7 @@ import {
   type ScreenProps,
   SpeciesScreen,
 } from "./flow/OriginScreens";
-import { AboutScreen, OptionsScreen, SpellsScreen } from "./flow/PickScreens";
+import { AboutScreen, OptionsScreen } from "./flow/PickScreens";
 import { Stepper } from "./flow/Stepper";
 import { CharacterSheet } from "./sheet/CharacterSheet";
 
@@ -64,11 +64,6 @@ const SCREENS: Record<
     title: "Make your class choices",
     hint: "Read each one and pick what sounds most like your hero. None is wrong.",
     Body: OptionsScreen,
-  },
-  spells: {
-    title: "Pick your spells",
-    hint: "Cantrips are small spells you can cast as often as you like. Level 1 spells are stronger: each cast uses a spell slot, and your slots come back when you rest.",
-    Body: SpellsScreen,
   },
   about: {
     title: "Tell us about your hero",

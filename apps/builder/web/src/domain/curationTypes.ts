@@ -30,10 +30,12 @@ export type CuratedSummary =
   | { summary: string; activation: Activation; uses?: CuratedUses; hidden?: undefined }
   | { hidden: string; summary?: undefined; activation?: undefined; uses?: undefined };
 
-export interface CuratedSpellPick {
-  id: string;
-  recommended?: boolean;
-}
+/**
+ * A spell list the builder chooses from for the player, best first. It takes the first spells
+ * it can, skipping any cantrip the character already has from the species or an earlier list,
+ * so entries past the pick count are backups for those repeats (the build proves they suffice).
+ */
+export type CuratedSpellList = string[];
 
 export interface CuratedOptionGroup {
   key: OptionGroupKey;
@@ -71,8 +73,8 @@ export interface CuratedClass {
   features: Record<string, CuratedSummary>;
   optionGroups?: CuratedOptionGroup[];
   spells?: {
-    cantrips?: CuratedSpellPick[];
-    level1: CuratedSpellPick[];
+    cantrips?: CuratedSpellList;
+    level1: CuratedSpellList;
     alwaysPrepared?: Array<{ id: string; note: string; freeCasts?: CuratedUses }>;
     spellbookSize?: number;
   };
@@ -89,7 +91,7 @@ export interface CuratedOption {
   uses?: CuratedUses;
   /** Metamagic: the Sorcery Point cost (the build checks it against the data). */
   cost?: number;
-  grantsCantrips?: { list: ClassId; count: number; ability: Ability; choices: CuratedSpellPick[] };
+  grantsCantrips?: { list: ClassId; count: number; ability: Ability; cantrips: CuratedSpellList };
   extraCantrips?: number;
   requires?: { damageCantrip?: boolean; attackCantrip?: boolean };
   /** A spell the option lets you cast (Armor of Shadows → Mage Armor), with plain words on how. */
@@ -127,7 +129,7 @@ export interface CuratedBackground {
   /** Fills for tool placeholders (`anyGamingSet` → an item id). */
   toolChoices?: Record<string, string>;
   equipmentChoices?: Record<string, string>;
-  initiate?: { cantrips: CuratedSpellPick[]; spells: CuratedSpellPick[] };
+  initiate?: { cantrips: CuratedSpellList; spells: CuratedSpellList };
 }
 
 export interface CuratedFeat {

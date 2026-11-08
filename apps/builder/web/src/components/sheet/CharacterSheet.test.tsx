@@ -24,10 +24,6 @@ const CLERIC: Answers = {
   speciesId: "human",
   backgroundId: "acolyte",
   options: { divineOrder: ["protector"] },
-  cantrips: ["sacred-flame", "guidance", "thaumaturgy"],
-  spells: ["cure-wounds", "healing-word", "bless", "shield-of-faith", "guiding-bolt"],
-  initiateCantrips: ["light", "spare-the-dying"],
-  initiateSpell: "sanctuary",
   ...DONE,
 };
 

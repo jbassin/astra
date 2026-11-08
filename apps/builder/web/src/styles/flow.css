@@ -128,8 +128,7 @@
   color: var(--muted);
   max-width: 42rem;
 }
-.notice,
-.issues li {
+.notice {
   display: flex;
   gap: 0.6rem;
   align-items: flex-start;
@@ -139,14 +138,9 @@
   background: color-mix(in oklab, var(--gilt-glow) 12%, var(--surface));
   animation: screen-in 200ms var(--ease-out) both;
 }
-.notice .icon,
-.issues .icon {
+.notice .icon {
   margin-top: 0.15rem;
   color: var(--gilt);
-}
-.issues {
-  display: grid;
-  gap: 0.5rem;
 }
 .blocked {
   display: grid;

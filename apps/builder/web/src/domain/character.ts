@@ -62,15 +62,6 @@ export const Answers = z
     backgroundId: z.enum(BACKGROUND_IDS).optional(),
     /** Class option picks by group (fighting style, divine order, invocations, …). */
     options: z.partialRecord(z.enum(OPTION_GROUP_KEYS), z.array(Slug).max(6)).optional(),
-    /** Class cantrips. */
-    cantrips: z.array(Slug).max(8).optional(),
-    /** Class level 1 spells (prepared; for a Wizard, the prepared spells from the spellbook). */
-    spells: z.array(Slug).max(8).optional(),
-    /** Cantrips from a fighting style (Blessed Warrior, Druidic Warrior). */
-    bonusCantrips: z.array(Slug).max(4).optional(),
-    /** Magic Initiate (Acolyte, Guide, Sage backgrounds): two cantrips and one level 1 spell. */
-    initiateCantrips: z.array(Slug).max(4).optional(),
-    initiateSpell: Slug.optional(),
     name: z.string().max(80).optional(),
     look: z.string().max(2000).optional(),
     personality: z.string().max(2000).optional(),
@@ -90,7 +81,7 @@ export type CharacterDoc = z.infer<typeof CharacterDoc>;
 
 /**
  * The steps of the flow, in order. Whether a step applies and is complete depends on the content
- * (a Barbarian has no class options or spells): see `stepStatuses` in steps.ts.
+ * (a Barbarian has no class options): see `stepStatuses` in steps.ts.
  */
 export const STEPS = [
   { key: "archetype", label: "Archetype" },
@@ -98,7 +89,6 @@ export const STEPS = [
   { key: "species", label: "Species" },
   { key: "background", label: "Background" },
   { key: "options", label: "Class choices" },
-  { key: "spells", label: "Spells" },
   { key: "name", label: "Name" },
   { key: "look", label: "Look" },
   { key: "personality", label: "Personality" },

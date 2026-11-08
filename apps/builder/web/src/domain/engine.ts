@@ -11,7 +11,8 @@
 //   species or feat skill the same way; expertise from the class's preference list;
 // - weapon masteries, tools, languages and the human origin feat from the curation;
 // - level 2 Hit Points: the hit die's maximum at level 1 and its fixed average (half + 1) at
-//   level 2, each plus the Constitution modifier, plus species and feat bonuses.
+//   level 2, each plus the Constitution modifier, plus species and feat bonuses;
+// - every spell, from the curated lists in order (`spellPicks` in content.ts).
 
 import type { Answers } from "./character";
 import {
@@ -21,6 +22,7 @@ import {
   classOf,
   speciesOf,
   speciesOptionOf,
+  spellPicks,
 } from "./content";
 import type {
   Ability,
@@ -119,8 +121,6 @@ export interface SpellEntry {
   healing?: string;
   /** Plain words for the rolls beyond the first ("1d8 more if the target is a Fiend…"). */
   rollNote?: string;
-  /** A shortlist pick the curation marks as a good first choice. */
-  recommended?: boolean;
 }
 
 export interface SpellcastingBlock {
@@ -247,7 +247,6 @@ export function spellEntry(
     damageBonus?: number;
     note?: string;
     freeCasts?: string;
-    recommended?: boolean;
   },
 ): SpellEntry {
   const { attackBonus, saveDc, modifier, damageBonus = 0, ...extra } = caster;
@@ -319,10 +318,6 @@ function byAbility<T>(f: (a: Ability) => T): Record<Ability, T> {
     wis: f("wis"),
     cha: f("cha"),
   };
-}
-
-function recommendedIn(list: Array<{ id: string; recommended: boolean }>, id: string): boolean {
-  return list.find((c) => c.id === id)?.recommended ?? false;
 }
 
 // ---- the derivation, step by step -----------------------------------------------------------
@@ -492,6 +487,7 @@ export function buildCharacter(answers: Answers): Character {
   const speciesOption = speciesOptionOf(answers);
   const background = backgroundOf(answers);
   const options = chosenOptions(answers);
+  const picks = spellPicks(answers);
   const feats = deriveFeats(cls, answers);
   const pb = PROFICIENCY_BONUS;
 
@@ -625,8 +621,7 @@ export function buildCharacter(answers: Answers): Character {
   const alternatives: Character["armorClass"]["alternatives"] = [];
   const mageArmorFrom = hasOption(options, "armor-of-shadows")
     ? "Armor of Shadows: cast Mage Armor on yourself for free"
-    : (answers.spells ?? []).includes("mage-armor") &&
-        cls?.spellcasting?.level1.some((s) => s.id === "mage-armor")
+    : picks.spells.includes("mage-armor")
       ? "Mage Armor: costs a level 1 spell slot, lasts 8 hours"
       : undefined;
   if (mageArmorFrom) {
@@ -781,7 +776,7 @@ export function buildCharacter(answers: Answers): Character {
   const entry = (
     id: string,
     a: Ability,
-    extra: { note?: string; freeCasts?: string; recommended?: boolean } = {},
+    extra: { note?: string; freeCasts?: string } = {},
   ): SpellEntry | undefined => {
     const s: SpellContent | undefined = CONTENT.spells[id];
     if (!s) return undefined;
@@ -802,12 +797,8 @@ export function buildCharacter(answers: Answers): Character {
   const sc = cls?.spellcasting;
   if (cls && sc) {
     const a = sc.ability;
-    const cantripIds = (answers.cantrips ?? []).filter((id) =>
-      sc.cantrips.some((c) => c.id === id),
-    );
-    const spellIds = (answers.spells ?? []).filter((id) => sc.level1.some((c) => c.id === id));
     const spells = [
-      ...spellIds.flatMap((id) => entries([id], a, { recommended: recommendedIn(sc.level1, id) })),
+      ...entries(picks.spells, a),
       ...sc.alwaysPrepared.flatMap((ap) =>
         entries([ap.id], a, {
           note: ap.note,
@@ -820,9 +811,7 @@ export function buildCharacter(answers: Answers): Character {
     ];
     let spellbook: SpellEntry[] | undefined;
     if (sc.spellbookSize) {
-      const extras = sc.level1.map((c) => c.id).filter((id) => !spellIds.includes(id));
-      const ids = [...spellIds, ...extras].slice(0, sc.spellbookSize);
-      spellbook = entries(ids, a);
+      spellbook = entries(sc.level1.slice(0, sc.spellbookSize), a);
     }
     spellcasting.push({
       source: "class",
@@ -832,9 +821,7 @@ export function buildCharacter(answers: Answers): Character {
       attackBonus: atkFor(a),
       slots: sc.slots,
       ...(sc.pactSlotLevel !== undefined && { pactSlotLevel: sc.pactSlotLevel }),
-      cantrips: cantripIds.flatMap((id) =>
-        entries([id], a, { recommended: recommendedIn(sc.cantrips, id) }),
-      ),
+      cantrips: entries(picks.cantrips, a),
       spells,
       ...(spellbook && { spellbook }),
     });
@@ -842,16 +829,13 @@ export function buildCharacter(answers: Answers): Character {
   const style = options.find((o) => o.grantsCantrips);
   if (style?.grantsCantrips) {
     const g = style.grantsCantrips;
-    const ids = (answers.bonusCantrips ?? [])
-      .filter((id) => g.choices.some((c) => c.id === id))
-      .slice(0, g.count);
     spellcasting.push({
       source: "fighting-style",
       label: `${style.name} cantrips`,
       ability: g.ability,
       saveDc: dcFor(g.ability),
       attackBonus: atkFor(g.ability),
-      cantrips: entries(ids, g.ability),
+      cantrips: entries(picks.bonusCantrips, g.ability),
       spells: [],
     });
   }
@@ -879,21 +863,14 @@ export function buildCharacter(answers: Answers): Character {
   const initiate = background?.initiate;
   if (initiate) {
     const a = chosenCastingAbility(cls, scores);
-    const cantrips = (answers.initiateCantrips ?? []).filter((id) =>
-      initiate.cantrips.some((c) => c.id === id),
-    );
-    const spell =
-      answers.initiateSpell && initiate.spells.some((c) => c.id === answers.initiateSpell)
-        ? [answers.initiateSpell]
-        : [];
     spellcasting.push({
       source: "feat",
       label: "Magic Initiate spells",
       ability: a,
       saveDc: dcFor(a),
       attackBonus: atkFor(a),
-      cantrips: entries(cantrips, a),
-      spells: entries(spell, a, {
+      cantrips: entries(picks.initiateCantrips, a),
+      spells: entries(picks.initiateSpell, a, {
         note: "Magic Initiate: always prepared.",
         freeCasts: "1 per Long Rest",
       }),

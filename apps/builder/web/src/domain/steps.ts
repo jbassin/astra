@@ -5,21 +5,17 @@
 
 import { type Answers, STEPS, type StepKey } from "./character";
 import {
-  backgroundOf,
   backgroundsForClass,
   classesForArchetype,
   classOf,
-  optionRequirementIssues,
   pickedOptions,
-  speciesCantripIds,
   speciesOf,
-  spellPickLists,
 } from "./content";
 
 export interface StepStatus {
   key: StepKey;
   label: string;
-  /** False when the step doesn't apply to this character (a Barbarian has no spells). */
+  /** False when the step doesn't apply to this character (a Barbarian has no class options). */
   applicable: boolean;
   complete: boolean;
   /** A step that has to be answered first, when this one can't be started yet. */
@@ -81,17 +77,6 @@ function statusOf(answers: Answers, key: StepKey): Omit<StepStatus, "key" | "lab
       });
       return { applicable: true, complete: issues.length === 0, issues };
     }
-    case "spells": {
-      if (!cls) return { applicable: true, complete: false, blockedBy: "class", issues: [] };
-      const lists = spellPickLists(answers);
-      if (lists.length === 0) return { applicable: false, complete: true, issues: [] };
-      const issues = lists.flatMap((l) => {
-        const valid = l.picked.filter((id) => l.choices.some((c) => c.id === id)).length;
-        return valid === l.count ? [] : [`Pick ${l.count} for ${l.label} (${valid} so far).`];
-      });
-      issues.push(...optionRequirementIssues(answers));
-      return { applicable: true, complete: issues.length === 0, issues };
-    }
     case "name":
       return filled(answers.name)
         ? { applicable: true, complete: true, issues: [] }
@@ -137,15 +122,10 @@ export function applicableStepCount(answers: Answers): number {
   return stepStatuses(answers).filter((s) => s.applicable).length;
 }
 
-function keepValid(
-  ids: string[] | undefined,
-  allowed: Set<string>,
-  max: number,
-  exclude = new Set<string>(),
-): string[] {
+function keepValid(ids: string[] | undefined, allowed: Set<string>, max: number): string[] {
   const out: string[] = [];
   for (const id of ids ?? []) {
-    if (allowed.has(id) && !exclude.has(id) && !out.includes(id) && out.length < max) out.push(id);
+    if (allowed.has(id) && !out.includes(id) && out.length < max) out.push(id);
   }
   return out;
 }
@@ -156,14 +136,12 @@ function keepValid(
  * species clears the picks made for the old one even where the new one offers the same ids.
  *
  * - a class the archetype doesn't offer is cleared;
- * - a new (or cleared) class clears option picks and every class spell pick;
- * - option and spell picks keep only ids the current shortlists offer, up to the pick count;
- * - a background the class can't take is cleared, and with it the Magic Initiate picks;
- * - a new (or cleared) species clears the sub-choice, and a sub-choice it doesn't offer is cleared;
- * - a cantrip the species already teaches is dropped from every list, a cantrip picked in an
- *   earlier list (class, then fighting style, then Magic Initiate) is dropped from the later
- *   ones, and a Magic Initiate spell the class already prepares is dropped: a repeat would be
- *   wasted. The UI should grey those choices out (`unavailableSpellIds` in content.ts).
+ * - a new (or cleared) class clears option picks;
+ * - option picks keep only ids the current shortlists offer, up to the pick count;
+ * - a background the class can't take is cleared;
+ * - a new (or cleared) species clears the sub-choice, and a sub-choice it doesn't offer is cleared.
+ *
+ * Spells are never answers: the builder chooses them (`spellPicks` in content.ts).
  */
 export function pruneAnswers(answers: Answers, previous?: Answers): Answers {
   const next: Answers = { ...answers };
@@ -175,9 +153,6 @@ export function pruneAnswers(answers: Answers, previous?: Answers): Answers {
   const classChanged = previous !== undefined && previous.classId !== next.classId;
   if (!next.classId || classChanged) {
     delete next.options;
-    delete next.cantrips;
-    delete next.spells;
-    delete next.bonusCantrips;
   }
 
   const speciesChanged = previous !== undefined && previous.speciesId !== next.speciesId;
@@ -201,39 +176,6 @@ export function pruneAnswers(answers: Answers, previous?: Answers): Answers {
       }
       next.options = pruned;
     }
-  }
-
-  // Spell picks: each list keeps only what it offers now, up to its count.
-  const lists = spellPickLists(next);
-  const listFor = (field: string) => lists.find((l) => l.field === field);
-  const knownCantrips = new Set(speciesCantripIds(next));
-  for (const field of ["cantrips", "spells", "bonusCantrips", "initiateCantrips"] as const) {
-    const list = listFor(field);
-    if (!list) {
-      delete next[field];
-      continue;
-    }
-    if (next[field] === undefined) continue;
-    const exclude = field === "spells" ? undefined : knownCantrips;
-    next[field] = keepValid(
-      next[field],
-      new Set(list.choices.map((c) => c.id)),
-      list.count,
-      exclude,
-    );
-    if (field !== "spells") for (const id of next[field] ?? []) knownCantrips.add(id);
-  }
-  const initiateSpell = listFor("initiateSpell");
-  if (
-    next.initiateSpell &&
-    (!initiateSpell?.choices.some((c) => c.id === next.initiateSpell) ||
-      next.spells?.includes(next.initiateSpell))
-  ) {
-    delete next.initiateSpell;
-  }
-  if (!backgroundOf(next)?.initiate) {
-    delete next.initiateCantrips;
-    delete next.initiateSpell;
   }
   return next;
 }

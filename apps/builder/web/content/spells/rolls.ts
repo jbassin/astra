@@ -10,17 +10,10 @@ import type { CuratedSpellRoll } from "../../src/domain/curationTypes";
 
 export const SPELL_ROLLS: Record<string, CuratedSpellRoll> = {
   "divine-smite": { note: "1d8 more if the target is a Fiend or an Undead." },
-  "ensnaring-strike": { on: "each-turn" },
   hex: { note: "Add it to every hit on the target until the spell ends." },
   "hunters-mark": { note: "Add it to every hit on the target until the spell ends." },
-  "ice-knife": {
-    note: "Hit or miss, the target and each creature within 5 feet of it then make a Dexterity save or take 2d6 Cold damage.",
-  },
   "magic-missile": {
     note: "You make three darts and pick a creature for each; every dart deals that damage.",
-  },
-  "searing-smite": {
-    note: "At the start of each of its turns it takes 1d6 Fire damage again, then makes a Constitution save; a success ends the spell.",
   },
   shillelagh: { on: "weapon-die" },
   "toll-the-dead": { note: "1d12 instead if the target is missing any Hit Points." },
