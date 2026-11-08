@@ -1,22 +1,12 @@
-// The class choices and spells screens. Nothing is preselected and no class option is
-// recommended (Josh's call); spells the curation recommends carry a visible marker. Every
-// list shows "Pick N" with a live count, and a choice the character already has is greyed
-// out with the reason.
+// The class choices and About you screens. Nothing is preselected and no class option is
+// recommended (Josh's call); every option list shows "Pick N" with a live count. Spells have
+// no screen: the builder chooses them (`spellPicks` in content.ts).
 
 import type { Answers } from "@/domain/character";
-import {
-  CONTENT,
-  classOf,
-  optionRequirementIssues,
-  pickedOptions,
-  type SpellPickList,
-  spellPickLists,
-  unavailableSpellIds,
-} from "@/domain/content";
-import type { OptionGroupContent, OptionGroupKey, SpellContent } from "@/domain/contentTypes";
-import { ABILITY_NAMES } from "@/domain/sheet";
+import { CONTENT, classOf, pickedOptions } from "@/domain/content";
+import type { OptionGroupContent, OptionGroupKey } from "@/domain/contentTypes";
 import type { IconName } from "@/generated/icons";
-import { CLASS_HERALDRY, damageIcon, hueStyle, schoolIcon } from "@/ui/heraldry";
+import { CLASS_HERALDRY, hueStyle } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
 import { Choice, ChoiceGroup, PickCounter } from "./Choice";
@@ -88,135 +78,6 @@ export function OptionsScreen({ answers, update }: ScreenProps) {
     <>
       {cls?.optionGroups.map((g) => (
         <OptionGroup key={g.key} group={g} answers={answers} update={update} />
-      ))}
-    </>
-  );
-}
-
-function picksOf(answers: Answers, field: SpellPickList["field"]): string[] {
-  if (field === "initiateSpell") return answers.initiateSpell ? [answers.initiateSpell] : [];
-  return answers[field] ?? [];
-}
-
-/** The chips under a spell's name: what it rolls and how it reaches its target. (The list's
- * name already says cantrip or level 1.) */
-function SpellChips({ s }: { s: SpellContent }) {
-  return (
-    <span className="chips">
-      {s.damage && (
-        <span className="chip chip-roll">
-          <Icon name={damageIcon(s.damageType)} />
-          {s.damage} {s.damageType}
-        </span>
-      )}
-      {s.healing && (
-        <span className="chip chip-roll">
-          <Icon name="heart-plus" />
-          Heals {s.healing}
-        </span>
-      )}
-      {s.save && <span className="chip">{ABILITY_NAMES[s.save]} save</span>}
-      {s.spellAttack && <span className="chip">Spell attack</span>}
-      {s.concentration && <span className="chip">Concentration</span>}
-    </span>
-  );
-}
-
-/** The full rules text and the small print, behind the disclosure. */
-function SpellDetails({ s }: { s: SpellContent }) {
-  const time = s.time.split(",")[0] ?? s.time;
-  return (
-    <>
-      <p>{s.summary}</p>
-      <p className="choice-small">
-        {time}. Range {s.range}. {s.duration}.
-      </p>
-    </>
-  );
-}
-
-function SpellList({ list, answers, update }: ScreenProps & { list: SpellPickList }) {
-  const picked = picksOf(answers, list.field).filter((id) => list.choices.some((c) => c.id === id));
-  const unavailable = new Set(unavailableSpellIds(answers, list.field));
-  const reason =
-    list.field === "initiateSpell"
-      ? "Already one of your prepared spells."
-      : "You already know this one.";
-  const type = list.count === 1 ? "radio" : "checkbox";
-  const pick = (id: string) => {
-    const field = list.field;
-    if (field === "initiateSpell") {
-      update({ initiateSpell: id });
-      return;
-    }
-    const patch: Partial<Answers> = {};
-    patch[field] = toggled(picked, id, list.count);
-    update(patch);
-  };
-  return (
-    <ChoiceGroup
-      legend={list.label}
-      counter={<PickCounter count={list.count} picked={picked.length} />}
-      layout="grid"
-    >
-      {list.choices.map((c) => {
-        const s = CONTENT.spells[c.id];
-        if (!s) return null;
-        const checked = picked.includes(c.id);
-        const taken = unavailable.has(c.id) && !checked;
-        return (
-          <Choice
-            key={c.id}
-            type={type}
-            name={list.field}
-            value={c.id}
-            checked={checked}
-            disabled={taken || (type === "checkbox" && !checked && picked.length >= list.count)}
-            onChange={() => pick(c.id)}
-            title={s.name}
-            hue={classHue(answers)}
-            icon={<Icon name={schoolIcon(s.school)} className="emblem-icon" />}
-            more={<SpellDetails s={s} />}
-            badge={
-              c.recommended && (
-                <span className="badge">
-                  <Icon name="ui-star" />
-                  Recommended
-                </span>
-              )
-            }
-          >
-            <SpellChips s={s} />
-            <span className="choice-blurb">{s.gist}</span>
-            {taken && (
-              <span className="choice-reason">
-                <Icon name="ui-lock" />
-                {reason}
-              </span>
-            )}
-          </Choice>
-        );
-      })}
-    </ChoiceGroup>
-  );
-}
-
-export function SpellsScreen({ answers, update }: ScreenProps) {
-  const issues = optionRequirementIssues(answers);
-  return (
-    <>
-      {issues.length > 0 && (
-        <ul className="issues">
-          {issues.map((i) => (
-            <li key={i}>
-              <Icon name="ui-info" />
-              <span>{i}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-      {spellPickLists(answers).map((l) => (
-        <SpellList key={l.field} list={l} answers={answers} update={update} />
       ))}
     </>
   );

@@ -15,18 +15,16 @@ describe("viewStatuses", () => {
       species: "todo",
       background: "blocked",
       options: "blocked",
-      spells: "blocked",
       about: "todo",
       sheet: "todo",
     });
     expect(viewStatuses({}).find((v) => v.key === "class")?.blockedBy).toBe("archetype");
   });
 
-  it("drops the screens a class doesn't have (a Barbarian has no class choices or spells)", () => {
+  it("drops the screens a class doesn't have (a Barbarian has no class choices)", () => {
     expect(state({ archetype: "warrior", classId: "barbarian" })).toMatchObject({
       class: "done",
       options: "n/a",
-      spells: "n/a",
     });
   });
 
@@ -65,14 +63,13 @@ describe("clearedSummary", () => {
   it("names what a class change cleared", () => {
     const before: Answers = {
       archetype: "mage",
-      classId: "wizard",
-      cantrips: ["fire-bolt"],
-      spells: ["sleep"],
+      classId: "sorcerer",
+      options: { metamagic: ["quickened-spell", "distant-spell"] },
     };
-    const merged: Answers = { ...before, classId: "sorcerer" };
+    const merged: Answers = { ...before, classId: "warlock" };
     const after = pruneAnswers(merged, before);
     expect(clearedSummary(merged, after)).toBe(
-      "That change cleared your spells. Pick again when you get there.",
+      "That change cleared your class choices. Pick again when you get there.",
     );
   });
 

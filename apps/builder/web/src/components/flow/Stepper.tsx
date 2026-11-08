@@ -22,7 +22,6 @@ const VIEW_ICON: Record<ViewKey, IconName> = {
   species: "village",
   background: "scroll-unfurled",
   options: "laurels",
-  spells: "spell-book",
   about: "quill-ink",
   sheet: "scroll-quill",
 };

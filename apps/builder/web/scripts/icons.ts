@@ -122,7 +122,6 @@ const LUCIDE = [
   "lock",
   "info",
   "triangle-exclamation-point",
-  "star",
   "chevron-down",
   "flask-conical",
   "link",

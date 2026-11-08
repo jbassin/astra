@@ -222,14 +222,6 @@
 .choice-talent strong {
   color: var(--ink);
 }
-.choice-reason {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-  font-weight: 700;
-}
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -246,30 +238,6 @@
   font-size: 0.85rem;
   font-weight: 600;
   line-height: 1.5;
-}
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.1rem 0.55rem;
-  border-radius: 999px;
-  background: var(--gilt);
-  color: var(--gilt-ink);
-  font-size: 0.8rem;
-  font-weight: 800;
-  line-height: 1.5;
-}
-.chip-roll {
-  border-color: var(--hue-line);
-  color: var(--ink);
-}
-.chip-roll .icon {
-  color: var(--hue-ink);
-}
-.badge .icon {
-  width: 0.9rem;
-  height: 0.9rem;
-  fill: currentColor;
 }
 
 /* The tick: absolutely placed so a pick never moves anything. */
@@ -380,10 +348,6 @@
   gap: 0.5rem;
   padding: 0 0.9rem 0.9rem;
   animation: screen-in 180ms var(--ease-out) both;
-}
-.choice-small {
-  color: var(--muted);
-  font-size: 0.9rem;
 }
 
 /* Tiles: the big emblem-first cards on the first screen. */

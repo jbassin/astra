@@ -30,22 +30,6 @@ function heading(): string {
   return screen.getByRole("heading", { level: 2 }).textContent ?? "";
 }
 
-/** The pick lists: fieldsets (a card's "full rules" disclosure is a group too). */
-function lists(): HTMLElement[] {
-  return screen.getAllByRole("group").filter((g) => g.tagName === "FIELDSET");
-}
-
-/** In every group with a "Pick N" counter, picks the first N choices that are still open. */
-function pickEveryList() {
-  for (const group of lists()) {
-    const n = Number(/Pick (\d+)/.exec(group.textContent ?? "")?.[1] ?? 0);
-    for (let i = 0; i < n; i++) {
-      const open = [...group.querySelectorAll("input")].find((el) => !el.checked && !el.disabled);
-      if (open) fireEvent.click(open);
-    }
-  }
-}
-
 function fillAbout() {
   fireEvent.change(screen.getByRole("textbox", { name: "Name" }), { target: { value: "Ada" } });
   fireEvent.change(screen.getByRole("textbox", { name: /look like/ }), {
@@ -80,7 +64,7 @@ describe("picking a whole character", () => {
     expect(last()).toMatchObject({ classId: "fighter", options: { fightingStyle: ["defense"] } });
   });
 
-  it("walks a Wizard through every spell list, Magic Initiate included", () => {
+  it("walks a Wizard straight from background to About you, spells chosen for them", () => {
     const { last } = renderFlow();
     choose("radio", /^Mage/);
     next();
@@ -91,42 +75,28 @@ describe("picking a whole character", () => {
     next();
     choose("radio", /^Sage/);
     next();
-    expect(heading()).toBe("Pick your spells"); // a Wizard has no class choices screen
-    expect(lists().map((g) => g.querySelector("legend")?.textContent)).toEqual([
-      "Wizard cantrips",
-      "Prepared level 1 spells",
-      "Magic Initiate cantrips",
-      "Magic Initiate level 1 spell",
-    ]);
-    pickEveryList();
-    expect(screen.getAllByText(/Pick \d+ · \d+ picked/).map((el) => el.textContent)).toEqual([
-      "Pick 3 · 3 picked",
-      "Pick 5 · 5 picked",
-      "Pick 2 · 2 picked",
-      "Pick 1 · 1 picked",
-    ]);
-    next();
+    // A Wizard has no class choices, and nobody has a spells screen.
+    expect(heading()).toBe("Tell us about your hero");
     fillAbout();
     next();
     expect(screen.queryByText("Still to choose")).toBeNull();
     expect(screen.getByText("Your spells")).toBeTruthy();
-    expect(last().initiateSpell).toBeTruthy();
+    expect(screen.getAllByText("Magic Missile").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Magic Initiate spells").length).toBeGreaterThan(0);
+    expect(Object.keys(last())).not.toContain("cantrips");
   });
 });
 
 describe("changing an earlier answer", () => {
-  it("clears a Cleric's picks when the class changes, and says so", () => {
+  it("clears a Cleric's class choices when the class changes, and says so", () => {
     renderFlow({
       archetype: "healer",
       classId: "cleric",
       options: { divineOrder: ["protector"] },
-      cantrips: ["guidance"],
     });
     fireEvent.click(screen.getByRole("button", { name: /^Class \(/ }));
     choose("radio", /^Paladin/);
-    expect(
-      screen.getByText(/That change cleared your class choices and your spells\./),
-    ).toBeTruthy();
+    expect(screen.getByText(/That change cleared your class choices\./)).toBeTruthy();
   });
 
   it("resumes at the first unfinished screen and marks the rail", () => {
@@ -140,14 +110,6 @@ describe("changing an earlier answer", () => {
 });
 
 describe("what the player sees on the pick screens", () => {
-  it("marks recommended spells and preselects nothing", () => {
-    renderFlow({ archetype: "mage", classId: "wizard" });
-    fireEvent.click(screen.getByRole("button", { name: /^Spells/ }));
-    expect(screen.getAllByText("Recommended").length).toBeGreaterThan(0);
-    const inputs = screen.getAllByRole("checkbox");
-    expect(inputs.some((el) => el instanceof HTMLInputElement && el.checked)).toBe(false);
-  });
-
   it("shows class options with no recommendation and nothing picked", () => {
     renderFlow({ archetype: "warrior", classId: "fighter" });
     fireEvent.click(screen.getByRole("button", { name: /^Class choices/ }));
@@ -166,30 +128,5 @@ describe("what the player sees on the pick screens", () => {
     expect(main.hasAttribute("data-compact")).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "Back" }));
     expect(main.hasAttribute("data-compact")).toBe(false);
-  });
-
-  it("shows a spell's full rules without picking it", () => {
-    const { persist } = renderFlow({ archetype: "mage", classId: "wizard" });
-    fireEvent.click(screen.getByRole("button", { name: /^Spells/ }));
-    const more = screen.getAllByText(/^Read the full rules: /)[0];
-    if (!more) throw new Error("no full-rules disclosure");
-    fireEvent.click(more);
-    const input = more.closest(".choice")?.querySelector("input");
-    expect(input?.checked).toBe(false);
-    expect(persist).not.toHaveBeenCalled();
-  });
-
-  it("greys out a cantrip the species already teaches, with the reason", () => {
-    renderFlow({
-      archetype: "mage",
-      classId: "wizard",
-      speciesId: "elf",
-      speciesOption: "high-elf",
-    });
-    fireEvent.click(screen.getByRole("button", { name: /^Spells/ }));
-    const taken = screen.getAllByText("You already know this one.");
-    expect(taken.length).toBeGreaterThan(0);
-    const input = taken[0]?.closest("label")?.querySelector("input");
-    expect(input?.disabled).toBe(true);
   });
 });

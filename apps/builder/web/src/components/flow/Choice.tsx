@@ -1,4 +1,4 @@
-// One pickable card: a radio or checkbox with an icon, a title, an optional badge and a plain
+// One pickable card: a radio or checkbox with an icon, a title and a plain
 // summary. The input is visually hidden and the label is the touch target; the tick in the
 // corner (absolutely placed, so picking never shifts the layout) shows it is picked. `more`
 // adds a "full rules" disclosure below the label, outside it, so opening it never picks.
@@ -15,7 +15,6 @@ export function Choice({
   disabled = false,
   onChange,
   title,
-  badge,
   icon,
   hue,
   size = "row",
@@ -30,7 +29,6 @@ export function Choice({
   disabled?: boolean;
   onChange: () => void;
   title: string;
-  badge?: ReactNode;
   /** The emblem on the card's left (or top, for a tile). */
   icon?: ReactNode;
   /** `hueStyle(...)` from heraldry.ts: tints the emblem and the picked state. */
@@ -62,7 +60,6 @@ export function Choice({
         <span className="choice-main">
           <span className="choice-title">
             <span className="choice-label">{title}</span>
-            {badge}
           </span>
           {children}
         </span>

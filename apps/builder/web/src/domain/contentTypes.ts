@@ -122,11 +122,8 @@ export interface FeatureContent extends Summarized, Activated {
   uses?: Uses;
 }
 
-export interface SpellChoice {
-  id: string;
-  /** A good pick for a new player. Never preselected. */
-  recommended: boolean;
-}
+/** Spell ids, best first; the builder takes the first ones it can (`CuratedSpellList`). */
+export type SpellList = string[];
 
 export type OptionKind =
   | "fighting-style"
@@ -141,7 +138,7 @@ export interface OptionContent extends Summarized, Activated, Gisted {
   /** Metamagic cost in Sorcery Points. */
   cost?: number;
   /** An option that teaches extra cantrips the player picks (Blessed or Druidic Warrior). */
-  grantsCantrips?: { list: ClassId; count: number; ability: Ability; choices: SpellChoice[] };
+  grantsCantrips?: { list: ClassId; count: number; ability: Ability; cantrips: SpellList };
   /** An option that adds to the class's cantrip count (Thaumaturge, Magician). */
   extraCantrips?: number;
   /** A requirement the UI should show and the step status checks. */
@@ -180,10 +177,10 @@ export interface SpellcastingContent {
   slots: number[];
   /** Pact Magic: the level of every slot. */
   pactSlotLevel?: number;
-  cantrips: SpellChoice[];
-  level1: SpellChoice[];
+  cantrips: SpellList;
+  level1: SpellList;
   alwaysPrepared: AlwaysPreparedSpell[];
-  /** Wizard: spells in the spellbook at level 2 (the prepared picks plus curated extras). */
+  /** Wizard: spells in the spellbook at level 2, the first of `level1` (the first `preparedCount` of them are prepared). */
   spellbookSize?: number;
 }
 
@@ -285,8 +282,8 @@ export interface MagicInitiateContent {
   list: ClassId;
   cantripCount: number;
   spellCount: number;
-  cantrips: SpellChoice[];
-  spells: SpellChoice[];
+  cantrips: SpellList;
+  spells: SpellList;
 }
 
 export interface BackgroundContent {

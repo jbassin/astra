@@ -68,15 +68,15 @@ describe("joinContent", () => {
   });
 
   it("fails on a spell that isn't on the class list", () => {
-    expect(
-      withCuration((c) => cls(c, "cleric").spells?.level1.push({ id: "magic-missile" })),
-    ).toThrow(/"magic-missile" is not on the cleric list/);
+    expect(withCuration((c) => cls(c, "cleric").spells?.level1.push("magic-missile"))).toThrow(
+      /"magic-missile" is not on the cleric list/,
+    );
   });
 
   it("fails on a curated id the import doesn't have", () => {
-    expect(
-      withCuration((c) => cls(c, "bard").spells?.cantrips?.push({ id: "fireball-of-doom" })),
-    ).toThrow(/"fireball-of-doom" is not in the imported data/);
+    expect(withCuration((c) => cls(c, "bard").spells?.cantrips?.push("fireball-of-doom"))).toThrow(
+      /"fireball-of-doom" is not in the imported data/,
+    );
   });
 
   it("fails on a shortlist smaller than the pick count", () => {
@@ -158,8 +158,8 @@ describe("joinContent", () => {
   });
 
   it("fails when a spell's rules text rolls dice its sheet entry leaves out", () => {
-    expect(withCuration((c) => delete c.spellRolls["ice-knife"])).toThrow(
-      /spell ice-knife: its rules text rolls 2d6/,
+    expect(withCuration((c) => delete c.spellRolls["divine-smite"])).toThrow(
+      /spell divine-smite: its rules text rolls 1d8/,
     );
     expect(
       unshownRolls({
@@ -182,7 +182,7 @@ describe("joinContent", () => {
     expect(
       withCuration((c) => {
         const sage = c.backgrounds.find((b) => b.id === "sage");
-        if (sage?.initiate) sage.initiate.cantrips = sage.initiate.cantrips.slice(0, 5);
+        if (sage?.initiate) sage.initiate.cantrips = sage.initiate.cantrips.slice(0, 4);
       }),
     ).toThrow(/wizard \+ sage: Magic Initiate cantrips can run out/);
   });
