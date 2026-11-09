@@ -26,6 +26,9 @@ dist/main.js into ``/data/Data/modules/portal/`` inside the Foundry container
 (``docker cp``, which writes as root), so the operator needs no sudo even though Foundry has left
 that directory root-owned. It then hands the directory to the owner of ``Data/modules`` (the
 container's Foundry user), so Foundry's own Manifest-URL update can overwrite it again.
+
+**arms-module-install** does the same for the ik-arms module (``apps/portal/arms``, installed
+as ``/data/Data/modules/ik-arms/``), which has no Manifest URL.
 """
 
 from __future__ import annotations
@@ -173,13 +176,30 @@ def alert_sudoers_install(ctx: Ctx) -> int:
 def portal_module_install(ctx: Ctx) -> int:
     """Build the Foundry module and copy it into the Foundry container (module docstring).
     Foundry re-reads module.json on the next world launch or module refresh."""
-    ctx.check(["pnpm", "--filter", "@astra/portal-module", "build"])  # `just portal-module-build`
+    return _foundry_module_install(
+        ctx, "portal-module-install", "@astra/portal-module", "module", "portal"
+    )
+
+
+def arms_module_install(ctx: Ctx) -> int:
+    """Build the ik-arms Foundry module (apps/portal/arms) and copy it into the Foundry
+    container the same way. It has no Manifest URL, so this is its only install path; Foundry
+    lists a new module only after the world is relaunched from setup."""
+    return _foundry_module_install(
+        ctx, "arms-module-install", "@astra/portal-arms", "arms", "ik-arms"
+    )
+
+
+def _foundry_module_install(ctx: Ctx, command: str, package: str, part: str, module_id: str) -> int:
+    """Build pnpm ``package`` (``apps/portal/<part>``) and drop its module.json and dist/main.js
+    into ``Data/modules/<module_id>`` in the Foundry container."""
+    ctx.check(["pnpm", "--filter", package, "build"])
     container = os.environ.get("FOUNDRY_CONTAINER") or DEFAULT_FOUNDRY_CONTAINER
-    dest = f"{FOUNDRY_MODULES}/portal"
-    module = ctx.repo_root / "apps" / "portal" / "module"
+    dest = f"{FOUNDRY_MODULES}/{module_id}"
+    module = ctx.repo_root / "apps" / "portal" / part
     for name in ("module.json", "dist/main.js"):
         if not (module / name).is_file():
-            ctx.err(f"portal-module-install: the build did not produce {module / name}")
+            ctx.err(f"{command}: the build did not produce {module / name}")
             return 1
     as_root = ["docker", "exec", "--user", "0", container]
     ctx.check([*as_root, "mkdir", "-p", f"{dest}/dist"])
@@ -188,5 +208,5 @@ def portal_module_install(ctx: Ctx) -> int:
     # Hand the copy to whoever owns Data/modules (Foundry's own user), not root.
     chown = f'chown -R "$(stat -c %u:%g {FOUNDRY_MODULES})" {dest}'
     ctx.check([*as_root, "sh", "-c", chown])
-    ctx.out(f"installed portal module -> {container}:{dest} (refresh Foundry to load it)")
+    ctx.out(f"installed {module_id} module -> {container}:{dest} (refresh Foundry to load it)")
     return 0

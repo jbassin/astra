@@ -697,6 +697,13 @@ portal-module-build:
 portal-module-install:
     @{{ops}} portal-module-install "$@"
 
+# The ik-arms module (apps/portal/arms: jointed arms drawn from an anchor to a token) has no
+# Manifest URL, so this file drop is its only install path. A new module shows up in Foundry's
+# module list only after the world is relaunched from setup; an update needs a client reload.
+# Build the ik-arms Foundry module and copy it into the live Foundry data dir.
+arms-module-install:
+    @{{ops}} arms-module-install "$@"
+
 # Regenerates the committed .tex in apps/assay/py/books/liturgy_vol2/ from the homebrew store,
 # then compiles the PDF with tectonic into assay.book-out-path (config.kdl, under data.root;
 # `--out DIR` overrides). The PDF never lands in the checkout (ADR 0018); commit the .tex diff. tectonic is a host tool, not in mise.toml; the recipe refuses any

@@ -1,0 +1,11 @@
+{
+  "id": "ik-arms",
+  "title": "IK Arms",
+  "description": "Draws a jointed arm from a fixed anchor point to a token and re-poses it as the token moves. Configure with ikArms.pickAnchor() or the flags.world.ikArm token flag.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "esmodules": ["dist/main.js"]
+}

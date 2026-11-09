@@ -126,6 +126,9 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   install (it also hands `Data/modules/portal` back to Foundry's user), then confirm
   portal-headless reports module 0.5.0. Waits on the Foundry world being launched (it was down
   on 2026-10-26 after the module update) — main session.
+- ik-arms: relaunch the Foundry world from setup and enable the IK Arms module, so the arms draw
+  for players; then check a hand-dragged token, the "IK Arms: pick anchors" macro and a player
+  client, none of which the headless GM could test — Josh.
 
 ## Frontends
 
