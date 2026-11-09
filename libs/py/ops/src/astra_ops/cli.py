@@ -22,6 +22,7 @@
     units-install [GROUP...]            link + enable the systemd user units (no group = all)
     alert-sudoers-install               one-time ROOT step: the watchdog's sudoers drop-ins
     portal-module-install               build the Foundry module and drop it into Foundry
+    arms-module-install                 build the ik-arms Foundry module and drop it into Foundry
     pipeline-terminate RUN_ID [--yes]   LIVE: stop a Dagster run and its run container
     codex-refresh [FLAGS]               re-fetch the codex snapshots, then codex-build
     codex-build [FLAGS]                 build a codex release from the snapshots, make it current
@@ -374,6 +375,7 @@ COMMANDS: dict[str, Callable[[Ctx, list[str]], int]] = {
     "units-install": _units_install,
     "alert-sudoers-install": _bare("alert-sudoers-install", host.alert_sudoers_install),
     "portal-module-install": _bare("portal-module-install", host.portal_module_install),
+    "arms-module-install": _bare("arms-module-install", host.arms_module_install),
     "pipeline-terminate": _pipeline_terminate,
     "codex-refresh": _codex_refresh,
     "codex-build": _codex_build,

@@ -311,6 +311,25 @@ def test_portal_module_install_copies_through_the_container_as_root(
     r.assert_done()
 
 
+def test_arms_module_install_drops_the_ik_arms_module(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The same file drop, from apps/portal/arms into Data/modules/ik-arms."""
+    monkeypatch.delenv("FOUNDRY_CONTAINER", raising=False)
+    module = tmp_path / "repo" / "apps" / "portal" / "arms"
+    dest = "/data/Data/modules/ik-arms"
+    root = ["docker", "exec", "--user", "0", "foundry_faerrin"]
+    steps: list[Step] = [
+        Call(["pnpm", "--filter", "@astra/portal-arms", "build"], effect=lambda: built(module)),
+        Call([*root, "mkdir", "-p", f"{dest}/dist"]),
+        *(Call(["docker", "cp", str(module / n), f"foundry_faerrin:{dest}/{n}"]) for n in FILES),
+        Call([*root, "sh", "-c", f'chown -R "$(stat -c %u:%g /data/Data/modules)" {dest}']),
+    ]
+    ctx, r = make_ctx(tmp_path, steps)
+    assert cli.dispatch(ctx, "arms-module-install", []) == 0
+    r.assert_done()
+
+
 def test_portal_module_install_honours_foundry_container(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

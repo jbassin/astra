@@ -28,6 +28,7 @@ backup recipes are one-line wrappers over it).
 | `units-install [group...]` | `units-install` | none |
 | `alert-sudoers-install` | `alert-sudoers-install` | none (sudo asks for the password) |
 | `portal-module-install` | `portal-module-install` | none |
+| `arms-module-install` | `arms-module-install` | none |
 | `pipeline-terminate <run-id>` | `pipeline-terminate` | LIVE |
 | `codex-refresh [flags]` | `codex-refresh` | none (re-fetches, then builds a release) |
 | `codex-build [flags]` | `codex-build` | none (builds a release and makes it current) |

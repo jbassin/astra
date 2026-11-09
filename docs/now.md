@@ -1,9 +1,16 @@
 # Now
 
-Updated 2026-11-07.
+Updated 2026-11-09.
 
 ## In flight
 
+- **ik-arms Foundry module built for the six-handed boss fight (2026-11-09).** A new module in
+  `apps/portal/arms` draws a jointed arm from an anchor point to a token and re-poses it as the
+  token moves ([`apps/portal/arms/README.md`](../apps/portal/arms/README.md)). It is installed in
+  the live Foundry (`just arms-module-install`) but not enabled: the six Implement tokens on the
+  "esoterica" scene carry placeholder anchors, and the arms draw only on a client that runs the
+  "IK Arms: load on this client" macro. Next: Josh relaunches the world from setup, enables IK
+  Arms, and places the real anchors with the "IK Arms: pick anchors" macro.
 - **Character builder is live at builder.iridi.cc and redesigned (2026-11-07, #207 to #216).**
   A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players: archetype, class,
   species, background, class choices, spells and an about-you step, then a plain-language "On

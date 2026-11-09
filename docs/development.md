@@ -61,7 +61,7 @@ body lines of at most 100 characters.
 
 Two disjoint workspaces share the tree. Apps live at `apps/<domain>/<role>/`
 ([ADR 0015](adr/0015-repo-layout-by-domain.md)): the Python one is `apps/<domain>/py/`, the
-TypeScript ones are `web`, `bot`, `overlay`, `render`, `controller` and portal's four parts. The
+TypeScript ones are `web`, `bot`, `overlay`, `render`, `controller` and portal's five parts. The
 location decides the lane, so neither workspace keeps a list of apps.
 
 **Pins.** uv 0.11.19 and just 1.23.0 (`mise.toml`, repeated in `.github/actions/setup-{uv,just}`);

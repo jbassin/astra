@@ -6,7 +6,7 @@ Foundry has no external API, so all world access runs inside a logged-in GM brow
 astra-owned Foundry module dials out to portal over a WebSocket, and portal forwards each MCP tool
 call over that socket. portal never connects to Foundry directly.
 
-Four pnpm members live here (the `apps/*/*` glob in `pnpm-workspace.yaml` finds them):
+Five pnpm members live here (the `apps/*/*` glob in `pnpm-workspace.yaml` finds them):
 
 - **`server/`** — the MCP and bridge server. Compose service `portal`, port 10372, Caddy at
   `portal.iridi.cc`. Routes: `/mcp` (Streamable HTTP), `/ws` (the module's bridge socket),
@@ -22,6 +22,9 @@ Four pnpm members live here (the `apps/*/*` glob in `pnpm-workspace.yaml` finds 
 - **`headless/`** — `portal-headless`, a supervised headless Chromium that keeps the dedicated
   "Portal" GM account logged into the world, so the tools work with no human tab open. Compose
   service `portal-headless`, port 10373, health only (no Caddy route).
+- **`arms/`** — the separate `ik-arms` Foundry module, which draws jointed arms from an anchor point
+  to a token. It is not part of the bridge; see [`arms/README.md`](./arms/README.md). Install it
+  with `just arms-module-install`.
 
 Config is the `portal` and `portal-headless` blocks in `config.kdl`. Secrets: `portal_mcp_api_key`
 (admin bearer and OAuth consent password), `portal_player_api_key` (read-only player bearer),
