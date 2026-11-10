@@ -34,10 +34,12 @@ astra-vellum-lang = { workspace = true }
 [tool.uv]
 # Workspace-wide dev tooling — the Astral Python stack.
 #   ruff = lint + format, ty = type check (preview; pinned), pytest = tests.
+#   pyyaml: scripts/ci.py reads .github/workflows/ci.yml.
 dev-dependencies = [
     "ruff>=0.8",
     "ty==0.0.51",
     "pytest>=8",
+    "pyyaml>=6",
 ]
 
 [tool.pytest.ini_options]

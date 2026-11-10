@@ -57,12 +57,17 @@ fix:
 # Run both test lanes.
 test: (_each "test" "py-test,ts-test")
 
-# The pre-push hook runs this; commitlint and no-decision-ids cover base..HEAD. Unlike CI, which path-filters
-# its jobs, this always runs every step. weal-engine-rust needs rustup on the host (it
-# installs the crate's pinned toolchain on first use).
-# pg-test and infra-check need Docker on the host (a throwaway Postgres; the pinned tool images).
-# Run everything CI runs, locally.
-ci base="origin/main": (_each "ci" ("py-lint,ts-lint,docs-check,ontology-check,routes-check,tokens-check,py-typecheck,ts-typecheck,commitlint " + base + " HEAD,no-decision-ids " + base + " HEAD,ratchet,py-test,ts-test,ts-build,corpus-validate,vellum-parity,codex-e2e,weal-engine-rust,weal-engine-hash-check,assay-store-check,pg-test,infra-check"))
+# scripts/ci.py's docstring has the detail. It reads the job list and the path filters from
+# .github/workflows/ci.yml, runs only the steps whose paths changed since the merge base with
+# origin/main, runs them at once, and skips a step that already passed on this exact working
+# tree (so the pre-push hook doesn't repeat a run that just passed). `--all` runs every step;
+# `--list` prints the selection; `--jobs 1` runs one step at a time. Each step's output is in
+# <git dir>/ci-logs/. weal-engine-rust needs rustup on the host (it installs the crate's pinned
+# toolchain on first use); pg-test and infra-check need Docker (a throwaway Postgres; the
+# pinned tool images).
+# Run the CI steps this change needs, in parallel (the pre-push hook runs this).
+ci *flags:
+    @uv run python scripts/ci.py "$@"
 
 # `app` is the path under apps/, `<domain>/<role>`. The Python apps have no dev server:
 # they run as Dagster assets; test them with `uv run pytest apps/<domain>/py`.

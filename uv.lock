@@ -34,6 +34,7 @@ members = [
 [manifest.dependency-groups]
 dev = [
     { name = "pytest", specifier = ">=8" },
+    { name = "pyyaml", specifier = ">=6" },
     { name = "ruff", specifier = ">=0.8" },
     { name = "ty", specifier = "==0.0.51" },
 ]

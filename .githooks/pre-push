@@ -1,7 +1,8 @@
 #!/bin/sh
-# astra pre-push gate: `just ci`, everything CI runs (both lanes, the corpus gate, the
-# codex e2e suite, commitlint over origin/main..HEAD), so a red commit never
-# reaches GitHub.
+# astra pre-push gate: `just ci`, the CI steps this change needs (scripts/ci.py: the path
+# filters from ci.yml, run in parallel, commitlint over origin/main..HEAD), so a red commit
+# never reaches GitHub. A step that already passed on this exact working tree is not run
+# again, so pushing straight after a green `just ci` takes about a second.
 #
 # Installed with the pre-commit hook (core.hooksPath = .githooks).
 # Bypass in a genuine emergency with:  git push --no-verify
@@ -16,8 +17,9 @@ fi
 # a test runs back at this repo. Clear them; git finds the repo from the cwd as usual.
 for var in $(env | sed -n 's/^\(GIT_[A-Z_]*\)=.*/\1/p'); do unset "$var"; done
 
-# Every run's full output also goes to <git dir>/ci-last.log (one per worktree), so a
-# failure can be read after the fact without rerunning the suite. POSIX sh has no
+# Every run's output (the summary and each failed step's full log) also goes to
+# <git dir>/ci-last.log (one per worktree), so a failure can be read after the fact without
+# rerunning the suite; every step's own log is in <git dir>/ci-logs/. POSIX sh has no
 # pipefail, so the exit status travels through a file.
 git_dir=$(git rev-parse --absolute-git-dir)
 log="$git_dir/ci-last.log"
