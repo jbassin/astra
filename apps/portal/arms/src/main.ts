@@ -4,12 +4,19 @@
 // that configures it (see config.ts).
 
 import { type ArmConfig, FLAG_KEY, FLAG_SCOPE, parseArmFlag } from "./config";
-import { ARM_VERT, fragmentSource } from "./shaders";
+import { reachRadius } from "./region";
+import { ARM_VERT, fragmentSource, SMEAR_SHADER } from "./shaders";
+import { createSmear } from "./smear";
 import { defaultLength, type Point, solve } from "./solve";
 import { allocateStrip, type StripArrays, stripIndices, writeStrip } from "./strip";
 
 /** PrimaryCanvasGroup sort layers: drawings are 600 and tokens 700, so 690 is just under tokens. */
 const SORT_LAYER = 690;
+
+const MODULE_ID = "ik-arms";
+const BUFFER_SIZE_KEY = "bufferSize";
+const BUFFER_SIZES = [512, 1024] as const;
+const DEFAULT_BUFFER_SIZE = 1024;
 
 /** The strip's vertex attributes: geometry buffer name, `StripArrays` key, floats per vertex. */
 const ATTRIBUTES = [
@@ -54,6 +61,8 @@ interface IkArmsApi {
   attach(token: FoundryToken, options?: Record<string, unknown>): Promise<Record<string, unknown>>;
   detach(token: FoundryToken): Promise<unknown>;
   pickAnchor(tokens?: FoundryToken[]): Promise<void>;
+  /** Remake the smear buffer's textures (the buffer size setting calls this). */
+  rebuildSmear(): void;
   teardown(): void;
   readonly arms: ReadonlyMap<string, Arm>;
 }
@@ -86,12 +95,48 @@ function rgb(color: number): Float32Array {
   ]);
 }
 
+/**
+ * The client's buffer size setting. It is registered on `init`; importing this file again later
+ * (the dev-load macro does) finds it registered already, and its `onChange` goes through
+ * `globalThis.ikArms` so that it reaches the running instance, not the first one.
+ */
+function registerSettings(): void {
+  if (game.settings.settings.has(`${MODULE_ID}.${BUFFER_SIZE_KEY}`)) return;
+  game.settings.register(MODULE_ID, BUFFER_SIZE_KEY, {
+    name: "Ink buffer size",
+    hint: "Texels per side of the smear buffer behind ink arms. 512 is lighter on weak machines.",
+    scope: "client",
+    config: true,
+    type: Number,
+    choices: { 512: "512", 1024: "1024" },
+    default: DEFAULT_BUFFER_SIZE,
+    onChange: () => globalThis.ikArms?.rebuildSmear(),
+  });
+}
+
+function bufferSize(): number {
+  try {
+    const value = Number(game.settings.get(MODULE_ID, BUFFER_SIZE_KEY));
+    return BUFFER_SIZES.find((size) => size === value) ?? DEFAULT_BUFFER_SIZE;
+  } catch {
+    return DEFAULT_BUFFER_SIZE; // not registered (loaded before init failed to run)
+  }
+}
+
+const smear = createSmear({
+  renderer: () => canvas.app.renderer,
+  primary: () => canvas.primary,
+  bufferSize,
+  sortLayer: SORT_LAYER,
+});
+
 // Every arm's uTime counts seconds from when this file loaded, on Foundry's canvas ticker.
 const startTime = performance.now();
 let ticker: PIXI.Ticker | null = null;
 function tick(): void {
   const time = (performance.now() - startTime) / 1000;
   for (const arm of arms.values()) arm.uniforms.uTime = time;
+  smear.update(time, Math.min((ticker?.deltaMS ?? 0) / 1000, 0.1));
 }
 
 function draw(arm: Arm): void {
@@ -159,6 +204,8 @@ function remove(tokenId: string): void {
   const arm = arms.get(tokenId);
   if (!arm) return;
   arms.delete(tokenId);
+  // Before the container: the smear's paint mesh shares the arm mesh's geometry.
+  smear.remove(tokenId);
   if (!arm.container.destroyed) arm.container.destroy({ children: true });
 }
 
@@ -173,6 +220,9 @@ function build(token: FoundryToken): void {
   container.elevation = token.document.elevation;
   container.sort = 0;
   const { mesh, strip, uniforms } = makeMesh(config);
+  const ink = config.shader === SMEAR_SHADER;
+  // An ink arm is drawn by the shared smear buffer; its own mesh only feeds it geometry.
+  mesh.visible = !ink;
   container.addChild(mesh);
   const rings = config.rings ? container.addChild(new PIXI.Graphics()) : null;
   canvas.primary.addChild(container);
@@ -196,6 +246,23 @@ function build(token: FoundryToken): void {
     joints: [],
   });
   pose(token);
+  if (ink) {
+    const grid = canvas.grid.size;
+    const maxWidth = grid * Math.max(config.shoulderWidth, config.wristWidth);
+    smear.add(token.id, {
+      geometry: mesh.geometry,
+      uniforms,
+      reach: {
+        anchor: config.anchor,
+        radius: reachRadius(config.segments, length, maxWidth, grid),
+      },
+      colorA: uniforms.uColorA,
+      colorC: uniforms.uColorC,
+      elevation: token.document.elevation,
+      // pose() hides a hidden token's arm from players, so its ink follows the same rule.
+      paints: () => !container.destroyed && container.visible,
+    });
+  }
 }
 
 on("drawToken", (token: FoundryToken) => {
@@ -213,6 +280,11 @@ on("destroyToken", (token: FoundryToken) => {
   if (arm?.preview === token) arm.preview = null;
   const original = canvas.tokens.get(token.id);
   if (original && !original.destroyed) pose(original);
+});
+// Leaving the scene: drop every arm and the smear buffer before the canvas goes.
+on("canvasTearDown", () => {
+  for (const id of arms.keys()) remove(id);
+  smear.teardown();
 });
 on("updateToken", (doc: FoundryTokenDocument, change: Record<string, unknown>) => {
   if (!doc.object) return;
@@ -286,12 +358,25 @@ async function pickAnchor(tokens: FoundryToken[] = canvas.tokens.controlled): Pr
 function teardown(): void {
   for (const [name, id] of hooks) Hooks.off(name, id);
   for (const id of arms.keys()) remove(id);
+  smear.teardown();
   ticker?.remove(tick);
   ticker = null;
   globalThis.ikArms = undefined;
 }
 
-globalThis.ikArms = { attach, detach, pickAnchor, teardown, arms };
+globalThis.ikArms = {
+  attach,
+  detach,
+  pickAnchor,
+  rebuildSmear: () => smear.rebuild(),
+  teardown,
+  arms,
+};
+
+// Loaded as a module, this runs before `init`. Loaded into a running world (the dev-load macro),
+// `init` is long past, so the setting is registered now if no earlier load registered it.
+if (typeof game !== "undefined" && game.ready) registerSettings();
+else hooks.push(["init", Hooks.once("init", registerSettings)]);
 
 // Loaded as a module, this runs before the canvas exists and `drawToken` builds the arms later.
 // Loaded into a running world, the tokens are already drawn.
