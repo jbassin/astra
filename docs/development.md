@@ -33,7 +33,7 @@ uv run pytest apps/<domain>/py # one Python app (they run as Dagster assets, no 
 Each CI job in `.github/workflows/ci.yml` runs the `just` recipe of the same name, so `just ci`
 runs the same commands. `just ci` (`scripts/ci.py`) reads the job list and the path filters from
 `ci.yml`, so it runs the steps CI would run for the files that differ from the merge base with
-`origin/main` (uncommitted and untracked files included), and it runs them at once: about 75
+`origin/main` (uncommitted and untracked files included), and it runs them at once: about 70
 seconds for every step, a few seconds for a docs-only change. It records the steps that passed
 for the exact working tree in `<git dir>/ci-pass.json` and skips them on the next run, so a push
 straight after a green `just ci` reruns only commitlint and no-decision-ids. `just ci --all` runs
