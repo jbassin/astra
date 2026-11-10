@@ -20,15 +20,47 @@ because that is where astra's Foundry code is.
   the joints (or straight lines, when `smooth` is off), tapers the width from shoulder to wrist,
   pinches the inner side of tight bends so the strip never folds, and mitres straight joints.
 - `src/shaders.ts` holds the strip's vertex shader, the fragment prelude (attributes and uniforms
-  every fragment shader can use) and the named fragment shaders the `shader` field picks from.
-  Only `flat` ships. `apps/portal/arms/bench/` holds a sandbox page for writing new ones.
+  every fragment shader can use) and the named fragment shaders the `shader` field picks from:
+  `flat` and `ink`. It also holds the shared smear buffer's passes. `apps/portal/arms/bench/`
+  holds a sandbox page for writing new ones.
+- `src/smear.ts` is the shared smear buffer for ink arms (below); `src/region.ts` works out the
+  square of map it covers.
 - `src/main.ts` is the Foundry glue: it builds an arm on `drawToken`, re-poses it on
-  `refreshToken`, rebuilds it when the flag changes, advances every arm's `uTime` on the canvas
-  ticker, and exposes `globalThis.ikArms`.
+  `refreshToken`, rebuilds it when the flag changes, advances every arm's `uTime` and the smear
+  buffer on the canvas ticker, registers the buffer size setting, and exposes `globalThis.ikArms`.
 - The arm is a `PIXI.Mesh` (plus a `PIXI.Graphics` for `rings`) in a `PIXI.Container` in
   `canvas.primary` with `sortLayer` 690, just under tokens (700), so it is lit and fogged like the
   map. Each arm has its own shader instance, since its uniforms differ. A hidden token's arm shows
   only to GMs, at half opacity.
+
+## Ink arms and the shared smear buffer
+
+An arm with `shader: "ink"` is not drawn on its own. Its mesh stays hidden (joint `rings` still
+draw), and every ink arm on the scene feeds one smear buffer fixed to the map, as in the bench's
+"world" mode. Each frame, while at least one ink arm exists:
+
+1. **Paint.** Each ink arm draws its strip into the arm texture with the `ink` fragment shader,
+   which works out the ink body's density in the arm's own pixels with that arm's uniforms.
+   Overlapping arms combine as `a + b - ab` (normal premultiplied blending), so draw order does
+   not matter.
+2. **Buffer.** One quad reads the arm texture and last frame's buffer, spreads, swirls and fades
+   the ink, and writes the other buffer texture; the two then swap.
+3. **Image.** One quad over the whole square lights the buffer. It sits in a container in
+   `canvas.primary` at sortLayer 690 and the lowest ink arm's elevation, so it is lit and fogged
+   like the map.
+
+- **The square** covers every ink arm's reach: anchor ± (segments × segment length × 1.1 + the
+  arm's widest width + 2 grid squares), as one square around all of them, so texels are square.
+  It is worked out when an ink arm is built or removed, not every frame; when it changes, the
+  buffer is cleared.
+- **Colours.** The image pass has one set of colours: `fill` (`uColorA`) and `glow` (`uColorC`)
+  of the ink arm whose token id sorts first. The lighting uses only `uColorA` today.
+- **Hidden tokens.** A hidden token's ink arm paints only on GM clients, at full strength.
+- **Buffer size** is the client setting `ik-arms.bufferSize` (Configure Settings, Module
+  Settings): 1024 (default) or 512 texels a side, for weak machines. Changing it remakes the
+  textures, which clears the ink.
+- The textures and the image quad exist only while an ink arm does: they are freed on the first
+  frame with no ink arm, on `teardown()`, and when the canvas is torn down (scene change).
 
 ## Using it
 
@@ -51,7 +83,7 @@ ikArms.detach(token);
 | `shoulderWidth`, `wristWidth` | 0.7, 0.4 | thickness at each end, in grid squares |
 | `fill`, `outline`, `glow` | dark, gold, pink | colours (numbers): `uColorA`, `uColorB`, `uColorC` |
 | `outlineWidth` | 5 | edge thickness in pixels (`uOutlineWidth`), for the strip and the rings |
-| `shader` | `"flat"` | fragment shader name (`src/shaders.ts`); an unknown name draws `flat` |
+| `shader` | `"flat"` | fragment shader name (`src/shaders.ts`): `"flat"`, or `"ink"` for the shared smear buffer; an unknown name draws `flat` |
 | `smooth` | true | curve through the joints; false draws straight segments |
 | `rings` | false | draw a disc over each joint, 1.25 times the arm's width there |
 
@@ -80,5 +112,17 @@ needs each client to reload.
   (premultiplied) output by it, or a hidden token's arm draws fully opaque.
 - **The pinch is per sample.** On a very tight bend the inner edge can still step back a pixel or
   two between samples. An opaque shader hides it; a translucent one may show a seam there.
-- **Only the solver, the strip, the flag parser and the shader registry have unit tests.** The
-  canvas glue in `src/main.ts` must be checked against the live world after changing it.
+- **Ink can only be where the square is.** The square allows 10% beyond full reach, but a hand
+  dragged further stretches the arm past it, and the buffer's border cuts that ink off.
+- **Rebuilding an ink arm keeps its ink; removing the last one loses it.** A flag or elevation
+  change removes the arm and adds it straight back, which keeps the textures. With no ink arm
+  left at the next frame, the textures are freed.
+- **The paint pass ignores `uAlpha`.** It writes ink density, not colour; the image pass, which is
+  visible, multiplies by its own `uAlpha` (always 1).
+- **The setting's `onChange` goes through `globalThis.ikArms`.** Foundry keeps the callback from
+  the first registration, and re-importing the module (the dev-load macro) does not register the
+  setting again, so the callback must find the running instance.
+- **Only the solver, the strip, the flag parser, the smear square and the shader registry have
+  unit tests.** The canvas glue in `src/main.ts` and `src/smear.ts` must be checked against the
+  live world after changing it. The shaders compile and link in WebGL 1 (checked in Chromium), but
+  the smear passes have never run inside Foundry.

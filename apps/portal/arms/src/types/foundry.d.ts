@@ -5,6 +5,9 @@
  */
 
 declare namespace PIXI {
+  class ObservablePoint {
+    set(x: number, y?: number): this;
+  }
   class Container {
     eventMode: string;
     visible: boolean;
@@ -14,6 +17,8 @@ declare namespace PIXI {
     elevation?: number;
     sortLayer?: number;
     sort?: number;
+    readonly position: ObservablePoint;
+    readonly scale: ObservablePoint;
     addChild<T extends Container>(child: T): T;
     destroy(options?: { children?: boolean }): void;
   }
@@ -40,11 +45,26 @@ declare namespace PIXI {
     static from(vertex: string, fragment: string, uniforms: Record<string, unknown>): Shader;
     readonly uniforms: Record<string, unknown>;
   }
+  class State {
+    /** False draws without blending: the output replaces what is there. */
+    blend: boolean;
+  }
   class Mesh extends Container {
     constructor(geometry: Geometry, shader: Shader);
     readonly geometry: Geometry;
+    readonly state: State;
+  }
+  class RenderTexture {
+    static create(options: { width: number; height: number; resolution?: number }): RenderTexture;
+    destroy(destroyBase?: boolean): void;
+  }
+  class Renderer {
+    /** Draws `object` (on the stage or not) into `renderTexture`, with its own transform. */
+    render(object: Container, options: { renderTexture: RenderTexture; clear: boolean }): void;
   }
   class Ticker {
+    /** Milliseconds since the previous frame. */
+    readonly deltaMS: number;
     add(fn: () => void): this;
     remove(fn: () => void): this;
   }
@@ -85,17 +105,44 @@ interface FoundryCanvas {
     readonly controlled: FoundryToken[];
     get(id: string): FoundryToken | undefined;
   };
-  readonly app: { readonly view: HTMLCanvasElement; readonly ticker: PIXI.Ticker };
+  readonly app: {
+    readonly view: HTMLCanvasElement;
+    readonly ticker: PIXI.Ticker;
+    readonly renderer: PIXI.Renderer;
+  };
   canvasCoordinatesFromClient(point: { x: number; y: number }): { x: number; y: number };
 }
 
 declare const canvas: FoundryCanvas;
-declare const game: { readonly user: { readonly isGM: boolean } };
+/** `game.settings.register()`'s options, narrowed to what this module passes. */
+interface FoundrySettingConfig {
+  name: string;
+  hint: string;
+  scope: "world" | "client";
+  config: boolean;
+  type: NumberConstructor;
+  choices: Record<number, string>;
+  default: number;
+  onChange(value: unknown): void;
+}
+
+declare const game: {
+  readonly user: { readonly isGM: boolean };
+  /** True once the world has finished loading (after the `ready` hook). */
+  readonly ready: boolean;
+  readonly settings: {
+    register(namespace: string, key: string, config: FoundrySettingConfig): void;
+    get(namespace: string, key: string): unknown;
+    /** Every registered setting, keyed `namespace.key`. */
+    readonly settings: Map<string, unknown>;
+  };
+};
 declare const ui: {
   readonly notifications: { info(message: string): void; warn(message: string): void };
 };
 declare const Hooks: {
   /** `never[]` so a callback may name whichever arguments its hook passes. */
   on(name: string, fn: (...args: never[]) => void): number;
+  once(name: string, fn: (...args: never[]) => void): number;
   off(name: string, id: number): void;
 };
