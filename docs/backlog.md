@@ -129,6 +129,9 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 - ik-arms: relaunch the Foundry world from setup and enable the IK Arms module, so the arms draw
   for players; then check a hand-dragged token, the "IK Arms: pick anchors" macro and a player
   client, none of which the headless GM could test — Josh.
+- ik-arms shaders: shader-drawn arms on a smooth curve, a shared map-fixed smear buffer with the
+  iridescent ink shader, and an alternating bend; plan and checklist in
+  `thoughts/shared/plans/2026-11-09-ik-arms-shaders.md` — agent.
 
 ## Frontends
 

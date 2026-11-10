@@ -1,0 +1,1462 @@
+<title>Arm Shader Bench</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one-screen bench. The arm on a map fills the left; a control rail with the shader editor sits on the right, stacking under the map on phones. */
+:root {
+  --bg: #110f15;
+  --panel: #1a1720;
+  --raise: #231f2a;
+  --line: #322c3b;
+  --fg: #ebe6f0;
+  --muted: #9d94a9;
+  --gold: #c9a45c;
+  --ok: #7fc99a;
+  --err: #ff7a7a;
+  --f-display: "Chakra Petch", "IBM Plex Sans", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px;
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: border-box; }
+.app {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 460px);
+  gap: 12px;
+  height: 100%;
+}
+.stage {
+  position: relative;
+  min-width: 0;
+  min-height: 320px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #0d0b10;
+}
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+.stage-bar {
+  position: absolute; left: 10px; right: 10px; top: 10px;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
+  pointer-events: none;
+}
+.stage-bar > * { pointer-events: auto; }
+.hint {
+  font-size: 12px; color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  padding: 4px 8px; border-radius: 4px;
+}
+.seg-ctl { display: inline-flex; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; background: var(--panel); }
+.seg-ctl button {
+  font: 500 12px var(--f-body); color: var(--muted); background: transparent;
+  border: 0; padding: 5px 11px; cursor: pointer;
+}
+.seg-ctl button[aria-pressed="true"] { background: var(--raise); color: var(--gold); }
+.rail {
+  min-width: 0; min-height: 0;
+  display: flex; flex-direction: column; gap: 12px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+header h1 {
+  font: 600 20px/1.2 var(--f-display);
+  letter-spacing: 0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: grid; gap: 10px; }
+.card h2 {
+  margin: 0; font: 600 11px var(--f-body); text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted);
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+.field { display: grid; gap: 3px; min-width: 0; }
+.field label { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
+.field output { font: 12px var(--f-mono); color: var(--fg); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--gold); }
+.check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.check input { accent-color: var(--gold); }
+select, .btn {
+  font: 500 13px var(--f-body); color: var(--fg);
+  background: var(--raise); border: 1px solid var(--line); border-radius: 5px; padding: 6px 9px;
+}
+.btn { cursor: pointer; }
+.btn:hover { border-color: var(--gold); }
+.swatches { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.swatch { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+.swatch input[type="color"] { width: 100%; height: 30px; border: 1px solid var(--line); border-radius: 4px; background: var(--raise); padding: 2px; cursor: pointer; }
+.swatch code { font: 11px var(--f-mono); color: var(--fg); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.row .left { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+textarea#code {
+  width: 100%; min-height: 300px; resize: vertical;
+  font: 12.5px/1.55 var(--f-mono); color: var(--fg);
+  background: #0e0c12; border: 1px solid var(--line); border-radius: 5px;
+  padding: 10px; tab-size: 2; white-space: pre; overflow: auto;
+}
+.status { font: 12px/1.45 var(--f-mono); padding: 7px 9px; border-radius: 4px; background: var(--raise); white-space: pre-wrap; word-break: break-word; }
+.status.ok { color: var(--ok); }
+.status.err { color: var(--err); }
+details summary { cursor: pointer; font-size: 13px; color: var(--fg); }
+details h3 { margin: 10px 0 0; font: 600 12px var(--f-body); color: var(--fg); }
+.inputs { margin: 6px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 5px 12px; font-size: 12.5px; }
+.inputs dt { font-family: var(--f-mono); color: var(--gold); }
+.inputs dd { margin: 0; color: var(--muted); }
+.note { font-size: 12px; color: var(--muted); margin: 0; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (max-width: 820px) {
+  html, body { height: auto; }
+  .app { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .stage { height: 52vh; }
+  .rail { overflow: visible; }
+}
+</style>
+
+<div class="app">
+  <div class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="seg-ctl" role="group" aria-label="How the hand moves">
+        <button type="button" id="mode-auto" aria-pressed="true">Auto</button>
+        <button type="button" id="mode-drag" aria-pressed="false">Drag</button>
+      </div>
+      <span class="hint">Drag on the map to move the hand. Drag the diamond to move the shoulder.</span>
+    </div>
+  </div>
+
+  <aside class="rail">
+    <header>
+      <h1>Arm Shader Bench</h1>
+      <p>Design a fill shader for the ik-arms module. Same PIXI 7.4.3 and arm solver as Foundry, so what works here ports over.</p>
+    </header>
+
+    <section class="card">
+      <h2>Arm</h2>
+      <div class="grid2">
+        <div class="field"><label for="seg">Segments <output id="seg-out">3</output></label><input type="range" id="seg" min="1" max="8" step="1" value="3"></div>
+        <div class="field"><label for="len">Arm length <output id="len-out">1500</output></label><input type="range" id="len" min="600" max="3000" step="20" value="1500"></div>
+        <div class="field"><label for="sw">Shoulder width <output id="sw-out">1.20</output></label><input type="range" id="sw" min="0.2" max="4" step="0.05" value="1.2"></div>
+        <div class="field"><label for="ww">Wrist width <output id="ww-out">0.70</output></label><input type="range" id="ww" min="0.2" max="4" step="0.05" value="0.7"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="room">Smear room <output id="room-out">0.00</output></label><input type="range" id="room" min="0" max="2" step="0.05" value="0"></div>
+        <label class="check"><input type="checkbox" id="smooth" checked> Smooth curve</label>
+      </div>
+      <div class="grid2">
+        <label class="check"><input type="checkbox" id="bend"> Bend the other way</label>
+        <label class="check"><input type="checkbox" id="rings"> Joint rings</label>
+      </div>
+      <p class="note">Smear room widens the drawn strip past the arm, in multiples of the arm's width on each side, so smears can drift out. Smooth curve bends the strip smoothly through the joints; off, it is straight segments with sharp corners, like the module draws now.</p>
+      <div class="field">
+        <label for="bg">Map</label>
+        <select id="bg">
+          <option value="dark">Dark floor</option>
+          <option value="amber" selected>Amber floor (like esoterica)</option>
+          <option value="checker">Checkerboard (shows transparency)</option>
+        </select>
+      </div>
+      <p class="note">Widths are in grid squares (140 px), like the flag's <code>shoulderWidth</code> and <code>wristWidth</code>. Each segment is <output id="per-seg">500</output> px.</p>
+    </section>
+
+    <section class="card">
+      <h2>Colours</h2>
+      <div class="swatches">
+        <label class="swatch">uColorA · body<input type="color" id="colA" value="#2b2433"><code id="colA-out">#2b2433</code></label>
+        <label class="swatch">uColorB · edge<input type="color" id="colB" value="#c9a45c"><code id="colB-out">#c9a45c</code></label>
+        <label class="swatch">uColorC · glow<input type="color" id="colC" value="#e0457b"><code id="colC-out">#e0457b</code></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row">
+        <div class="left">
+          <h2>Shaders</h2>
+          <select id="preset" aria-label="Load a starter shader">
+            <option value="">Load a starter…</option>
+            <option value="flat">Flat (the module's current look)</option>
+            <option value="pulse">Travelling pulse</option>
+            <option value="core">Glowing core</option>
+            <option value="veins">Veins</option>
+            <option value="plates">Segment plates</option>
+            <option value="ink1">Iridescent ink, single pass</option>
+            <option value="ink2">Iridescent ink, with trails (Buffer A)</option>
+            <option value="ink3">Iridescent ink, smeared edges (Buffer A)</option>
+            <option value="ink4">Iridescent ink, free smears (Buffer A on the map)</option>
+          </select>
+        </div>
+        <button type="button" class="btn" id="copy">Copy shaders</button>
+      </div>
+      <div class="row">
+        <div class="seg-ctl" role="group" aria-label="Which pass to edit">
+          <button type="button" id="tab-image" aria-pressed="true">Image</button>
+          <button type="button" id="tab-buffer" aria-pressed="false">Buffer A</button>
+        </div>
+        <div class="left">
+          <label class="check"><input type="checkbox" id="bufon"> Run Buffer A</label>
+          <button type="button" class="btn" id="bufclear">Clear buffer</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="space">Buffer A covers</label>
+        <select id="space">
+          <option value="strip">The arm, unrolled into a strip (moves with the arm)</option>
+          <option value="world">The map around the shoulder (stays put)</option>
+        </select>
+      </div>
+      <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Shader source for the selected pass"></textarea>
+      <div class="status ok" id="status" role="status">Compiled.</div>
+      <p class="note">Recompiles as you type. Tab indents; Esc leaves the editor. Your last shaders are kept in this browser.</p>
+      <details>
+        <summary>Inputs your shaders get (declared for you)</summary>
+        <h3>Both passes</h3>
+        <dl class="inputs">
+          <dt>uTime</dt><dd>Seconds since the page loaded.</dd>
+          <dt>uLength</dt><dd>Whole arm length in pixels.</dd>
+          <dt>uSegments</dt><dd>Number of segments.</dd>
+          <dt>uArmSize</dt><dd>Strip length and average strip width in pixels (the width includes smear room). <code>uArmSize.x / uArmSize.y</code> is the strip's aspect ratio, the stand-in for Shadertoy's <code>iResolution.x / iResolution.y</code>.</dd>
+          <dt>uBody</dt><dd>How much of the strip's width is the arm itself: 1 with no smear room, 0.5 with room 0.5 (half the strip is arm, a quarter of margin on each side).</dd>
+          <dt>uBuffer</dt><dd>Buffer A's texture. In Buffer A it is last frame; in the image pass it is this frame.</dd>
+          <dt>uBufferSize</dt><dd>Buffer A's size in texels (1024 × 128).</dd>
+          <dt>uColorA/B/C</dt><dd>The three colours above, as <code>vec3</code>.</dd>
+          <dt>PI</dt><dd>Defined as 3.14159265.</dd>
+        </dl>
+        <h3>Image pass (drawn on the arm)</h3>
+        <dl class="inputs">
+          <dt>vUv.x</dt><dd>0 at the shoulder, 1 at the hand.</dd>
+          <dt>vUv.y</dt><dd>−1 on one edge, +1 on the other, 0 on the centre line.</dd>
+          <dt>vDist</dt><dd>Pixels from the shoulder along the arm.</dd>
+          <dt>vSeg</dt><dd>Segment index plus the fraction along it: 1.25 is a quarter of the way down the second segment.</dd>
+          <dt>vHalf</dt><dd>Half the arm's width here, in pixels. <code>(1.0 - abs(vUv.y)) * vHalf</code> is pixels in from the edge.</dd>
+          <dt>bufferUv()</dt><dd>Where this point of the arm is in Buffer A. Read it with <code>texture2D(uBuffer, bufferUv())</code>.</dd>
+        </dl>
+        <h3>Buffer A (the arm unrolled into a 1024 × 128 strip)</h3>
+        <dl class="inputs">
+          <dt>vUv</dt><dd>0 to 1 across the strip: x from shoulder to hand, y from one edge to the other. Same as Shadertoy's <code>fragCoord / iResolution</code>.</dd>
+          <dt>uDelta</dt><dd>Seconds since the last frame, like <code>iTimeDelta</code>.</dd>
+          <dt>uFrame</dt><dd>Frame count since the buffer was cleared, like <code>iFrame</code>.</dd>
+          <dt>motionAt(x)</dt><dd>How far the arm moved this frame at <code>vUv.x = x</code>, in strip UV units. Sampling last frame at <code>vUv + motionAt(vUv.x)</code> leaves ink behind in the world as the arm moves.</dd>
+        </dl>
+        <h3>"The map around the shoulder" mode</h3>
+        <p class="note">Buffer A is a 1024 × 1024 square fixed to the map, centred on the shoulder and big enough for anywhere the arm can reach. The image pass is drawn over that whole square, not just the arm, so smears show wherever they drift. In both passes:</p>
+        <dl class="inputs">
+          <dt>vUv</dt><dd>0 to 1 across the square.</dd>
+          <dt>uArm</dt><dd>Where the arm is this frame. <code>.r</code> is 1 on its centre line, falling to 0 at its edge and off it; <code>.g</code> is how far along it (0 shoulder, 1 hand); <code>.b</code> is across it (0 one edge, 1 the other).</dd>
+          <dt>uRegion</dt><dd>The square: <code>.xy</code> its top-left corner on the map, <code>.z</code> its size in pixels, <code>.w</code> its size in texels.</dd>
+        </dl>
+        <p class="note">Write <code>gl_FragColor</code>. On the arm, use premultiplied alpha: <code>vec4(colour * a, a)</code>. Buffer A stores 8 bits per channel, so very slow fades can stall.</p>
+      </details>
+    </section>
+  </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@7.4.3/dist/pixi.min.js"></script>
+<script>
+(() => {
+  "use strict";
+  const GRID = 140;
+  const SUBDIV = 24;
+  const BW = 1024, BH = 128;
+  const STORE_KEY = "arm-shader-bench:v2";
+
+  // ---- The module's solver (apps/portal/arms/src/solve.ts), ported as is. ----
+  function solve(anchor, target, segments, length, bend) {
+    const dx = target.x - anchor.x;
+    const dy = target.y - anchor.y;
+    const distance = Math.max(Math.hypot(dx, dy), 0.001);
+    let theta = 0;
+    let segment = length;
+    if (distance >= segments * length) {
+      segment = distance / segments;
+    } else {
+      const ratio = distance / length;
+      let lo = 0;
+      let hi = (2 * Math.PI) / segments;
+      for (let i = 0; i < 40; i++) {
+        const mid = (lo + hi) / 2;
+        if (Math.sin((segments * mid) / 2) / Math.sin(mid / 2) > ratio) lo = mid;
+        else hi = mid;
+      }
+      theta = (lo + hi) / 2;
+    }
+    const joints = [{ x: anchor.x, y: anchor.y }];
+    let angle = Math.atan2(dy, dx) - (bend * (segments - 1) * theta) / 2;
+    let previous = anchor;
+    for (let k = 1; k < segments; k++) {
+      previous = { x: previous.x + segment * Math.cos(angle), y: previous.y + segment * Math.sin(angle) };
+      joints.push(previous);
+      angle += bend * theta;
+    }
+    joints.push({ x: target.x, y: target.y });
+    return joints;
+  }
+
+  // ---- Shader sources ----
+  const ARM_VERT = `precision highp float;
+attribute vec2 aVertexPosition;
+attribute vec2 aUv;
+attribute float aDist;
+attribute float aSeg;
+attribute float aHalf;
+uniform mat3 translationMatrix;
+uniform mat3 projectionMatrix;
+varying vec2 vUv;
+varying float vDist;
+varying float vSeg;
+varying float vHalf;
+void main() {
+  vUv = aUv; vDist = aDist; vSeg = aSeg; vHalf = aHalf;
+  gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+}`;
+
+  const BUF_VERT = `precision highp float;
+attribute vec2 aVertexPosition;
+attribute vec2 aUv;
+uniform mat3 translationMatrix;
+uniform mat3 projectionMatrix;
+varying vec2 vUv;
+void main() {
+  vUv = aUv;
+  gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+}`;
+
+  const COMMON = `#define PI 3.14159265
+uniform float uTime;
+uniform float uLength;
+uniform float uSegments;
+uniform vec2 uArmSize;
+uniform float uBody;
+uniform sampler2D uBuffer;
+uniform vec2 uBufferSize;
+uniform vec3 uColorA;
+uniform vec3 uColorB;
+uniform vec3 uColorC;`;
+
+  const IMAGE_PRELUDE = `precision highp float;
+${COMMON}
+varying vec2 vUv;
+varying float vDist;
+varying float vSeg;
+varying float vHalf;
+vec2 bufferUv() { return vec2(vUv.x, vUv.y * 0.5 + 0.5); }`;
+
+  const BUF_PRELUDE = `precision highp float;
+${COMMON}
+uniform float uDelta;
+uniform float uFrame;
+uniform vec2 uMotion[33];
+varying vec2 vUv;
+// The arm's movement this frame at x along it (0 shoulder, 1 hand), in strip UV units.
+vec2 motionAt(float x) {
+  float f = clamp(x, 0.0, 1.0) * 32.0;
+  float i0 = floor(f);
+  vec2 a = vec2(0.0);
+  vec2 b = vec2(0.0);
+  for (int i = 0; i < 33; i++) {
+    if (float(i) == i0) a = uMotion[i];
+    if (float(i) == i0 + 1.0) b = uMotion[i];
+  }
+  return mix(a, b, f - i0);
+}`;
+
+  const WORLD_COMMON = `uniform sampler2D uArm;
+uniform vec4 uRegion;
+varying vec2 vUv;`;
+  const WORLD_IMAGE_PRELUDE = `precision highp float;
+${COMMON}
+${WORLD_COMMON}`;
+  const WORLD_BUF_PRELUDE = `precision highp float;
+${COMMON}
+uniform float uDelta;
+uniform float uFrame;
+${WORLD_COMMON}`;
+
+  // Draws the arm into the uArm texture: r body density, g along, b across.
+  const MASK_FRAG = `precision highp float;
+varying vec2 vUv;
+varying float vDist;
+varying float vSeg;
+varying float vHalf;
+void main() {
+  float a = abs(vUv.y);
+  gl_FragColor = vec4(1.0 - a * a, vUv.x, vUv.y * 0.5 + 0.5, 1.0);
+}`;
+
+  const NOISE2 = `float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}`;
+
+  const INK_BUFFER = `// Buffer A: ink that is painted, swirled, spread and faded every frame.
+// Ported from the Shadertoy shader's Buffer A. Its 3D noise texture is replaced with
+// generated noise, and its orbiting brush with one that sweeps along the arm.
+const float speed = .01;
+const float scale = .1;
+const float falloff = 3.;
+const float fade = .4;
+const float strength = 1.;
+const float range = 5.;
+
+#define TEX1(uv) texture2D(uBuffer, uv).r
+#define trace(edge, thin) smoothstep(thin, .0, edge)
+
+float hash3(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+float noise3(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  vec3 u = f * f * (3. - 2. * f);
+  return mix(
+    mix(mix(hash3(i), hash3(i + vec3(1., 0., 0.)), u.x),
+        mix(hash3(i + vec3(0., 1., 0.)), hash3(i + vec3(1., 1., 0.)), u.x), u.y),
+    mix(mix(hash3(i + vec3(0., 0., 1.)), hash3(i + vec3(1., 0., 1.)), u.x),
+        mix(hash3(i + vec3(0., 1., 1.)), hash3(i + vec3(1., 1., 1.)), u.x), u.y), u.z);
+}
+
+// Fractal brownian motion. The original sampled a 32-texel noise volume, hence the 32.
+float fbm(vec3 p) {
+  float result = 0.;
+  float amplitude = 0.5;
+  for (int index = 0; index < 3; index++) {
+    result += noise3(p * 32. / amplitude) * amplitude;
+    amplitude /= falloff;
+  }
+  return result;
+}
+
+void main() {
+  // Coordinates: centred and scaled by the arm's width, like the original's.
+  vec2 aspect = vec2(uArmSize.x / uArmSize.y, 1.);
+  vec2 uv = (vUv - .5) * aspect;
+
+  // Noise.
+  float spice = fbm(vec3(uv * scale, uTime * speed));
+
+  // Brush: sweeps between shoulder and hand, weaving across the arm.
+  float sweep = abs(fract(uTime * .06) * 2. - 1.) - .5;
+  vec2 brush = vec2(sweep * aspect.x * .9, sin(uTime * 2.) * .25);
+  float paint = trace(length(uv - brush), .25);
+
+  // Expansion.
+  vec2 offset = vec2(0);
+  uv = vUv;
+  vec4 data = texture2D(uBuffer, uv);
+  vec3 unit = vec3(range / 472. / aspect, 0);
+  vec3 normal = normalize(vec3(
+    TEX1(uv - unit.xz) - TEX1(uv + unit.xz),
+    TEX1(uv - unit.zy) - TEX1(uv + unit.zy),
+    data.x * data.x) + .001);
+  offset -= normal.xy;
+
+  // Turbulence.
+  spice *= 6.28 * 2.;
+  spice += uTime;
+  offset += vec2(cos(spice), sin(spice));
+
+  uv += strength * offset / aspect / 472.;
+
+  // Sample last frame, and fade it.
+  vec4 frame = texture2D(uBuffer, uv);
+  paint = max(paint, frame.x - uDelta * fade);
+
+  gl_FragColor = vec4(clamp(paint, 0., 1.));
+}
+`;
+
+  const SMEAR_BUFFER = `// Buffer A: a solid ink body, painted fresh every frame down the middle of the strip
+// (the single-pass shader's ink). The Shadertoy shader's turbulence and spreading then
+// smear whatever leaks past the body's edge into tendrils that drift and fade.
+// When the arm moves, smeared ink stays where it was in the world, so it trails behind.
+// Give the strip smear room (the slider), or the smears have nowhere to go.
+
+const float BODY = 0.9;       // how much of the arm's own width is solid ink (0 to 1)
+const float INK_SCALE = 0.25; // noise cell size, in strip widths
+const float FLOW = 0.35;      // how fast the body's pattern drifts toward the hand
+const float DRAG = 1.0;       // 1: smears stay put in the world; 0: they move with the arm
+const float fade = 1.2;       // how fast smeared ink fades, per second
+const float strength = 2.5;   // how hard the turbulence pushes the ink
+const float range = 5.;       // spreading reach
+const float speed = .01;
+const float scale = .1;
+const float falloff = 3.;
+
+#define TEX1(uv) texture2D(uBuffer, uv).r
+
+${NOISE2}
+float fbm2(vec2 p) {
+  float r = 0.;
+  float a = .5;
+  for (int i = 0; i < 4; i++) {
+    r += noise(p) * a;
+    p = p * 2.03 + vec2(17.1, 9.3);
+    a *= .5;
+  }
+  return r;
+}
+
+float hash3(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+float noise3(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  vec3 u = f * f * (3. - 2. * f);
+  return mix(
+    mix(mix(hash3(i), hash3(i + vec3(1., 0., 0.)), u.x),
+        mix(hash3(i + vec3(0., 1., 0.)), hash3(i + vec3(1., 1., 0.)), u.x), u.y),
+    mix(mix(hash3(i + vec3(0., 0., 1.)), hash3(i + vec3(1., 0., 1.)), u.x),
+        mix(hash3(i + vec3(0., 1., 1.)), hash3(i + vec3(1., 1., 1.)), u.x), u.y), u.z);
+}
+float fbm3(vec3 p) {
+  float result = 0.;
+  float amplitude = .5;
+  for (int index = 0; index < 3; index++) {
+    result += noise3(p * 32. / amplitude) * amplitude;
+    amplitude /= falloff;
+  }
+  return result;
+}
+
+// The single-pass ink body. p is in strip widths; across is 0 on the centre line, 1 at the
+// strip's edge, and uBody where the arm itself ends.
+float body(vec2 p, float across) {
+  vec2 q = p / INK_SCALE;
+  vec2 drift = vec2(uTime * FLOW, 0.);
+  float angle = fbm2(q * .8 - drift) * 6.28 * 2. + uTime;
+  vec2 warp = vec2(cos(angle), sin(angle)) * .35;
+  float n = fbm2(q + warp - drift * 1.3);
+  float a = across / (uBody * BODY);
+  return clamp((1. - a * a) * 1.25 + (n - .5) * 1.6 - .1, 0., 1.);
+}
+
+void main() {
+  vec2 aspect = vec2(uArmSize.x / uArmSize.y, 1.);
+  vec2 p = (vUv - .5) * aspect;
+  float across = abs(vUv.y - .5) * 2.;
+
+  // Paint the body, thinned out at the shoulder and hand ends.
+  float along = vUv.x * uArmSize.x;
+  float ends = smoothstep(0., 40., along) * smoothstep(uArmSize.x, uArmSize.x - 40., along);
+  float paint = body(p, across) * ends;
+
+  // Spreading: push ink down its own slope, so edges creep outward.
+  vec2 uv = vUv;
+  vec4 data = texture2D(uBuffer, uv);
+  vec3 unit = vec3(range / 472. / aspect, 0);
+  vec3 normal = normalize(vec3(
+    TEX1(uv - unit.xz) - TEX1(uv + unit.xz),
+    TEX1(uv - unit.zy) - TEX1(uv + unit.zy),
+    data.x * data.x) + .001);
+  vec2 offset = -normal.xy;
+
+  // Turbulence: noise picks a direction for every point, changing slowly.
+  float spice = fbm3(vec3(p * scale, uTime * speed)) * 6.28 * 2. + uTime;
+  offset += vec2(cos(spice), sin(spice));
+
+  uv += strength * offset / aspect / 472.;
+
+  // Motion: read last frame from where this point of the arm was, so ink stays put.
+  uv += motionAt(vUv.x) * DRAG;
+
+  // Keep last frame's ink, faded, wherever it is denser than the fresh paint. Ink pushed
+  // off the strip is gone, and smears thin out gradually toward the strip's edge.
+  float inside = step(0., uv.y) * step(uv.y, 1.) * step(0., uv.x) * step(uv.x, 1.);
+  float frame = texture2D(uBuffer, uv).x * inside;
+  paint = max(paint, frame - uDelta * fade);
+  paint *= smoothstep(1., .6, across);
+
+  gl_FragColor = vec4(clamp(paint, 0., 1.));
+}
+`;
+
+  const WORLD_INK_BUFFER = `// Buffer A on the map: a square around the shoulder that doesn't move. Every frame the
+// arm paints its ink body in where it is now; the Shadertoy shader's turbulence and
+// spreading smear the ink, and it fades slowly. Because the buffer stays put, ink stays
+// where the arm left it, and smears drift as far as they like.
+
+const float INK_PX = 90.;     // body pattern size, in pixels
+const float FLOW = .35;       // how fast the body's pattern drifts toward the hand
+const float fade = .5;        // how fast smears fade, per second (lower: longer smears)
+const float PUSH_PX = 150.;   // how fast turbulence pushes ink, in pixels per second
+const float SWIRL_PX = 400.;  // size of the turbulence pattern, in pixels
+const float SWIRL_SPEED = .05;// how fast the turbulence pattern changes
+const float SPREAD_PX = 8.;   // how far the spreading looks for the ink's slope
+
+#define TEX1(uv) texture2D(uBuffer, uv).r
+
+${NOISE2}
+float fbm2(vec2 p) {
+  float r = 0.;
+  float a = .5;
+  for (int i = 0; i < 4; i++) {
+    r += noise(p) * a;
+    p = p * 2.03 + vec2(17.1, 9.3);
+    a *= .5;
+  }
+  return r;
+}
+float hash3(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+float noise3(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  vec3 u = f * f * (3. - 2. * f);
+  return mix(
+    mix(mix(hash3(i), hash3(i + vec3(1., 0., 0.)), u.x),
+        mix(hash3(i + vec3(0., 1., 0.)), hash3(i + vec3(1., 1., 0.)), u.x), u.y),
+    mix(mix(hash3(i + vec3(0., 0., 1.)), hash3(i + vec3(1., 0., 1.)), u.x),
+        mix(hash3(i + vec3(0., 1., 1.)), hash3(i + vec3(1., 1., 1.)), u.x), u.y), u.z);
+}
+float fbm3(vec3 p) {
+  float result = 0.;
+  float amplitude = .5;
+  for (int index = 0; index < 3; index++) {
+    result += noise3(p / amplitude) * amplitude;
+    amplitude /= 3.;
+  }
+  return result;
+}
+
+void main() {
+  // The arm's ink body, patterned in the arm's own coordinates so it flows along it.
+  vec4 arm = texture2D(uArm, vUv);
+  vec2 ap = vec2(arm.g * uLength, (arm.b - .5) * uArmSize.y);
+  vec2 q = ap / INK_PX;
+  vec2 drift = vec2(uTime * FLOW, 0.);
+  float angle = fbm2(q * .8 - drift) * 6.28 * 2. + uTime;
+  vec2 warp = vec2(cos(angle), sin(angle)) * .35;
+  float n = fbm2(q + warp - drift * 1.3);
+  float paint = clamp(arm.r * 1.25 + (n - .5) * 1.6 - .1, 0., 1.) * smoothstep(0., .2, arm.r);
+
+  // Spreading: push ink down its own slope, so edges creep outward.
+  float px = uRegion.z;  // pixels per unit of vUv
+  vec3 unit = vec3(vec2(SPREAD_PX / px), 0.);
+  vec4 data = texture2D(uBuffer, vUv);
+  vec3 normal = normalize(vec3(
+    TEX1(vUv - unit.xz) - TEX1(vUv + unit.xz),
+    TEX1(vUv - unit.zy) - TEX1(vUv + unit.zy),
+    data.x * data.x) + .001);
+  vec2 offset = -normal.xy;
+
+  // Turbulence, in map pixels.
+  vec2 wp = vUv * px;
+  float spice = fbm3(vec3(wp / SWIRL_PX, uTime * SWIRL_SPEED)) * 6.28 * 2. + uTime;
+  offset += vec2(cos(spice), sin(spice));
+
+  vec2 uv = vUv + offset * PUSH_PX * uDelta / px;
+  float frame = texture2D(uBuffer, uv).x;
+  paint = max(paint, frame - uDelta * fade);
+
+  // Keep the square's border empty.
+  float border = min(min(vUv.x, vUv.y), min(1. - vUv.x, 1. - vUv.y));
+  paint *= smoothstep(0., .02, border);
+  gl_FragColor = vec4(clamp(paint, 0., 1.));
+}
+`;
+
+  const WORLD_INK_IMAGE = `// Iridescent ink on the map: lights Buffer A across the whole square around the shoulder,
+// so smears show wherever they drift. Same lighting as the Shadertoy shader's Image tab.
+#define TEX(uv) texture2D(uBuffer, uv).r
+#define ss(a, b, t) smoothstep(a, b, t)
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+
+void main() {
+  vec2 uv = vUv;
+  float gray = TEX(uv);
+  if (gray < .01) { gl_FragColor = vec4(0.); return; }
+
+  vec3 unit = vec3(vec2(3. / uRegion.w), 0.);
+  vec3 normal = normalize(vec3(
+    TEX(uv + unit.xz) - TEX(uv - unit.xz),
+    TEX(uv - unit.zy) - TEX(uv + unit.zy),
+    gray * gray * gray + .001));
+
+  vec3 color = uColorA + vec3(.3) * (1. - abs(normal.z));
+  vec3 dir = normalize(vec3(0., 1., 2.));
+  float specular = pow(dot(normal, dir) * .5 + .5, 20.);
+  color += vec3(.5) * ss(.2, 1., specular);
+  vec3 tint = .5 + .5 * cos(vec3(1., 2., 3.) + dot(normal, dir) * 4. - uv.y * 3. - 3.);
+  color += tint * smoothstep(.15, .0, gray);
+  color -= hash(gl_FragCoord.xy) * .1;
+
+  float a = ss(.03, .35, gray);
+  gl_FragColor = vec4(clamp(color, 0., 1.) * a, a);
+}
+`;
+
+  const INK_IMAGE = `// Iridescent ink, image pass. Ported from the Shadertoy shader's Image tab: reads
+// Buffer A's ink and lights it. The white background is see-through here.
+#define TEX(uv) texture2D(uBuffer, uv).r
+#define ss(a, b, t) smoothstep(a, b, t)
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+
+void main() {
+  vec2 uv = bufferUv();
+  float gray = TEX(uv);
+
+  // Gradient normal from the gray value.
+  float range = 3.;
+  vec2 aspect = vec2(uArmSize.x / uArmSize.y, 1.);
+  vec3 unit = vec3(range / 472. / aspect, 0);
+  vec3 normal = normalize(vec3(
+    TEX(uv + unit.xz) - TEX(uv - unit.xz),
+    TEX(uv - unit.zy) - TEX(uv + unit.zy),
+    gray * gray * gray + .001));
+
+  // Backlight, on top of the body colour.
+  vec3 color = uColorA + vec3(.3) * (1. - abs(normal.z));
+
+  // Specular light.
+  vec3 dir = normalize(vec3(0., 1., 2.));
+  float specular = pow(dot(normal, dir) * .5 + .5, 20.);
+  color += vec3(.5) * ss(.2, 1., specular);
+
+  // Rainbow.
+  vec3 tint = .5 + .5 * cos(vec3(1., 2., 3.) + dot(normal, dir) * 4. - uv.y * 3. - 3.);
+  color += tint * smoothstep(.15, .0, gray);
+
+  // Dither.
+  color -= hash(gl_FragCoord.xy) * .1;
+
+  // See-through where there is no ink, and fade before the mesh's edges.
+  float a = ss(.01, .1, gray) * smoothstep(1., .85, abs(vUv.y));
+  gl_FragColor = vec4(clamp(color, 0., 1.) * a, a);
+}
+`;
+
+  const PRESETS = {
+    flat: { image: `// The module's current look: body colour with a 5 px edge.
+void main() {
+  float edge = (1.0 - abs(vUv.y)) * vHalf;  // pixels in from the edge
+  float rim = 1.0 - smoothstep(4.0, 6.0, edge);
+  gl_FragColor = vec4(mix(uColorA, uColorB, rim), 1.0);
+}
+` },
+    pulse: { image: `// Bright pulses travel from the shoulder to the hand.
+void main() {
+  float across = abs(vUv.y);
+  float edge = (1.0 - across) * vHalf;
+
+  // One pulse every 220 px, moving 0.8 pulses per second.
+  float wave = fract(vDist / 220.0 - uTime * 0.8);
+  float pulse = smoothstep(0.0, 0.12, wave) * (1.0 - smoothstep(0.12, 0.5, wave));
+  float core = 1.0 - smoothstep(0.0, 0.75, across);
+
+  vec3 col = uColorA * (0.75 + 0.25 * (1.0 - across));
+  col = mix(col, uColorC, pulse * core);
+  col = mix(col, uColorB, 1.0 - smoothstep(3.0, 5.0, edge));
+  gl_FragColor = vec4(col, 1.0);
+}
+` },
+    core: { image: `// A hot centre line fading to soft, see-through edges.
+void main() {
+  float across = abs(vUv.y);
+  float flicker = 0.85 + 0.15 * sin(uTime * 6.0 + vDist * 0.03);
+  float core = exp(-across * across * 18.0) * flicker;
+  float body = 1.0 - smoothstep(0.45, 1.0, across);
+
+  vec3 col = mix(uColorA, uColorC, core);
+  col = mix(col, vec3(1.0), core * core * 0.5);
+  float a = max(body * 0.85, core);
+  gl_FragColor = vec4(col * a, a);  // premultiplied alpha
+}
+` },
+    veins: { image: `// Glowing veins drifting toward the hand.
+${NOISE2}
+void main() {
+  // Pixel-based coordinates, so the pattern keeps its scale on any arm.
+  vec2 p = vec2(vDist, vUv.y * vHalf) / 60.0;
+  float n = noise(p * 1.5 - vec2(uTime * 0.6, 0.0)) * 0.6 + noise(p * 4.0) * 0.4;
+  float vein = 1.0 - smoothstep(0.0, 0.06, abs(n - 0.5));
+
+  float edge = (1.0 - abs(vUv.y)) * vHalf;
+  vec3 col = uColorA * (0.7 + 0.3 * (1.0 - abs(vUv.y)));
+  col = mix(col, uColorC, vein);
+  col = mix(col, uColorB, 1.0 - smoothstep(2.0, 4.0, edge));
+  gl_FragColor = vec4(col, 1.0);
+}
+` },
+    plates: { image: `// Armoured plates: a seam at every joint, round shading, a sheen running down.
+void main() {
+  float t = fract(vSeg);  // 0 at a segment's shoulder end, 1 at its wrist end
+  float plate = smoothstep(0.0, 0.03, t) * (1.0 - smoothstep(0.97, 1.0, t));
+  float across = abs(vUv.y);
+  float shade = 0.5 + 0.5 * sqrt(max(0.0, 1.0 - across * across));
+  float sheen = 0.5 + 0.5 * sin(vDist * 0.02 - uTime * 2.0);
+
+  vec3 col = uColorA * shade + uColorC * sheen * 0.3 * shade;
+  col = mix(uColorB, col, plate);
+  float edge = (1.0 - across) * vHalf;
+  col = mix(col, uColorB, 1.0 - smoothstep(3.0, 5.0, edge));
+  gl_FragColor = vec4(col, 1.0);
+}
+` },
+    ink1: { image: `// Iridescent ink, single pass, adapted from a Shadertoy feedback shader.
+// The ink is generated fresh each frame from swirling noise (no trails), and the
+// original's lighting (backlight, specular, rainbow rim) is applied to it unchanged.
+
+const float INK_SCALE = 90.0;  // pixels per noise cell: bigger means broader swirls
+const float FLOW = 0.35;       // how fast the ink drifts toward the hand
+const float RELIEF = 4.0;      // how strongly the surface looks embossed
+const float RAINBOW = 1.0;     // 1 = rainbow rim, 0 = rim in uColorC
+
+${NOISE2}
+float fbm(vec2 p) {
+  float r = 0.0;
+  float a = 0.5;
+  for (int i = 0; i < 4; i++) {
+    r += noise(p) * a;
+    p = p * 2.03 + vec2(17.1, 9.3);
+    a *= 0.5;
+  }
+  return r;
+}
+
+// Ink density at p, in pixels: x along the arm, y across it from the centre line.
+float ink(vec2 p) {
+  vec2 q = p / INK_SCALE;
+  vec2 drift = vec2(uTime * FLOW, 0.0);
+  float angle = fbm(q * 0.8 - drift) * 6.28 * 2.0 + uTime;
+  vec2 warp = vec2(cos(angle), sin(angle)) * 0.35;
+  float n = fbm(q + warp - drift * 1.3);
+  float across = abs(p.y) / max(vHalf, 1.0);
+  float body = 1.0 - across * across;
+  float d = clamp(body * 1.25 + (n - 0.5) * 1.6 - 0.1, 0.0, 1.0);
+  d *= smoothstep(1.0, 0.75, across);
+  d *= smoothstep(0.0, 40.0, p.x) * smoothstep(uLength, uLength - 40.0, p.x);
+  return d;
+}
+
+void main() {
+  vec2 p = vec2(vDist, vUv.y * vHalf);
+  float gray = ink(p);
+  float e = 3.0;
+  vec3 normal = normalize(vec3(
+    (ink(p + vec2(e, 0.0)) - ink(p - vec2(e, 0.0))) * RELIEF,
+    (ink(p - vec2(0.0, e)) - ink(p + vec2(0.0, e))) * RELIEF,
+    gray * gray * gray + 0.001));
+
+  vec3 color = uColorA + vec3(0.3) * (1.0 - abs(normal.z));
+  vec3 dir = normalize(vec3(0.0, 1.0, 2.0));
+  float specular = pow(dot(normal, dir) * 0.5 + 0.5, 20.0);
+  color += vec3(0.5) * smoothstep(0.2, 1.0, specular);
+  vec3 tint = 0.5 + 0.5 * cos(vec3(1.0, 2.0, 3.0) + dot(normal, dir) * 4.0 - vUv.x * 3.0 - 3.0);
+  tint = mix(uColorC, tint, RAINBOW);
+  color += tint * smoothstep(0.15, 0.0, gray);
+  color -= hash(gl_FragCoord.xy) * 0.06;
+
+  float a = smoothstep(0.01, 0.1, gray);
+  gl_FragColor = vec4(clamp(color, 0.0, 1.0) * a, a);
+}
+` },
+    ink2: { image: INK_IMAGE, buffer: INK_BUFFER },
+    // Same lighting, but thin smears stay see-through instead of turning solid.
+    ink3: {
+      image: INK_IMAGE.replace("ss(.01, .1, gray)", "ss(.03, .35, gray)").replace("smoothstep(1., .85, abs(vUv.y))", "smoothstep(1., .6, abs(vUv.y))"),
+      buffer: SMEAR_BUFFER, sw: 1.6, ww: 1.0, room: 1.0, smooth: true,
+    },
+    ink4: { image: WORLD_INK_IMAGE, buffer: WORLD_INK_BUFFER, space: "world", sw: 1.6, ww: 1.0, smooth: true },
+  };
+
+  // ---- State ----
+  const $ = (id) => document.getElementById(id);
+  const ctl = {
+    seg: $("seg"), len: $("len"), sw: $("sw"), ww: $("ww"),
+    bend: $("bend"), rings: $("rings"), bg: $("bg"),
+    colA: $("colA"), colB: $("colB"), colC: $("colC"),
+    preset: $("preset"), code: $("code"), status: $("status"), copy: $("copy"),
+    bufon: $("bufon"), bufclear: $("bufclear"), room: $("room"), smooth: $("smooth"), space: $("space"),
+  };
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let mode = reduceMotion ? "drag" : "auto";
+  let anchor = { x: 0, y: 0 };
+  let hand = { x: 900, y: 200 };
+  let dragging = null;
+  let time = 0;
+  let tab = "image";
+  const codes = { image: WORLD_INK_IMAGE, buffer: WORLD_INK_BUFFER };
+  const errors = { image: null, buffer: null };
+
+  function loadSaved() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) return JSON.parse(raw);
+      // Keep work from the single-pass version of this page.
+      const old = localStorage.getItem("arm-shader-bench:v1");
+      if (!old) return null;
+      const v1 = JSON.parse(old);
+      return { ...v1, image: v1.code, bufon: false };
+    } catch { return null; }
+  }
+  function save() {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        image: codes.image, buffer: codes.buffer, bufon: ctl.bufon.checked,
+        seg: ctl.seg.value, len: ctl.len.value, sw: ctl.sw.value, ww: ctl.ww.value,
+        bend: ctl.bend.checked, rings: ctl.rings.checked, bg: ctl.bg.value,
+        colA: ctl.colA.value, colB: ctl.colB.value, colC: ctl.colC.value,
+        room: ctl.room.value, smooth: ctl.smooth.checked, space: ctl.space.value,
+      }));
+    } catch { /* storage unavailable: nothing to keep */ }
+  }
+  const saved = loadSaved();
+  if (saved) {
+    for (const k of ["seg", "len", "sw", "ww", "bg", "colA", "colB", "colC", "room", "space"]) if (saved[k] != null) ctl[k].value = saved[k];
+    if (saved.smooth != null) ctl.smooth.checked = saved.smooth;
+    ctl.bend.checked = !!saved.bend;
+    ctl.rings.checked = !!saved.rings;
+    if (saved.image) codes.image = saved.image;
+    if (saved.buffer) codes.buffer = saved.buffer;
+    ctl.bufon.checked = saved.bufon !== false;
+  } else {
+    ctl.sw.value = "1.6";
+    ctl.ww.value = "1.0";
+    ctl.bufon.checked = true;
+    ctl.space.value = "world";
+  }
+  ctl.code.value = codes[tab];
+
+  // ---- PIXI ----
+  const stageEl = $("stage");
+  const app = new PIXI.Application({
+    resizeTo: stageEl, antialias: true, backgroundColor: 0x0d0b10,
+    autoDensity: true, resolution: Math.min(window.devicePixelRatio || 1, 2),
+  });
+  stageEl.prepend(app.view);
+  const renderer = app.renderer;
+
+  const world = new PIXI.Container();
+  app.stage.addChild(world);
+  const bgG = new PIXI.Graphics();
+  const ringsG = new PIXI.Graphics();
+  const markersG = new PIXI.Graphics();
+  world.addChild(bgG);
+
+  // Buffer A: two textures, swapped every frame (read last frame, write this one).
+  // The strip mode and the map mode each have their own pair; the map mode also has
+  // a texture the arm is drawn into each frame (uArm).
+  const WS = 1024;
+  const stripPair = [PIXI.RenderTexture.create({ width: BW, height: BH }), PIXI.RenderTexture.create({ width: BW, height: BH })];
+  const worldPair = [PIXI.RenderTexture.create({ width: WS, height: WS }), PIXI.RenderTexture.create({ width: WS, height: WS })];
+  const maskRT = PIXI.RenderTexture.create({ width: WS, height: WS });
+  let rtRead = stripPair[0];
+  let rtWrite = stripPair[1];
+  const empty = new PIXI.Container();
+  function clearBuffer() {
+    for (const rt of [...stripPair, ...worldPair, maskRT]) renderer.render(empty, { renderTexture: rt, clear: true });
+    frame = 0;
+  }
+  let frame = 0;
+  const region = new Float32Array([0, 0, 1, WS]);
+
+  const colorA = new Float32Array(3), colorB = new Float32Array(3), colorC = new Float32Array(3);
+  const armSize = new Float32Array(2);
+  const bufferSize = new Float32Array([BW, BH]);
+  const uniforms = {
+    uTime: 0, uLength: 1500, uSegments: 3, uArmSize: armSize, uBody: 1,
+    uBuffer: rtRead, uBufferSize: bufferSize, uArm: maskRT, uRegion: region,
+    uColorA: colorA, uColorB: colorB, uColorC: colorC,
+  };
+  const bufUniforms = {
+    uTime: 0, uLength: 1500, uSegments: 3, uArmSize: armSize, uBody: 1,
+    uBuffer: rtRead, uBufferSize: bufferSize, uDelta: 1 / 60, uFrame: 0,
+    uMotion: new Float32Array(66), uArm: maskRT, uRegion: region,
+    uColorA: colorA, uColorB: colorB, uColorC: colorC,
+  };
+
+  const quadOf = (w, h) => new PIXI.Geometry()
+    .addAttribute("aVertexPosition", new Float32Array([0, 0, w, 0, w, h, 0, h]), 2)
+    .addAttribute("aUv", new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]), 2)
+    .addIndex(new Uint16Array([0, 1, 2, 0, 2, 3]));
+  const stripQuadGeom = quadOf(BW, BH);
+  const worldQuadGeom = quadOf(WS, WS);
+  const quad = new PIXI.Mesh(stripQuadGeom, PIXI.Shader.from(BUF_VERT, BUF_PRELUDE + "\nvoid main() { gl_FragColor = vec4(0.0); }", bufUniforms));
+  quad.state.blend = false;
+  // The map mode's image pass is drawn on this square, placed on the map each frame.
+  const regionGeom = quadOf(1, 1);
+  const regionQuad = new PIXI.Mesh(regionGeom, PIXI.Shader.from(BUF_VERT, WORLD_IMAGE_PRELUDE + "\nvoid main() { gl_FragColor = vec4(0.0); }", uniforms));
+  regionQuad.visible = false;
+
+  let nVerts = 0;
+  function makeGeometry(n) {
+    const g = n * SUBDIV;
+    nVerts = (g + 1) * 2;
+    const idx = new Uint16Array(g * 6);
+    for (let i = 0; i < g; i++) {
+      const a = 2 * i;
+      idx.set([a, a + 1, a + 2, a + 1, a + 3, a + 2], i * 6);
+    }
+    return new PIXI.Geometry()
+      .addAttribute("aVertexPosition", new Float32Array(nVerts * 2), 2)
+      .addAttribute("aUv", new Float32Array(nVerts * 2), 2)
+      .addAttribute("aDist", new Float32Array(nVerts), 1)
+      .addAttribute("aSeg", new Float32Array(nVerts), 1)
+      .addAttribute("aHalf", new Float32Array(nVerts), 1)
+      .addIndex(idx);
+  }
+  let geom = makeGeometry(+ctl.seg.value);
+  const mesh = new PIXI.Mesh(geom, PIXI.Shader.from(ARM_VERT, IMAGE_PRELUDE + "\n" + PRESETS.flat.image, uniforms));
+  world.addChild(mesh, regionQuad, ringsG, markersG);
+  // Draws the arm into uArm for the map mode. It shares the arm's geometry.
+  const maskMesh = new PIXI.Mesh(geom, PIXI.Shader.from(ARM_VERT, MASK_FRAG, {}));
+  maskMesh.state.blend = false;
+
+  // ---- Build the arm strip ----
+  // The centre line is sampled SUBDIV times per segment: straight between joints, or a
+  // Catmull-Rom curve through them (smooth mode). Smooth mode also pinches the inner side
+  // of tight bends so the strip never folds over itself.
+  function buildPath(joints, smooth) {
+    const n = joints.length - 1;
+    const G = n * SUBDIV;
+    const xs = new Float64Array(G + 1), ys = new Float64Array(G + 1);
+    const J = (k) => {
+      if (k < 0) return { x: 2 * joints[0].x - joints[1].x, y: 2 * joints[0].y - joints[1].y };
+      if (k > n) return { x: 2 * joints[n].x - joints[n - 1].x, y: 2 * joints[n].y - joints[n - 1].y };
+      return joints[k];
+    };
+    for (let g = 0; g <= G; g++) {
+      const i = Math.min(Math.floor(g / SUBDIV), n - 1);
+      const t = (g - i * SUBDIV) / SUBDIV;
+      const p1 = J(i), p2 = J(i + 1);
+      if (!smooth) {
+        xs[g] = p1.x + (p2.x - p1.x) * t;
+        ys[g] = p1.y + (p2.y - p1.y) * t;
+        continue;
+      }
+      const p0 = J(i - 1), p3 = J(i + 2);
+      const t2 = t * t, t3 = t2 * t;
+      const cr = (a, b, c, d) => 0.5 * (2 * b + (c - a) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (3 * b - a - 3 * c + d) * t3);
+      xs[g] = cr(p0.x, p1.x, p2.x, p3.x);
+      ys[g] = cr(p0.y, p1.y, p2.y, p3.y);
+    }
+    const cum = new Float64Array(G + 1);
+    for (let g = 1; g <= G; g++) cum[g] = cum[g - 1] + Math.hypot(xs[g] - xs[g - 1], ys[g] - ys[g - 1]);
+    return { xs, ys, cum, G, n };
+  }
+
+  // A point and its direction at fraction s of a path's length. g0 is a search hint.
+  function locate(path, s, g0) {
+    const { xs, ys, cum, G } = path;
+    const target = s * cum[G];
+    let g = Math.min(g0, G - 1);
+    while (g < G - 1 && cum[g + 1] < target) g++;
+    const L = cum[g + 1] - cum[g] || 1e-6;
+    const f = Math.min(Math.max((target - cum[g]) / L, 0), 1);
+    return {
+      g,
+      x: xs[g] + (xs[g + 1] - xs[g]) * f,
+      y: ys[g] + (ys[g + 1] - ys[g]) * f,
+      tx: (xs[g + 1] - xs[g]) / L,
+      ty: (ys[g + 1] - ys[g]) / L,
+    };
+  }
+
+  // How far each point of the arm moved since last frame, in the arm's own strip UV units.
+  let prevPath = null;
+  function updateMotion(path, hmAt) {
+    const m = bufUniforms.uMotion;
+    if (!prevPath) { m.fill(0); return; }
+    const total = path.cum[path.G];
+    let gc = 0, gp = 0;
+    const clamp = (v) => Math.min(Math.max(v, -0.2), 0.2);
+    for (let k = 0; k <= 32; k++) {
+      const s = k / 32;
+      const a = locate(path, s, gc); gc = a.g;
+      const b = locate(prevPath, s, gp); gp = b.g;
+      const dx = a.x - b.x, dy = a.y - b.y;
+      m[2 * k] = clamp((dx * a.tx + dy * a.ty) / total);
+      m[2 * k + 1] = clamp((dx * -a.ty + dy * a.tx) / (2 * hmAt(s)));
+    }
+  }
+
+  function updateArm(joints) {
+    const n = joints.length - 1;
+    const smooth = ctl.smooth.checked;
+    const room = ctl.space.value === "world" ? 0 : +ctl.room.value;
+    const pos = geom.getBuffer("aVertexPosition").data;
+    const uv = geom.getBuffer("aUv").data;
+    const dist = geom.getBuffer("aDist").data;
+    const seg = geom.getBuffer("aSeg").data;
+    const half = geom.getBuffer("aHalf").data;
+    const path = buildPath(joints, smooth);
+    const { xs, ys, cum, G } = path;
+    const total = cum[G] || 1;
+    const sw = +ctl.sw.value, ww = +ctl.ww.value;
+    const hmAt = (u) => ((GRID * (sw + (ww - sw) * u)) / 2) * (1 + room);
+    for (let g = 0; g <= G; g++) {
+      const i = Math.min(Math.floor(g / SUBDIV), n - 1);
+      const t = (g - i * SUBDIV) / SUBDIV;
+      const ga = Math.max(g - 1, 0), gb = Math.min(g + 1, G);
+      let tx = xs[gb] - xs[ga], ty = ys[gb] - ys[ga];
+      const tl = Math.hypot(tx, ty) || 1;
+      tx /= tl; ty /= tl;
+      const nx = -ty, ny = tx;
+      const u = cum[g] / total;
+      const hm = hmAt(u);
+      let plus = hm, minus = hm;
+      if (g > 0 && g < G) {
+        const ax = xs[g] - xs[g - 1], ay = ys[g] - ys[g - 1];
+        const bx = xs[g + 1] - xs[g], by = ys[g + 1] - ys[g];
+        const la = Math.hypot(ax, ay) || 1e-6;
+        if (!smooth && g % SUBDIV === 0) {
+          // Mitre: stretch the joint's offset so both segments keep their full width.
+          const k = 1 / Math.max((nx * -ay + ny * ax) / la, 0.4);
+          plus *= k; minus *= k;
+        } else if (smooth) {
+          const turn = Math.atan2(ax * by - ay * bx, ax * bx + ay * by);
+          if (Math.abs(turn) > 1e-6) {
+            const R = (cum[g + 1] - cum[g - 1]) / 2 / Math.abs(turn);
+            if (turn > 0) plus = Math.min(plus, 0.9 * R);
+            else minus = Math.min(minus, 0.9 * R);
+          }
+        }
+      }
+      const v = 2 * g;
+      pos[2 * v] = xs[g] - nx * minus; pos[2 * v + 1] = ys[g] - ny * minus;
+      pos[2 * v + 2] = xs[g] + nx * plus; pos[2 * v + 3] = ys[g] + ny * plus;
+      uv[2 * v] = u; uv[2 * v + 1] = -1;
+      uv[2 * v + 2] = u; uv[2 * v + 3] = 1;
+      dist[v] = dist[v + 1] = cum[g];
+      seg[v] = seg[v + 1] = i + t;
+      half[v] = half[v + 1] = hm;
+    }
+    for (const name of ["aVertexPosition", "aUv", "aDist", "aSeg", "aHalf"]) geom.getBuffer(name).update();
+    uniforms.uLength = bufUniforms.uLength = total;
+    uniforms.uSegments = bufUniforms.uSegments = n;
+    uniforms.uBody = bufUniforms.uBody = 1 / (1 + room);
+    armSize[0] = total;
+    armSize[1] = ((GRID * (sw + ww)) / 2) * (1 + room);
+    updateMotion(path, hmAt);
+    prevPath = path;
+
+    ringsG.clear();
+    if (ctl.rings.checked) {
+      for (let j = 0; j <= n; j++) {
+        const hj = (GRID * (sw + ((ww - sw) * j) / n)) / 2;
+        ringsG.lineStyle(5, hexNum(ctl.colB.value), 1);
+        ringsG.beginFill(hexNum(ctl.colA.value));
+        ringsG.drawCircle(joints[j].x, joints[j].y, hj * 1.25);
+        ringsG.endFill();
+      }
+    }
+  }
+
+  function drawMarkers() {
+    markersG.clear();
+    // The hand: a 2x2 token footprint, like the Implement tokens.
+    markersG.lineStyle(4, 0xffffff, 0.35);
+    markersG.drawCircle(hand.x, hand.y, GRID);
+    markersG.lineStyle(2, 0xffffff, 0.25);
+    markersG.moveTo(hand.x - 24, hand.y).lineTo(hand.x + 24, hand.y);
+    markersG.moveTo(hand.x, hand.y - 24).lineTo(hand.x, hand.y + 24);
+    // The shoulder anchor.
+    markersG.lineStyle(3, 0xc9a45c, 0.9);
+    markersG.beginFill(0x110f15, 0.8);
+    markersG.drawPolygon([anchor.x, anchor.y - 30, anchor.x + 30, anchor.y, anchor.x, anchor.y + 30, anchor.x - 30, anchor.y]);
+    markersG.endFill();
+  }
+
+  function drawBackground() {
+    bgG.clear();
+    const x0 = -24 * GRID, y0 = -24 * GRID, x1 = 30 * GRID, y1 = 24 * GRID;
+    const kind = ctl.bg.value;
+    if (kind === "checker") {
+      const s = GRID / 2;
+      bgG.beginFill(0x3b3b3b).drawRect(x0, y0, x1 - x0, y1 - y0).endFill();
+      bgG.beginFill(0x5c5c5c);
+      for (let y = Math.floor(y0 / s); y * s < y1; y++)
+        for (let x = Math.floor(x0 / s); x * s < x1; x++)
+          if ((x + y) & 1) bgG.drawRect(x * s, y * s, s, s);
+      bgG.endFill();
+      return;
+    }
+    const fill = kind === "amber" ? 0x7a5426 : 0x1b1721;
+    const line = kind === "amber" ? 0x5a3b18 : 0x2b2533;
+    bgG.beginFill(fill).drawRect(x0, y0, x1 - x0, y1 - y0).endFill();
+    bgG.lineStyle(2, line, 0.9);
+    for (let x = Math.ceil(x0 / GRID) * GRID; x <= x1; x += GRID) bgG.moveTo(x, y0).lineTo(x, y1);
+    for (let y = Math.ceil(y0 / GRID) * GRID; y <= y1; y += GRID) bgG.moveTo(x0, y).lineTo(x1, y);
+  }
+
+  function fitCamera() {
+    const w = app.screen.width, h = app.screen.height;
+    const T = +ctl.len.value;
+    const s = Math.min(w / (T * 1.15), h / (T * 0.95));
+    world.scale.set(s);
+    world.position.set(w * 0.14 - anchor.x * s, h * 0.5 - anchor.y * s);
+  }
+
+  // In Auto mode the camera eases toward a view of the whole arm. In Drag mode it holds
+  // still, so the map doesn't slide under the pointer.
+  function followArm(joints) {
+    const pad = GRID * Math.max(+ctl.sw.value, +ctl.ww.value, 1.2) + GRID;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const p of joints) {
+      x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y);
+      x1 = Math.max(x1, p.x); y1 = Math.max(y1, p.y);
+    }
+    x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
+    const w = app.screen.width, h = app.screen.height;
+    const s = Math.min(w / (x1 - x0), h / (y1 - y0), 1);
+    const k = 0.04;
+    const ns = world.scale.x + (s - world.scale.x) * k;
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    const px = w / 2 - cx * ns, py = h / 2 - cy * ns;
+    world.scale.set(ns);
+    world.position.set(world.position.x + (px - world.position.x) * k * 2, world.position.y + (py - world.position.y) * k * 2);
+  }
+
+  function autoHand(t) {
+    const T = +ctl.len.value;
+    return {
+      x: anchor.x + T * (0.58 + 0.22 * Math.sin(t * 0.5)),
+      y: anchor.y + T * 0.36 * Math.sin(t * 0.37 + 1.0),
+    };
+  }
+
+  // ---- Shader compile with readable errors ----
+  function compileErrors(vertSrc, fragSrc, preludeLines) {
+    const gl = renderer.gl;
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, fragSrc);
+    gl.compileShader(fs);
+    if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+      const log = gl.getShaderInfoLog(fs) || "Unknown compile error.";
+      gl.deleteShader(fs);
+      return log.split("\n").filter(Boolean).map((line) => {
+        const m = line.match(/^(?:ERROR|WARNING):\s*\d+:(\d+):\s*(.*)$/);
+        return m ? `Line ${Math.max(1, +m[1] - preludeLines)}: ${m[2]}` : line;
+      }).join("\n");
+    }
+    // Link against the vertex shader too, to catch varyings it doesn't provide.
+    const vs = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vs, vertSrc);
+    gl.compileShader(vs);
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    let out = null;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) out = "Link error: " + (gl.getProgramInfoLog(prog) || "unknown");
+    gl.deleteProgram(prog); gl.deleteShader(vs); gl.deleteShader(fs);
+    return out;
+  }
+
+  const LABELS = { image: "Image", buffer: "Buffer A" };
+  function passInfo(pass) {
+    const w = ctl.space.value === "world";
+    if (pass === "image") {
+      return w
+        ? { vert: BUF_VERT, prelude: WORLD_IMAGE_PRELUDE, uniforms, target: regionQuad }
+        : { vert: ARM_VERT, prelude: IMAGE_PRELUDE, uniforms, target: mesh };
+    }
+    return { vert: BUF_VERT, prelude: w ? WORLD_BUF_PRELUDE : BUF_PRELUDE, uniforms: bufUniforms, target: quad };
+  }
+  function applySpace() {
+    const w = ctl.space.value === "world";
+    const pair = w ? worldPair : stripPair;
+    rtRead = pair[0]; rtWrite = pair[1];
+    quad.geometry = w ? worldQuadGeom : stripQuadGeom;
+    mesh.visible = !w;
+    regionQuad.visible = w;
+    ctl.room.disabled = w;
+    clearBuffer();
+  }
+  function compile(pass) {
+    const P = passInfo(pass);
+    const src = P.prelude + "\n" + codes[pass];
+    const err = compileErrors(P.vert, src, P.prelude.split("\n").length);
+    errors[pass] = err;
+    if (!err) P.target.shader = PIXI.Shader.from(P.vert, src, P.uniforms);
+    showStatus();
+    if (!err) save();
+  }
+  function showStatus() {
+    const lines = [];
+    for (const pass of ["image", "buffer"]) {
+      const label = LABELS[pass];
+      if (pass === "buffer" && !ctl.bufon.checked) { lines.push(`${label}: off.`); continue; }
+      lines.push(errors[pass] ? `${label}:\n${errors[pass]}\n(The last version that compiled keeps running.)` : `${label}: compiled.`);
+    }
+    const bad = errors.image || (ctl.bufon.checked && errors.buffer);
+    ctl.status.className = "status " + (bad ? "err" : "ok");
+    ctl.status.textContent = lines.join("\n");
+  }
+
+  // ---- Controls ----
+  function hexNum(hex) { return parseInt(hex.slice(1), 16); }
+  function setColor(arr, hex) {
+    const n = hexNum(hex);
+    arr[0] = ((n >> 16) & 255) / 255; arr[1] = ((n >> 8) & 255) / 255; arr[2] = (n & 255) / 255;
+  }
+  function syncReadouts() {
+    $("seg-out").textContent = ctl.seg.value;
+    $("len-out").textContent = ctl.len.value;
+    $("sw-out").textContent = (+ctl.sw.value).toFixed(2);
+    $("ww-out").textContent = (+ctl.ww.value).toFixed(2);
+    $("room-out").textContent = (+ctl.room.value).toFixed(2);
+    $("per-seg").textContent = Math.round(+ctl.len.value / +ctl.seg.value);
+    $("colA-out").textContent = ctl.colA.value; setColor(colorA, ctl.colA.value);
+    $("colB-out").textContent = ctl.colB.value; setColor(colorB, ctl.colB.value);
+    $("colC-out").textContent = ctl.colC.value; setColor(colorC, ctl.colC.value);
+  }
+  function setMode(m) {
+    mode = m;
+    $("mode-auto").setAttribute("aria-pressed", String(m === "auto"));
+    $("mode-drag").setAttribute("aria-pressed", String(m === "drag"));
+  }
+  function setTab(t) {
+    tab = t;
+    $("tab-image").setAttribute("aria-pressed", String(t === "image"));
+    $("tab-buffer").setAttribute("aria-pressed", String(t === "buffer"));
+    ctl.code.value = codes[t];
+  }
+
+  ctl.seg.addEventListener("input", () => {
+    const old = geom;
+    geom = makeGeometry(+ctl.seg.value);
+    mesh.geometry = geom;
+    maskMesh.geometry = geom;
+    old.destroy();
+    syncReadouts(); save();
+  });
+  ctl.len.addEventListener("input", () => { syncReadouts(); fitCamera(); save(); });
+  for (const el of [ctl.sw, ctl.ww, ctl.colA, ctl.colB, ctl.colC, ctl.room]) el.addEventListener("input", () => { syncReadouts(); save(); });
+  for (const el of [ctl.bend, ctl.rings, ctl.smooth]) el.addEventListener("change", save);
+  ctl.bg.addEventListener("change", () => { drawBackground(); save(); });
+  ctl.bufon.addEventListener("change", () => { clearBuffer(); showStatus(); save(); });
+  ctl.bufclear.addEventListener("click", clearBuffer);
+  ctl.space.addEventListener("change", () => { applySpace(); compile("buffer"); compile("image"); save(); });
+  ctl.preset.addEventListener("change", () => {
+    const p = PRESETS[ctl.preset.value];
+    ctl.preset.value = "";
+    if (!p) return;
+    codes.image = p.image;
+    if (p.buffer) codes.buffer = p.buffer;
+    ctl.bufon.checked = !!p.buffer;
+    ctl.space.value = p.space || "strip";
+    applySpace();
+    if (p.sw) { ctl.sw.value = String(p.sw); ctl.ww.value = String(p.ww); }
+    if (p.room != null) ctl.room.value = String(p.room);
+    if (p.smooth != null) ctl.smooth.checked = p.smooth;
+    syncReadouts(); save();
+    setTab("image");
+    clearBuffer();
+    compile("image");
+    if (p.buffer) compile("buffer");
+    showStatus();
+  });
+  $("tab-image").addEventListener("click", () => setTab("image"));
+  $("tab-buffer").addEventListener("click", () => setTab("buffer"));
+  let timer = 0;
+  ctl.code.addEventListener("input", () => {
+    codes[tab] = ctl.code.value;
+    const pass = tab;
+    clearTimeout(timer);
+    timer = setTimeout(() => compile(pass), 250);
+  });
+  ctl.code.addEventListener("keydown", (e) => {
+    if (e.key === "Tab" && !e.shiftKey) {
+      e.preventDefault();
+      const { selectionStart: s, selectionEnd: en, value } = ctl.code;
+      ctl.code.value = value.slice(0, s) + "  " + value.slice(en);
+      ctl.code.selectionStart = ctl.code.selectionEnd = s + 2;
+      ctl.code.dispatchEvent(new Event("input"));
+    } else if (e.key === "Escape") {
+      ctl.code.blur();
+    }
+  });
+  ctl.copy.addEventListener("click", () => {
+    let text = `// ik-arms shader. uColorA ${ctl.colA.value}  uColorB ${ctl.colB.value}  uColorC ${ctl.colC.value}\n`
+      + `// shoulderWidth ${ctl.sw.value}  wristWidth ${ctl.ww.value}\n\n// ===== Image =====\n` + codes.image;
+    if (ctl.bufon.checked) text += "\n// ===== Buffer A =====\n" + codes.buffer;
+    const reset = (label, ms) => { ctl.copy.textContent = label; setTimeout(() => (ctl.copy.textContent = "Copy shaders"), ms); };
+    const fallback = () => { ctl.code.focus(); ctl.code.select(); reset("Copy failed: select and copy each tab", 2600); };
+    try { navigator.clipboard.writeText(text).then(() => reset("Copied", 1400), fallback); } catch { fallback(); }
+  });
+  $("mode-auto").addEventListener("click", () => setMode("auto"));
+  $("mode-drag").addEventListener("click", () => setMode("drag"));
+
+  // ---- Pointer ----
+  function toWorld(e) {
+    const r = app.view.getBoundingClientRect();
+    return world.toLocal(new PIXI.Point(e.clientX - r.left, e.clientY - r.top));
+  }
+  app.view.addEventListener("pointerdown", (e) => {
+    const p = toWorld(e);
+    const grab = Math.max(40 / world.scale.x, 60);
+    dragging = Math.hypot(p.x - anchor.x, p.y - anchor.y) < grab ? "anchor" : "hand";
+    setMode("drag");
+    if (dragging === "hand") hand = { x: p.x, y: p.y };
+    app.view.setPointerCapture(e.pointerId);
+  });
+  app.view.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const p = toWorld(e);
+    if (dragging === "anchor") anchor = { x: p.x, y: p.y };
+    else hand = { x: p.x, y: p.y };
+  });
+  const endDrag = () => { dragging = null; };
+  app.view.addEventListener("pointerup", endDrag);
+  app.view.addEventListener("pointercancel", endDrag);
+
+  // ---- Run ----
+  syncReadouts();
+  setMode(mode);
+  drawBackground();
+  fitCamera();
+  if (mode === "drag") hand = autoHand(0);
+  // resizeTo only listens to window resizes; layout changes need this too.
+  new ResizeObserver(() => { app.resize(); fitCamera(); }).observe(stageEl);
+  applySpace();
+  compile("buffer");
+  compile("image");
+
+  app.ticker.add(() => {
+    const dt = Math.min(app.ticker.deltaMS / 1000, 0.1);
+    time += dt;
+    uniforms.uTime = bufUniforms.uTime = time;
+    if (mode === "auto") hand = autoHand(time);
+    const n = +ctl.seg.value;
+    const joints = solve(anchor, hand, n, +ctl.len.value / n, ctl.bend.checked ? -1 : 1);
+    updateArm(joints);
+    drawMarkers();
+    if (mode === "auto" && !dragging) followArm(joints);
+
+    if (ctl.space.value === "world") {
+      // The square the arm can reach, centred on the shoulder.
+      const half = +ctl.len.value * 1.1 + 2 * GRID;
+      const x0 = anchor.x - half, y0 = anchor.y - half, size = 2 * half;
+      region[0] = x0; region[1] = y0; region[2] = size;
+      const rp = regionGeom.getBuffer("aVertexPosition");
+      rp.data.set([x0, y0, x0 + size, y0, x0 + size, y0 + size, x0, y0 + size]);
+      rp.update();
+      const s = WS / size;
+      maskMesh.scale.set(s);
+      maskMesh.position.set(-x0 * s, -y0 * s);
+      renderer.render(maskMesh, { renderTexture: maskRT, clear: true });
+    }
+
+    if (ctl.bufon.checked) {
+      bufUniforms.uDelta = dt;
+      bufUniforms.uFrame = frame++;
+      bufUniforms.uBuffer = rtRead;
+      renderer.render(quad, { renderTexture: rtWrite, clear: true });
+      const t = rtRead; rtRead = rtWrite; rtWrite = t;
+    }
+    uniforms.uBuffer = rtRead;
+  });
+})();
+</script>
