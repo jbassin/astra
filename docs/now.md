@@ -4,13 +4,14 @@ Updated 2026-11-09.
 
 ## In flight
 
-- **ik-arms arms are shader-drawn ink for the six-handed boss (2026-11-09, #225 to #227).** The
+- **ik-arms arms are shader-drawn ink for the six-handed boss (2026-11-09, #225 to #229).** The
   module in `apps/portal/arms` now draws each arm as one smooth strip through its joints with a
   named shader; `shader: "ink"` arms paint into one smear buffer fixed to the map, shared by every
   ink arm, and an image pass lights it with the iridescent-ink look designed in
   `apps/portal/arms/bench/` ([`apps/portal/arms/README.md`](../apps/portal/arms/README.md)). A
-  `bendPattern: "alternate"` zigzag is also available. Installed in the live Foundry and checked
-  in the GM client: the six Implements on "esoterica" draw ink arms with no errors. The module is
+  `bendPattern: "alternate"` zigzag is also available, and `hand: true` (#229) ends an ink arm in
+  an upturned ink hand holding its token. Installed in the live Foundry and checked in the GM
+  client: the six Implements on "esoterica" draw ink arms and hands with no errors. The module is
   still not enabled, so players don't see arms yet. Next: Josh relaunches the world, enables IK
   Arms, places the real anchors, and checks a player client.
 - **Character builder is live at builder.iridi.cc and redesigned (2026-11-07, #207 to #216).**
