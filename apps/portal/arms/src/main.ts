@@ -107,8 +107,8 @@ function pose(token: FoundryToken): void {
   const hidden = token.document.hidden;
   arm.container.visible = !hidden || game.user.isGM;
   arm.container.alpha = hidden ? 0.5 : 1;
-  const { anchor, segments, bend } = arm.config;
-  arm.joints = solve(anchor, centerOf(token), segments, arm.length, bend);
+  const { anchor, segments, bend, bendPattern } = arm.config;
+  arm.joints = solve(anchor, centerOf(token), segments, arm.length, bend, bendPattern);
   draw(arm);
 }
 

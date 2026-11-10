@@ -12,7 +12,8 @@ because that is where astra's Foundry code is.
   on its own screen, so the arm follows move animations and the GM's drag preview.
 - `src/solve.ts` poses the arm: the joints lie on a circular arc from anchor to hand, so the pose
   depends only on the two end points and every client draws the same arm. With two segments this is
-  the ordinary elbow solution. A hand beyond reach straightens the arm and stretches it.
+  the ordinary elbow solution. With `bendPattern: "alternate"` the joints instead bend in turn each
+  way, so longer arms zigzag. A hand beyond reach straightens the arm and stretches it.
 - `src/config.ts` validates the flag. A flag without a usable `anchor` means no arm; any other bad
   field falls back to its default.
 - `src/main.ts` is the Foundry glue: it builds an arm on `drawToken`, re-poses it on
@@ -37,6 +38,7 @@ ikArms.detach(token);
 | `segments` | 2 | rigid segments (1 to 12); 2 is an upper arm and a forearm |
 | `length` | fitted | pixels per segment; fitted so the arm is 1.25 times the current distance |
 | `bend` | 1 | 1 or -1: which way the joints bend |
+| `bendPattern` | `"arc"` | `"arc"` bends every joint the same way (a C); `"alternate"` bends them in turn each way (a zigzag); the same pose for 2 segments |
 | `shoulderWidth`, `wristWidth` | 0.7, 0.4 | thickness at each end, in grid squares |
 | `fill`, `outline`, `outlineWidth` | dark, gold, 5 | colours (numbers) and stroke of the drawn arm |
 | `texture` | none | image path; each segment is then this image, drawn pointing right |
@@ -54,6 +56,8 @@ needs each client to reload.
 
 ## Traps
 
+- **An alternate arm with an odd segment count cannot reach closer than one segment.** Inside that
+  it folds flat and its last segment shortens to keep the hand attached. `arc` has no such limit.
 - **`Token#center` is the wrong position.** It reports where a move will end. The arm reads the
   token's drawn position (`token.position` plus half its size) so that it tracks the animation.
 - **Foundry 14 ships PIXI 7.** The `pixi.js` in the pnpm catalog is v8, for another app. This
