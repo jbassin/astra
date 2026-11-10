@@ -109,6 +109,6 @@ emergency with `--no-verify`.
 
 ## Commands
 
-`just bootstrap` (fresh clone), `just check`, `just fix`, `just test`, `just ci` (everything CI runs),
+`just bootstrap` (fresh clone), `just check`, `just fix`, `just test`, `just ci` (the CI steps the change needs; `--all` for every step),
 `just dev <app>`, `just deploy [service...]`. Details in
 [`docs/development.md`](./docs/development.md) and [`deploy/README.md`](./deploy/README.md).

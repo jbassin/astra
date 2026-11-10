@@ -24,14 +24,22 @@ inside the repo; use `uv run python`.
 just check   # format + lint gate over the whole tree (the pre-commit hook runs it on staged files)
 just fix     # apply formatters and safe autofixes for both lanes
 just test    # both test lanes
-just ci      # everything CI runs, incl. commitlint and no-decision-ids over origin/main..HEAD (pre-push runs it)
+just ci      # the CI steps this change needs, in parallel (pre-push runs it); --all runs every step
 just ratchet # fail if a debt count rose; --update lowers the baseline after a count falls
 just dev <domain>/<role>       # one TS app's dev server, e.g. just dev codex/web
 uv run pytest apps/<domain>/py # one Python app (they run as Dagster assets, no dev server)
 ```
 
 Each CI job in `.github/workflows/ci.yml` runs the `just` recipe of the same name, so `just ci`
-runs the same commands. Differences: CI path-filters its jobs while `just ci` runs them all.
+runs the same commands. `just ci` (`scripts/ci.py`) reads the job list and the path filters from
+`ci.yml`, so it runs the steps CI would run for the files that differ from the merge base with
+`origin/main` (uncommitted and untracked files included), and it runs them at once: about 75
+seconds for every step, a few seconds for a docs-only change. It records the steps that passed
+for the exact working tree in `<git dir>/ci-pass.json` and skips them on the next run, so a push
+straight after a green `just ci` reruns only commitlint and no-decision-ids. `just ci --all` runs
+every step regardless; `--list` prints the selection; `--jobs 1` runs one step at a time. Each
+step's output is in `<git dir>/ci-logs/<step>.log`. A step that writes files another step reads
+must be ordered in the script's `_AFTER` table (codex-e2e waits for ts-build).
 `just ci` also runs the weal-engine crate's cargo gate, so the host needs rustup. `pg-test` runs the `*.pg.test.ts` suites against a real Postgres: CI gives it a
 `services: postgres` container, and locally the recipe starts a throwaway one, so `just ci` needs
 Docker. `infra-check` needs it too: it runs shellcheck, hadolint, the edge's Caddy and
@@ -46,8 +54,8 @@ Dockerfile ones the same way (`# hadolint ignore=DLxxxx` under a comment that sa
 - **pre-commit** checks only the staged content: oxlint (`--type-aware --deny-warnings
   --report-unused-disable-directives`) and oxfmt `--check` for TypeScript, `ruff check` and
   `ruff format --check` for Python. It never edits files; fix with `just fix` and stage the result.
-- **pre-push** runs `just ci` and saves the full output to `<git dir>/ci-last.log` (per worktree),
-  so a blocked push can be read back without a rerun.
+- **pre-push** runs `just ci` and saves its output (the summary and each failed step's full log)
+  to `<git dir>/ci-last.log` (per worktree), so a blocked push can be read back without a rerun.
 - **GitHub** then gates `main` with the ruleset `main`: changes arrive only through pull requests
   that pass `ci-ok`, merged by rebase, with no force pushes or deletion. Branches don't need to be
   current with `main`. Only admins can bypass it, and only by merging a pull request
