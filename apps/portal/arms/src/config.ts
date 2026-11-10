@@ -1,4 +1,4 @@
-import type { Point } from "./solve";
+import type { BendPattern, Point } from "./solve";
 
 /** The flag lives in the "world" scope, which Foundry accepts whether or not this module is on. */
 export const FLAG_SCOPE = "world";
@@ -16,6 +16,8 @@ export interface ArmConfig {
   readonly length: number | null;
   /** Which way the joints bend. */
   readonly bend: 1 | -1;
+  /** `arc` bends every joint the same way; `alternate` bends them in turn each way (a zigzag). */
+  readonly bendPattern: BendPattern;
   /** Arm thickness at the shoulder and at the wrist, in grid squares. */
   readonly shoulderWidth: number;
   readonly wristWidth: number;
@@ -30,6 +32,7 @@ export const DEFAULTS = {
   segments: 2,
   length: null,
   bend: 1,
+  bendPattern: "arc",
   shoulderWidth: 0.7,
   wristWidth: 0.4,
   fill: 0x2b2433,
@@ -72,6 +75,7 @@ export function parseArmFlag(flag: unknown): ArmConfig | null {
         : Math.min(Math.max(Math.round(segments), 1), MAX_SEGMENTS),
     length: length !== null && length > 0 ? length : null,
     bend: bend !== null && bend < 0 ? -1 : 1,
+    bendPattern: flag.bendPattern === "alternate" ? "alternate" : "arc",
     shoulderWidth: positive(flag.shoulderWidth, DEFAULTS.shoulderWidth),
     wristWidth: positive(flag.wristWidth, DEFAULTS.wristWidth),
     fill: finite(flag.fill) ?? DEFAULTS.fill,
