@@ -33,6 +33,12 @@ export interface ArmConfig {
   readonly smooth: boolean;
   /** Draw a disc over each joint, in the fill and outline colours. */
   readonly rings: boolean;
+  /** Draw an ink hand under the token, holding it (ink arms only; the thumb side follows bend). */
+  readonly hand: boolean;
+  /** The hand's radius in token radii: radius px = token width / 2 × handSize. */
+  readonly handSize: number;
+  /** How far the fingers curl around the token, 0 (flat) to 1. */
+  readonly curl: number;
 }
 
 export const DEFAULTS = {
@@ -49,6 +55,9 @@ export const DEFAULTS = {
   shader: "flat",
   smooth: true,
   rings: false,
+  hand: false,
+  handSize: 1,
+  curl: 1,
 } as const satisfies Omit<ArmConfig, "anchor">;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -77,6 +86,7 @@ export function parseArmFlag(flag: unknown): ArmConfig | null {
   const segments = finite(flag.segments);
   const length = finite(flag.length);
   const bend = finite(flag.bend);
+  const curl = finite(flag.curl);
   return {
     anchor: { x, y },
     segments:
@@ -95,5 +105,8 @@ export function parseArmFlag(flag: unknown): ArmConfig | null {
     shader: typeof flag.shader === "string" && flag.shader !== "" ? flag.shader : DEFAULTS.shader,
     smooth: typeof flag.smooth === "boolean" ? flag.smooth : DEFAULTS.smooth,
     rings: typeof flag.rings === "boolean" ? flag.rings : DEFAULTS.rings,
+    hand: typeof flag.hand === "boolean" ? flag.hand : DEFAULTS.hand,
+    handSize: positive(flag.handSize, DEFAULTS.handSize),
+    curl: curl === null ? DEFAULTS.curl : Math.min(Math.max(curl, 0), 1),
   };
 }

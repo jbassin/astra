@@ -157,6 +157,13 @@ details h3 { margin: 10px 0 0; font: 600 12px var(--f-body); color: var(--fg); }
         <label class="check"><input type="checkbox" id="bend"> Bend the other way</label>
         <label class="check"><input type="checkbox" id="rings"> Joint rings</label>
       </div>
+      <div class="grid2">
+        <label class="check"><input type="checkbox" id="hand" checked> Hand holds the token</label>
+        <span></span>
+        <div class="field"><label for="handsize">Hand size <output id="handsize-out">1.00</output></label><input type="range" id="handsize" min="0.5" max="2" step="0.05" value="1"></div>
+        <div class="field"><label for="curl">Finger curl <output id="curl-out">1.00</output></label><input type="range" id="curl" min="0" max="1" step="0.05" value="1"></div>
+      </div>
+      <p class="note">The hand is drawn by Buffer A in "the map around the shoulder" mode (the free-smears starter). Hand size is in token radii (1 = a 2 × 2 token); the thumb follows the bend direction.</p>
       <p class="note">Smear room widens the drawn strip past the arm, in multiples of the arm's width on each side, so smears can drift out. Smooth curve bends the strip smoothly through the joints; off, it is straight segments with sharp corners, like the module draws now.</p>
       <div class="field">
         <label for="bg">Map</label>
@@ -253,6 +260,8 @@ details h3 { margin: 10px 0 0; font: 600 12px var(--f-body); color: var(--fg); }
           <dt>vUv</dt><dd>0 to 1 across the square.</dd>
           <dt>uArm</dt><dd>Where the arm is this frame. <code>.r</code> is 1 on its centre line, falling to 0 at its edge and off it; <code>.g</code> is how far along it (0 shoulder, 1 hand); <code>.b</code> is across it (0 one edge, 1 the other).</dd>
           <dt>uRegion</dt><dd>The square: <code>.xy</code> its top-left corner on the map, <code>.z</code> its size in pixels, <code>.w</code> its size in texels.</dd>
+          <dt>uHand</dt><dd>Buffer A only. <code>.xy</code> the hand point (token centre) on the map, <code>.zw</code> the arm's direction there.</dd>
+          <dt>uHandR, uHandSide, uHandOn, uCurl</dt><dd>Buffer A only. Hand size in pixels, thumb side (±1), 1 when the hand is on, finger curl 0 to 1.</dd>
         </dl>
         <p class="note">Write <code>gl_FragColor</code>. On the arm, use premultiplied alpha: <code>vec4(colour * a, a)</code>. Buffer A stores 8 bits per channel, so very slow fades can stall.</p>
       </details>
@@ -379,6 +388,11 @@ ${WORLD_COMMON}`;
 ${COMMON}
 uniform float uDelta;
 uniform float uFrame;
+uniform vec4 uHand;
+uniform float uHandR;
+uniform float uHandSide;
+uniform float uHandOn;
+uniform float uCurl;
 ${WORLD_COMMON}`;
 
   // Draws the arm into the uArm texture: r body density, g along, b across.
@@ -592,6 +606,8 @@ const float PUSH_PX = 150.;   // how fast turbulence pushes ink, in pixels per s
 const float SWIRL_PX = 400.;  // size of the turbulence pattern, in pixels
 const float SWIRL_SPEED = .05;// how fast the turbulence pattern changes
 const float SPREAD_PX = 8.;   // how far the spreading looks for the ink's slope
+const float HAND_CLEAR = 10.; // smears fade this many times faster in and around the hand
+const float HAND_CLEAR_R = .6;// how far around the hand that reaches, in hand radii
 
 #define TEX1(uv) texture2D(uBuffer, uv).r
 
@@ -627,6 +643,69 @@ float fbm3(vec3 p) {
   return result;
 }
 
+// ---- The hand: an upturned hand under the token, as a signed distance field. ----
+// Local coordinates are in hand radii (uHandR): x points on from the arm toward the fingers,
+// y toward the thumb. Negative distance is inside the hand.
+float sdCapsule(vec2 p, vec2 a, vec2 b, float r) {
+  vec2 pa = p - a;
+  vec2 ba = b - a;
+  float h = clamp(dot(pa, ba) / dot(ba, ba), 0., 1.);
+  return length(pa - ba * h) - r;
+}
+float sdEllipse(vec2 p, vec2 r) { return (length(p / r) - 1.) * min(r.x, r.y); }
+// Smooth union, so palm, fingers and wrist melt together like one piece of ink.
+float smin(float a, float b, float k) {
+  float h = clamp(.5 + .5 * (b - a) / k, 0., 1.);
+  return mix(b, a, h) - k * h * (1. - h);
+}
+const float FINGER_W = 1.0;    // finger and thumb thickness (1 = as drawn below)
+const float FINGER_L = 1.0;    // finger and thumb length
+
+const float CURL_RISE = 1.0;   // how high curled fingers rise above the palm (shows as shading)
+const float CURL_CLOSE = .55;  // how far curled fingertips turn in toward the middle (radians)
+
+vec2 rot(vec2 v, float a) { return vec2(v.x * cos(a) - v.y * sin(a), v.x * sin(a) + v.y * cos(a)); }
+
+// Distance along a capsule's spine, 0 at a and 1 at b.
+float along(vec2 p, vec2 a, vec2 b) { vec2 ba = b - a; return clamp(dot(p - a, ba) / dot(ba, ba), 0., 1.); }
+
+// Signed distance to the hand; h returns how high the hand is there (0 palm, up to 1 at a
+// fully curled fingertip). Height becomes ink density, which the image pass lights as relief.
+float hand(vec2 q, out float h) {
+  float d = sdEllipse(q - vec2(-.05, 0.), vec2(.85, .78));              // palm, under the token
+  d = smin(d, sdCapsule(q, vec2(-1.4, 0.), vec2(-.5, 0.), .4), .25);    // wrist, into the arm
+  h = 0.;
+  float nearest = 1e3;
+  for (int i = 0; i < 4; i++) {
+    float f = float(i) - 1.5;
+    float a = f * .46;                                                  // fingers fan out
+    vec2 dir = vec2(cos(a), sin(a));
+    vec2 base = dir * .65;
+    vec2 knuckle = dir * (.65 + (.6 - .08 * abs(f)) * FINGER_L);        // middle fingers longest
+    // Curled fingers bend up toward the viewer (shorter from above) and close in.
+    vec2 tipDir = rot(dir, -sign(f) * uCurl * CURL_CLOSE * (abs(f) / 1.5));
+    vec2 tip = knuckle + tipDir * .55 * FINGER_L * (1. - uCurl * .6);
+    float d1 = sdCapsule(q, base, knuckle, .24 * FINGER_W);
+    float d2 = sdCapsule(q, knuckle, tip, (.2 + .05 * uCurl) * FINGER_W);
+    if (d1 < nearest) { nearest = d1; h = .5 * uCurl * along(q, base, knuckle); }
+    if (d2 < nearest) { nearest = d2; h = uCurl * (.5 + .5 * along(q, knuckle, tip)); }
+    d = smin(d, d1, .14);
+    d = smin(d, d2, .07);
+  }
+  vec2 tb = vec2(-.2, .6);                                              // thumb
+  vec2 tk = tb + normalize(vec2(.55, .6)) * .6 * FINGER_L;
+  vec2 tt = tk + rot(normalize(vec2(1., -.3)), -uCurl * CURL_CLOSE) * .5 * FINGER_L * (1. - uCurl * .5);
+  float t1 = sdCapsule(q, tb, tk, .28 * FINGER_W);
+  float t2 = sdCapsule(q, tk, tt, .23 * FINGER_W);
+  if (t1 < nearest) { nearest = t1; h = .4 * uCurl * along(q, tb, tk); }
+  if (t2 < nearest) { nearest = t2; h = uCurl * (.4 + .5 * along(q, tk, tt)); }
+  d = smin(d, t1, .16);
+  d = smin(d, t2, .07);
+  // Height only where a finger is the nearest part (not over the palm).
+  h *= 1. - smoothstep(-.05, .1, nearest - d);
+  return d;
+}
+
 void main() {
   // The arm's ink body, patterned in the arm's own coordinates so it flows along it.
   vec4 arm = texture2D(uArm, vUv);
@@ -637,6 +716,27 @@ void main() {
   vec2 warp = vec2(cos(angle), sin(angle)) * .35;
   float n = fbm2(q + warp - drift * 1.3);
   float paint = clamp(arm.r * 1.25 + (n - .5) * 1.6 - .1, 0., 1.) * smoothstep(0., .2, arm.r);
+
+  // The hand, in the same ink, with its pattern in map coordinates. Its edges are firmer and
+  // its noise weaker than the arm's, so the fingers read as fingers.
+  float handPaint = 0.;
+  float handZone = 0.;  // 1 in and just around the hand, where smears are cleared fast
+  if (uHandOn > .5) {
+    vec2 wpx = uRegion.xy + vUv * uRegion.z;
+    vec2 rel = wpx - uHand.xy;
+    vec2 hq = vec2(dot(rel, uHand.zw), dot(rel, vec2(-uHand.w, uHand.z)) * uHandSide) / uHandR;
+    float height;
+    float d = hand(hq, height);
+    float density = clamp(-d / .15, 0., 1.);
+    vec2 h2 = wpx / INK_PX;
+    float ha = fbm2(h2 * .8 - drift) * 6.28 * 2. + uTime;
+    float hn = fbm2(h2 + vec2(cos(ha), sin(ha)) * .35 - drift * 1.3);
+    // The palm sits low (denser ink reads higher), curled fingers rise toward full density.
+    float level = mix(.55, 1., clamp(height * CURL_RISE, 0., 1.));
+    handPaint = clamp(density * level + (hn - .5) * .3, 0., 1.) * smoothstep(0., .1, density);
+    handZone = 1. - smoothstep(0., HAND_CLEAR_R, d);
+  }
+  paint = max(paint, handPaint);
 
   // Spreading: push ink down its own slope, so edges creep outward.
   float px = uRegion.z;  // pixels per unit of vUv
@@ -655,7 +755,7 @@ void main() {
 
   vec2 uv = vUv + offset * PUSH_PX * uDelta / px;
   float frame = texture2D(uBuffer, uv).x;
-  paint = max(paint, frame - uDelta * fade);
+  paint = max(paint, frame - uDelta * fade * (1. + HAND_CLEAR * handZone));
 
   // Keep the square's border empty.
   float border = min(min(vUv.x, vUv.y), min(1. - vUv.x, 1. - vUv.y));
@@ -878,6 +978,7 @@ void main() {
     colA: $("colA"), colB: $("colB"), colC: $("colC"),
     preset: $("preset"), code: $("code"), status: $("status"), copy: $("copy"),
     bufon: $("bufon"), bufclear: $("bufclear"), room: $("room"), smooth: $("smooth"), space: $("space"),
+    hand: $("hand"), handsize: $("handsize"), curl: $("curl"),
   };
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let mode = reduceMotion ? "drag" : "auto";
@@ -908,12 +1009,14 @@ void main() {
         bend: ctl.bend.checked, rings: ctl.rings.checked, bg: ctl.bg.value,
         colA: ctl.colA.value, colB: ctl.colB.value, colC: ctl.colC.value,
         room: ctl.room.value, smooth: ctl.smooth.checked, space: ctl.space.value,
+        hand: ctl.hand.checked, handsize: ctl.handsize.value, curl: ctl.curl.value,
       }));
     } catch { /* storage unavailable: nothing to keep */ }
   }
   const saved = loadSaved();
   if (saved) {
-    for (const k of ["seg", "len", "sw", "ww", "bg", "colA", "colB", "colC", "room", "space"]) if (saved[k] != null) ctl[k].value = saved[k];
+    for (const k of ["seg", "len", "sw", "ww", "bg", "colA", "colB", "colC", "room", "space", "handsize", "curl"]) if (saved[k] != null) ctl[k].value = saved[k];
+    if (saved.hand != null) ctl.hand.checked = saved.hand;
     if (saved.smooth != null) ctl.smooth.checked = saved.smooth;
     ctl.bend.checked = !!saved.bend;
     ctl.rings.checked = !!saved.rings;
@@ -973,6 +1076,7 @@ void main() {
     uTime: 0, uLength: 1500, uSegments: 3, uArmSize: armSize, uBody: 1,
     uBuffer: rtRead, uBufferSize: bufferSize, uDelta: 1 / 60, uFrame: 0,
     uMotion: new Float32Array(66), uArm: maskRT, uRegion: region,
+    uHand: new Float32Array([0, 0, 1, 0]), uHandR: GRID, uHandSide: 1, uHandOn: 1, uCurl: 1,
     uColorA: colorA, uColorB: colorB, uColorC: colorC,
   };
 
@@ -1141,6 +1245,16 @@ void main() {
     updateMotion(path, hmAt);
     prevPath = path;
 
+    // The hand: at the token centre, facing the way the arm arrives.
+    const ex = xs[G] - xs[G - 1], ey = ys[G] - ys[G - 1];
+    const el = Math.hypot(ex, ey) || 1;
+    const hu = bufUniforms.uHand;
+    hu[0] = xs[G]; hu[1] = ys[G]; hu[2] = ex / el; hu[3] = ey / el;
+    bufUniforms.uHandR = GRID * +ctl.handsize.value;
+    bufUniforms.uHandSide = ctl.bend.checked ? -1 : 1;
+    bufUniforms.uHandOn = ctl.hand.checked ? 1 : 0;
+    bufUniforms.uCurl = +ctl.curl.value;
+
     ringsG.clear();
     if (ctl.rings.checked) {
       for (let j = 0; j <= n; j++) {
@@ -1155,12 +1269,19 @@ void main() {
 
   function drawMarkers() {
     markersG.clear();
-    // The hand: a 2x2 token footprint, like the Implement tokens.
-    markersG.lineStyle(4, 0xffffff, 0.35);
-    markersG.drawCircle(hand.x, hand.y, GRID);
-    markersG.lineStyle(2, 0xffffff, 0.25);
-    markersG.moveTo(hand.x - 24, hand.y).lineTo(hand.x + 24, hand.y);
-    markersG.moveTo(hand.x, hand.y - 24).lineTo(hand.x, hand.y + 24);
+    // The token: a see-through rune circle, 2 x 2 squares, like the Implement tokens.
+    const r = GRID * 0.82;
+    markersG.lineStyle(6, 0xe8507a, 0.85);
+    markersG.drawCircle(hand.x, hand.y, r);
+    markersG.lineStyle(3, 0xe8507a, 0.6);
+    markersG.drawCircle(hand.x, hand.y, r * 0.72);
+    const pts = [];
+    for (let k = 0; k < 6; k++) {
+      const a = (k / 6) * Math.PI * 2 + time * 0.4;
+      pts.push(hand.x + Math.cos(a) * r * 0.72, hand.y + Math.sin(a) * r * 0.72);
+    }
+    markersG.lineStyle(3, 0xffc2d4, 0.7);
+    markersG.drawPolygon(pts);
     // The shoulder anchor.
     markersG.lineStyle(3, 0xc9a45c, 0.9);
     markersG.beginFill(0x110f15, 0.8);
@@ -1307,6 +1428,8 @@ void main() {
     $("sw-out").textContent = (+ctl.sw.value).toFixed(2);
     $("ww-out").textContent = (+ctl.ww.value).toFixed(2);
     $("room-out").textContent = (+ctl.room.value).toFixed(2);
+    $("handsize-out").textContent = (+ctl.handsize.value).toFixed(2);
+    $("curl-out").textContent = (+ctl.curl.value).toFixed(2);
     $("per-seg").textContent = Math.round(+ctl.len.value / +ctl.seg.value);
     $("colA-out").textContent = ctl.colA.value; setColor(colorA, ctl.colA.value);
     $("colB-out").textContent = ctl.colB.value; setColor(colorB, ctl.colB.value);
@@ -1333,8 +1456,8 @@ void main() {
     syncReadouts(); save();
   });
   ctl.len.addEventListener("input", () => { syncReadouts(); fitCamera(); save(); });
-  for (const el of [ctl.sw, ctl.ww, ctl.colA, ctl.colB, ctl.colC, ctl.room]) el.addEventListener("input", () => { syncReadouts(); save(); });
-  for (const el of [ctl.bend, ctl.rings, ctl.smooth]) el.addEventListener("change", save);
+  for (const el of [ctl.sw, ctl.ww, ctl.colA, ctl.colB, ctl.colC, ctl.room, ctl.handsize, ctl.curl]) el.addEventListener("input", () => { syncReadouts(); save(); });
+  for (const el of [ctl.bend, ctl.rings, ctl.smooth, ctl.hand]) el.addEventListener("change", save);
   ctl.bg.addEventListener("change", () => { drawBackground(); save(); });
   ctl.bufon.addEventListener("change", () => { clearBuffer(); showStatus(); save(); });
   ctl.bufclear.addEventListener("click", clearBuffer);

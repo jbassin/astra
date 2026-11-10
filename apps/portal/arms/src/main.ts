@@ -6,9 +6,9 @@
 import { type ArmConfig, FLAG_KEY, FLAG_SCOPE, parseArmFlag } from "./config";
 import { reachRadius } from "./region";
 import { ARM_VERT, fragmentSource, SMEAR_SHADER } from "./shaders";
-import { createSmear } from "./smear";
+import { createSmear, type InkHand } from "./smear";
 import { defaultLength, type Point, solve } from "./solve";
-import { allocateStrip, type StripArrays, stripIndices, writeStrip } from "./strip";
+import { allocateStrip, type StripArrays, stripEnd, stripIndices, writeStrip } from "./strip";
 
 /** PrimaryCanvasGroup sort layers: drawings are 600 and tokens 700, so 690 is just under tokens. */
 const SORT_LAYER = 690;
@@ -48,6 +48,8 @@ interface Arm {
   readonly uniforms: Uniforms;
   /** The joint discs, when the flag asks for them. */
   readonly rings: PIXI.Graphics | null;
+  /** The hand the smear buffer draws, for an ink arm whose flag asks for one. */
+  readonly hand: InkHand | null;
   readonly config: ArmConfig;
   /** One segment's length in pixels (the flag's, or fitted when the arm was built). */
   readonly length: number;
@@ -84,6 +86,11 @@ function on(name: string, fn: (...args: never[]) => void): void {
  * `Token#center` is no use here: it reports where the move will end. */
 function centerOf(token: FoundryToken): Point {
   return { x: token.position.x + token.w / 2, y: token.position.y + token.h / 2 };
+}
+
+/** The hand's radius in pixels: the token's half width times the flag's `handSize`. */
+function handRadius(token: FoundryToken, config: ArmConfig): number {
+  return (token.w / 2) * config.handSize;
 }
 
 /** A 0xRRGGBB colour as the 0..1 RGB triple a vec3 uniform takes. */
@@ -198,6 +205,12 @@ function pose(token: FoundryToken): void {
   const { anchor, segments, bend, bendPattern } = arm.config;
   arm.joints = solve(anchor, centerOf(token), segments, arm.length, bend, bendPattern);
   draw(arm);
+  if (arm.hand) {
+    // At the token centre (the strip's last point), facing the way the arm arrives.
+    const end = stripEnd(arm.strip);
+    arm.hand.at.set([end.x, end.y, end.dx, end.dy]);
+    arm.hand.params[0] = handRadius(token, arm.config);
+  }
 }
 
 function remove(tokenId: string): void {
@@ -225,6 +238,14 @@ function build(token: FoundryToken): void {
   mesh.visible = !ink;
   container.addChild(mesh);
   const rings = config.rings ? container.addChild(new PIXI.Graphics()) : null;
+  // The thumb goes on the side the joints bend to.
+  const hand: InkHand | null =
+    ink && config.hand
+      ? {
+          at: new Float32Array([0, 0, 1, 0]),
+          params: new Float32Array([handRadius(token, config), config.bend, config.curl, 0]),
+        }
+      : null;
   canvas.primary.addChild(container);
   if (!ticker) {
     ticker = canvas.app.ticker;
@@ -240,6 +261,7 @@ function build(token: FoundryToken): void {
     strip,
     uniforms,
     rings,
+    hand,
     config,
     length,
     preview: null,
@@ -254,11 +276,18 @@ function build(token: FoundryToken): void {
       uniforms,
       reach: {
         anchor: config.anchor,
-        radius: reachRadius(config.segments, length, maxWidth, grid),
+        radius: reachRadius(
+          config.segments,
+          length,
+          maxWidth,
+          grid,
+          hand ? handRadius(token, config) : 0,
+        ),
       },
       colorA: uniforms.uColorA,
       colorC: uniforms.uColorC,
       elevation: token.document.elevation,
+      hand,
       // pose() hides a hidden token's arm from players, so its ink follows the same rule.
       paints: () => !container.destroyed && container.visible,
     });

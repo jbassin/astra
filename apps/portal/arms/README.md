@@ -43,14 +43,16 @@ draw), and every ink arm on the scene feeds one smear buffer fixed to the map, a
    which works out the ink body's density in the arm's own pixels with that arm's uniforms.
    Overlapping arms combine as `a + b - ab` (normal premultiplied blending), so draw order does
    not matter.
-2. **Buffer.** One quad reads the arm texture and last frame's buffer, spreads, swirls and fades
-   the ink, and writes the other buffer texture; the two then swap.
+2. **Buffer.** One quad reads the arm texture and last frame's buffer, draws the arms' hands
+   (below), spreads, swirls and fades the ink, and writes the other buffer texture; the two then
+   swap.
 3. **Image.** One quad over the whole square lights the buffer. It sits in a container in
    `canvas.primary` at sortLayer 690 and the lowest ink arm's elevation, so it is lit and fogged
    like the map.
 
 - **The square** covers every ink arm's reach: anchor ± (segments × segment length × 1.1 + the
-  arm's widest width + 2 grid squares), as one square around all of them, so texels are square.
+  arm's widest width + 2 grid squares, + 2 hand radii when the arm has a hand), as one square
+  around all of them, so texels are square.
   It is worked out when an ink arm is built or removed, not every frame; when it changes, the
   buffer is cleared.
 - **Colours.** The image pass has one set of colours: `fill` (`uColorA`) and `glow` (`uColorC`)
@@ -61,6 +63,22 @@ draw), and every ink arm on the scene feeds one smear buffer fixed to the map, a
   textures, which clears the ink.
 - The textures and the image quad exist only while an ink arm does: they are freed on the first
   frame with no ink arm, on `teardown()`, and when the canvas is torn down (scene change).
+
+## Hand
+
+An ink arm with `hand: true` gets an upturned hand in ink at its end, under the token: a palm
+beneath the token, four fingers and a thumb curling around it, ported from the bench's "ink4"
+preset. The buffer pass draws it from a signed distance field, in map coordinates, so the hand
+does not smear with the arm's flow; smears fade 11 times as fast in and just around it, so the
+hand stays crisp. It sits at the token centre (the strip's last point) facing the way the arm
+arrives (the last two strip samples). `handSize` sets its radius in token radii (the token's
+width / 2 × `handSize`), `curl` how far the fingers close (0 flat, 1 curled), and the thumb goes
+on the side the joints bend to (`bend`). Hands are drawn only for `shader: "ink"` arms; any
+other shader ignores the hand fields.
+
+The buffer pass takes up to 8 hands per frame as uniform arrays (`uHands`, `uHandParams`,
+`uHandCount`), filled from the ink arms that paint this frame in token id order. A texel more
+than 2.6 hand radii from a hand skips that hand, and the hands share one noise lookup per texel.
 
 ## Using it
 
@@ -86,6 +104,9 @@ ikArms.detach(token);
 | `shader` | `"flat"` | fragment shader name (`src/shaders.ts`): `"flat"`, or `"ink"` for the shared smear buffer; an unknown name draws `flat` |
 | `smooth` | true | curve through the joints; false draws straight segments |
 | `rings` | false | draw a disc over each joint, 1.25 times the arm's width there |
+| `hand` | false | draw an ink hand holding the token (`shader: "ink"` only; see Hand) |
+| `handSize` | 1 | hand radius in token radii: the token's width / 2 × `handSize` |
+| `curl` | 1 | 0 to 1 (clamped): how far the fingers curl around the token |
 
 ## Build, test, install
 
@@ -99,6 +120,14 @@ world relaunched from Foundry's setup screen before the module appears in Manage
 needs each client to reload.
 
 ## Traps
+
+- **At most 8 hands.** The buffer pass has room for 8; with more ink arms with hands painting,
+  the ones whose token ids sort last get no hand.
+- **The hand draws under the token.** It is ink in the smear buffer at sortLayer 690, so the
+  token art covers the palm and any finger it overlaps; fingers cannot wrap over the token.
+- **Hands are ink-only.** `hand` does nothing on a `flat` arm.
+- **The square uses the hand radius from when the arm was built.** Resizing a token resizes its
+  hand on the next pose, but the square grows only when the arm is rebuilt (a flag change).
 
 - **A 3-segment alternate arm cannot reach closer than one segment.** Inside that it folds flat on
   the anchor-hand line and its last segment shortens to keep the hand attached. Alternate arms of 4
@@ -125,4 +154,5 @@ needs each client to reload.
 - **Only the solver, the strip, the flag parser, the smear square and the shader registry have
   unit tests.** The canvas glue in `src/main.ts` and `src/smear.ts` must be checked against the
   live world after changing it. The shaders compile and link in WebGL 1 (checked in Chromium), but
-  the smear passes have never run inside Foundry.
+  the smear passes and the hand have never run inside Foundry (the hand was rendered once with
+  the buffer pass in headless Chromium).

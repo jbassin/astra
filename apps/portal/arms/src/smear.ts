@@ -1,8 +1,8 @@
 // The shared smear buffer for `shader: "ink"` arms. One square on the map covers every ink arm's
 // reach. Each frame, three passes run, as in the bench's "world" mode:
 //   1. paint: every ink arm draws its ink body into the arm texture (its own uniforms);
-//   2. buffer: one quad reads the arm texture and last frame's buffer, smears and fades the ink,
-//      and writes the other buffer texture (ping-pong);
+//   2. buffer: one quad reads the arm texture and last frame's buffer, adds the arms' hands,
+//      smears and fades the ink, and writes the other buffer texture (ping-pong);
 //   3. image: one quad in canvas.primary lights the buffer over the square, under the tokens.
 // The textures exist only while at least one ink arm does.
 
@@ -12,9 +12,18 @@ import {
   fragmentSource,
   INK_BUFFER_FRAG,
   INK_IMAGE_FRAG,
+  MAX_HANDS,
   QUAD_VERT,
   SMEAR_SHADER,
 } from "./shaders";
+
+/** One ink arm's hand, kept current by main.ts; the buffer pass reads it each frame. */
+export interface InkHand {
+  /** x, y of the token centre in map pixels, then the arm's unit direction there. */
+  readonly at: Float32Array;
+  /** Radius in map pixels, thumb side (±1), finger curl (0..1), unused. */
+  readonly params: Float32Array;
+}
 
 /** What the smear needs from one ink arm. */
 interface InkArm {
@@ -28,6 +37,8 @@ interface InkArm {
   readonly colorC: Float32Array;
   /** The token's elevation; the image pass sits at the lowest ink arm's. */
   readonly elevation: number;
+  /** The arm's hand, or null when its flag has none. */
+  readonly hand: InkHand | null;
   /** Whether the arm paints this frame (false for a hidden token's arm on a player's client). */
   paints(): boolean;
 }
@@ -82,18 +93,26 @@ function unitQuad(): PIXI.Geometry {
 
 export function createSmear(host: SmearHost): Smear {
   const painters = new Map<string, Painter>();
+  /** The painters sorted by token id, so the same arms get the hands when there are too many. */
+  let order: Painter[] = [];
   let region: Region | null = null;
   let gpu: Gpu | null = null;
   const empty = new PIXI.Container();
 
   /** (x, y, size in map pixels, texture size in texels). */
   const uRegion = new Float32Array([0, 0, 1, 1]);
+  /** The hands, packed: MAX_HANDS slots of 4 floats each (see INK_BUFFER_FRAG). */
+  const uHands = new Float32Array(MAX_HANDS * 4);
+  const uHandParams = new Float32Array(MAX_HANDS * 4);
   const bufferUniforms: Record<string, unknown> = {
     uTime: 0,
     uDelta: 1 / 60,
     uBuffer: null,
     uArm: null,
     uRegion,
+    uHands,
+    uHandParams,
+    uHandCount: 0,
   };
   const colorA = new Float32Array(3);
   const colorC = new Float32Array(3);
@@ -118,6 +137,7 @@ export function createSmear(host: SmearHost): Smear {
   /** Recompute the region, colours and elevation from the current arms. */
   function refresh(): void {
     const arms = [...painters.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+    order = arms.map(([, p]) => p);
     const next = smearRegion(arms.map(([, p]) => p.arm.reach));
     // With no arms left, keep the region: an arm that is rebuilt is removed and added again
     // straight away, and its ink should survive that. The next frame frees the textures.
@@ -206,7 +226,17 @@ export function createSmear(host: SmearHost): Smear {
     }
     if (!cleared) clear(gpu.armTexture);
 
-    // 2. Buffer: read last frame's buffer, write the other texture, then swap them.
+    // 2. Buffer: read last frame's buffer, write the other texture, then swap them. The hands
+    // of the arms that paint this frame go first, up to MAX_HANDS.
+    let hands = 0;
+    for (const { arm } of order) {
+      if (hands === MAX_HANDS) break;
+      if (!arm.hand || !arm.paints()) continue;
+      uHands.set(arm.hand.at, hands * 4);
+      uHandParams.set(arm.hand.params, hands * 4);
+      hands++;
+    }
+    bufferUniforms.uHandCount = hands;
     bufferUniforms.uTime = time;
     bufferUniforms.uDelta = delta;
     bufferUniforms.uBuffer = gpu.read;

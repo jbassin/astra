@@ -16,15 +16,17 @@ export interface Reach {
 /**
  * How far an arm's ink can land from its anchor, in pixels: its full length with 10% to spare
  * (the curve bulges past the joints), plus its widest width, plus two grid squares for the ink
- * to smear into.
+ * to smear into, plus twice the hand's radius when it has one (`handRadius` 0 when not): the
+ * hand's ink reaches about two radii from the token centre, at the fingertips and the wrist.
  */
 export function reachRadius(
   segments: number,
   length: number,
   maxWidth: number,
   gridSize: number,
+  handRadius = 0,
 ): number {
-  return segments * length * 1.1 + maxWidth + 2 * gridSize;
+  return segments * length * 1.1 + maxWidth + 2 * gridSize + 2 * handRadius;
 }
 
 /**
