@@ -4,15 +4,43 @@
 // that configures it (see config.ts).
 
 import { type ArmConfig, FLAG_KEY, FLAG_SCOPE, parseArmFlag } from "./config";
+import { ARM_VERT, fragmentSource } from "./shaders";
 import { defaultLength, type Point, solve } from "./solve";
+import { allocateStrip, type StripArrays, stripIndices, writeStrip } from "./strip";
 
 /** PrimaryCanvasGroup sort layers: drawings are 600 and tokens 700, so 690 is just under tokens. */
 const SORT_LAYER = 690;
 
+/** The strip's vertex attributes: geometry buffer name, `StripArrays` key, floats per vertex. */
+const ATTRIBUTES = [
+  ["aVertexPosition", "position", 2],
+  ["aUv", "uv", 2],
+  ["aDist", "dist", 1],
+  ["aSeg", "seg", 1],
+  ["aHalf", "half", 1],
+] as const satisfies readonly (readonly [string, keyof StripArrays, number])[];
+
+/** One arm's shader uniforms; PIXI reads this object every frame, so it is mutated in place. */
+interface Uniforms {
+  [name: string]: unknown;
+  uTime: number;
+  uLength: number;
+  uSegments: number;
+  uColorA: Float32Array;
+  uColorB: Float32Array;
+  uColorC: Float32Array;
+  uOutlineWidth: number;
+  uAlpha: number;
+}
+
 interface Arm {
   readonly container: PIXI.Container;
-  readonly graphics: PIXI.Graphics;
-  readonly sprites: PIXI.Sprite[] | null;
+  readonly mesh: PIXI.Mesh;
+  /** The mesh's vertex data: the same arrays as its geometry buffers. */
+  readonly strip: StripArrays;
+  readonly uniforms: Uniforms;
+  /** The joint discs, when the flag asks for them. */
+  readonly rings: PIXI.Graphics | null;
   readonly config: ArmConfig;
   /** One segment's length in pixels (the flag's, or fitted when the arm was built). */
   readonly length: number;
@@ -49,53 +77,68 @@ function centerOf(token: FoundryToken): Point {
   return { x: token.position.x + token.w / 2, y: token.position.y + token.h / 2 };
 }
 
-function draw(arm: Arm): void {
-  const { config, graphics, sprites, joints } = arm;
-  const grid = canvas.grid.size;
-  const last = joints.length - 1;
-  /** Half the arm's thickness at joint `i`, tapering from shoulder to wrist. */
-  const half = (i: number): number =>
-    (grid * (config.shoulderWidth + ((config.wristWidth - config.shoulderWidth) * i) / last)) / 2;
+/** A 0xRRGGBB colour as the 0..1 RGB triple a vec3 uniform takes. */
+function rgb(color: number): Float32Array {
+  return new Float32Array([
+    ((color >> 16) & 255) / 255,
+    ((color >> 8) & 255) / 255,
+    (color & 255) / 255,
+  ]);
+}
 
-  graphics.clear();
-  for (const [i, p] of joints.entries()) {
-    const q = joints[i + 1];
-    if (!q) break;
-    const angle = Math.atan2(q.y - p.y, q.x - p.x);
-    const sprite = sprites?.[i];
-    if (sprite) {
-      sprite.position.set(p.x, p.y);
-      sprite.rotation = angle;
-      sprite.width = Math.hypot(q.x - p.x, q.y - p.y);
-      sprite.height = 2 * half(i);
-      continue;
-    }
-    const nx = -Math.sin(angle);
-    const ny = Math.cos(angle);
-    const w0 = half(i);
-    const w1 = half(i + 1);
-    graphics.lineStyle(config.outlineWidth, config.outline, 1);
-    graphics.beginFill(config.fill);
-    graphics.drawPolygon([
-      p.x + nx * w0,
-      p.y + ny * w0,
-      q.x + nx * w1,
-      q.y + ny * w1,
-      q.x - nx * w1,
-      q.y - ny * w1,
-      p.x - nx * w0,
-      p.y - ny * w0,
-    ]);
-    graphics.endFill();
-  }
-  if (sprites) return;
-  // Joint discs go on top of the segment ends, so each joint reads as a hinge.
+// Every arm's uTime counts seconds from when this file loaded, on Foundry's canvas ticker.
+const startTime = performance.now();
+let ticker: PIXI.Ticker | null = null;
+function tick(): void {
+  const time = (performance.now() - startTime) / 1000;
+  for (const arm of arms.values()) arm.uniforms.uTime = time;
+}
+
+function draw(arm: Arm): void {
+  const { config, mesh, strip, uniforms, rings, joints, container } = arm;
+  const grid = canvas.grid.size;
+  const n = joints.length - 1;
+  uniforms.uLength = writeStrip(
+    strip,
+    joints,
+    (grid * config.shoulderWidth) / 2,
+    (grid * config.wristWidth) / 2,
+    config.smooth,
+  );
+  for (const [buffer] of ATTRIBUTES) mesh.geometry.getBuffer(buffer).update();
+  uniforms.uAlpha = container.alpha;
+
+  if (!rings) return;
+  // Joint discs go on top of the strip, so each joint reads as a hinge.
+  rings.clear();
   for (const [i, joint] of joints.entries()) {
-    graphics.lineStyle(config.outlineWidth, config.outline, 1);
-    graphics.beginFill(config.fill);
-    graphics.drawCircle(joint.x, joint.y, half(i) * 1.25);
-    graphics.endFill();
+    const half =
+      (grid * (config.shoulderWidth + ((config.wristWidth - config.shoulderWidth) * i) / n)) / 2;
+    rings.lineStyle(config.outlineWidth, config.outline, 1);
+    rings.beginFill(config.fill);
+    rings.drawCircle(joint.x, joint.y, half * 1.25);
+    rings.endFill();
   }
+}
+
+function makeMesh(config: ArmConfig): { mesh: PIXI.Mesh; strip: StripArrays; uniforms: Uniforms } {
+  // The geometry's buffers wrap these arrays, so writing them and calling `update()` re-uploads.
+  const strip = allocateStrip(config.segments);
+  const geometry = new PIXI.Geometry();
+  for (const [buffer, key, size] of ATTRIBUTES) geometry.addAttribute(buffer, strip[key], size);
+  geometry.addIndex(stripIndices(config.segments));
+  const uniforms: Uniforms = {
+    uTime: 0,
+    uLength: 1,
+    uSegments: config.segments,
+    uColorA: rgb(config.fill),
+    uColorB: rgb(config.outline),
+    uColorC: rgb(config.glow),
+    uOutlineWidth: config.outlineWidth,
+    uAlpha: 1,
+  };
+  const shader = PIXI.Shader.from(ARM_VERT, fragmentSource(config.shader), uniforms);
+  return { mesh: new PIXI.Mesh(geometry, shader), strip, uniforms };
 }
 
 function pose(token: FoundryToken): void {
@@ -129,23 +172,29 @@ function build(token: FoundryToken): void {
   container.sortLayer = SORT_LAYER;
   container.elevation = token.document.elevation;
   container.sort = 0;
-  const graphics = container.addChild(new PIXI.Graphics());
-  let sprites: PIXI.Sprite[] | null = null;
-  if (config.texture !== null) {
-    const texture = PIXI.Texture.from(config.texture);
-    sprites = [];
-    for (let i = 0; i < config.segments; i++) {
-      const sprite = container.addChild(new PIXI.Sprite(texture));
-      sprite.anchor.set(0, 0.5);
-      sprites.push(sprite);
-    }
-  }
+  const { mesh, strip, uniforms } = makeMesh(config);
+  container.addChild(mesh);
+  const rings = config.rings ? container.addChild(new PIXI.Graphics()) : null;
   canvas.primary.addChild(container);
+  if (!ticker) {
+    ticker = canvas.app.ticker;
+    ticker.add(tick);
+  }
   canvas.primary.sortDirty = true;
   const length =
     config.length ??
     defaultLength(config.anchor, centerOf(token), config.segments, canvas.grid.size);
-  arms.set(token.id, { container, graphics, sprites, config, length, preview: null, joints: [] });
+  arms.set(token.id, {
+    container,
+    mesh,
+    strip,
+    uniforms,
+    rings,
+    config,
+    length,
+    preview: null,
+    joints: [],
+  });
   pose(token);
 }
 
@@ -237,6 +286,8 @@ async function pickAnchor(tokens: FoundryToken[] = canvas.tokens.controlled): Pr
 function teardown(): void {
   for (const [name, id] of hooks) Hooks.off(name, id);
   for (const id of arms.keys()) remove(id);
+  ticker?.remove(tick);
+  ticker = null;
   globalThis.ikArms = undefined;
 }
 
