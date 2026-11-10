@@ -16,10 +16,19 @@ because that is where astra's Foundry code is.
   sides of the anchor-hand line, so arms of 3+ segments zigzag across it. A hand beyond reach straightens the arm and stretches it.
 - `src/config.ts` validates the flag. A flag without a usable `anchor` means no arm; any other bad
   field falls back to its default.
+- `src/strip.ts` turns the joints into a triangle strip: it samples a Catmull-Rom curve through
+  the joints (or straight lines, when `smooth` is off), tapers the width from shoulder to wrist,
+  pinches the inner side of tight bends so the strip never folds, and mitres straight joints.
+- `src/shaders.ts` holds the strip's vertex shader, the fragment prelude (attributes and uniforms
+  every fragment shader can use) and the named fragment shaders the `shader` field picks from.
+  Only `flat` ships. `apps/portal/arms/bench/` holds a sandbox page for writing new ones.
 - `src/main.ts` is the Foundry glue: it builds an arm on `drawToken`, re-poses it on
-  `refreshToken`, rebuilds it when the flag changes, and exposes `globalThis.ikArms`.
-- The arm is a `PIXI.Container` in `canvas.primary` with `sortLayer` 690, just under tokens (700),
-  so it is lit and fogged like the map. A hidden token's arm shows only to GMs, at half opacity.
+  `refreshToken`, rebuilds it when the flag changes, advances every arm's `uTime` on the canvas
+  ticker, and exposes `globalThis.ikArms`.
+- The arm is a `PIXI.Mesh` (plus a `PIXI.Graphics` for `rings`) in a `PIXI.Container` in
+  `canvas.primary` with `sortLayer` 690, just under tokens (700), so it is lit and fogged like the
+  map. Each arm has its own shader instance, since its uniforms differ. A hidden token's arm shows
+  only to GMs, at half opacity.
 
 ## Using it
 
@@ -40,8 +49,11 @@ ikArms.detach(token);
 | `bend` | 1 | 1 or -1: which way the joints bend |
 | `bendPattern` | `"arc"` | `"arc"` bends every joint the same way (a C); `"alternate"` zigzags across the anchor-hand line; the same pose for 2 segments |
 | `shoulderWidth`, `wristWidth` | 0.7, 0.4 | thickness at each end, in grid squares |
-| `fill`, `outline`, `outlineWidth` | dark, gold, 5 | colours (numbers) and stroke of the drawn arm |
-| `texture` | none | image path; each segment is then this image, drawn pointing right |
+| `fill`, `outline`, `glow` | dark, gold, pink | colours (numbers): `uColorA`, `uColorB`, `uColorC` |
+| `outlineWidth` | 5 | edge thickness in pixels (`uOutlineWidth`), for the strip and the rings |
+| `shader` | `"flat"` | fragment shader name (`src/shaders.ts`); an unknown name draws `flat` |
+| `smooth` | true | curve through the joints; false draws straight segments |
+| `rings` | false | draw a disc over each joint, 1.25 times the arm's width there |
 
 ## Build, test, install
 
@@ -63,5 +75,10 @@ needs each client to reload.
   token's drawn position (`token.position` plus half its size) so that it tracks the animation.
 - **Foundry 14 ships PIXI 7.** The `pixi.js` in the pnpm catalog is v8, for another app. This
   package uses Foundry's global `PIXI` through the hand-written stubs in `src/types/foundry.d.ts`.
-- **Only the solver and the flag parser have unit tests.** The canvas glue in `src/main.ts` was
-  checked against the live world; check it there again after changing it.
+- **A custom shader gets no alpha from PIXI.** `PIXI.Mesh` ignores the container's `alpha` for a
+  plain `PIXI.Shader`, so the arm passes it as `uAlpha` and every fragment shader must multiply its
+  (premultiplied) output by it, or a hidden token's arm draws fully opaque.
+- **The pinch is per sample.** On a very tight bend the inner edge can still step back a pixel or
+  two between samples. An opaque shader hides it; a translucent one may show a seam there.
+- **Only the solver, the strip, the flag parser and the shader registry have unit tests.** The
+  canvas glue in `src/main.ts` must be checked against the live world after changing it.

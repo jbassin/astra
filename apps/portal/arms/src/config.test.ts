@@ -35,7 +35,10 @@ describe("parseArmFlag", () => {
       fill: 0,
       outline: 0xffffff,
       outlineWidth: 0,
-      texture: "art/arm.webp",
+      glow: 0x00ff00,
+      shader: "pulse",
+      smooth: false,
+      rings: true,
     };
     expect(parseArmFlag(flag)).toEqual(flag);
   });
@@ -50,7 +53,10 @@ describe("parseArmFlag", () => {
       shoulderWidth: 0,
       wristWidth: null,
       fill: "red",
-      texture: "",
+      glow: "pink",
+      shader: "",
+      smooth: "yes",
+      rings: 1,
     });
     expect(parsed).toEqual({ ...DEFAULTS, anchor: { x: 1, y: 2 } });
   });

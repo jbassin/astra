@@ -23,9 +23,16 @@ export interface ArmConfig {
   readonly wristWidth: number;
   readonly fill: number;
   readonly outline: number;
+  /** Outline thickness in pixels. */
   readonly outlineWidth: number;
-  /** Optional image path; each segment is then this image, drawn pointing right. */
-  readonly texture: string | null;
+  /** Third colour, for shaders that use one (`uColorC`). */
+  readonly glow: number;
+  /** Name of the fragment shader (shaders.ts); an unknown name draws `flat`. */
+  readonly shader: string;
+  /** Lay the arm along a smooth curve through the joints, rather than straight segments. */
+  readonly smooth: boolean;
+  /** Draw a disc over each joint, in the fill and outline colours. */
+  readonly rings: boolean;
 }
 
 export const DEFAULTS = {
@@ -38,7 +45,10 @@ export const DEFAULTS = {
   fill: 0x2b2433,
   outline: 0xc9a45c,
   outlineWidth: 5,
-  texture: null,
+  glow: 0xe0457b,
+  shader: "flat",
+  smooth: true,
+  rings: false,
 } as const satisfies Omit<ArmConfig, "anchor">;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -81,6 +91,9 @@ export function parseArmFlag(flag: unknown): ArmConfig | null {
     fill: finite(flag.fill) ?? DEFAULTS.fill,
     outline: finite(flag.outline) ?? DEFAULTS.outline,
     outlineWidth: finite(flag.outlineWidth) ?? DEFAULTS.outlineWidth,
-    texture: typeof flag.texture === "string" && flag.texture !== "" ? flag.texture : null,
+    glow: finite(flag.glow) ?? DEFAULTS.glow,
+    shader: typeof flag.shader === "string" && flag.shader !== "" ? flag.shader : DEFAULTS.shader,
+    smooth: typeof flag.smooth === "boolean" ? flag.smooth : DEFAULTS.smooth,
+    rings: typeof flag.rings === "boolean" ? flag.rings : DEFAULTS.rings,
   };
 }

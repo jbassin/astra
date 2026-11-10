@@ -25,18 +25,28 @@ declare namespace PIXI {
     drawPolygon(path: number[]): this;
     drawCircle(x: number, y: number, radius: number): this;
   }
-  class Texture {
-    static from(source: string): Texture;
-    /** False until the image has loaded. */
-    readonly valid: boolean;
+  class Buffer {
+    /** Re-upload the buffer's array after it was changed in place. */
+    update(): void;
   }
-  class Sprite extends Container {
-    constructor(texture: Texture);
-    readonly anchor: { set(x: number, y: number): void };
-    readonly position: { set(x: number, y: number): void };
-    rotation: number;
-    width: number;
-    height: number;
+  class Geometry {
+    /** The buffer wraps `data` itself, not a copy. */
+    addAttribute(name: string, data: Float32Array, size: number): this;
+    addIndex(data: Uint16Array): this;
+    getBuffer(name: string): Buffer;
+  }
+  class Shader {
+    /** `uniforms` is kept by reference and read every frame. */
+    static from(vertex: string, fragment: string, uniforms: Record<string, unknown>): Shader;
+    readonly uniforms: Record<string, unknown>;
+  }
+  class Mesh extends Container {
+    constructor(geometry: Geometry, shader: Shader);
+    readonly geometry: Geometry;
+  }
+  class Ticker {
+    add(fn: () => void): this;
+    remove(fn: () => void): this;
   }
 }
 
@@ -75,7 +85,7 @@ interface FoundryCanvas {
     readonly controlled: FoundryToken[];
     get(id: string): FoundryToken | undefined;
   };
-  readonly app: { readonly view: HTMLCanvasElement };
+  readonly app: { readonly view: HTMLCanvasElement; readonly ticker: PIXI.Ticker };
   canvasCoordinatesFromClient(point: { x: number; y: number }): { x: number; y: number };
 }
 
