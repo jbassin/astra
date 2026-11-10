@@ -38,21 +38,23 @@ Decisions made in the conversation:
 ## 1. Checklist
 
 - [x] Sandbox built and the look agreed (2026-11-09).
-- [x] Plan and sandbox committed.
-- [ ] **Slice 1: mesh drawing.** Replace the `Graphics` arm with a `PIXI.Mesh` strip on the
+- [x] Plan and sandbox committed (#225).
+- [x] **Slice 1: mesh drawing** (#227). Replace the `Graphics` arm with a `PIXI.Mesh` strip on the
       smooth curve, shader inputs as in the bench (`vUv`, `vDist`, `vSeg`, `vHalf`, `uTime`,
       `uLength`, `uSegments`, `uColorA/B/C`). Flag fields: `shader` (default `"flat"`, the
       current fill-and-outline look), `smooth` (default `true`), `rings` (joint discs, default
       `false`), `glow` (third colour). Remove `texture`. Pure strip builder with unit tests.
-- [ ] **Slice 2: alternating bend.** A `bendPattern` field (`"arc"` default, `"alternate"`) in
+- [x] **Slice 2: alternating bend** (#226; even counts cross the line too, Josh's choice). A `bendPattern` field (`"arc"` default, `"alternate"`) in
       the solver and flag parser, with unit tests. Independent of slice 1.
-- [ ] **Slice 3: shared smear buffer and the ink shader** (after slice 1). One map-fixed buffer
+- [x] **Slice 3: shared smear buffer and the ink shader** (#227, after slice 1). One map-fixed buffer
       per scene, ping-pong render textures, arms with `shader: "ink"` paint into it, the image
       pass is drawn over the buffer's area in `canvas.primary`. Buffer size is a client setting
       (1024 default, 512 for weak machines). Hidden tokens' arms paint only for GMs.
-- [ ] **Live:** install the module, check it in the GM client, set the six Implements to
-      `shader: "ink"`, Josh checks a player client.
-- [ ] Wrap up: README, `docs/now.md`, `docs/backlog.md`.
+- [x] **Live (GM side, 2026-11-09):** installed with `just arms-module-install`; in the GM
+      client all six Implements carry `shader: "ink"` and draw ink arms with smeared edges, with
+      no shader or WebGL errors. Still open (backlog): Josh enables the module after a world
+      relaunch, places the real anchors, and checks a player client.
+- [x] Wrap up: README, `docs/now.md`, `docs/backlog.md`.
 
 ## 2. Notes for the slices
 

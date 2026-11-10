@@ -127,11 +127,10 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   portal-headless reports module 0.5.0. Waits on the Foundry world being launched (it was down
   on 2026-10-26 after the module update) — main session.
 - ik-arms: relaunch the Foundry world from setup and enable the IK Arms module, so the arms draw
-  for players; then check a hand-dragged token, the "IK Arms: pick anchors" macro and a player
-  client, none of which the headless GM could test — Josh.
-- ik-arms shaders: shader-drawn arms on a smooth curve, a shared map-fixed smear buffer with the
-  iridescent ink shader, and an alternating bend; plan and checklist in
-  `thoughts/shared/plans/2026-11-09-ik-arms-shaders.md` — agent.
+  for players; place the real anchors with the "IK Arms: pick anchors" macro (today's are
+  placeholders off the map's edge); then check a hand-dragged token and a player client, which
+  the headless GM could not test. If the ink arms are slow on a player's machine, set their
+  `ik-arms.bufferSize` client setting to 512 — Josh.
 
 ## Frontends
 
