@@ -6,6 +6,11 @@ describe("reachRadius", () => {
   it("is the arm's length with 10% spare, plus its widest width and two grid squares", () => {
     expect(reachRadius(3, 200, 70, 100)).toBeCloseTo(3 * 200 * 1.1 + 70 + 200);
   });
+
+  it("grows by twice the hand's radius when the arm has a hand", () => {
+    expect(reachRadius(3, 200, 70, 100, 50)).toBeCloseTo(reachRadius(3, 200, 70, 100) + 100);
+    expect(reachRadius(3, 200, 70, 100, 0)).toBe(reachRadius(3, 200, 70, 100));
+  });
 });
 
 describe("smearRegion", () => {

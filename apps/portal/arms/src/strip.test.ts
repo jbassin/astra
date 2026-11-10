@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import { solve } from "./solve";
-import { allocateStrip, buildPath, stripIndices, SUBDIV, vertexCount, writeStrip } from "./strip";
+import {
+  allocateStrip,
+  buildPath,
+  stripEnd,
+  stripIndices,
+  SUBDIV,
+  vertexCount,
+  writeStrip,
+} from "./strip";
 
 const bent = solve({ x: 0, y: 0 }, { x: 300, y: 100 }, 3, 160, 1);
 
@@ -127,5 +135,40 @@ describe("straight arms", () => {
     for (const key of ["position", "uv", "dist", "seg", "half"] as const) {
       for (const [i, value] of a[key].entries()) expect(value).toBeCloseTo(at(b[key], i), 3);
     }
+  });
+});
+
+describe.each([true, false])("stripEnd (smooth %s)", (smooth) => {
+  it("is the last centre-line sample, heading the way the last step goes", () => {
+    const joints = solve({ x: 0, y: 0 }, { x: 300, y: 120 }, 3, 160, 1, "arc");
+    const out = allocateStrip(3);
+    writeStrip(out, joints, 30, 12, smooth);
+    const path = buildPath(joints, smooth);
+    const g = path.samples;
+    const ex = (path.xs[g] ?? 0) - (path.xs[g - 1] ?? 0);
+    const ey = (path.ys[g] ?? 0) - (path.ys[g - 1] ?? 0);
+    const el = Math.hypot(ex, ey);
+    const end = stripEnd(out);
+    expect(end.x).toBeCloseTo(300, 3);
+    expect(end.y).toBeCloseTo(120, 3);
+    expect(end.dx).toBeCloseTo(ex / el, 4);
+    expect(end.dy).toBeCloseTo(ey / el, 4);
+  });
+
+  it("heads along a straight arm", () => {
+    const out = allocateStrip(1);
+    writeStrip(
+      out,
+      [
+        { x: 0, y: 0 },
+        { x: 0, y: 100 },
+      ],
+      20,
+      10,
+      smooth,
+    );
+    const end = stripEnd(out);
+    expect(end.dx).toBeCloseTo(0, 6);
+    expect(end.dy).toBeCloseTo(1, 6);
   });
 });

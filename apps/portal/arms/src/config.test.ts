@@ -39,6 +39,9 @@ describe("parseArmFlag", () => {
       shader: "pulse",
       smooth: false,
       rings: true,
+      hand: true,
+      handSize: 1.5,
+      curl: 0.25,
     };
     expect(parseArmFlag(flag)).toEqual(flag);
   });
@@ -57,6 +60,9 @@ describe("parseArmFlag", () => {
       shader: "",
       smooth: "yes",
       rings: 1,
+      hand: "yes",
+      handSize: -2,
+      curl: "tight",
     });
     expect(parsed).toEqual({ ...DEFAULTS, anchor: { x: 1, y: 2 } });
   });
@@ -66,5 +72,12 @@ describe("parseArmFlag", () => {
     expect(parseArmFlag({ anchor, segments: 2.6 })?.segments).toBe(3);
     expect(parseArmFlag({ anchor, segments: 0 })?.segments).toBe(1);
     expect(parseArmFlag({ anchor, segments: 500 })?.segments).toBe(MAX_SEGMENTS);
+  });
+
+  it("clamps the curl to 0..1", () => {
+    const anchor = { x: 0, y: 0 };
+    expect(parseArmFlag({ anchor, curl: -0.5 })?.curl).toBe(0);
+    expect(parseArmFlag({ anchor, curl: 0.4 })?.curl).toBe(0.4);
+    expect(parseArmFlag({ anchor, curl: 3 })?.curl).toBe(1);
   });
 });

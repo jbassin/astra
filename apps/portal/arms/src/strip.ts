@@ -176,3 +176,33 @@ export function writeStrip(
   }
   return total;
 }
+
+/** Where the strip ends and which way it is heading there: a point and a unit direction. */
+interface StripEnd {
+  readonly x: number;
+  readonly y: number;
+  readonly dx: number;
+  readonly dy: number;
+}
+
+/**
+ * The end of a strip `writeStrip` wrote: the last centre-line sample (the hand) and the
+ * direction from the sample before it. The last vertex pair is never pinched or mitred, so its
+ * midpoint is that sample and the vector across it is the end normal, a quarter turn from the
+ * direction.
+ */
+export function stripEnd(strip: StripArrays): StripEnd {
+  const p = strip.position;
+  const v = p.length - 4;
+  const mx = at(p, v);
+  const my = at(p, v + 1);
+  const px = at(p, v + 2);
+  const py = at(p, v + 3);
+  const nx = px - mx;
+  const ny = py - my;
+  const nl = Math.hypot(nx, ny);
+  const x = (mx + px) / 2;
+  const y = (my + py) / 2;
+  // writeStrip puts the plus side at the tangent turned by +90 degrees: n = (-ty, tx).
+  return nl > 0 ? { x, y, dx: ny / nl, dy: -nx / nl } : { x, y, dx: 1, dy: 0 };
+}
