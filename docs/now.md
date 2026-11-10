@@ -4,13 +4,15 @@ Updated 2026-11-09.
 
 ## In flight
 
-- **ik-arms Foundry module built for the six-handed boss fight (2026-11-09).** A new module in
-  `apps/portal/arms` draws a jointed arm from an anchor point to a token and re-poses it as the
-  token moves ([`apps/portal/arms/README.md`](../apps/portal/arms/README.md)). It is installed in
-  the live Foundry (`just arms-module-install`) but not enabled: the six Implement tokens on the
-  "esoterica" scene carry placeholder anchors, and the arms draw only on a client that runs the
-  "IK Arms: load on this client" macro. Next: Josh relaunches the world from setup, enables IK
-  Arms, and places the real anchors with the "IK Arms: pick anchors" macro.
+- **ik-arms arms are shader-drawn ink for the six-handed boss (2026-11-09, #225 to #227).** The
+  module in `apps/portal/arms` now draws each arm as one smooth strip through its joints with a
+  named shader; `shader: "ink"` arms paint into one smear buffer fixed to the map, shared by every
+  ink arm, and an image pass lights it with the iridescent-ink look designed in
+  `apps/portal/arms/bench/` ([`apps/portal/arms/README.md`](../apps/portal/arms/README.md)). A
+  `bendPattern: "alternate"` zigzag is also available. Installed in the live Foundry and checked
+  in the GM client: the six Implements on "esoterica" draw ink arms with no errors. The module is
+  still not enabled, so players don't see arms yet. Next: Josh relaunches the world, enables IK
+  Arms, places the real anchors, and checks a player client.
 - **Character builder is live at builder.iridi.cc and redesigned (2026-11-07, #207 to #216).**
   A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players: archetype, class,
   species, background, class choices, spells and an about-you step, then a plain-language "On
