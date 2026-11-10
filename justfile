@@ -178,9 +178,11 @@ tokens-check: (tokens-gen "--check")
 py-typecheck:
     uv run ty check
 
-# CI job py-test: pytest.
+# pytest-xdist: one worker per core, at most 8 (more gains nothing and starves the steps
+# `just ci` runs beside it). A plain `uv run pytest <path>` stays in one process.
+# CI job py-test: pytest, in parallel workers.
 py-test:
-    uv run pytest
+    uv run pytest -n auto --maxprocesses 8
 
 # typecheck and build fan out with `pnpm -r --no-bail`: every member that defines the
 # script runs, a failing member doesn't hide the ones after it, and the command still
