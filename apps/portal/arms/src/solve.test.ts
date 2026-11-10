@@ -66,7 +66,7 @@ describe("solve with an alternating bend", () => {
   const anchor = { x: 100, y: -40 };
 
   it.each([2, 3, 4, 7])("keeps all %i segments rigid while the hand is in reach", (segments) => {
-    // Every target is at least a segment and a half away, which an odd chain needs.
+    // Every target is at least one segment away, which a 3-segment chain needs.
     for (const target of [
       { x: 130, y: 300 },
       { x: 400, y: -40 },
@@ -109,21 +109,40 @@ describe("solve with an alternating bend", () => {
     expect(turns).toEqual([1, -1, 1]);
   });
 
-  it("puts the joints of an odd chain on alternate sides of the anchor-hand line", () => {
-    const target = { x: 600, y: 200 };
-    for (const segments of [3, 5]) {
-      const joints = solve(anchor, target, segments, 200, 1, "alternate");
+  it.each([3, 4, 5, 6])("puts the %i-segment joints on alternate sides of the line", (n) => {
+    for (const target of [
+      { x: 600, y: 200 },
+      { x: 100 + 0.9 * 200 * n, y: -40 },
+      { x: 100, y: -40 + 1.2 * 200 },
+    ]) {
+      const joints = solve(anchor, target, n, 200, 1, "alternate");
       const sides = joints.slice(1, -1).map((p) => side(anchor, target, p));
       expect(sides).toEqual(sides.map((_, i) => (i % 2 === 0 ? -1 : 1)));
     }
   });
 
-  it("zigzags an even chain on one side, its middle joint on the anchor-hand line", () => {
-    // Equal turns cannot cross the line with an even count: the chain is symmetric about its
-    // middle joint, which lands on the line, and the other joints sit on the same side.
-    const target = { x: 600, y: 200 };
-    const joints = solve(anchor, target, 4, 200, 1, "alternate");
-    expect(joints.slice(1, -1).map((p) => side(anchor, target, p))).toEqual([-1, 0, -1]);
+  it("gives three segments the equal-and-opposite turns of a plain zigzag", () => {
+    const joints = solve(anchor, { x: 600, y: 200 }, 3, 200, 1, "alternate");
+    const heading = (i: number): number => {
+      const p = joints[i] ?? anchor;
+      const q = joints[i + 1] ?? anchor;
+      return Math.atan2(q.y - p.y, q.x - p.x);
+    };
+    // The end segments are parallel, so the two turns cancel.
+    expect(heading(0)).toBeCloseTo(heading(2), 9);
+    expect(heading(1) - heading(0)).toBeGreaterThan(0);
+  });
+
+  it.each([4, 7])("keeps %i segments rigid with the hand close to the anchor", (n) => {
+    for (const target of [
+      { x: 150, y: -40 },
+      { x: 100, y: 60 },
+      { x: 101, y: -39 },
+    ]) {
+      const joints = solve(anchor, target, n, 200, 1, "alternate");
+      expect(joints.at(-1)).toEqual(target);
+      for (const length of lengths(joints)) expect(length).toBeCloseTo(200, 3);
+    }
   });
 
   it("straightens and stretches every segment equally when the hand is out of reach", () => {
@@ -142,7 +161,7 @@ describe("solve with an alternating bend", () => {
     }
   });
 
-  it("folds an odd chain flat inside one segment and keeps the hand attached", () => {
+  it("folds a 3-segment chain flat inside one segment and keeps the hand attached", () => {
     const joints = solve(anchor, { x: 150, y: -40 }, 3, 200, 1, "alternate");
     expect(joints.at(-1)).toEqual({ x: 150, y: -40 });
     for (const joint of joints) {
