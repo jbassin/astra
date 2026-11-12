@@ -14,22 +14,25 @@ Updated 2026-11-12.
   client: the six Implements on "esoterica" draw ink arms and hands with no errors. The module is
   still not enabled, so players don't see arms yet. Next: Josh relaunches the world, enables IK
   Arms, places the real anchors, and checks a player client.
-- **Character builder is live at builder.iridi.cc, with about half the reading (2026-11-12,
-  #231 and #232).** A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players:
-  archetype, class, species, background, class choices and an about-you step, then an "On your
-  turn" sheet with printable cards. The builder chooses every spell and, from the class, the
-  species sub-choice, which it shows as the species (a Wizard's Elf is a "High Elf"). Choice
-  cards show one line and nothing folds out. The sheet describes each thing once, on its card;
-  a spell's card shows its one-line gist, and what already shows in a number gets no card. A
-  player reads 470 to 600 words to build (was 700 to 1,000) and a sheet of 660 to 1,310 (was
-  1,000 to 2,400). Content comes from the 2024 entries of 5etools (pinned commit 87471edd) with
-  curated shortlists, summaries and gists. The look is phone first (#213, #214, #216): a "guild
-  charter" identity with a heraldic hue and game-icons emblem per class, a sticky progress bar,
-  and a sheet with a jump bar. Each player gets a private link from `just builder-invite
-  <name>`; answers save to `/ruby/data/astra-state/builder/`; Josh sees everyone at
-  `/dm/<token>` (SOPS `builder_dm_token`); `/test` runs the flow without saving. Next: Josh
-  checks the per-class species picks (listed in #231) and the things that lost their card
-  (listed in #232), walks `/test`, then the five invites. Plan:
+- **Character builder is live at builder.iridi.cc, with a sheet to play from (2026-11-12,
+  #231 to #239).** A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players:
+  archetype, class, species, background and an about-you step, then an "On your turn" sheet
+  with printable cards. The player makes those four picks and the builder makes the rest:
+  every spell, the species sub-choice (a Wizard's Elf is a "High Elf") and every class option
+  (fighting style, Divine and Primal Order, invocations, Metamagic; the first entries of each
+  class's ordered shortlist in `content/classes.ts`). A class another player holds is greyed
+  out ("Taken by Ada") and the server refuses it. The sheet describes each thing once, on its
+  card; it never mentions a rest, because the one-shot has none, and no note says where a
+  number comes from. At the table, Hit Points step down and up, spell slots and every limited
+  use have pips to mark, and pressing a name opens its card; the marks save with the character
+  (`play` in its file) and show on the DM page. Content comes from the 2024 entries of 5etools
+  (pinned commit 87471edd) with curated shortlists, summaries and gists. The look is phone
+  first: a "guild charter" identity with a heraldic hue and game-icons emblem per class, a
+  sticky progress bar, and a sheet with a jump bar. Each player gets a private link from
+  `just builder-invite <name>`; answers save to `/ruby/data/astra-state/builder/`; Josh sees
+  everyone at `/dm/<token>` (SOPS `builder_dm_token`); `/test` runs the flow without saving.
+  Next: Josh checks the builder's picks and the reworded lines (the lists in #231, #232, #236
+  and #238), walks `/test`, then the five invites. Plan:
   [`thoughts/shared/research/2026-11-06-character-builder.md`](../thoughts/shared/research/2026-11-06-character-builder.md).
 - **Unused web apps removed from the repo (2026-11-04): menhir, ledger, the vellum site
   and weal-overlay.** weal-bot no longer posts rolls to an overlay. Code, config, compose, Caddy,

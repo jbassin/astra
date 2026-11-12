@@ -4,6 +4,7 @@ Start with `docs/now.md` and `docs/backlog.md`; app facts are in each app's READ
 - [Keep docs current](keep-docs-current.md) — read after any merge, deploy or decision: update now.md and the backlog then, not at wrap-up.
 - [No CI monitoring](no-ci-monitoring.md) — read after opening a pull request: auto-merge waits; check once, never poll.
 - [Lighter process, no octo](lighter-process-no-octo.md) — read when planning: no octo skills, no spec ritual; CLAUDE.md is the process.
+- [Sonnet agents implement](sonnet-agents-implement.md) — read before starting an implementation agent: pass `model: "sonnet"`.
 - [Ask real decisions early](resolve-open-questions-before-next-stage.md) — read when a product/cost call comes up: ask before building on it.
 - [No silent scope cuts](no-silent-scope-cuts.md) — read when work outgrows your budget: surface the trade-off, never cut quietly.
 - [Verify before acting](verify-before-acting.md) — read before writing new logic or trusting odd output: find prior art, check twice.
