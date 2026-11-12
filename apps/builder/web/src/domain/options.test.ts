@@ -49,7 +49,7 @@ describe("options the shipped shortlists don't pick first", () => {
         ...DONE,
       }),
     );
-    expect(protector.proficiencies.armor).toContain("Heavy armor (Protector)");
+    expect(protector.proficiencies.armor).toContain("Heavy armor");
     const warden = withShortlist("druid", { primalOrder: ["warden"] }, () =>
       buildCharacter({
         archetype: "mage",
@@ -59,38 +59,62 @@ describe("options the shipped shortlists don't pick first", () => {
         ...DONE,
       }),
     );
-    expect(warden.proficiencies.armor).toContain("Medium armor (Warden)");
+    expect(warden.proficiencies.armor).toContain("Medium armor");
   });
 
-  it("a fighting style shows in the attack notes", () => {
-    const notes = (classId: "fighter" | "ranger", style: string) =>
+  it("a fighting style's numbers go into the attack, with no note on where they came from", () => {
+    const attacks = (classId: "fighter" | "ranger", style: string) =>
       withShortlist(classId, { fightingStyle: [style] }, () =>
         buildCharacter({
           ...FIGHTER,
           archetype: CONTENT.classes[classId].archetype,
           classId,
           backgroundId: CONTENT.classes[classId].backgrounds[0],
-        }).attacks.flatMap((a) => a.notes),
-      ).join(" ");
-    expect(notes("ranger", "two-weapon-fighting")).toContain("Two-Weapon Fighting");
-    expect(notes("fighter", "thrown-weapon-fighting")).toContain("Thrown Weapon Fighting");
-    expect(notes("fighter", "great-weapon-fighting")).toContain("Great Weapon Fighting");
-    expect(notes("fighter", "defense")).not.toContain("Fighting");
+        }),
+      ).attacks;
+    const notes = (classId: "fighter" | "ranger", style: string) =>
+      attacks(classId, style).flatMap((a) => a.notes);
+    // Thrown Weapon Fighting adds 2 to a thrown weapon's damage, and the note says only the number.
+    expect(notes("fighter", "thrown-weapon-fighting")).toContainEqual(
+      expect.stringMatching(/^Thrown: 1d6 \+ \d+\.$/),
+    );
+    expect(notes("fighter", "defense").join(" ")).not.toContain("Thrown:");
+    // The other styles leave no note: their cards say what they do.
+    for (const [cls, style] of [
+      ["ranger", "two-weapon-fighting"],
+      ["fighter", "great-weapon-fighting"],
+      ["ranger", "archery"],
+    ] as const) {
+      expect(notes(cls, style).join(" "), style).not.toMatch(/Fighting|Archery|Includes/);
+    }
+    // Archery adds 2 to the attack roll of a ranged weapon.
+    const bow = (style: string) =>
+      attacks("ranger", style).find((a) => a.properties.includes("Ammunition"))?.toHit;
+    expect((bow("archery") ?? 0) - (bow("two-weapon-fighting") ?? 0)).toBe(2);
   });
 
-  it("Dueling's rivals leave the damage alone: Protection and Blessed Warrior", () => {
-    const damage = (style: string) =>
-      withShortlist("paladin", { fightingStyle: [style] }, () =>
+  it("Dueling adds 2 to a one-handed Longsword, not to its two-handed damage", () => {
+    const longsword = (style: string) => {
+      const c = withShortlist("paladin", { fightingStyle: [style] }, () =>
         buildCharacter({
           archetype: "healer",
           classId: "paladin",
           speciesId: "human",
           backgroundId: "noble",
           ...DONE,
-        }).attacks.map((a) => a.notes.join(" ")),
+        }),
       );
-    expect(damage("dueling").join(" ")).toContain("Dueling");
-    expect(damage("protection").join(" ")).not.toContain("Dueling");
-    expect(damage("blessed-warrior").join(" ")).not.toContain("Dueling");
+      const a = c.attacks.find((x) => x.name.startsWith("Longsword"));
+      if (!a) throw new Error("no Longsword");
+      return a;
+    };
+    const dueling = longsword("dueling");
+    const protection = longsword("protection");
+    // Str 17: +3. One-handed 1d8 + 3, or 1d8 + 5 with Dueling; two-handed 1d10 + 3 either way.
+    expect(protection.damage).toBe("1d8 + 3");
+    expect(dueling.damage).toBe("1d8 + 5");
+    expect(dueling.notes).toEqual(["Two-handed: 1d10 + 3."]);
+    expect(protection.notes).toEqual(dueling.notes);
+    expect(dueling.notes.join(" ")).not.toContain("Dueling");
   });
 });

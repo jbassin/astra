@@ -76,11 +76,7 @@ export type OptionGroupKey = (typeof OPTION_GROUP_KEYS)[number];
  */
 export interface Uses {
   count: number | "pb" | "cha";
-  /** What restores all uses. */
-  per: "long" | "short";
-  /** A partial refresh, in plain words ("Regain one use on a Short Rest."). */
-  note?: string;
-  /** The unit, when it isn't "use" ("point", "Hit Point"). */
+  /** The unit, when it isn't "use" ("Sorcery Point", "Hit Point"). */
   unit?: string;
 }
 
@@ -151,7 +147,7 @@ export interface OptionContent extends Summarized, Activated, Gisted, Applied {
   /** A requirement the UI should show and the step status checks. */
   requires?: { damageCantrip?: boolean; attackCantrip?: boolean };
   /** A spell the option lets you cast, shown with the character's spells. */
-  grantsSpell?: { id: string; note: string };
+  grantsSpell?: { id: string };
 }
 
 export interface OptionGroupContent {
@@ -168,14 +164,14 @@ export interface OptionGroupContent {
 
 export interface AlwaysPreparedSpell {
   id: string;
-  /** Plain words: where it comes from and any free casts. */
-  note: string;
   freeCasts?: Uses;
+  /** What casting it costs, when that isn't a spell slot or a free cast. */
+  cost?: string;
 }
 
 export interface SpellcastingContent {
   ability: Ability;
-  /** "pact": Warlock slots, all of one level, back on a Short Rest. */
+  /** "pact": Warlock slots, all of one level. */
   kind: "prepared" | "pact";
   /** Cantrips known at level 2 (before Thaumaturge or Magician). */
   cantripCount: number;
@@ -188,8 +184,6 @@ export interface SpellcastingContent {
   cantrips: SpellList;
   level1: SpellList;
   alwaysPrepared: AlwaysPreparedSpell[];
-  /** Wizard: spells in the spellbook at level 2, the first of `level1` (the first `preparedCount` of them are prepared). */
-  spellbookSize?: number;
 }
 
 export interface EquipmentLine {
@@ -254,6 +248,7 @@ export interface ArchetypeContent {
 export interface SpeciesOptionContent extends Summarized, Activated, Applied {
   /** The species trait this option replaces on the sheet. */
   replacesTrait: string;
+  uses?: Uses;
   speed?: number;
   darkvision?: number;
   resist?: string[];

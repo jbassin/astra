@@ -105,10 +105,12 @@ export interface SpellEntry {
   components: string;
   concentration: boolean;
   ritual: boolean;
-  /** Why the character has it, when it isn't an ordinary pick ("Always prepared (Druidic)"). */
-  note?: string;
-  /** Casts without a spell slot, in plain words ("2 per Long Rest"). */
-  freeCasts?: string;
+  /** How many times it can be cast without a spell slot. */
+  freeCasts?: number;
+  /** An option lets the character cast it as often as they like (Mask of Many Faces). */
+  atWill?: boolean;
+  /** What casting it costs, when that isn't a spell slot or a free cast. */
+  cost?: string;
   /** When it is cast (from the spell's casting time). */
   activation: Activation;
   attack?: {
@@ -135,12 +137,10 @@ export interface SpellcastingBlock {
   attackBonus: number;
   /** Spell slots per level (index 0 = level 1); class block only. */
   slots?: number[];
-  /** Warlock Pact Magic: every slot is this level and returns on a Short Rest. */
+  /** Warlock Pact Magic: every slot is this level. */
   pactSlotLevel?: number;
   cantrips: SpellEntry[];
   spells: SpellEntry[];
-  /** Wizard: every level 1 spell in the spellbook (the prepared ones included). */
-  spellbook?: SpellEntry[];
 }
 
 export interface FeatureLine {
@@ -150,8 +150,8 @@ export interface FeatureLine {
   summary: string;
   /** When it is used, which decides where the sheet lists it. */
   activation: Activation;
-  /** How often, in plain words ("2 per Long Rest; regain one use on a Short Rest"). */
-  uses?: string;
+  /** How many uses, and what one is called ("use", "Sorcery Point"). */
+  uses?: { max: number; unit: string };
 }
 
 export interface Character {
@@ -166,7 +166,7 @@ export interface Character {
   species?: { id: string; name: string; size: string };
   background?: { id: string; name: string };
   abilities: Record<Ability, AbilityScore>;
-  hitPoints: { max: number; hitDice: string; breakdown: string };
+  hitPoints: { max: number; breakdown: string };
   armorClass: {
     value: number;
     breakdown: string;
@@ -253,8 +253,9 @@ export function spellEntry(
     saveDc: number;
     modifier: number;
     damageBonus?: number;
-    note?: string;
-    freeCasts?: string;
+    freeCasts?: number;
+    atWill?: boolean;
+    cost?: string;
   },
 ): SpellEntry {
   const { attackBonus, saveDc, modifier, damageBonus = 0, ...extra } = caster;
@@ -300,12 +301,9 @@ function resolveCount(u: Uses, mods: Record<Ability, number>): number {
   return u.count;
 }
 
-/** "2 per Long Rest; regain one use when you finish a Short Rest." */
-function formatUses(u: Uses, mods: Record<Ability, number>): string {
-  const n = resolveCount(u, mods);
-  const unit = u.unit ? ` ${u.unit}${n === 1 ? "" : "s"}` : "";
-  const per = u.per === "short" ? "per Short or Long Rest" : "per Long Rest";
-  return `${n}${unit} ${per}${u.note ? `; ${u.note.charAt(0).toLowerCase()}${u.note.slice(1)}` : ""}`;
+/** How many uses, and what one is called. */
+function countOf(u: Uses, mods: Record<Ability, number>): { max: number; unit: string } {
+  return { max: resolveCount(u, mods), unit: u.unit ?? "use" };
 }
 
 function item(id: string | undefined): ItemContent | undefined {
@@ -551,7 +549,7 @@ export function buildCharacter(answers: Answers): Character {
   const perception = skills.find((s) => s.id === "perception")?.bonus ?? mods.wis;
 
   // Hit points.
-  let hitPoints: Character["hitPoints"] = { max: 0, hitDice: "", breakdown: "Pick a class first." };
+  let hitPoints: Character["hitPoints"] = { max: 0, breakdown: "Pick a class first." };
   if (cls) {
     const first = cls.hitDie + mods.con;
     const second = cls.hitDie / 2 + 1 + mods.con;
@@ -568,7 +566,7 @@ export function buildCharacter(answers: Answers): Character {
       max += 2 * LEVEL;
       parts.push(`+${2 * LEVEL} Tough`);
     }
-    hitPoints = { max, hitDice: `${LEVEL}d${cls.hitDie}`, breakdown: parts.join(", ") };
+    hitPoints = { max, breakdown: parts.join(", ") };
   }
 
   // Equipment, armor and Armor Class.
@@ -625,17 +623,20 @@ export function buildCharacter(answers: Answers): Character {
       shield: hasShield,
     });
   }
+  // Armor of Shadows: Mage Armor on yourself whenever you like, so it is simply one more option.
+  if (hasOption(options, "armor-of-shadows")) {
+    acOptions.push({
+      value: 13 + mods.dex + shieldAc,
+      breakdown: `13 ${signed(mods.dex)} Dex${hasShield ? ` +${shieldAc} Shield` : ""}`,
+      shield: hasShield,
+    });
+  }
   const worn = acOptions.reduce((best, o) => (o.value > best.value ? o : best));
   const alternatives: Character["armorClass"]["alternatives"] = [];
-  const mageArmorFrom = hasOption(options, "armor-of-shadows")
-    ? "Armor of Shadows: cast Mage Armor on yourself for free"
-    : picks.spells.includes("mage-armor")
-      ? "Mage Armor: costs a level 1 spell slot, lasts 8 hours"
-      : undefined;
-  if (mageArmorFrom) {
-    const value = 13 + mods.dex + (trained.shield && hasShield ? shieldAc : 0);
+  if (picks.spells.includes("mage-armor")) {
+    const value = 13 + mods.dex + shieldAc;
     if (value > worn.value || worn.armor)
-      alternatives.push({ value, label: `${value} with no armor on (${mageArmorFrom})` });
+      alternatives.push({ value, label: `${value} with Mage Armor` });
   }
 
   // Speed and initiative.
@@ -694,10 +695,8 @@ export function buildCharacter(answers: Answers): Character {
     const mod = mods[ability];
     const notes: string[] = [];
     let toHit = mod + (prof ? pb : 0);
-    if (!prof) notes.push("You aren't proficient: no Proficiency Bonus to hit.");
     if (w.ranged && hasOption(options, "archery")) {
       toHit += 2;
-      notes.push("Includes +2 from Archery.");
     }
     let dmgMod = mod;
     const twoHanded = w.properties.includes("two-handed");
@@ -709,28 +708,15 @@ export function buildCharacter(answers: Answers): Character {
       hasOption(options, "dueling")
     ) {
       dmgMod += 2;
-      notes.push("Includes +2 from Dueling (only while it's the one weapon in your hands).");
     }
-    if (
-      !w.ranged &&
-      (twoHanded || w.properties.includes("versatile")) &&
-      hasOption(options, "great-weapon-fighting")
-    ) {
-      notes.push("Great Weapon Fighting: with two hands, treat any 1 or 2 on a damage die as a 3.");
-    }
-    if (w.versatile) notes.push(`Two-handed: ${damageWith(w.versatile, dmgMod)}.`);
+    // Dueling is for one hand, so the two-handed damage never includes it.
+    if (w.versatile) notes.push(`Two-handed: ${damageWith(w.versatile, mod)}.`);
     if (w.properties.includes("thrown") && hasOption(options, "thrown-weapon-fighting")) {
-      notes.push(`Thrown: ${damageWith(die, dmgMod + 2)} (Thrown Weapon Fighting).`);
-    }
-    if (w.properties.includes("light") && hasOption(options, "two-weapon-fighting")) {
-      notes.push(
-        "With a Light weapon in your other hand, the extra attack adds your modifier (Two-Weapon Fighting).",
-      );
+      notes.push(`Thrown: ${damageWith(die, dmgMod + 2)}.`);
     }
     if (raging && ability === "str") notes.push(`${raging} damage while raging.`);
     if (sneak && (finesse || w.ranged))
       notes.push(`Sneak Attack: +${sneak} once per turn when it applies.`);
-    if (monkWeapon) notes.push("Monk weapon: uses your Martial Arts die and Dexterity.");
     let range = w.properties.includes("reach") ? "10 ft." : "5 ft.";
     if (w.ranged) range = `${w.range ?? "?"} ft.`;
     else if (w.properties.includes("thrown") && w.range) range = `5 ft. or thrown ${w.range} ft.`;
@@ -759,7 +745,7 @@ export function buildCharacter(answers: Answers): Character {
       damageType: "Bludgeoning",
       range: "5 ft.",
       properties: [],
-      notes: ["You can make one as a bonus action (Martial Arts), or two with Flurry of Blows."],
+      notes: ["You can make one as a bonus action, or two with Flurry of Blows."],
     });
   } else if (feats.includes("tavern-brawler")) {
     attacks.push({
@@ -770,9 +756,7 @@ export function buildCharacter(answers: Answers): Character {
       damageType: "Bludgeoning",
       range: "5 ft.",
       properties: [],
-      notes: [
-        "Tavern Brawler: reroll a 1 on the damage die; once per turn you can also push the target 5 feet.",
-      ],
+      notes: [],
     });
   }
 
@@ -784,7 +768,7 @@ export function buildCharacter(answers: Answers): Character {
   const entry = (
     id: string,
     a: Ability,
-    extra: { note?: string; freeCasts?: string } = {},
+    extra: { freeCasts?: number; atWill?: boolean; cost?: string } = {},
   ): SpellEntry | undefined => {
     const s: SpellContent | undefined = CONTENT.spells[id];
     if (!s) return undefined;
@@ -809,18 +793,14 @@ export function buildCharacter(answers: Answers): Character {
       ...entries(picks.spells, a),
       ...sc.alwaysPrepared.flatMap((ap) =>
         entries([ap.id], a, {
-          note: ap.note,
-          ...(ap.freeCasts && { freeCasts: formatUses(ap.freeCasts, mods) }),
+          ...(ap.freeCasts && { freeCasts: resolveCount(ap.freeCasts, mods) }),
+          ...(ap.cost && { cost: ap.cost }),
         }),
       ),
       ...options.flatMap((o) =>
-        o.grantsSpell ? entries([o.grantsSpell.id], a, { note: o.grantsSpell.note }) : [],
+        o.grantsSpell ? entries([o.grantsSpell.id], a, { atWill: true }) : [],
       ),
     ];
-    let spellbook: SpellEntry[] | undefined;
-    if (sc.spellbookSize) {
-      spellbook = entries(sc.level1.slice(0, sc.spellbookSize), a);
-    }
     spellcasting.push({
       source: "class",
       label: `${cls.name} spells`,
@@ -831,7 +811,6 @@ export function buildCharacter(answers: Answers): Character {
       ...(sc.pactSlotLevel !== undefined && { pactSlotLevel: sc.pactSlotLevel }),
       cantrips: entries(picks.cantrips, a),
       spells,
-      ...(spellbook && { spellbook }),
     });
   }
   const style = options.find((o) => o.grantsCantrips);
@@ -861,10 +840,7 @@ export function buildCharacter(answers: Answers): Character {
       attackBonus: atkFor(a),
       cantrips: entries(speciesCantrips, a),
       spells: (speciesOption?.innateSpells ?? []).flatMap((s) =>
-        entries([s.id], a, {
-          note: `${speciesOption?.name}: always prepared.`,
-          freeCasts: formatUses(s.uses, mods),
-        }),
+        entries([s.id], a, { freeCasts: resolveCount(s.uses, mods) }),
       ),
     });
   }
@@ -878,10 +854,7 @@ export function buildCharacter(answers: Answers): Character {
       saveDc: dcFor(a),
       attackBonus: atkFor(a),
       cantrips: entries(picks.initiateCantrips, a),
-      spells: entries(picks.initiateSpell, a, {
-        note: "Magic Initiate: always prepared.",
-        freeCasts: "1 per Long Rest",
-      }),
+      spells: entries(picks.initiateSpell, a, { freeCasts: 1 }),
     });
   }
   // Cantrips that attack go on the attack list too.
@@ -897,10 +870,7 @@ export function buildCharacter(answers: Answers): Character {
         damageType: c.attack.damageType ?? "",
         range: c.range,
         properties: [],
-        notes:
-          c.id === "eldritch-blast" && agonizing
-            ? [`Includes ${signed(mods.cha)} from Agonizing Blast.`]
-            : [],
+        notes: [],
       });
     }
   }
@@ -916,7 +886,7 @@ export function buildCharacter(answers: Answers): Character {
       source: "class",
       summary: f.summary,
       activation: f.activation,
-      ...(f.uses && { uses: formatUses(f.uses, mods) }),
+      ...(f.uses && { uses: countOf(f.uses, mods) }),
     });
   }
   for (const o of options) {
@@ -927,7 +897,7 @@ export function buildCharacter(answers: Answers): Character {
       source: "option",
       summary: o.summary,
       activation: o.activation,
-      ...(o.uses && { uses: formatUses(o.uses, mods) }),
+      ...(o.uses && { uses: countOf(o.uses, mods) }),
     });
   }
   for (const t of species?.traits ?? []) {
@@ -939,6 +909,7 @@ export function buildCharacter(answers: Answers): Character {
         source: "species",
         summary: speciesOption.summary,
         activation: speciesOption.activation,
+        ...(speciesOption.uses && { uses: countOf(speciesOption.uses, mods) }),
       });
     } else if (!t.applied) {
       features.push({
@@ -947,7 +918,7 @@ export function buildCharacter(answers: Answers): Character {
         source: "species",
         summary: t.summary,
         activation: t.activation,
-        ...(t.uses && { uses: formatUses(t.uses, mods) }),
+        ...(t.uses && { uses: countOf(t.uses, mods) }),
       });
     }
   }
@@ -960,14 +931,14 @@ export function buildCharacter(answers: Answers): Character {
         source: id === background?.feat ? "background" : "feat",
         summary: f.summary,
         activation: f.activation,
-        ...(f.uses && { uses: formatUses(f.uses, mods) }),
+        ...(f.uses && { uses: countOf(f.uses, mods) }),
       });
   }
 
   // Proficiencies.
   const armorProf = (cls?.armorText ?? []).map((a) => PROFICIENCY_LABELS[a.toLowerCase()] ?? a);
-  if (hasOption(options, "protector")) armorProf.push("Heavy armor (Protector)");
-  if (hasOption(options, "warden")) armorProf.push("Medium armor (Warden)");
+  if (hasOption(options, "protector")) armorProf.push("Heavy armor");
+  if (hasOption(options, "warden")) armorProf.push("Medium armor");
   const weaponProf = (cls?.weaponText ?? []).map((w) => PROFICIENCY_LABELS[w.toLowerCase()] ?? w);
   if (hasOption(options, "protector") || hasOption(options, "warden"))
     weaponProf.push("Martial weapons");

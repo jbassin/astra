@@ -50,7 +50,7 @@ describe("buildCharacter: one worked character per class", () => {
     // Priority str con dex wis int cha → 15 14 13 12 10 8; Soldier (Str Dex Con): Str +2, Con +1.
     expect(scores(c)).toEqual({ str: 17, dex: 13, con: 15, int: 10, wis: 12, cha: 8 });
     // d10: (10 + 2) + (6 + 2) + Dwarven Toughness 2 = 22.
-    expect(c.hitPoints).toMatchObject({ max: 22, hitDice: "2d10" });
+    expect(c.hitPoints.max).toBe(22);
     // Chain Mail 16, heavy: no Dex.
     expect(c.armorClass.value).toBe(16);
     expect(c.speed.walk).toBe(30);
@@ -74,7 +74,6 @@ describe("buildCharacter: one worked character per class", () => {
       damageType: "Slashing",
     });
     expect(attack(c, "Greatsword").mastery?.name).toBe("Graze");
-    expect(attack(c, "Greatsword").notes.join(" ")).toMatch(/Great Weapon Fighting/);
     expect(attack(c, "Javelin")).toMatchObject({
       toHit: 5,
       damage: "1d6 + 3",
@@ -85,9 +84,10 @@ describe("buildCharacter: one worked character per class", () => {
     expect(c.resistances).toEqual(["Poison"]);
     expect(c.gold).toBe(18); // 4 GP (Fighter A) + 14 GP (Soldier A)
     expect(c.proficiencies.languages).toEqual(["Common", "Dwarvish", "Elvish"]);
-    expect(c.features.find((f) => f.id === "fighter-second-wind")?.uses).toBe(
-      "2 per Long Rest; regain one use when you finish a Short Rest.",
-    );
+    expect(c.features.find((f) => f.id === "fighter-second-wind")?.uses).toEqual({
+      max: 2,
+      unit: "use",
+    });
     expect(c.missing).toEqual([]);
   });
 
@@ -116,7 +116,10 @@ describe("buildCharacter: one worked character per class", () => {
       nature: 1,
       perception: 3,
     });
-    expect(c.features.find((f) => f.id === "barbarian-rage")?.uses).toMatch(/^2 per Long Rest/);
+    expect(c.features.find((f) => f.id === "barbarian-rage")?.uses).toEqual({
+      max: 2,
+      unit: "use",
+    });
     // A Barbarian's Goliath descends from hill giants (the builder picks it from the class).
     expect(c.features.map((f) => f.name)).toContain("Giant Ancestry (Hill Giant)");
     expect(c.spellcasting).toEqual([]);
@@ -150,7 +153,7 @@ describe("buildCharacter: one worked character per class", () => {
     const mi = c.spellcasting.find((b) => b.source === "feat");
     expect(mi).toMatchObject({ ability: "wis", saveDc: 12, attackBonus: 4 }); // 8 + 2 + 2; 2 + 2
     const goodberry: SpellEntry | undefined = mi?.spells[0];
-    expect(goodberry).toMatchObject({ id: "goodberry", freeCasts: "1 per Long Rest" });
+    expect(goodberry).toMatchObject({ id: "goodberry", freeCasts: 1 });
     expect(c.abilities.wis.name).toBe("Wisdom");
     expect(attack(c, "Produce Flame")).toMatchObject({
       toHit: 4,
@@ -246,7 +249,7 @@ describe("buildCharacter: one worked character per class", () => {
       "goodberry",
       "hunters-mark",
     ]);
-    expect(ranger?.spells.at(-1)?.freeCasts).toBe("2 per Long Rest");
+    expect(ranger?.spells.at(-1)?.freeCasts).toBe(2);
     expect(attack(c, "Starry Wisp")).toMatchObject({
       toHit: 4,
       damage: "1d8",
@@ -285,9 +288,10 @@ describe("buildCharacter: one worked character per class", () => {
     });
     expect(skill(c, "perception")).toMatchObject({ bonus: 2, notes: ["+1 Jack of All Trades"] }); // 1 + 1
     expect(c.passivePerception).toBe(12);
-    expect(c.features.find((f) => f.id === "bard-bardic-inspiration")?.uses).toBe(
-      "3 per Long Rest",
-    ); // Cha +3
+    expect(c.features.find((f) => f.id === "bard-bardic-inspiration")?.uses).toEqual({
+      max: 3,
+      unit: "use",
+    }); // Cha +3
     const bard = c.spellcasting.find((b) => b.source === "class");
     expect(bard).toMatchObject({ ability: "cha", saveDc: 13, attackBonus: 5, slots: [3] });
     expect(attack(c, "Vicious Mockery")).toMatchObject({
@@ -338,10 +342,14 @@ describe("buildCharacter: one worked character per class", () => {
       damage: "1d8",
       damageType: "Lightning",
     });
-    expect(c.features.find((f) => f.id === "sorcerer-font-of-magic")?.uses).toBe(
-      "2 Sorcery Points per Long Rest",
-    );
-    expect(c.features.find((f) => f.id === "breath-weapon")?.uses).toBe("2 per Long Rest"); // Proficiency Bonus
+    expect(c.features.find((f) => f.id === "sorcerer-font-of-magic")?.uses).toEqual({
+      max: 2,
+      unit: "Sorcery Point",
+    });
+    expect(c.features.find((f) => f.id === "breath-weapon")?.uses).toEqual({
+      max: 2,
+      unit: "use",
+    }); // Proficiency Bonus
     expect(c.resistances).toEqual(["Fire"]);
   });
 
@@ -372,11 +380,12 @@ describe("buildCharacter: one worked character per class", () => {
       "find-familiar",
     ]);
     expect(druid).toMatchObject({ saveDc: 13, attackBonus: 5, slots: [3] });
-    expect(c.features.find((f) => f.id === "druid-wild-shape")?.uses).toMatch(/^2 per Long Rest/);
+    expect(c.features.find((f) => f.id === "druid-wild-shape")?.uses).toEqual({
+      max: 2,
+      unit: "use",
+    });
     // Forest Gnome: Speak with Animals free a Proficiency Bonus number of times.
-    expect(c.spellcasting.find((b) => b.source === "species")?.spells[0]?.freeCasts).toBe(
-      "2 per Long Rest",
-    );
+    expect(c.spellcasting.find((b) => b.source === "species")?.spells[0]?.freeCasts).toBe(2);
     expect(c.proficiencies.languages).toContain("Druidic");
     // The Druid's focus is a quarterstaff, and Hermit brings another: Str 0 + 2 = +2, 1d6.
     expect(attack(c, "Quarterstaff")).toMatchObject({
@@ -410,17 +419,7 @@ describe("buildCharacter: one worked character per class", () => {
     });
     const wizard = c.spellcasting.find((b) => b.source === "class");
     expect(wizard).toMatchObject({ ability: "int", saveDc: 13, attackBonus: 5, slots: [3] });
-    // Spellbook: the 5 prepared picks plus the next 3 on the shortlist = 8.
-    expect(wizard?.spellbook?.map((s) => s.id)).toEqual([
-      "magic-missile",
-      "shield",
-      "sleep",
-      "mage-armor",
-      "burning-hands",
-      "thunderwave",
-      "find-familiar",
-      "detect-magic",
-    ]);
+    expect(wizard).not.toHaveProperty("spellbook");
     // High Elf and Magic Initiate spells use the class's Intelligence.
     expect(c.spellcasting.find((b) => b.source === "species")).toMatchObject({
       ability: "int",
@@ -445,8 +444,10 @@ describe("buildCharacter: one worked character per class", () => {
     // Priority cha con dex wis int str → 15 14 13 12 10 8; Charlatan (Dex Con Cha): Cha +2, Con +1.
     expect(scores(c)).toEqual({ str: 8, dex: 13, con: 15, int: 10, wis: 12, cha: 17 });
     expect(c.hitPoints.max).toBe(17); // d8: (8 + 2) + (5 + 2)
-    expect(c.armorClass.value).toBe(12); // Leather 11 + Dex 1
-    expect(c.armorClass.alternatives[0]?.value).toBe(14); // Mage Armor 13 + Dex 1 (Armor of Shadows)
+    expect(c.armorClass.value).toBe(14); // Armor of Shadows: 13 + Dex 1, better than Leather 12
+    expect(c.armorClass.alternatives).toEqual([]);
+    expect(c.features.map((f) => f.id)).not.toContain("armor-of-shadows");
+    expect(c.spellcasting.flatMap((b) => b.spells.map((s) => s.id))).not.toContain("mage-armor");
     // Eldritch Blast: Cha 3 + 2 = +5; Agonizing Blast adds Cha 3 to the 1d10.
     expect(attack(c, "Eldritch Blast")).toMatchObject({
       toHit: 5,
@@ -460,12 +461,12 @@ describe("buildCharacter: one worked character per class", () => {
       "hex",
       "hellish-rebuke",
       "armor-of-agathys",
-      "mage-armor",
       "find-familiar",
     ]);
-    expect(c.features.find((f) => f.id === "adrenaline-rush")?.uses).toBe(
-      "2 per Short or Long Rest",
-    );
+    expect(c.features.find((f) => f.id === "adrenaline-rush")?.uses).toEqual({
+      max: 2,
+      unit: "use",
+    });
     expect(c.darkvision).toBe(120);
   });
 
@@ -492,9 +493,10 @@ describe("buildCharacter: one worked character per class", () => {
     });
     expect(attack(c, "Toll the Dead")).toMatchObject({ damage: "1d8 or 1d12" });
     expect(c.spellcasting.find((b) => b.source === "class")?.cantrips).toHaveLength(4); // 3 + Thaumaturge
-    expect(c.features.find((f) => f.id === "cleric-channel-divinity")?.uses).toMatch(
-      /^2 per Long Rest/,
-    );
+    expect(c.features.find((f) => f.id === "cleric-channel-divinity")?.uses).toEqual({
+      max: 2,
+      unit: "use",
+    });
     expect(c.spellcasting.find((b) => b.source === "feat")).toMatchObject({
       ability: "wis",
       saveDc: 13,
@@ -522,11 +524,12 @@ describe("buildCharacter: one worked character per class", () => {
     expect(paladin).toMatchObject({ ability: "cha", saveDc: 12, attackBonus: 4, slots: [2] }); // Cha +2
     expect(paladin?.spells.at(-1)).toMatchObject({
       id: "divine-smite",
-      freeCasts: "1 per Long Rest",
+      freeCasts: 1,
     });
-    expect(c.features.find((f) => f.id === "paladin-lay-on-hands")?.uses).toBe(
-      "10 Hit Points per Long Rest",
-    );
+    expect(c.features.find((f) => f.id === "paladin-lay-on-hands")?.uses).toEqual({
+      max: 10,
+      unit: "Hit Point",
+    });
     // Aasimar's Light cantrip uses Charisma.
     expect(c.spellcasting.find((b) => b.source === "species")).toMatchObject({ ability: "cha" });
     expect(c.resistances).toEqual(["Necrotic", "Radiant"]);
@@ -684,7 +687,7 @@ describe("buildCharacter: an option or a feat that is only a number gets no feat
     expect(attack(c, "Eldritch Blast")).toMatchObject({
       toHit: 5,
       damage: "1d10 + 3",
-      notes: ["Includes +3 from Agonizing Blast."],
+      notes: [],
     });
     expect(c.spellcasting[0]).toMatchObject({ saveDc: 13, slots: [2], pactSlotLevel: 1 });
     expect(c.features.map((f) => f.name)).toEqual([

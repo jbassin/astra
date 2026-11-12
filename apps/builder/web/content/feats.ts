@@ -13,7 +13,7 @@ export const FEATS: Record<string, CuratedFeat> = {
   crafter: {
     activation: "passive",
     summary:
-      "You are trained with three kinds of artisan's tools and get 20 percent off nonmagical items you buy. After a Long Rest you can quickly make a simple item, like a torch or a rope, that lasts until your next Long Rest.",
+      "You are trained with three kinds of artisan's tools and get 20 percent off nonmagical items you buy.",
     tools: [
       "carpenters-tools",
       "tinkers-tools",
@@ -31,18 +31,18 @@ export const FEATS: Record<string, CuratedFeat> = {
     activation: "passive",
     summary:
       "Spend a Luck Point to give yourself Advantage on a d20 roll, or to give Disadvantage to an attack roll made against you.",
-    uses: { count: "pb", per: "long", unit: "Luck Point" },
+    uses: { count: "pb", unit: "Luck Point" },
   },
   "magic-initiate": {
     applied: "Already in your spells; the level 1 spell's card counts the free cast.",
     activation: "passive",
     summary:
-      "You learn two cantrips and one level 1 spell from one class's spell list. You can cast the level 1 spell once for free, and again after each Long Rest; you can also cast it with spell slots if you have them.",
+      "You learn two cantrips and one level 1 spell from one class's spell list. You can cast the level 1 spell once for free; you can also cast it with spell slots if you have them.",
   },
   musician: {
+    applied: 'Already in your gear\'s "Trained with" line.',
     activation: "passive",
-    summary:
-      "You can play three musical instruments. When you finish a Short or Long Rest, play a song to give Heroic Inspiration to as many allies as your Proficiency Bonus.",
+    summary: "You can play three musical instruments.",
     tools: ["flute", "drum", "lyre", "horn", "viol"],
   },
   "savage-attacker": {

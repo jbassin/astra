@@ -109,11 +109,26 @@ function attackSentences(at: NonNullable<SpellEntry["attack"]>): {
   return { first: [damageSentence(at, dmg)], last: later };
 }
 
-/** How often a spell can be cast, in plain words. */
-function spellUses(s: SpellEntry): string {
-  if (s.level === 0) return "As often as you like";
-  if (s.freeCasts) return `${s.freeCasts} without a slot, or spend a spell slot`;
+/** A use count in words: "1 use", "2 uses", "2 Sorcery Points". */
+function usesText(u: NonNullable<FeatureLine["uses"]>): string {
+  return `${u.max} ${u.unit}${u.max === 1 ? "" : "s"}`;
+}
+
+/** How often a spell can be cast, in plain words. `hasSlots`: the character has spell slots. */
+function spellUses(s: SpellEntry, hasSlots: boolean): string {
+  if (s.level === 0 || s.atWill) return "As often as you like";
+  if (s.cost) return s.cost;
+  if (s.freeCasts) {
+    return hasSlots
+      ? `${s.freeCasts} without a slot, or spend a spell slot`
+      : usesText({ max: s.freeCasts, unit: "use" });
+  }
   return "Spend a spell slot";
+}
+
+/** Whether the character has any spell slots at all. */
+function hasSpellSlots(c: Character): boolean {
+  return c.spellcasting.some((b) => (b.slots?.[0] ?? 0) > 0);
 }
 
 /** An "On your turn" entry: a name and how often. What it does is on its card. */
@@ -132,7 +147,7 @@ interface TurnPlan {
   actionSpells: TurnItem[];
 }
 
-/** Every spell the character can cast (not the Wizard's unprepared spellbook), deduplicated. */
+/** Every spell the character can cast, deduplicated. */
 function allSpells(c: Character): SpellEntry[] {
   const seen = new Set<string>();
   const out: SpellEntry[] = [];
@@ -155,12 +170,13 @@ export function attackCardId(c: Character, a: AttackLine): string | undefined {
 }
 
 function featureItem(f: FeatureLine): TurnItem {
-  return { id: f.id, name: f.name, ...(f.uses && { uses: f.uses }) };
+  return { id: f.id, name: f.name, ...(f.uses && { uses: usesText(f.uses) }) };
 }
 
 /** The "On your turn" layout: features and spells grouped by when they're used. */
 export function turnPlan(c: Character): TurnPlan {
   const plan: TurnPlan = { action: [], bonus: [], reaction: [], always: [], actionSpells: [] };
+  const hasSlots = hasSpellSlots(c);
   for (const f of c.features) {
     // Something that takes a minute or more isn't used on a turn; its card still says so.
     if (f.activation === "minute") continue;
@@ -172,7 +188,7 @@ export function turnPlan(c: Character): TurnPlan {
       // Cantrips that attack already appear as attacks.
       if (!isAttackCantrip(s)) plan.actionSpells.push({ id: `spell-${s.id}`, name: s.name });
     } else if (slot === "bonus" || slot === "reaction") {
-      plan[slot].push({ id: `spell-${s.id}`, name: s.name, uses: spellUses(s) });
+      plan[slot].push({ id: `spell-${s.id}`, name: s.name, uses: spellUses(s, hasSlots) });
     }
   }
   return plan;
@@ -210,9 +226,10 @@ export function sheetCards(c: Character): SheetCard[] {
     name: f.name,
     kind: "Feature",
     when: ACTIVATION_LABEL[f.activation],
-    uses: f.uses,
+    ...(f.uses && { uses: usesText(f.uses) }),
     text: f.summary,
   }));
+  const hasSlots = hasSpellSlots(c);
   const spells: SheetCard[] = allSpells(c).map((s) => {
     return {
       id: `spell-${s.id}`,
@@ -220,8 +237,8 @@ export function sheetCards(c: Character): SheetCard[] {
       kind: s.level === 0 ? "Cantrip" : "Level 1 spell",
       when: ACTIVATION_LABEL[s.activation],
       roll: spellRoll(s),
-      uses: spellUses(s),
-      text: s.note ? `${s.gist} (${s.note})` : s.gist,
+      uses: spellUses(s, hasSlots),
+      text: s.gist,
       meta: spellMeta(s),
     };
   });
@@ -233,14 +250,12 @@ export function goodAt(c: Character): Character["skills"] {
   return c.skills.filter((s) => s.proficient).toSorted((a, b) => b.bonus - a.bonus);
 }
 
-/** "2 level 1 spell slots; they all come back after a Long Rest." */
+/** "2 level 1 spell slots." */
 export function slotLine(
   slots: number[] | undefined,
   pactSlotLevel: number | undefined,
 ): string | undefined {
   const n = slots?.[0];
   if (!n) return undefined;
-  const level = pactSlotLevel ?? 1;
-  const rest = pactSlotLevel !== undefined ? "a Short or Long Rest" : "a Long Rest";
-  return `${n} level ${level} spell slot${n === 1 ? "" : "s"}; they all come back after ${rest}.`;
+  return `${n} level ${pactSlotLevel ?? 1} spell slot${n === 1 ? "" : "s"}.`;
 }

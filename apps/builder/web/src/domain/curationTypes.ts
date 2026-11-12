@@ -97,8 +97,7 @@ export interface CuratedClass {
   spells?: {
     cantrips?: CuratedSpellList;
     level1: CuratedSpellList;
-    alwaysPrepared?: Array<{ id: string; note: string; freeCasts?: CuratedUses }>;
-    spellbookSize?: number;
+    alwaysPrepared?: Array<{ id: string; cost?: string; freeCasts?: CuratedUses }>;
   };
 }
 
@@ -116,8 +115,8 @@ export interface CuratedOption extends Applied {
   grantsCantrips?: { list: ClassId; count: number; ability: Ability; cantrips: CuratedSpellList };
   extraCantrips?: number;
   requires?: { damageCantrip?: boolean; attackCantrip?: boolean };
-  /** A spell the option lets you cast (Armor of Shadows → Mage Armor), with plain words on how. */
-  grantsSpell?: { id: string; note: string };
+  /** A spell the option lets you cast as often as you like (Mask of Many Faces → Disguise Self). */
+  grantsSpell?: { id: string };
 }
 
 export interface CuratedSpeciesOption extends Applied {

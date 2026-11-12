@@ -454,7 +454,8 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
           fail(`${ctx}: "${a.id}" isn't always prepared in the data`);
         if (!importedSpells.has(a.id)) fail(`${ctx}: always-prepared "${a.id}" not imported`);
         usedSpells.add(a.id);
-        const out: AlwaysPreparedSpell = { id: a.id, note: a.note };
+        const out: AlwaysPreparedSpell = { id: a.id };
+        if (a.cost) out.cost = a.cost;
         const fc = uses(a.freeCasts, imp, `${ctx} ${a.id}`);
         if (fc) out.freeCasts = fc;
         return out;
@@ -462,17 +463,6 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       for (const x of imp.alwaysPrepared) {
         if (!alwaysPrepared.some((a) => a.id === x.spell))
           fail(`${ctx}: always-prepared "${x.spell}" not curated`);
-      }
-      let spellbookSize: number | undefined;
-      if (sp?.spellbookSize !== undefined) {
-        const text = imp.features.map((f) => f.text.join(" ")).join(" ");
-        const start =
-          NUMBER_WORDS[text.match(/It starts with (\w+) level 1 Wizard spells/)?.[1] ?? ""];
-        const add = NUMBER_WORDS[text.match(/after 1, add (\w+) Wizard spells/)?.[1] ?? ""];
-        if (start === undefined || add === undefined || start + add !== sp.spellbookSize) {
-          fail(`${ctx}: spellbookSize ${sp.spellbookSize} doesn't match the Spellbook text`);
-        }
-        spellbookSize = sp.spellbookSize;
       }
       spellcasting = {
         ability: imp.spellcastingAbility,
@@ -489,10 +479,9 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
         level1: spellList(sp?.level1 ?? [], `${ctx} level 1`, {
           level: 1,
           list: id,
-          min: Math.max(preparedCount, spellbookSize ?? 0),
+          min: preparedCount,
         }),
         alwaysPrepared,
-        ...(spellbookSize !== undefined && { spellbookSize }),
       };
     } else if (cur.spells) fail(`${ctx}: not a spellcaster but lists spells`);
 
@@ -609,15 +598,17 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
         const innate = (o.innateSpells ?? []).map((x) => {
           usedSpells.add(x.spell);
           const n = x.uses === "pb" ? "pb" : Number(x.uses);
-          const u: Uses = { count: n, per: "long" };
+          const u: Uses = { count: n };
           return { id: x.spell, uses: u };
         });
+        const ou = uses(c?.uses, undefined, `${ctx} ${o.id}`);
         return {
           id: o.id,
           name: o.name,
           summary: c?.summary ?? "",
           rulesText: o.text,
           activation: c ? activation(c.activation, `${ctx} ${o.id}`) : ("passive" as const),
+          ...(ou && { uses: ou }),
           ...applied(c),
           replacesTrait: o.replacesTrait,
           ...(o.speed !== undefined && { speed: o.speed }),

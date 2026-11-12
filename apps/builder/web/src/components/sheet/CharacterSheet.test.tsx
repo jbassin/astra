@@ -88,9 +88,7 @@ describe("CharacterSheet: each thing is described once, on its card", () => {
   it("names a feature on the turn and says what it does on its card alone", () => {
     render(<CharacterSheet character={buildCharacter(BARBARIAN)} />);
     const rage = within(box("Your bonus action")).getByText("Rage").closest("li");
-    expect(rage?.textContent).toBe(
-      "Rage2 per Long Rest; regain one use when you finish a Short Rest.",
-    );
+    expect(rage?.textContent).toBe("Rage2 uses");
     const always = box("Always on, or when it says");
     expect(within(always).getByText("Reckless Attack").closest("li")?.textContent).toBe(
       "Reckless Attack",
@@ -188,6 +186,23 @@ describe("CharacterSheet: pressing a name shows its card", () => {
     expect(within(action).getByText(/^Greataxe/)).toBeTruthy();
     expect(within(action).queryByRole("button", { name: /Greataxe/ })).toBeNull();
     expect(within(action).queryAllByRole("button")).toEqual([]);
+  });
+
+  it("never mentions a rest, and words a Mage Armor option as one more Armor Class", () => {
+    const wizard: Answers = {
+      archetype: "mage",
+      classId: "wizard",
+      speciesId: "elf",
+      backgroundId: "sage",
+      ...DONE,
+    };
+    for (const answers of [BARBARIAN, CLERIC, wizard]) {
+      const { container } = render(<CharacterSheet character={buildCharacter(answers)} />);
+      expect(container.textContent).not.toMatch(/\brest\b/i);
+      cleanup();
+    }
+    render(<CharacterSheet character={buildCharacter(wizard)} />);
+    expect(screen.getByText(/^Armor Class \d+ with Mage Armor$/)).toBeTruthy();
   });
 
   it("keeps the open card per sheet", () => {

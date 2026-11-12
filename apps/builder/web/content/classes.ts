@@ -8,8 +8,7 @@
 // Summaries are checked against the rules text in content/5etools/classes.json; keep every
 // number exact when editing. Spells: the builder chooses them, taking each list in order
 // (`CuratedSpellList`): the first entries up to the pick count are the character's spells, and
-// any after them are backups for a cantrip the species already gives. A Wizard's spellbook is
-// the first eight level 1 spells, of which the first five are prepared.
+// any after them are backups for a cantrip the species already gives.
 // Class options work the same way: each option group's `choices` is best first, and the builder
 // gives the first `count` (`chosenOptions`). To change a pick, reorder the list.
 
@@ -51,8 +50,6 @@ export const CLASSES: CuratedClass[] = [
           "As a bonus action, catch your breath and regain 1d10 + 2 Hit Points (1d10 plus your Fighter level). Use it when you're hurt in a fight.",
         uses: {
           count: { table: "Second Wind" },
-          per: "long",
-          note: "Regain one use when you finish a Short Rest.",
         },
       },
       "fighter-weapon-mastery": { hidden: "Already on your attacks: each weapon's Mastery line." },
@@ -60,7 +57,7 @@ export const CLASSES: CuratedClass[] = [
         activation: "action",
         summary:
           "On your turn, take one extra action, such as a second Attack. It can't be the Magic action (casting a spell).",
-        uses: { count: 1, per: "short" },
+        uses: { count: 1 },
       },
       "fighter-tactical-mind": {
         activation: "passive",
@@ -109,8 +106,6 @@ export const CLASSES: CuratedClass[] = [
           "As a bonus action, fly into a Rage (not while wearing Heavy armor). While raging you take half damage from Bludgeoning, Piercing and Slashing attacks, add +2 to the damage of attacks that use Strength, and have advantage on Strength checks and saves, but you can't cast spells or concentrate. It lasts until the end of your next turn and keeps going each turn you attack an enemy, force an enemy to make a save, or spend a bonus action, for up to 10 minutes.",
         uses: {
           count: { table: "Rages" },
-          per: "long",
-          note: "Regain one use when you finish a Short Rest.",
         },
       },
       "barbarian-unarmored-defense": { hidden: "Already in your Armor Class." },
@@ -160,8 +155,8 @@ export const CLASSES: CuratedClass[] = [
       "monk-monks-focus": {
         activation: "passive",
         summary:
-          "You have Focus Points to fuel Flurry of Blows, Patient Defense and Step of the Wind. All of them come back when you finish a Short or Long Rest.",
-        uses: { count: { table: "Focus Points" }, per: "short", unit: "Focus Point" },
+          "You have Focus Points to fuel Flurry of Blows, Patient Defense and Step of the Wind.",
+        uses: { count: { table: "Focus Points" }, unit: "Focus Point" },
       },
       "monk-flurry-of-blows": {
         activation: "bonus",
@@ -182,7 +177,7 @@ export const CLASSES: CuratedClass[] = [
         activation: "passive",
         summary:
           "When you roll Initiative, you can regain all your spent Focus Points and heal 1d6 + 2 Hit Points (your Martial Arts die plus your Monk level).",
-        uses: { count: 1, per: "long" },
+        uses: { count: 1 },
       },
     },
   },
@@ -287,8 +282,7 @@ export const CLASSES: CuratedClass[] = [
       alwaysPrepared: [
         {
           id: "hunters-mark",
-          note: "Always prepared (Favored Enemy), on top of your other spells. You can cast it without a spell slot a few times per Long Rest.",
-          freeCasts: { count: { table: "Favored Enemy" }, per: "long" },
+          freeCasts: { count: { table: "Favored Enemy" } },
         },
       ],
     },
@@ -327,7 +321,7 @@ export const CLASSES: CuratedClass[] = [
         activation: "bonus",
         summary:
           "As a bonus action, inspire a creature within 60 feet that can see or hear you: it gets a d6. Once within the next hour, when it fails a d20 roll (an attack, check or save), it can roll the d6 and add it, maybe turning the failure into a success.",
-        uses: { count: "cha", per: "long" },
+        uses: { count: "cha" },
       },
       "bard-spellcasting": {
         hidden:
@@ -367,7 +361,7 @@ export const CLASSES: CuratedClass[] = [
         activation: "bonus",
         summary:
           "As a bonus action, unleash your inner magic for 1 minute: the save DC of your Sorcerer spells goes up by 1 and you have advantage on their attack rolls.",
-        uses: { count: 2, per: "long" },
+        uses: { count: 2 },
       },
       "sorcerer-spellcasting": {
         hidden:
@@ -376,8 +370,8 @@ export const CLASSES: CuratedClass[] = [
       "sorcerer-font-of-magic": {
         activation: "bonus",
         summary:
-          "You have Sorcery Points to spend on Metamagic. You can also turn a spell slot into Sorcery Points equal to its level (no action), or spend 2 points as a bonus action to make a level 1 spell slot, which vanishes when you finish a Long Rest.",
-        uses: { count: { table: "Sorcery Points" }, per: "long", unit: "Sorcery Point" },
+          "You have Sorcery Points to spend on Metamagic. You can also turn a spell slot into Sorcery Points equal to its level (no action), or spend 2 points as a bonus action to make a level 1 spell slot.",
+        uses: { count: { table: "Sorcery Points" }, unit: "Sorcery Point" },
       },
       "sorcerer-metamagic": { hidden: "Each Metamagic pick has its own card." },
       "sorcerer-metamagic-options": { hidden: "The list the player picks Metamagic from." },
@@ -440,7 +434,7 @@ export const CLASSES: CuratedClass[] = [
       "druid-wild-companion": {
         activation: "action",
         summary:
-          "As an action, spend a spell slot or a use of Wild Shape to cast Find Familiar without its material component: a nature spirit appears as a small animal helper. It disappears when you finish a Long Rest.",
+          "As an action, spend a spell slot or a use of Wild Shape to cast Find Familiar without its material component: a nature spirit appears as a small animal helper.",
       },
       "druid-wild-shape": {
         activation: "bonus",
@@ -448,8 +442,6 @@ export const CLASSES: CuratedClass[] = [
           "As a bonus action, turn into a beast form you know (you know four, such as Rat, Riding Horse, Spider or Wolf) for up to 1 hour. You gain 2 Temporary Hit Points and use the beast's body, but keep your own Hit Points, mind and skills. You can't cast spells in beast form. Turn back early as a bonus action.",
         uses: {
           count: { table: "Wild Shape" },
-          per: "long",
-          note: "Regain one use when you finish a Short Rest.",
         },
       },
     },
@@ -468,11 +460,10 @@ export const CLASSES: CuratedClass[] = [
       alwaysPrepared: [
         {
           id: "speak-with-animals",
-          note: "Always prepared (Druidic), on top of your other spells.",
         },
         {
           id: "find-familiar",
-          note: "Cast it through Wild Companion: spend a spell slot or a use of Wild Shape.",
+          cost: "Spend a spell slot or a use of Wild Shape",
         },
       ],
     },
@@ -503,12 +494,7 @@ export const CLASSES: CuratedClass[] = [
     },
     humanFeat: ["alert", "tough"],
     features: {
-      "wizard-arcane-recovery": {
-        activation: "passive",
-        summary:
-          "Once per Long Rest, when you finish a Short Rest, recover spent spell slots whose levels add up to 1 (half your Wizard level, rounded up): one level 1 slot.",
-        uses: { count: 1, per: "long" },
-      },
+      "wizard-arcane-recovery": { hidden: "Works only on a rest; the one-shot has none." },
       "wizard-ritual-adept": {
         activation: "passive",
         summary:
@@ -532,8 +518,7 @@ export const CLASSES: CuratedClass[] = [
         "find-familiar",
         "detect-magic",
       ],
-      // Six level 1 spells at level 1, plus two at level 2 ("Spellbook" in the rules text).
-      spellbookSize: 8,
+      // The first five are prepared; the rest are alternates.
     },
   },
   {
@@ -575,7 +560,7 @@ export const CLASSES: CuratedClass[] = [
         activation: "minute",
         summary:
           "Perform a 1-minute eerie rite to regain spent Pact Magic spell slots, up to half your maximum (rounded up).",
-        uses: { count: 1, per: "long" },
+        uses: { count: 1 },
       },
     },
     optionGroups: [
@@ -629,8 +614,6 @@ export const CLASSES: CuratedClass[] = [
           "You can channel divine power. Each use creates one effect of your choice: Divine Spark or Turn Undead.",
         uses: {
           count: { table: "Channel Divinity" },
-          per: "long",
-          note: "Regain one use when you finish a Short Rest.",
         },
       },
       "cleric-divine-spark": {
@@ -679,8 +662,8 @@ export const CLASSES: CuratedClass[] = [
       "paladin-lay-on-hands": {
         activation: "bonus",
         summary:
-          "You have a pool of healing that holds 10 Hit Points (5 times your Paladin level) and refills when you finish a Long Rest. As a bonus action, touch a creature (or yourself) and spend any amount from the pool to heal it, or spend 5 to end the Poisoned condition.",
-        uses: { count: 10, per: "long", unit: "Hit Point" },
+          "You have a pool of healing that holds 10 Hit Points (5 times your Paladin level). As a bonus action, touch a creature (or yourself) and spend any amount from the pool to heal it, or spend 5 to end the Poisoned condition.",
+        uses: { count: 10, unit: "Hit Point" },
       },
       "paladin-spellcasting": {
         hidden:
@@ -706,8 +689,7 @@ export const CLASSES: CuratedClass[] = [
       alwaysPrepared: [
         {
           id: "divine-smite",
-          note: "Always prepared (Paladin's Smite), on top of your other spells. Once per Long Rest you can cast it without a spell slot.",
-          freeCasts: { count: 1, per: "long" },
+          freeCasts: { count: 1 },
         },
       ],
     },
