@@ -15,7 +15,7 @@ Updated 2026-11-12.
   still not enabled, so players don't see arms yet. Next: Josh relaunches the world, enables IK
   Arms, places the real anchors, and checks a player client.
 - **Character builder is live at builder.iridi.cc, with a sheet to play from (2026-11-12,
-  #231 to #239).** A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players:
+  #231 to #241).** A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players:
   archetype, class, species, background and an about-you step, then an "On your turn" sheet
   with printable cards. The player makes those four picks and the builder makes the rest:
   every spell, the species sub-choice (a Wizard's Elf is a "High Elf") and every class option
@@ -28,11 +28,14 @@ Updated 2026-11-12.
   (`play` in its file) and show on the DM page. Content comes from the 2024 entries of 5etools
   (pinned commit 87471edd) with curated shortlists, summaries and gists. The look is phone
   first: a "guild charter" identity with a heraldic hue and game-icons emblem per class, a
-  sticky progress bar, and a sheet with a jump bar. Each player gets a private link from
-  `just builder-invite <name>`; answers save to `/ruby/data/astra-state/builder/`; Josh sees
-  everyone at `/dm/<token>` (SOPS `builder_dm_token`); `/test` runs the flow without saving.
-  Next: Josh checks the builder's picks and the reworded lines (the lists in #231, #232, #236
-  and #238), walks `/test`, then the five invites. Plan:
+  sticky progress bar, and a sheet with a jump bar. The five players are invited and reach
+  their characters through one group link, `/p/<phrase>`, which asks "Who are you?" and lists
+  their names (#241; `just builder-party` sets the phrase, and Josh chose it); each also has a
+  private link from `just builder-invite <name>`. Answers save to
+  `/ruby/data/astra-state/builder/`; Josh sees everyone, and the group link, at `/dm/<token>`
+  (SOPS `builder_dm_token`); `/test` runs the flow without saving. Next: Josh checks the
+  builder's picks and the reworded lines (the lists in #231, #232, #236 and #238), walks
+  `/test`, then sends the players the group link. Plan:
   [`thoughts/shared/research/2026-11-06-character-builder.md`](../thoughts/shared/research/2026-11-06-character-builder.md).
 - **Unused web apps removed from the repo (2026-11-04): menhir, ledger, the vellum site
   and weal-overlay.** weal-bot no longer posts rolls to an overlay. Code, config, compose, Caddy,

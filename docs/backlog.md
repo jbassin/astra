@@ -162,8 +162,8 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
 - Character builder: check the per-class species picks (the table in #231), the things that
   lost their card (the list in #232), the class options the builder now gives (the table in
   #236) and the reworded lines (the list in #238, and Repelling Blast's card, which now starts
-  "When your Eldritch Blast hits"); walk `/test`; then send the five player names for
-  `just builder-invite` — Josh.
+  "When your Eldritch Blast hits"); walk `/test`; then send the players the group link (it is
+  on the DM page; the five are invited) — Josh.
 - Character builder polish, small: a player who opens their link straight onto the sheet sees the
   full greeting until their first move; the sticky progress band shows faintly against the page
   glow on laptops; View Transitions are checked in Chromium only, not iOS Safari — agent.
