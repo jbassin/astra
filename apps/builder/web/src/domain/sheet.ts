@@ -128,8 +128,8 @@ interface TurnPlan {
   bonus: TurnItem[];
   reaction: TurnItem[];
   always: TurnItem[];
-  /** Spells cast with an action, named in one line under the action. */
-  actionSpells: string[];
+  /** Spells cast with an action, named in one line under the action; `id` is the spell's card. */
+  actionSpells: TurnItem[];
 }
 
 /** Every spell the character can cast (not the Wizard's unprepared spellbook), deduplicated. */
@@ -144,6 +144,14 @@ function allSpells(c: Character): SpellEntry[] {
     }
   }
   return out;
+}
+
+/** The card id of the cantrip an attack line is, or `undefined` for a weapon or unarmed
+ * attack, which have no card. */
+export function attackCardId(c: Character, a: AttackLine): string | undefined {
+  if (a.kind !== "cantrip") return undefined;
+  const spell = allSpells(c).find((s) => s.name === a.name);
+  return spell ? `spell-${spell.id}` : undefined;
 }
 
 function featureItem(f: FeatureLine): TurnItem {
@@ -162,7 +170,7 @@ export function turnPlan(c: Character): TurnPlan {
     const slot = s.activation;
     if (slot === "action") {
       // Cantrips that attack already appear as attacks.
-      if (!isAttackCantrip(s)) plan.actionSpells.push(s.name);
+      if (!isAttackCantrip(s)) plan.actionSpells.push({ id: `spell-${s.id}`, name: s.name });
     } else if (slot === "bonus" || slot === "reaction") {
       plan[slot].push({ id: `spell-${s.id}`, name: s.name, uses: spellUses(s) });
     }
@@ -170,7 +178,7 @@ export function turnPlan(c: Character): TurnPlan {
   return plan;
 }
 
-interface SheetCard {
+export interface SheetCard {
   id: string;
   name: string;
   /** "Feature", "Cantrip", "Level 1 spell". */

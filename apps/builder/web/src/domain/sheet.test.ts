@@ -4,7 +4,15 @@ import type { Answers } from "./character";
 import { CONTENT } from "./content";
 import type { Activation, ClassId } from "./contentTypes";
 import { buildCharacter, type Character, spellEntry } from "./engine";
-import { attackRoll, goodAt, sheetCards, slotLine, spellRoll, turnPlan } from "./sheet";
+import {
+  attackCardId,
+  attackRoll,
+  goodAt,
+  sheetCards,
+  slotLine,
+  spellRoll,
+  turnPlan,
+} from "./sheet";
 import { type Shortlist, withShortlist } from "./testShortlist";
 
 /** The options the fixtures below use, which the shipped shortlists don't give first. */
@@ -97,11 +105,21 @@ describe("the sheet's layout from buildCharacter", () => {
     expect(c.missing).toEqual([]);
     const plan = turnPlan(c);
     expect(plan.reaction.map((i) => i.name)).toEqual(["Shield"]);
-    expect(plan.actionSpells).toEqual(
-      expect.arrayContaining(["Mage Hand", "Magic Missile", "Sleep"]),
-    );
-    expect(plan.actionSpells).not.toContain("Fire Bolt"); // an attack, listed with the attacks
+    const names = plan.actionSpells.map((i) => i.name);
+    expect(names).toEqual(expect.arrayContaining(["Mage Hand", "Magic Missile", "Sleep"]));
+    expect(names).not.toContain("Fire Bolt"); // an attack, listed with the attacks
     const cards = sheetCards(c);
+    // Each action spell carries its card's id, and the card exists.
+    for (const i of plan.actionSpells) {
+      expect(i.id).toMatch(/^spell-/);
+      expect(cards.some((x) => x.id === i.id)).toBe(true);
+    }
+    // An attack cantrip gives its spell's card id; a weapon attack gives none.
+    const fireBolt = c.attacks.find((a) => a.name === "Fire Bolt");
+    expect(fireBolt && attackCardId(c, fireBolt)).toBe("spell-fire-bolt");
+    expect(cards.some((x) => x.id === "spell-fire-bolt")).toBe(true);
+    const fighter = buildCharacter(FIGHTER);
+    for (const a of fighter.attacks) expect(attackCardId(fighter, a)).toBeUndefined();
     const sleep = cards.find((x) => x.name === "Sleep");
     expect(sleep).toMatchObject({
       kind: "Level 1 spell",

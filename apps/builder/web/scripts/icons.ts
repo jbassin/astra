@@ -124,6 +124,7 @@ const LUCIDE = [
   "chevron-down",
   "flask-conical",
   "link",
+  "x",
 ] as const;
 
 interface IconSet {
