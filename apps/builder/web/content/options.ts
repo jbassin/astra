@@ -151,7 +151,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
     activation: "passive",
     gist: "Your attack cantrip, like Eldritch Blast, shoves foes 10 feet back.",
     summary:
-      "Pick one attack cantrip you know (usually Eldritch Blast): when it hits a Large or smaller creature, you can push it up to 10 feet away.",
+      "When your Eldritch Blast hits a Large or smaller creature, you can push it up to 10 feet away.",
     requires: { attackCantrip: true },
   },
   "armor-of-shadows": {
