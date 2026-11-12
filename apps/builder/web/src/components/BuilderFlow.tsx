@@ -52,12 +52,12 @@ const SCREENS: Record<
   },
   species: {
     title: "Pick your species",
-    hint: "The people your hero was born into. Each gives a few natural gifts.",
+    hint: "The people your hero was born into.",
     Body: SpeciesScreen,
   },
   background: {
     title: "Pick your background",
-    hint: "What your hero did before adventuring. It adds skills, gear and a special talent.",
+    hint: "What your hero did before adventuring.",
     Body: BackgroundScreen,
   },
   options: {
