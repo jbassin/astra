@@ -216,6 +216,7 @@ describe("each thing is described once, on its card", () => {
       id: "fighter-second-wind",
       name: "Second Wind",
       uses: "2 uses",
+      tracker: { id: "use-fighter-second-wind", label: "Second Wind", max: 2, unit: "use" },
     });
     expect(fighter.always).toContainEqual({ id: "fighter-tactical-mind", name: "Tactical Mind" });
     // A spell cast as a bonus action or a reaction: its name and what it costs.
@@ -225,7 +226,9 @@ describe("each thing is described once, on its card", () => {
     for (const answers of [FIGHTER, WIZARD, WARLOCK, BARBARIAN, CLERIC]) {
       const plan = turnPlan(build(answers));
       for (const item of [...plan.action, ...plan.bonus, ...plan.reaction, ...plan.always]) {
-        const extra = Object.keys(item).filter((k) => !["id", "name", "uses"].includes(k));
+        const extra = Object.keys(item).filter(
+          (k) => !["id", "name", "uses", "tracker"].includes(k),
+        );
         expect(extra, item.name).toEqual([]);
       }
     }

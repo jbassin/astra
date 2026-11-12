@@ -42,10 +42,9 @@ export function CardDialog({
       document.addEventListener("keydown", onKey);
       removeKey = () => document.removeEventListener("keydown", onKey);
     }
-    return () => {
-      removeKey?.();
-      if (typeof dialog.close === "function" && dialog.open) dialog.close();
-    };
+    // No `dialog.close()` here: removing the element leaves the top layer, and a `close()` in
+    // development's effect, cleanup, effect run fires `close` and shuts the card at once.
+    return () => removeKey?.();
   }, []);
 
   return (

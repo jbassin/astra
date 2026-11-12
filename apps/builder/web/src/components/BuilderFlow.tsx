@@ -1,6 +1,6 @@
 // The player's builder: one screen at a time, driven by steps.ts through flow.ts, ending on
 // the character sheet. It never saves anything itself: the page passes `persist`, which gets
-// every change (the player page's debounced server save; a no-op in test mode).
+// every change of the answers or the play marks (the player page's debounced server save; a no-op in test mode).
 //
 // Phone first: the quest path sits above the screen, and Back, the save state and Next live
 // in a bar pinned to the bottom of the screen, within reach of a thumb.
@@ -8,7 +8,7 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
-import type { Answers } from "@/domain/character";
+import type { Answers, PlayState } from "@/domain/character";
 import { classOf } from "@/domain/content";
 import { buildCharacter } from "@/domain/engine";
 import {
@@ -123,19 +123,28 @@ function FlowBar({
 
 function Screen({
   answers,
+  play,
+  setPlay,
   update,
   taken,
   view,
   statuses,
   go,
 }: ScreenProps & {
+  play: PlayState;
+  setPlay: (next: PlayState) => void;
   view: ViewKey;
   statuses: ViewStatus[];
   go: (v: ViewKey) => void;
 }) {
   if (view === "sheet") {
     return (
-      <CharacterSheet character={buildCharacter(answers)} onFinish={() => go(startView(answers))} />
+      <CharacterSheet
+        character={buildCharacter(answers)}
+        play={play}
+        onPlay={setPlay}
+        onFinish={() => go(startView(answers))}
+      />
     );
   }
   const status = statuses.find((s) => s.key === view);
@@ -146,6 +155,7 @@ function Screen({
 
 export function BuilderFlow({
   initial,
+  initialPlay,
   persist,
   title,
   intro,
@@ -154,7 +164,9 @@ export function BuilderFlow({
   taken,
 }: {
   initial: Answers;
-  persist: (answers: Answers) => void;
+  /** The saved marks (Hit Points, spent uses); none on a first visit and in test mode. */
+  initialPlay?: PlayState;
+  persist: (value: { answers: Answers; play: PlayState }) => void;
   title: ReactNode;
   intro: ReactNode;
   banner?: ReactNode;
@@ -164,6 +176,7 @@ export function BuilderFlow({
   taken?: TakenClasses;
 }) {
   const [answers, setAnswers] = useState<Answers>(initial);
+  const [play, setPlayState] = useState<PlayState>(initialPlay ?? {});
   const [view, setView] = useState<ViewKey>(() => startView(initial));
   const [notice, setNotice] = useState<string | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -187,8 +200,20 @@ export function BuilderFlow({
     const merged = { ...answers, ...patch };
     const next = pruneAnswers(merged);
     setNotice(clearedSummary(merged, next));
+    // The marks counted this class, species and background; a different one starts clean.
+    const sameBuild =
+      next.classId === answers.classId &&
+      next.speciesId === answers.speciesId &&
+      next.backgroundId === answers.backgroundId;
+    const nextPlay = sameBuild ? play : {};
     setAnswers(next);
-    persist(next);
+    if (!sameBuild) setPlayState(nextPlay);
+    persist({ answers: next, play: nextPlay });
+  }
+
+  function setPlay(next: PlayState) {
+    setPlayState(next);
+    persist({ answers, play: next });
   }
 
   // A class someone else took first (a lost race): clear it and say so.
@@ -251,6 +276,8 @@ export function BuilderFlow({
           )}
           <Screen
             answers={answers}
+            play={play}
+            setPlay={setPlay}
             update={update}
             taken={taken}
             view={view}

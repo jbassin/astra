@@ -55,12 +55,32 @@ export const Answers = z
   .strict();
 export type Answers = z.infer<typeof Answers>;
 
+/** A tracker id in `PlayState.spent`: lower-case words and digits (`slots`, `use-rage`). */
+export const TRACKER_KEY = /^[a-z0-9-]{1,80}$/;
+
+/**
+ * What a player has marked while playing: the current Hit Points (absent means full) and how
+ * many of each limited thing is used (absent means none). `play.ts` says what the keys are and
+ * clamps what it reads, so a stale or edited number never breaks the sheet.
+ */
+export const PlayState = z
+  .object({
+    hp: z.number().int().min(0).max(999).optional(),
+    spent: z
+      .record(z.string().regex(TRACKER_KEY), z.number().int().min(0).max(99))
+      .refine((r) => Object.keys(r).length <= 60, "too many trackers")
+      .optional(),
+  })
+  .strict();
+export type PlayState = z.infer<typeof PlayState>;
+
 /** `<data-dir>/characters/<id>.json`. */
 export const CharacterDoc = z
   .object({
     schemaVersion: z.literal(1),
     updatedAt: z.iso.datetime(),
     answers: Answers,
+    play: PlayState.optional(),
   })
   .strict();
 export type CharacterDoc = z.infer<typeof CharacterDoc>;

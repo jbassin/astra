@@ -4,12 +4,14 @@
 
 import { CONTENT } from "@/domain/content";
 import type { Character, SpellcastingBlock, SpellEntry } from "@/domain/engine";
+import { slotTracker, spellTracker } from "@/domain/play";
 import { ABILITY_NAMES, signed, slotLine } from "@/domain/sheet";
 import type { IconName } from "@/generated/icons";
 import { ABILITY_ICON, schoolIcon } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
 import { CardName } from "./CardLinks";
+import { Pips } from "./Pips";
 
 /** One level's spells, by name; each carries its school's icon, as its card does. */
 function Names({ title, icon, spells }: { title: string; icon: IconName; spells: SpellEntry[] }) {
@@ -21,12 +23,16 @@ function Names({ title, icon, spells }: { title: string; icon: IconName; spells:
         {title}
       </h6>
       <ul className="spell-names">
-        {spells.map((s) => (
-          <li key={s.id}>
-            <Icon name={schoolIcon(CONTENT.spells[s.id]?.school)} />
-            <CardName id={`spell-${s.id}`}>{s.name}</CardName>
-          </li>
-        ))}
+        {spells.map((s) => {
+          const tracker = spellTracker(s);
+          return (
+            <li key={s.id}>
+              <Icon name={schoolIcon(CONTENT.spells[s.id]?.school)} />
+              <CardName id={`spell-${s.id}`}>{s.name}</CardName>
+              {tracker && <Pips tracker={tracker} />}
+            </li>
+          );
+        })}
       </ul>
     </>
   );
@@ -34,6 +40,7 @@ function Names({ title, icon, spells }: { title: string; icon: IconName; spells:
 
 function Block({ b }: { b: SpellcastingBlock }) {
   const slots = slotLine(b.slots, b.pactSlotLevel);
+  const tracker = slotTracker(b);
   return (
     <div className="spell-block">
       <h5>{b.label}</h5>
@@ -51,13 +58,9 @@ function Block({ b }: { b: SpellcastingBlock }) {
           <strong className="stat-num">{signed(b.attackBonus)}</strong>
         </li>
       </ul>
-      {slots && (
+      {slots && tracker && (
         <p className="slot-line">
-          <span className="slot-pips" aria-hidden="true">
-            {Array.from({ length: b.slots?.[0] ?? 0 }, (_, n) => n).map((n) => (
-              <span key={n} className="slot-pip" />
-            ))}
-          </span>
+          <Pips tracker={tracker} className="slot-pips" />
           {slots}
         </p>
       )}

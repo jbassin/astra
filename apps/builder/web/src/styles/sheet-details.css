@@ -50,16 +50,6 @@
   gap: 0.5rem 0.75rem;
   color: var(--muted);
 }
-.slot-pips {
-  display: inline-flex;
-  gap: 0.3rem;
-}
-.slot-pip {
-  width: 1.1rem;
-  height: 1.1rem;
-  border: 2px solid var(--hue-ink);
-  border-radius: 50%;
-}
 .spell-level {
   display: flex;
   align-items: center;

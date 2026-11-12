@@ -1,5 +1,6 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { StrictMode } from "react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { Answers } from "@/domain/character";
 import { CONTENT } from "@/domain/content";
@@ -52,7 +53,7 @@ describe("CharacterSheet", () => {
     expect(within(action).getByText(/^Mastery, Cleave:/)).toBeTruthy();
     expect(within(box("Your bonus action")).getByText("Rage")).toBeTruthy();
     expect(screen.queryByText("Your spells")).toBeNull();
-    expect(screen.getByText(String(c.hitPoints.max))).toBeTruthy();
+    expect(screen.getAllByText(String(c.hitPoints.max)).length).toBeGreaterThan(0);
     expect(screen.getAllByRole("article").filter((a) => a.classList.contains("card")).length).toBe(
       c.features.length,
     );
@@ -88,7 +89,7 @@ describe("CharacterSheet: each thing is described once, on its card", () => {
   it("names a feature on the turn and says what it does on its card alone", () => {
     render(<CharacterSheet character={buildCharacter(BARBARIAN)} />);
     const rage = within(box("Your bonus action")).getByText("Rage").closest("li");
-    expect(rage?.textContent).toBe("Rage2 uses");
+    expect(rage?.textContent).toBe("RageRage: 2 of 2 uses left"); // pips, not words; the count is hidden text
     const always = box("Always on, or when it says");
     expect(within(always).getByText("Reckless Attack").closest("li")?.textContent).toBe(
       "Reckless Attack",
@@ -214,5 +215,35 @@ describe("CharacterSheet: pressing a name shows its card", () => {
     );
     fireEvent.click(screen.getAllByRole("button", { name: "Rage" })[0] as HTMLElement);
     expect(screen.getAllByRole("dialog")).toHaveLength(1);
+  });
+
+  it("stays open under StrictMode, where a browser's close() would shut it at once", () => {
+    // jsdom has no showModal or close; a browser fires `close` from close(), which once shut
+    // the card as development's effect, cleanup, effect ran.
+    const proto = HTMLDialogElement.prototype;
+    const had = { showModal: "showModal" in proto, close: "close" in proto };
+    const spyShow = vi.fn(function (this: HTMLDialogElement) {
+      this.setAttribute("open", "");
+    });
+    const spyClose = vi.fn(function (this: HTMLDialogElement) {
+      this.removeAttribute("open");
+      this.dispatchEvent(new Event("close"));
+    });
+    Object.assign(proto, { showModal: spyShow, close: spyClose });
+    try {
+      render(
+        <StrictMode>
+          <CharacterSheet character={buildCharacter(BARBARIAN)} />
+        </StrictMode>,
+      );
+      fireEvent.click(screen.getAllByRole("button", { name: "Rage" })[0] as HTMLElement);
+      expect(screen.getByRole("dialog", { name: "Rage" })).toBeTruthy();
+      expect(spyShow).toHaveBeenCalled();
+      expect(spyClose).not.toHaveBeenCalled();
+    } finally {
+      cleanup();
+      if (!had.showModal) Reflect.deleteProperty(proto, "showModal");
+      if (!had.close) Reflect.deleteProperty(proto, "close");
+    }
   });
 });

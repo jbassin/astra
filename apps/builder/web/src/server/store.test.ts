@@ -55,6 +55,7 @@ describe("characters", () => {
     const doc = store.saveCharacter(
       id,
       { archetype: "mage", name: "Vex" },
+      undefined,
       new Date("2026-11-06T13:00:00Z"),
     );
     expect(doc).toEqual({

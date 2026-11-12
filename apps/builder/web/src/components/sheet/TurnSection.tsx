@@ -12,6 +12,7 @@ import { damageIcon, SLOT_ICON } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
 import { CardName } from "./CardLinks";
+import { HitPointStepper, Pips } from "./Pips";
 
 function Medallion({
   icon,
@@ -40,7 +41,15 @@ export function Vitals({ c }: { c: Character }) {
   return (
     <section className="sheet-section vitals" aria-label="Key numbers">
       <dl className="vital-grid">
-        <Medallion icon="heart-plus" label="Hit Points" value={String(c.hitPoints.max)} />
+        <div className="vital vital-hp">
+          <dt>
+            <Icon name="heart-plus" className="vital-icon" />
+            Hit Points
+          </dt>
+          <dd className="vital-value">
+            <HitPointStepper max={c.hitPoints.max} />
+          </dd>
+        </div>
         <Medallion
           icon="checked-shield"
           label="Armor Class"
@@ -115,6 +124,32 @@ function Attack({ a, cardId }: { a: AttackLine; cardId?: string }) {
   );
 }
 
+/** How often an entry can be used: its words, and the marks when it has any. A feature's pips
+ * replace its count (the unit stays when it isn't "use"); a spell keeps its words. */
+function Uses({ item }: { item: TurnItem }) {
+  const { tracker, uses } = item;
+  if (!tracker) return uses ? <span className="uses">{uses}</span> : null;
+  if (item.id.startsWith("spell-")) {
+    return (
+      <>
+        {uses && <span className="uses">{uses}</span>}
+        <Pips tracker={tracker} />
+      </>
+    );
+  }
+  return (
+    <>
+      <Pips tracker={tracker} />
+      {tracker.unit !== "use" && (
+        <span className="uses">
+          {tracker.unit}
+          {tracker.max === 1 ? "" : "s"}
+        </span>
+      )}
+    </>
+  );
+}
+
 function Items({ items }: { items: TurnItem[] }) {
   return items.map((i) => (
     <li key={i.id} className="turn-item">
@@ -122,7 +157,7 @@ function Items({ items }: { items: TurnItem[] }) {
         <strong>
           <CardName id={i.id}>{i.name}</CardName>
         </strong>
-        {i.uses && <span className="uses">{i.uses}</span>}
+        <Uses item={i} />
       </p>
     </li>
   ));

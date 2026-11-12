@@ -61,7 +61,11 @@ describe("the player page, for contrast", () => {
     render(<PlayerBuilder id="SmokeTestPlayer0000000" playerName="Ada" initial={{}} taken={{}} />);
     await pickAFewThings();
     expect(saveAnswers).toHaveBeenCalledWith({
-      data: { id: "SmokeTestPlayer0000000", answers: { archetype: "warrior", classId: "fighter" } },
+      data: {
+        id: "SmokeTestPlayer0000000",
+        answers: { archetype: "warrior", classId: "fighter" },
+        play: {},
+      },
     });
   });
 });

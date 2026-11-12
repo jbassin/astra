@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { Answers } from "@/domain/character";
+import type { Answers, PlayState } from "@/domain/character";
 import type { IconName } from "@/generated/icons";
 import type { TakenClasses } from "@/server/builder";
 import { saveAnswers } from "@/server/builderFns";
@@ -31,22 +31,25 @@ export function PlayerBuilder({
   id,
   playerName,
   initial,
+  initialPlay,
   taken: firstTaken,
 }: {
   id: string;
   playerName: string;
   initial: Answers;
+  initialPlay?: PlayState;
   taken: TakenClasses;
 }) {
   // Every save answers with the fresh map, so a class someone just took greys out here too.
   const [taken, setTaken] = useState(firstTaken);
-  const autosave = useAutosave(async (next: Answers) => {
-    const res = await saveAnswers({ data: { id, answers: next } });
+  const autosave = useAutosave(async (next: { answers: Answers; play: PlayState }) => {
+    const res = await saveAnswers({ data: { id, ...next } });
     setTaken(res.taken);
   });
   return (
     <BuilderFlow
       initial={initial}
+      initialPlay={initialPlay}
       taken={taken}
       persist={autosave.schedule}
       title={`Hi, ${playerName}`}

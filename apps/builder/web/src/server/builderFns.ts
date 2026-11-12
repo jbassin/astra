@@ -7,7 +7,7 @@ import { getLogger } from "@astra/observe";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { Answers } from "@/domain/character";
+import { Answers, PlayState } from "@/domain/character";
 
 import {
   type DmPlayerRow,
@@ -41,10 +41,10 @@ export const getPlayerPage = createServerFn({ method: "GET" })
   .validator(z.object({ id: z.string().max(64) }))
   .handler(({ data }): PlayerPage | null => loadPlayerPage(storeFromConfig(), data.id));
 
-/** Replaces a player's saved answers; rejects ids not on the roster. */
+/** Replaces a player's saved answers and play marks; rejects ids not on the roster. */
 export const saveAnswers = createServerFn({ method: "POST" })
-  .validator(z.object({ id: z.string().max(64), answers: Answers }))
-  .handler(({ data }) => savePlayerAnswers(storeFromConfig(), data.id, data.answers));
+  .validator(z.object({ id: z.string().max(64), answers: Answers, play: PlayState.optional() }))
+  .handler(({ data }) => savePlayerAnswers(storeFromConfig(), data.id, data.answers, data.play));
 
 /** Every player's picks for `/dm/$token`; `null` (wrong or unset token) becomes a plain 404. */
 export const getDmView = createServerFn({ method: "GET" })

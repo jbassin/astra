@@ -4,7 +4,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { Answers } from "@/domain/character";
+import type { Answers, PlayState } from "@/domain/character";
 import { CONTENT } from "@/domain/content";
 
 import { BuilderFlow } from "./BuilderFlow";
@@ -16,7 +16,7 @@ function radio(name: RegExp): HTMLInputElement {
 }
 
 function renderFlow(initial: Answers, taken: Record<string, string>) {
-  const persist = vi.fn<(a: Answers) => void>();
+  const persist = vi.fn<(v: { answers: Answers; play: PlayState }) => void>();
   render(
     <BuilderFlow initial={initial} persist={persist} title="Hi" intro="Intro" taken={taken} />,
   );
@@ -48,7 +48,7 @@ describe("taken classes", () => {
       "Ada picked Fighter first. Pick another class.",
     );
     expect(persist).toHaveBeenCalledTimes(1);
-    expect(persist.mock.calls[0]?.[0].classId).toBeUndefined();
+    expect(persist.mock.calls[0]?.[0].answers.classId).toBeUndefined();
   });
 
   it("greys out nothing without a taken map (test mode)", () => {
