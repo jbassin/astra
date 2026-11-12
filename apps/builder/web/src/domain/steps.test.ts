@@ -29,7 +29,6 @@ describe("the Answers schema", () => {
       classId: "cleric",
       speciesId: "elf",
       backgroundId: "acolyte",
-      options: { divineOrder: ["thaumaturge"] },
       name: "Ada",
       look: "Tall.",
       personality: "Kind.",
@@ -43,10 +42,9 @@ describe("the Answers schema", () => {
   it.each([
     ["an unknown field", { nickname: "x" }],
     ["an unknown class", { classId: "artificer" }],
-    ["an unknown option group", { options: { subclass: ["x"] } }],
+    ["class option picks (the builder chooses them)", { options: { fightingStyle: ["defense"] } }],
     ["a spell pick (the builder chooses spells)", { cantrips: ["fire-bolt"] }],
     ["a species sub-choice (the builder picks it from the class)", { speciesOption: "drow" }],
-    ["a malformed id", { options: { fightingStyle: ["Defense"] } }],
     ["an overlong personality", { personality: "x".repeat(2001) }],
   ])("rejects %s", (_, answers) => {
     const doc = { schemaVersion: 1, updatedAt: "2026-11-06T12:00:00.000Z", answers };
@@ -58,16 +56,22 @@ describe("stepStatuses and nextStep", () => {
   it("starts at the archetype, with later steps waiting on earlier ones", () => {
     expect(nextStep({})).toBe("archetype");
     expect(status({}, "class")).toMatchObject({ complete: false, blockedBy: "archetype" });
-    expect(status({}, "options")).toMatchObject({ applicable: true, blockedBy: "class" });
+    expect(status({}, "options")).toBeUndefined();
     expect(status({}, "spells")).toBeUndefined();
-    expect(applicableStepCount({})).toBe(8);
+    expect(applicableStepCount({})).toBe(7);
   });
 
-  it("skips class choices for a Barbarian", () => {
-    const a: Answers = { archetype: "warrior", classId: "barbarian" };
-    expect(status(a, "options")).toMatchObject({ applicable: false });
-    expect(applicableStepCount(a)).toBe(7);
-    expect(nextStep(a)).toBe("species");
+  it("has the same steps for every class, with no class choices step", () => {
+    for (const [archetype, classId] of [
+      ["warrior", "barbarian"],
+      ["warrior", "fighter"],
+      ["mage", "warlock"],
+    ] as const) {
+      const a: Answers = { archetype, classId };
+      expect(status(a, "options")).toBeUndefined();
+      expect(applicableStepCount(a)).toBe(7);
+      expect(nextStep(a)).toBe("species");
+    }
   });
 
   it("completes the species step on the species alone", () => {
@@ -84,7 +88,6 @@ describe("stepStatuses and nextStep", () => {
       classId: "fighter",
       speciesId: "human",
       backgroundId: "soldier",
-      options: { fightingStyle: ["defense"] },
       name: "Brom",
       look: "Big.",
       personality: "Loud.",
@@ -95,7 +98,6 @@ describe("stepStatuses and nextStep", () => {
       "class",
       "species",
       "background",
-      "options",
       "name",
       "look",
       "personality",
@@ -109,19 +111,17 @@ describe("pruneAnswers", () => {
     classId: "cleric",
     speciesId: "tiefling",
     backgroundId: "acolyte",
-    options: { divineOrder: ["thaumaturge"] },
   };
 
   it("keeps a consistent character as it is, without changing the input", () => {
     const before = structuredClone(cleric);
-    expect(pruneAnswers(cleric, cleric)).toEqual(cleric);
+    expect(pruneAnswers(cleric)).toEqual(cleric);
     expect(cleric).toEqual(before);
   });
 
-  it("clears class picks when the class changes", () => {
-    const next = pruneAnswers({ ...cleric, classId: "paladin" }, cleric);
+  it("clears a background the new class can't take when the class changes", () => {
+    const next = pruneAnswers({ ...cleric, classId: "paladin" });
     expect(next.classId).toBe("paladin");
-    expect(next.options).toBeUndefined();
     // Acolyte doesn't list Strength, so the Paladin can't keep it.
     expect(next.backgroundId).toBeUndefined();
     // The species stays: its sub-choice is derived from the class, so there is nothing to clear.
@@ -129,16 +129,7 @@ describe("pruneAnswers", () => {
   });
 
   it("clears the class when the archetype no longer offers it", () => {
-    const next = pruneAnswers({ ...cleric, archetype: "mage" }, cleric);
+    const next = pruneAnswers({ ...cleric, archetype: "mage" });
     expect(next.classId).toBeUndefined();
-    expect(next.options).toBeUndefined();
-  });
-
-  it("drops option picks past the count", () => {
-    expect(
-      pruneAnswers({ ...cleric, options: { divineOrder: ["protector", "thaumaturge"] } }).options,
-    ).toEqual({
-      divineOrder: ["protector"],
-    });
   });
 });

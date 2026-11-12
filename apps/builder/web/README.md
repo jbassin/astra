@@ -30,17 +30,18 @@ player page walks through every choice to a printable "On your turn" sheet with 
 (`useAutosave`), `TestBuilder` a no-op. `TestBuilder.tsx` must not import `@/server/builderFns`;
 `TestBuilder.test.tsx` checks both that and that the save function is never called.
 
-- **Screens** (`src/domain/flow.ts`): kind of hero, class, species, background, class choices,
-  About you (name, look and personality), then the sheet. There is no spells screen and no
-  species sub-choice: the builder chooses every spell (Josh's call, 2026-11-07) and each
-  species' lineage, colour, ancestry or legacy (Josh's call, 2026-11-12), and the sheet shows
-  them.
+- **Screens** (`src/domain/flow.ts`): kind of hero, class, species, background, About you
+  (name, look and personality), then the sheet. There is no spells screen, no class choices
+  screen and no species sub-choice: the builder chooses every spell (Josh's call, 2026-11-07),
+  every class option (fighting style, Divine and Primal Order, Eldritch Invocations,
+  Metamagic) and each species' lineage, colour, ancestry or legacy (Josh's call, 2026-11-12),
+  and the sheet shows them.
   Each screen groups one or more steps from `steps.ts`; `viewStatuses` marks each done, to do
-  or blocked, and hides the ones a class doesn't have. The quest path (`flow/Stepper.tsx`)
+  or blocked, and hides the ones that don't apply (none is hidden today). The quest path (`flow/Stepper.tsx`)
   jumps to any screen; Next and Back, in the bar pinned to the bottom of the screen with the
   save state, skip the ones that don't apply.
 - **Every change** goes through `pruneAnswers(next, previous)`, and `clearedSummary` tells the
-  player in one line what that cleared ("That change cleared your class choices.").
+  player in one line what that cleared ("That change cleared your background.").
 - **The species sub-choice follows the class** (Josh's call, 2026-11-12). The builder gives the
   lineage, colour, ancestry or legacy the class names (`speciesOptions` in
   `content/classes.ts`, read by `speciesOptionOf`): a Wizard who picks Elf is a High Elf, a
@@ -52,13 +53,12 @@ player page walks through every choice to a printable "On your turn" sheet with 
   "Infernal Tiefling"), or the sub-choice alone when it already says the species ("High Elf",
   "Forest Gnome"). A Goliath stays "Goliath" (`option.inName: false` in `content/species.ts`);
   its giant ancestry is a trait on the sheet.
-- **Josh's calls:** nothing is preselected; class options carry no recommendation. Each list
-  shows "Pick N · M picked", and a full multi-pick list disables the rest. The choice cards
-  say little (2026-11-12): nothing folds out, a background card shows its story only, and a
-  class-choice card shows its gist; the full summaries are on the sheet. The builder picks
-  the species sub-choice from the class (2026-11-12, the two bullets above). The builder chooses
-  every spell: class cantrips and level 1 spells, a fighting style's cantrips and Magic
-  Initiate's (`spellPicks`). No ability-score math anywhere.
+- **Josh's calls:** nothing is preselected on the screens that remain. The choice cards say
+  little (2026-11-12): nothing folds out and a background card shows its story only; the full
+  summaries are on the sheet. The builder picks the species sub-choice from the class and every
+  class option (2026-11-12, the bullets above). The builder chooses every spell: class
+  cantrips and level 1 spells, a fighting style's cantrips and Magic Initiate's
+  (`spellPicks`). No ability-score math anywhere.
 - **The sheet** (`src/components/sheet/`, wording in `src/domain/sheet.ts`) describes each
   thing once, on its card; the rest is numbers, roll lines and names. It shows the four key
   numbers; "On your turn" (action, bonus action, reaction, always on), where an attack shows
@@ -94,8 +94,7 @@ the sheet banner and its cards. Phone first: most players use a phone.
   path sticks to the top of the screen on every step but the sheet. Once the player moves on
   from the screen they opened, a phone hides the page header and the greeting and shrinks the
   test banner to one line, so each step's heading starts about 90px down; Next, Back and a
-  jump scroll to the heading, just under the path, and focus it. Each class-choice list's
-  name and "Pick N" count stick to the top while it scrolls. The sheet gets a sticky jump
+  jump scroll to the heading, just under the path, and focus it. The sheet gets a sticky jump
   bar (Turn, Spells, Abilities, Gear, Cards) and folds the cards until asked; a laptop and
   paper always show them. The bottom bar is fixed, except at the end of the sheet on a laptop.
 - **Step changes** use the View Transitions API when the browser has it (`go` in
@@ -133,7 +132,7 @@ layers, each feeding the next:
      repeats, and the build proves there are enough. A Wizard's spellbook is the first
      `spellbookSize` level 1 spells. Changing a character's spells means reordering a list.
    - **Gists:** every spell (`spells/*.ts`) and class option (`options.ts`) also carries a
-     `gist`: the one line a class option's pick card shows, and the text of a spell's card on
+     `gist`: a class option's one line (nothing shows it since the pick screen went), and a spell's card text on
      the sheet (nothing shows a spell's `summary`). Write one short,
      vivid, plain sentence of what it does for the player (aim for 70 characters; the build stops
      at `GIST_MAX`, 90). Leave out what the card's chips already say (casting time, range, the
@@ -153,7 +152,7 @@ layers, each feeding the next:
        It is also the mark for a trait a level 2 character doesn't have yet and for a heading
        that only introduces picks.
      - `applied` (species traits, sub-choices, class options and feats) keeps the entry and its
-       `summary` in the content, where a class option's pick card and the engine still read it;
+       `summary` in the content, where the engine still reads it;
        the engine gives it no feature line. It must be passive with no `uses` (`sheet.test.ts`
        checks).
    - `general.ts`: the language and tool fallback orders.
@@ -174,11 +173,12 @@ always come from the imported class table or feature text, never from the curati
 
 - `src/domain/content.ts`: `CONTENT` (the generated module) and lookups: `classOf`, `speciesOf`,
   `speciesOptionOf` (the sub-choice the class gives), `speciesName` (the one name a player
-  sees), `backgroundOf`, `classesForArchetype`, `backgroundsForClass`, `pickedOptions`,
-  `chosenOptions`, `spellPicks` (every spell the builder gives, by source).
+  sees), `backgroundOf`, `classesForArchetype`, `backgroundsForClass`, `chosenOptions`
+  (every class option the builder gives: the first `count` of each option group's list),
+  `spellPicks` (every spell the builder gives, by source).
 - `src/domain/steps.ts`: `stepStatuses` (per step: applicable, complete, blockedBy, issues),
-  `nextStep`, `answeredSteps`, `applicableStepCount`, and `pruneAnswers(next,
-  previous)`, which the UI calls on every change to drop picks an upstream change made invalid.
+  `nextStep`, `answeredSteps`, `applicableStepCount`, and `pruneAnswers(next)`,
+  which the UI calls on every change to drop answers an upstream change made invalid.
 - `src/domain/engine.ts`: `buildCharacter(answers)` → `Character`, the derived level 2 sheet
   (abilities, saves, skills, HP, AC with alternatives, speed, initiative, attacks with mastery,
   spellcasting blocks per source, the features that get a card with their uses, equipment,
@@ -216,11 +216,12 @@ Everything lives under `builder.data-dir` (`/ruby/data/astra-state/builder`):
 - `roster.json`: `[{ id, name, createdAt }]`, written only by `just builder-invite`.
 - `characters/<id>.json`: `{ schemaVersion: 1, updatedAt, answers }`, written by the server.
   `answers` is the zod schema `Answers` in `src/domain/character.ts`; new steps add optional
-  fields there, and a change that breaks old files bumps `schemaVersion`. Curated ids (class
-  options) are bounded slugs, not enums, so a curation change never makes a saved file
-  unreadable; `pruneAnswers` drops the ids the content no longer offers. Spells and the
-  species sub-choice are not saved: the builder derives them from the class, species and
-  background on every load, so a change to those curated lists changes existing characters.
+  fields there, and a change that breaks old files bumps `schemaVersion`. Spells, class
+  options and the species sub-choice are not saved: the builder derives them from the class,
+  species and background on every load, so a change to those curated lists changes existing
+  characters. `Answers` once had an `options` field for class option picks; it was removed on
+  2026-11-12 with no `schemaVersion` bump, because no character document existed yet (the
+  strict schema now rejects a file that carries it).
 
 Every write goes to a temp file in the same directory and is renamed into place. The server
 saves only for ids on the roster, and an id must match the 22-character base64url shape before
@@ -243,7 +244,13 @@ takes every data-root dir by default).
   languages, equipment (option A packages) and the Human origin feat come from the curation's
   preference lists; the engine takes the first entries the character doesn't already have.
   The species sub-choice comes from the class's `speciesOptions` table, one entry per species
-  that has sub-choices. A new class or background needs those lists, not new UI.
+  that has sub-choices. Class options (fighting style, Divine and Primal Order, invocations,
+  Metamagic) come from each `optionGroups[].choices` list in `content/classes.ts`, best first:
+  the builder gives the first `count`, and later entries are alternates. To change a pick,
+  reorder that list (the Cleric's `thaumaturge` is first; Protector adds nothing visible
+  because the Cleric's gear has no heavy armor). A new class or background needs those lists,
+  not new UI. Tests reach options the lists don't pick first with `withShortlist`
+  (`src/domain/testShortlist.ts`, test-only).
 - **Summaries are checked by number.** `src/domain/summaries.test.ts` fails when a summary
   or a gist states a number (dice, feet, minutes, uses) its rules text doesn't. A right number from
   elsewhere (the character's level, the general ritual rule) goes in its `ALLOWED` with a reason.
@@ -288,8 +295,7 @@ takes every data-root dir by default).
   `<details>` or a background card says more than its name and story.
 - **The quest path must stay a direct child of `<main class="flow">`** to stick for the whole
   page (a sticky element only sticks inside its parent). `Stepper` publishes its height as
-  `--sticky-h` (0 on the sheet), which the headings' scroll margin and the pick lists' sticky
-  counters use.
+  `--sticky-h` (0 on the sheet), which the headings' scroll margin uses.
 - **Phone-only folds start folded on the server too.** `Fold` and `SheetJump` render the same
   first frame everywhere (folded, nothing marked); CSS shows the content on a laptop and on
   paper, so there is no hydration mismatch and nothing to measure.

@@ -65,11 +65,10 @@ export function Choice({
   );
 }
 
-/** A group of choices with a visible question and an optional live, sticky "pick N" counter. */
+/** A group of choices with a visible question. */
 export function ChoiceGroup({
   legend,
   prompt,
-  counter,
   layout = "list",
   quietLegend = false,
   children,
@@ -78,46 +77,17 @@ export function ChoiceGroup({
   /** Hide the legend visually when the screen's heading already says it (still read aloud). */
   quietLegend?: boolean;
   prompt?: string;
-  counter?: ReactNode;
   /** "tiles": a 2×2 (phone) to 4-across grid of tiles; "grid": two across from tablet up. */
   layout?: "tiles" | "grid" | "list";
   children: ReactNode;
 }) {
   return (
     <fieldset className="choice-group">
-      {/* With a counter, the sticky row below shows the name, so the legend is read, not seen. */}
-      <legend className={quietLegend || counter ? "group-legend sr-only" : "group-legend"}>
-        {legend}
-      </legend>
+      <legend className={quietLegend ? "group-legend sr-only" : "group-legend"}>{legend}</legend>
       {prompt && <p className="group-prompt">{prompt}</p>}
-      {counter && (
-        // Sticks under the top of the screen while the list scrolls, so the count stays in view.
-        <div className="group-sticky">
-          <span className="group-sticky-name" aria-hidden="true">
-            {legend}
-          </span>
-          {counter}
-        </div>
-      )}
       <div className="choices" data-layout={layout}>
         {children}
       </div>
     </fieldset>
-  );
-}
-
-/** "Pick 2 · 1 picked", announced politely as it changes, with a pip per pick. */
-export function PickCounter({ count, picked }: { count: number; picked: number }) {
-  return (
-    <span className="pick-count" data-full={picked === count ? "" : undefined}>
-      <span className="pips" aria-hidden="true">
-        {Array.from({ length: count }, (_, n) => n).map((n) => (
-          <span key={n} className="pip" data-on={n < picked ? "" : undefined} />
-        ))}
-      </span>
-      <output aria-live="polite">
-        Pick {count} · {picked} picked
-      </output>
-    </span>
   );
 }

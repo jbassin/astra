@@ -4,18 +4,12 @@
 // can call them on every change and the DM page can show the same progress.
 
 import { type Answers, STEPS, type StepKey } from "./character";
-import {
-  backgroundsForClass,
-  classesForArchetype,
-  classOf,
-  pickedOptions,
-  speciesOf,
-} from "./content";
+import { backgroundsForClass, classesForArchetype, classOf, speciesOf } from "./content";
 
 export interface StepStatus {
   key: StepKey;
   label: string;
-  /** False when the step doesn't apply to this character (a Barbarian has no class options). */
+  /** False when the step doesn't apply to this character (none is skipped today). */
   applicable: boolean;
   complete: boolean;
   /** A step that has to be answered first, when this one can't be started yet. */
@@ -26,10 +20,6 @@ export interface StepStatus {
 
 function filled(value: string | undefined): boolean {
   return typeof value === "string" && value.trim() !== "";
-}
-
-function plural(n: number, word: string): string {
-  return `${n} ${word}${n === 1 ? "" : "s"}`;
 }
 
 function statusOf(answers: Answers, key: StepKey): Omit<StepStatus, "key" | "label"> {
@@ -58,17 +48,6 @@ function statusOf(answers: Answers, key: StepKey): Omit<StepStatus, "key" | "lab
       return ok
         ? { applicable: true, complete: true, issues: [] }
         : { applicable: true, complete: false, issues: ["Pick a background."] };
-    }
-    case "options": {
-      if (!cls) return { applicable: true, complete: false, blockedBy: "class", issues: [] };
-      if (cls.optionGroups.length === 0) return { applicable: false, complete: true, issues: [] };
-      const issues = cls.optionGroups.flatMap((g) => {
-        const n = pickedOptions(answers, g).length;
-        return n === g.count
-          ? []
-          : [`Pick ${g.count === 1 ? "one" : plural(g.count, "option")} for ${g.label}.`];
-      });
-      return { applicable: true, complete: issues.length === 0, issues };
     }
     case "name":
       return filled(answers.name)
@@ -115,50 +94,25 @@ export function applicableStepCount(answers: Answers): number {
   return stepStatuses(answers).filter((s) => s.applicable).length;
 }
 
-function keepValid(ids: string[] | undefined, allowed: Set<string>, max: number): string[] {
-  const out: string[] = [];
-  for (const id of ids ?? []) {
-    if (allowed.has(id) && !out.includes(id) && out.length < max) out.push(id);
-  }
-  return out;
-}
-
 /**
  * Drops choices that an upstream answer made invalid, and returns a new object (the input is
- * not changed). Pass the answers from before the change as `previous` so a change of class
- * clears the picks made for the old one even where the new one offers the same ids.
+ * not changed).
  *
  * - a class the archetype doesn't offer is cleared;
- * - a new (or cleared) class clears option picks;
- * - option picks keep only ids the current shortlists offer, up to the pick count;
  * - a background the class can't take is cleared.
  *
- * Spells and the species sub-choice are never answers: the builder chooses them (`spellPicks`
- * and `speciesOptionOf` in content.ts).
+ * Spells, class options and the species sub-choice are never answers: the builder chooses them
+ * (`spellPicks`, `chosenOptions` and `speciesOptionOf` in content.ts).
  */
-export function pruneAnswers(answers: Answers, previous?: Answers): Answers {
+export function pruneAnswers(answers: Answers): Answers {
   const next: Answers = { ...answers };
-  if (next.options) next.options = { ...next.options };
 
   if (next.classId && !classesForArchetype(next.archetype).some((c) => c.id === next.classId)) {
     delete next.classId;
   }
-  const classChanged = previous !== undefined && previous.classId !== next.classId;
-  if (!next.classId || classChanged) {
-    delete next.options;
-  }
-
   const cls = classOf(next);
-  if (cls) {
-    if (next.backgroundId && !cls.backgrounds.includes(next.backgroundId)) delete next.backgroundId;
-    if (next.options) {
-      const pruned: NonNullable<Answers["options"]> = {};
-      for (const g of cls.optionGroups) {
-        const picks = keepValid(next.options[g.key], new Set(g.choices), g.count);
-        if (picks.length > 0) pruned[g.key] = picks;
-      }
-      next.options = pruned;
-    }
+  if (cls && next.backgroundId && !cls.backgrounds.includes(next.backgroundId)) {
+    delete next.backgroundId;
   }
   return next;
 }

@@ -12,6 +12,7 @@ import type { Answers } from "./character";
 import { CONTENT, speciesOptionOf } from "./content";
 import { CLASS_IDS } from "./contentTypes";
 import { buildCharacter, type Character, type SpellEntry } from "./engine";
+import { withShortlist } from "./testShortlist";
 
 function scores(c: Character): Record<string, number> {
   return Object.fromEntries(Object.entries(c.abilities).map(([k, v]) => [k, v.score]));
@@ -37,14 +38,15 @@ const DONE = { name: "Test", look: "Plain.", personality: "Calm." };
 
 describe("buildCharacter: one worked character per class", () => {
   it("Fighter (Dwarf, Soldier, Great Weapon Fighting)", () => {
-    const c = buildCharacter({
-      archetype: "warrior",
-      classId: "fighter",
-      speciesId: "dwarf",
-      backgroundId: "soldier",
-      options: { fightingStyle: ["great-weapon-fighting"] },
-      ...DONE,
-    });
+    const c = withShortlist("fighter", { fightingStyle: ["great-weapon-fighting"] }, () =>
+      buildCharacter({
+        archetype: "warrior",
+        classId: "fighter",
+        speciesId: "dwarf",
+        backgroundId: "soldier",
+        ...DONE,
+      }),
+    );
     // Priority str con dex wis int cha → 15 14 13 12 10 8; Soldier (Str Dex Con): Str +2, Con +1.
     expect(scores(c)).toEqual({ str: 17, dex: 13, con: 15, int: 10, wis: 12, cha: 8 });
     // d10: (10 + 2) + (6 + 2) + Dwarven Toughness 2 = 22.
@@ -204,14 +206,15 @@ describe("buildCharacter: one worked character per class", () => {
   });
 
   it("Ranger (Human, Wayfarer, Druidic Warrior)", () => {
-    const c = buildCharacter({
-      archetype: "scoundrel",
-      classId: "ranger",
-      speciesId: "human",
-      backgroundId: "wayfarer",
-      options: { fightingStyle: ["druidic-warrior"] },
-      ...DONE,
-    });
+    const c = withShortlist("ranger", { fightingStyle: ["druidic-warrior"] }, () =>
+      buildCharacter({
+        archetype: "scoundrel",
+        classId: "ranger",
+        speciesId: "human",
+        backgroundId: "wayfarer",
+        ...DONE,
+      }),
+    );
     // Priority dex wis con str int cha → 15 14 13 12 10 8; Wayfarer (Dex Wis Cha): Dex +2, Wis +1.
     expect(scores(c)).toEqual({ str: 12, dex: 17, con: 13, int: 10, wis: 15, cha: 8 });
     // Wayfarer gives Lucky, so Human Versatile takes Alert. d10: (10 + 1) + (6 + 1) = 18.
@@ -308,7 +311,6 @@ describe("buildCharacter: one worked character per class", () => {
       classId: "sorcerer",
       speciesId: "dragonborn",
       backgroundId: "noble",
-      options: { metamagic: ["quickened-spell", "seeking-spell"] },
       ...DONE,
     });
     // Priority cha con dex wis int str → 15 14 13 12 10 8; Noble (Str Int Cha): Cha +2, Int +1.
@@ -349,7 +351,6 @@ describe("buildCharacter: one worked character per class", () => {
       classId: "druid",
       speciesId: "gnome",
       backgroundId: "hermit",
-      options: { primalOrder: ["magician"] },
       ...DONE,
     });
     // Priority wis con dex int str cha → 15 14 13 12 10 8; Hermit (Con Wis Cha): Wis +2, Con +1.
@@ -429,14 +430,18 @@ describe("buildCharacter: one worked character per class", () => {
   });
 
   it("Warlock (Orc, Charlatan, Agonizing Blast)", () => {
-    const c = buildCharacter({
-      archetype: "mage",
-      classId: "warlock",
-      speciesId: "orc",
-      backgroundId: "charlatan",
-      options: { invocations: ["agonizing-blast", "armor-of-shadows", "pact-of-the-chain"] },
-      ...DONE,
-    });
+    const c = withShortlist(
+      "warlock",
+      { invocations: ["agonizing-blast", "armor-of-shadows", "pact-of-the-chain"] },
+      () =>
+        buildCharacter({
+          archetype: "mage",
+          classId: "warlock",
+          speciesId: "orc",
+          backgroundId: "charlatan",
+          ...DONE,
+        }),
+    );
     // Priority cha con dex wis int str → 15 14 13 12 10 8; Charlatan (Dex Con Cha): Cha +2, Con +1.
     expect(scores(c)).toEqual({ str: 8, dex: 13, con: 15, int: 10, wis: 12, cha: 17 });
     expect(c.hitPoints.max).toBe(17); // d8: (8 + 2) + (5 + 2)
@@ -470,7 +475,6 @@ describe("buildCharacter: one worked character per class", () => {
       classId: "cleric",
       speciesId: "dwarf",
       backgroundId: "acolyte",
-      options: { divineOrder: ["thaumaturge"] },
       ...DONE,
     });
     // Priority wis con dex str cha int → 15 14 13 12 10 8; Acolyte (Int Wis Cha): Wis +2, Cha +1.
@@ -503,7 +507,6 @@ describe("buildCharacter: one worked character per class", () => {
       classId: "paladin",
       speciesId: "aasimar",
       backgroundId: "noble",
-      options: { fightingStyle: ["dueling"] },
       ...DONE,
     });
     // Priority str con cha wis dex int → 15 14 13 12 10 8; Noble (Str Int Cha): Str +2, Cha +1.
@@ -649,14 +652,18 @@ describe("buildCharacter: what a number already shows gets no feature line", () 
 
 describe("buildCharacter: an option or a feat that is only a number gets no feature line", () => {
   it("Warlock (Human, Charlatan): Agonizing Blast, Skilled, Pact Magic, the invocations heading", () => {
-    const c = buildCharacter({
-      archetype: "mage",
-      classId: "warlock",
-      speciesId: "human",
-      backgroundId: "charlatan",
-      options: { invocations: ["agonizing-blast", "repelling-blast", "eldritch-mind"] },
-      ...DONE,
-    });
+    const c = withShortlist(
+      "warlock",
+      { invocations: ["agonizing-blast", "repelling-blast", "eldritch-mind"] },
+      () =>
+        buildCharacter({
+          archetype: "mage",
+          classId: "warlock",
+          speciesId: "human",
+          backgroundId: "charlatan",
+          ...DONE,
+        }),
+    );
     // Priority cha con dex wis int str → 15 14 13 12 10 8; Charlatan (Dex Con Cha): Cha +2, Con +1.
     expect(scores(c)).toEqual({ str: 8, dex: 13, con: 15, int: 10, wis: 12, cha: 17 });
     // Charlatan gives Skilled, so Human Versatile takes Alert: Dex 1 + 2 = +3.

@@ -102,7 +102,6 @@ const GAME_ICONS = [
   "sonic-boom",
   // sheet sections
   "backpack",
-  "laurels",
   "scroll-unfurled",
   "scroll-quill",
   "wax-seal",

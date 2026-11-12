@@ -59,7 +59,7 @@ export type BackgroundId = (typeof BACKGROUND_IDS)[number];
 export const ARCHETYPE_IDS = ["warrior", "scoundrel", "mage", "healer"] as const;
 export type ArchetypeId = (typeof ARCHETYPE_IDS)[number];
 
-/** The keys of a class's level 1–2 option picks; `Answers.options` is keyed by these. */
+/** The keys of a class's level 1–2 option groups (fighting style, Divine Order, …). */
 export const OPTION_GROUP_KEYS = [
   "fightingStyle",
   "divineOrder",
@@ -110,11 +110,10 @@ export interface Summarized {
 /** The longest a gist may be; the build fails on a longer one. */
 export const GIST_MAX = 90;
 
-/** Something with a one-line gist: a class option a player picks from a list of cards, or a
- * spell. */
+/** Something with a one-line gist: a class option or a spell. */
 interface Gisted {
-  /** One short, plain line (at most GIST_MAX characters). A class option's pick card shows
-   * it; a spell's card on the sheet shows it as its text. */
+  /** One short, plain line (at most GIST_MAX characters). A spell's card on the sheet shows
+   * it as its text. */
   gist: string;
 }
 
@@ -145,7 +144,7 @@ export interface OptionContent extends Summarized, Activated, Gisted, Applied {
   uses?: Uses;
   /** Metamagic cost in Sorcery Points. */
   cost?: number;
-  /** An option that teaches extra cantrips the player picks (Blessed or Druidic Warrior). */
+  /** An option that teaches extra cantrips the builder picks (Blessed or Druidic Warrior). */
   grantsCantrips?: { list: ClassId; count: number; ability: Ability; cantrips: SpellList };
   /** An option that adds to the class's cantrip count (Thaumaturge, Magician). */
   extraCantrips?: number;
@@ -160,9 +159,10 @@ export interface OptionGroupContent {
   label: string;
   /** One plain line the UI shows above the choices. */
   prompt: string;
-  /** How many the player picks at level 2. */
+  /** How many options the class has at level 2. */
   count: number;
-  /** Option ids (keys of `BuilderContent.options`), in display order. */
+  /** Option ids (keys of `BuilderContent.options`), best first. The builder gives the first
+   * `count` (`chosenOptions` in content.ts); the rest are alternates, promoted by reordering. */
   choices: string[];
 }
 

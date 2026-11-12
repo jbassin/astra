@@ -60,16 +60,15 @@ describe("picking a whole character", () => {
     next();
     choose("radio", /^Soldier/);
     next();
-    expect(heading()).toBe("Make your class choices");
-    choose("radio", /^Defense/);
-    next();
-    expect(heading()).toBe("Tell us about your hero"); // a Fighter has no spells screen
+    // No class choices screen and no spells screen: the builder picks both.
+    expect(heading()).toBe("Tell us about your hero");
     fillAbout();
     next();
     expect(heading()).toBe("Your character sheet");
     expect(screen.getByText("On your turn")).toBeTruthy();
     expect(screen.getAllByText(/Roll a d20 \+ \d+ to hit\./).length).toBeGreaterThan(0);
-    expect(last()).toMatchObject({ classId: "fighter", options: { fightingStyle: ["defense"] } });
+    expect(last()).toMatchObject({ classId: "fighter" });
+    expect(Object.keys(last())).not.toContain("options");
   });
 
   it("walks a Wizard straight from background to About you, spells chosen for them", () => {
@@ -83,7 +82,7 @@ describe("picking a whole character", () => {
     next();
     choose("radio", /^Sage/);
     next();
-    // A Wizard has no class choices, and nobody has a spells screen.
+    // Nobody has a class choices or a spells screen.
     expect(heading()).toBe("Tell us about your hero");
     fillAbout();
     next();
@@ -98,15 +97,11 @@ describe("picking a whole character", () => {
 });
 
 describe("changing an earlier answer", () => {
-  it("clears a Cleric's class choices when the class changes, and says so", () => {
-    renderFlow({
-      archetype: "healer",
-      classId: "cleric",
-      options: { divineOrder: ["protector"] },
-    });
+  it("clears a background the new class can't take when the class changes, and says so", () => {
+    renderFlow({ archetype: "healer", classId: "cleric", backgroundId: "acolyte" });
     fireEvent.click(screen.getByRole("button", { name: /^Class \(/ }));
     choose("radio", /^Paladin/);
-    expect(screen.getByText(/That change cleared your class choices\./)).toBeTruthy();
+    expect(screen.getByText(/That change cleared your background\./)).toBeTruthy();
   });
 
   it("resumes at the first unfinished screen and marks the rail", () => {
@@ -120,14 +115,14 @@ describe("changing an earlier answer", () => {
 });
 
 describe("what the player sees on the pick screens", () => {
-  it("shows class options with no recommendation and nothing picked", () => {
-    renderFlow({ archetype: "warrior", classId: "fighter" });
-    fireEvent.click(screen.getByRole("button", { name: /^Class choices/ }));
-    expect(screen.queryByText("Recommended")).toBeNull();
-    const radios = screen.getAllByRole("radio");
-    expect(radios.length).toBeGreaterThan(1);
-    expect(radios.some((el) => el instanceof HTMLInputElement && el.checked)).toBe(false);
-    expect(foldOuts()).toBe(0);
+  it("has no class choices screen: a Fighter goes from Background to About you", () => {
+    renderFlow({ archetype: "warrior", classId: "fighter", speciesId: "human" });
+    choose("radio", /^Soldier/);
+    expect(screen.queryByRole("button", { name: /^Class choices/ })).toBeNull();
+    next();
+    expect(heading()).toBe("Tell us about your hero");
+    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    expect(heading()).toBe("Pick your background");
   });
 
   it("names each species for the player's class, with no second pick and nothing to open", () => {

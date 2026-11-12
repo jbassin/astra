@@ -10,7 +10,6 @@ export const VIEWS = [
   { key: "class", label: "Class", steps: ["class"] },
   { key: "species", label: "Species", steps: ["species"] },
   { key: "background", label: "Background", steps: ["background"] },
-  { key: "options", label: "Class choices", steps: ["options"] },
   { key: "about", label: "About you", steps: ["name", "look", "personality"] },
   { key: "sheet", label: "Your sheet", steps: [] },
 ] as const satisfies ReadonlyArray<{ key: string; label: string; steps: readonly StepKey[] }>;
@@ -20,7 +19,7 @@ export type ViewKey = (typeof VIEWS)[number]["key"];
 export interface ViewStatus {
   key: ViewKey;
   label: string;
-  /** False when none of the screen's steps apply (a Barbarian has no class choices screen). */
+  /** False when none of the screen's steps apply (none is skipped today). */
   applicable: boolean;
   state: "done" | "todo" | "blocked";
   /** The screen to finish first, when this one is blocked. */
@@ -84,7 +83,6 @@ export function viewBefore(answers: Answers, current: ViewKey): ViewKey | undefi
 const CLEARABLE: Array<[keyof Answers, string]> = [
   ["classId", "your class"],
   ["backgroundId", "your background"],
-  ["options", "your class choices"],
 ];
 
 function count(value: Answers[keyof Answers]): number {

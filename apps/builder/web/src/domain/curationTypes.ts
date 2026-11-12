@@ -36,7 +36,7 @@ export type CuratedSummary =
   | { hidden: string; summary?: undefined; activation?: undefined; uses?: undefined };
 
 /**
- * For something that must stay in the content (a class option's pick card shows it; a
+ * For something that must stay in the content (a class option, a
  * sub-choice or a feat carries numbers the engine reads), so `hidden` won't do: `applied` is
  * the reason the sheet makes no card and no "On your turn" entry for it. Species traits use
  * it too. Set it only when the builder already put the whole effect into a number or a line
@@ -60,10 +60,11 @@ export interface CuratedOptionGroup {
   label: string;
   prompt: string;
   /**
-   * The pick count: a number the feature text states (Divine Order: "one of the following"),
+   * How many options the class has: a number the feature text states (Divine Order: "one of the following"),
    * a class-table column, an optional-feature progression name, or a feat progression name.
    */
   count: number | { table: string } | { optionalFeature: string } | { featProgression: string };
+  /** Option ids, best first: the builder gives the first `count`; the rest are alternates. */
   choices: string[];
 }
 
@@ -105,7 +106,7 @@ export interface CuratedOption extends Applied {
   kind: OptionKind;
   /** Where the rules text comes from. */
   from: { feat: string } | { optionalFeature: string } | { classFeature: string };
-  /** One short line for the pick card (see `gist` in contentTypes.ts). */
+  /** One short line (see `gist` in contentTypes.ts). */
   gist: string;
   summary: string;
   activation: Activation;

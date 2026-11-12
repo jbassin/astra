@@ -1,4 +1,4 @@
-/* The choice cards: groups with their sticky pick counters, the cards themselves (emblem,
+/* The choice cards: groups, the cards themselves (emblem,
  * title, tick, picked state) and the big tiles on the first screen. */
 
 /* ── choice groups ──────────────────────────────────────────────────────────────── */
@@ -22,59 +22,6 @@
 }
 .group-prompt {
   color: var(--muted);
-}
-/* The list's name and count, held under the top of the screen while its cards scroll by. */
-.group-sticky {
-  position: sticky;
-  /* Under the sticky quest path (its height, published by Stepper). */
-  top: var(--sticky-h, 0px);
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 0.75rem;
-  margin: 0 -1rem;
-  padding: 0.5rem 1rem;
-  background: color-mix(in oklab, var(--page) 90%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-.group-sticky-name {
-  min-width: 0;
-  font: 700 1.25rem/1.15 var(--display);
-}
-.pick-count {
-  flex: none;
-  display: inline-flex;
-  white-space: nowrap;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.75rem 0.3rem 0.6rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-.pick-count[data-full] {
-  border-color: var(--ok);
-  color: var(--ok);
-}
-.pips {
-  display: inline-flex;
-  gap: 0.25rem;
-}
-.pip {
-  width: 0.6rem;
-  height: 0.6rem;
-  border: 1.5px solid currentColor;
-  border-radius: 50%;
-  transition: background-color 150ms var(--ease-out);
-}
-.pip[data-on] {
-  background: currentColor;
-  animation: pop 260ms var(--pop);
 }
 .choices {
   display: grid;
