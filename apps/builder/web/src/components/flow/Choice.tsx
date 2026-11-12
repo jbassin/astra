@@ -1,7 +1,6 @@
 // One pickable card: a radio or checkbox with an icon, a title and a plain
 // summary. The input is visually hidden and the label is the touch target; the tick in the
-// corner (absolutely placed, so picking never shifts the layout) shows it is picked. `more`
-// adds a "full rules" disclosure below the label, outside it, so opening it never picks.
+// corner (absolutely placed, so picking never shifts the layout) shows it is picked.
 
 import type { CSSProperties, ReactNode } from "react";
 
@@ -18,8 +17,6 @@ export function Choice({
   icon,
   hue,
   size = "row",
-  more,
-  moreLabel = "Read the full rules",
   children,
 }: {
   type: "radio" | "checkbox";
@@ -35,9 +32,6 @@ export function Choice({
   hue?: CSSProperties;
   /** "tile": the big emblem-first card; "row": emblem beside the text. */
   size?: "tile" | "row";
-  /** The full text, behind a disclosure under the card. */
-  more?: ReactNode;
-  moreLabel?: string;
   children?: ReactNode;
 }) {
   return (
@@ -67,18 +61,6 @@ export function Choice({
           <Icon name="ui-check" />
         </span>
       </label>
-      {more && (
-        <details className="choice-more">
-          <summary>
-            <span className="more-close" aria-hidden="true">
-              Less
-            </span>
-            <span className="sr-only">{`${moreLabel}: ${title}`}</span>
-            <Icon name="ui-chevron-down" className="more-chevron" />
-          </summary>
-          <div className="choice-more-body">{more}</div>
-        </details>
-      )}
     </div>
   );
 }

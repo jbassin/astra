@@ -67,6 +67,9 @@ export interface CuratedClass {
   /** Package items the rules text names more exactly than the data does ("Druidic Focus
    * (Quarterstaff)"): the item id to use instead, and the name to show. */
   equipmentSwaps?: Record<string, { item: string; name: string }>;
+  /** The sub-choice the builder gives this class for each species that has one (Elf →
+   * "high-elf"). The build fails on a missing species or an id the species doesn't offer. */
+  speciesOptions: Partial<Record<SpeciesId, string>>;
   humanFeat: [string, string];
   languages?: { fixed: string[]; extra: number };
   /** Every imported level 1–2 feature id of the class, keyed by id. */
@@ -99,8 +102,6 @@ export interface CuratedOption {
 }
 
 export interface CuratedSpeciesOption {
-  /** One short line for the pick card (see `gist` in contentTypes.ts). */
-  gist: string;
   summary: string;
   activation: Activation;
   uses?: CuratedUses;
@@ -112,7 +113,9 @@ export interface CuratedSpecies {
   /** The size the builder gives when the species may pick (Medium). */
   size: string;
   traits: Record<string, CuratedSummary>;
-  option?: { prompt: string; choices: Record<string, CuratedSpeciesOption> };
+  /** The sub-choices, keyed by imported id. `inName: false` keeps the sub-choice out of the
+   * species name the player sees (`speciesName` in content.ts). */
+  option?: { inName?: false; choices: Record<string, CuratedSpeciesOption> };
   skillChoice?: string[] | "any";
   languages: string[];
 }

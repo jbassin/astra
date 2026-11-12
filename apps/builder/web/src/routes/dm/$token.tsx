@@ -32,13 +32,11 @@ function formatTime(iso: string | null): string {
 function PlayerCard({ player }: { player: DmPlayerRow }) {
   const c = buildCharacter(player.answers);
   const heraldry = classTincture(c.class?.id);
-  const species =
-    c.species && (c.species.option ? `${c.species.name} (${c.species.option})` : c.species.name);
   const rows: Array<[string, string | undefined]> = [
     ["Name", c.name],
     ["Archetype", c.archetype?.label],
     ["Class", c.class?.name],
-    ["Species", species],
+    ["Species", c.species?.name],
     ["Background", c.background?.name],
   ];
   const answered = STEPS.filter((s) => player.answered.includes(s.key));
@@ -78,7 +76,7 @@ function PlayerCard({ player }: { player: DmPlayerRow }) {
       <details className="dm-sheet">
         <summary>
           <span>{player.name}’s full sheet</span>
-          <Icon name="ui-chevron-down" className="gifts-chevron" />
+          <Icon name="ui-chevron-down" className="dm-sheet-chevron" />
         </summary>
         <CharacterSheet character={c} />
       </details>

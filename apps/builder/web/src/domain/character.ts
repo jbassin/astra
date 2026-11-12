@@ -42,23 +42,22 @@ export const ARCHETYPES = [
 
 const Archetype = z.enum(ARCHETYPE_IDS);
 
-/** A content id: a lower-case slug (spell, option, species sub-option). */
+/** A content id: a lower-case slug (a class option). */
 const Slug = z.string().regex(/^[a-z0-9-]{1,40}$/, "not a content id");
 
 /**
  * Every answer a player can give. Each is optional, so a half-finished character is valid, and
- * every string and array is bounded. Ids of curated content (spells, options, sub-options) are
- * slugs rather than enums, so a document saved before a curation change still parses;
- * `pruneAnswers` (steps.ts) drops ids the content no longer offers. New steps add fields here;
- * a change that breaks old documents bumps `schemaVersion`.
+ * every string and array is bounded. Ids of curated content (class options) are slugs rather
+ * than enums, so a document saved before a curation change still parses; `pruneAnswers`
+ * (steps.ts) drops ids the content no longer offers. New steps add fields here; a change that
+ * breaks old documents bumps `schemaVersion`. Spells and the species sub-choice are never
+ * answers: the builder decides them (`spellPicks` and `speciesOptionOf` in content.ts).
  */
 export const Answers = z
   .object({
     archetype: Archetype.optional(),
     classId: z.enum(CLASS_IDS).optional(),
     speciesId: z.enum(SPECIES_IDS).optional(),
-    /** The species sub-choice: elf lineage, dragonborn ancestry, tiefling legacy, … */
-    speciesOption: Slug.optional(),
     backgroundId: z.enum(BACKGROUND_IDS).optional(),
     /** Class option picks by group (fighting style, divine order, invocations, …). */
     options: z.partialRecord(z.enum(OPTION_GROUP_KEYS), z.array(Slug).max(6)).optional(),

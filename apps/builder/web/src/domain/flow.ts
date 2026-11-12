@@ -83,7 +83,6 @@ export function viewBefore(answers: Answers, current: ViewKey): ViewKey | undefi
 /** The plain name of each answer a change can clear, in the order the sentence lists them. */
 const CLEARABLE: Array<[keyof Answers, string]> = [
   ["classId", "your class"],
-  ["speciesOption", "your species choice"],
   ["backgroundId", "your background"],
   ["options", "your class choices"],
 ];

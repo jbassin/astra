@@ -112,8 +112,8 @@ export const GIST_MAX = 90;
 
 /** Something a player picks from a list of cards. */
 interface Gisted {
-  /** One short, plain line for the pick card (at most GIST_MAX characters); the full summary
-   * sits behind the card's disclosure. */
+  /** One short, plain line for the pick card (at most GIST_MAX characters); the sheet shows
+   * the full summary. */
   gist: string;
 }
 
@@ -224,6 +224,9 @@ export interface ClassContent {
   spellcasting?: SpellcastingContent;
   /** Backgrounds whose ability list includes `primary`, in display order. */
   backgrounds: BackgroundId[];
+  /** The species sub-choice the builder gives (an Elf's lineage, a Dragonborn's colour), by
+   * species id, for every species that has one. */
+  speciesOptions: Partial<Record<SpeciesId, string>>;
   /** Human Versatile: the origin feat the builder gives, and the fallback when the background
    * already gives that feat. */
   humanFeat: [string, string];
@@ -240,7 +243,7 @@ export interface ArchetypeContent {
   classes: ClassId[];
 }
 
-export interface SpeciesOptionContent extends Summarized, Activated, Gisted {
+export interface SpeciesOptionContent extends Summarized, Activated {
   /** The species trait this option replaces on the sheet. */
   replacesTrait: string;
   speed?: number;
@@ -263,8 +266,10 @@ export interface SpeciesContent {
   darkvision?: number;
   resist: string[];
   traits: SpeciesTraitContent[];
-  /** The sub-choice ("Elven Lineage"), when the species has one. */
-  option?: { label: string; prompt: string; choices: SpeciesOptionContent[] };
+  /** The sub-choice ("Elven Lineage"), when the species has one. The builder picks it from
+   * the class (`ClassContent.speciesOptions`). `inName` is false when it stays out of the
+   * species name (a Goliath's giant ancestry is a trait, not a kind of Goliath). */
+  option?: { label: string; inName: boolean; choices: SpeciesOptionContent[] };
   cantrips: string[];
   /** The fixed spellcasting ability for `cantrips` (Aasimar); otherwise the builder picks. */
   spellAbility?: Ability;

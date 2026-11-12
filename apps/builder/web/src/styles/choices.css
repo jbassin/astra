@@ -1,14 +1,12 @@
 /* The choice cards: groups with their sticky pick counters, the cards themselves (emblem,
- * title, tick, picked state, the "full rules" disclosure), the big tiles on the first screen
- * and the species gifts. */
+ * title, tick, picked state) and the big tiles on the first screen. */
 
 /* ── choice groups ──────────────────────────────────────────────────────────────── */
 .choice-group {
   display: grid;
   gap: 0.75rem;
 }
-.choice-group + .choice-group,
-.gifts + .choice-group {
+.choice-group + .choice-group {
   margin-top: 1rem;
 }
 .group-legend {
@@ -88,8 +86,10 @@
 @media (min-width: 44rem) {
   .choices[data-layout="grid"] {
     grid-template-columns: 1fr 1fr;
-    /* An opened card grows alone; its neighbour keeps its own height. */
-    align-items: start;
+  }
+  /* The two cards of a row share its height; the label fills its card, so all of it picks. */
+  .choices[data-layout="grid"] .choice-hit {
+    height: 100%;
   }
 }
 @media (min-width: 60rem) {
@@ -203,8 +203,7 @@
 .choice-blurb {
   color: var(--ink);
 }
-.choice-meta,
-.choice-talent {
+.choice-meta {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -213,14 +212,6 @@
 }
 .choice-meta .icon {
   color: var(--hue-ink);
-}
-.choice-talent {
-  display: block;
-  padding-top: 0.5rem;
-  border-top: 1px dashed var(--rule);
-}
-.choice-talent strong {
-  color: var(--ink);
 }
 .chips {
   display: flex;
@@ -272,84 +263,6 @@
   animation: pop 300ms var(--pop);
 }
 
-/* "More": a disclosure beside the label, not inside it, so opening it never picks. Closed, its
- * button sits in the card's bottom-right corner (the label keeps that column clear); open, it
- * becomes a "Less" row above the full text. */
-.choice:has(.choice-more) .choice-hit {
-  min-height: 6rem;
-}
-.choice:has(.choice-more) .choice-blurb {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-.choice-more > summary {
-  position: absolute;
-  right: 0.2rem;
-  bottom: 0.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.15rem;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  padding: 0 0.4rem;
-  border-radius: var(--radius-s);
-  color: var(--muted);
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  list-style: none;
-}
-.choice-more > summary::-webkit-details-marker {
-  display: none;
-}
-.choice-more > summary:hover {
-  background: var(--sunk);
-  color: var(--ink);
-}
-.choice-more > summary:focus-visible {
-  outline: 3px solid var(--gilt);
-  outline-offset: -2px;
-}
-/* Closed, the button is a lone chevron in a ring, so it fits the label's clear column. */
-.choice-more:not([open]) .more-chevron {
-  box-sizing: content-box;
-  padding: 0.3rem;
-  border: 1.5px solid var(--rule-strong);
-  border-radius: 50%;
-}
-.more-close {
-  display: none;
-}
-.choice-more[open] .more-close {
-  display: inline;
-}
-.choice-more[open] > summary {
-  position: static;
-  justify-content: flex-end;
-  margin: 0 0.2rem;
-  border-top: 1px dashed var(--rule);
-  border-radius: 0;
-}
-.choice-more[open] {
-  border-top: 0;
-}
-.more-chevron {
-  transition: rotate 200ms var(--ease-out);
-}
-.choice-more[open] .more-chevron {
-  rotate: 180deg;
-}
-.choice-more-body {
-  display: grid;
-  gap: 0.5rem;
-  padding: 0 0.9rem 0.9rem;
-  animation: screen-in 180ms var(--ease-out) both;
-}
-
 /* Tiles: the big emblem-first cards on the first screen. */
 .choice[data-size="tile"] .choice-hit {
   grid-template-columns: 1fr;
@@ -384,45 +297,4 @@
   .choice[data-size="tile"] .crest {
     width: 5.5rem;
   }
-}
-
-/* ── species gifts ──────────────────────────────────────────────────────────────── */
-.gifts {
-  border: 1.5px solid var(--hue-line);
-  border-radius: var(--radius-m);
-  background: var(--surface);
-  animation: screen-in 200ms var(--ease-out) both;
-}
-.gifts > summary {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-height: 3rem;
-  padding: 0.6rem 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  list-style: none;
-}
-.gifts > summary::-webkit-details-marker {
-  display: none;
-}
-.gifts > summary > span {
-  flex: 1;
-}
-.gifts-icon {
-  width: 1.6rem;
-  height: 1.6rem;
-  color: var(--hue-ink);
-}
-.gifts-chevron {
-  fill: none;
-  transition: rotate 200ms var(--ease-out);
-}
-.gifts[open] .gifts-chevron {
-  rotate: 180deg;
-}
-.gifts ul {
-  display: grid;
-  gap: 0.6rem;
-  padding: 0 1rem 1rem 3.2rem;
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Answers } from "./character";
-import { CONTENT, speciesOf, speciesOptionOf, spellPicks } from "./content";
+import { CONTENT, speciesName, speciesOf, speciesOptionOf, spellPicks } from "./content";
 import type { ClassContent, OptionContent } from "./contentTypes";
 
 describe("spellPicks", () => {
@@ -40,15 +40,16 @@ describe("spellPicks", () => {
       "toll-the-dead",
       "thaumaturgy",
     ]);
-    const warlock: Answers = { classId: "warlock", speciesId: "elf", speciesOption: "high-elf" };
-    expect(spellPicks(warlock).cantrips).toEqual(["eldritch-blast", "mage-hand"]);
+    // A Wizard's Elf is a High Elf, who knows Prestidigitation, and the Wizard's own cantrips
+    // are Fire Bolt and Mage Hand: Magic Initiate (Sage) skips all three.
+    const wizard: Answers = { classId: "wizard", speciesId: "elf", backgroundId: "sage" };
+    expect(spellPicks(wizard).initiateCantrips).toEqual(["light", "minor-illusion"]);
   });
 
   it("skips Magic Initiate repeats of the species, the class cantrips and prepared spells", () => {
     const picks = spellPicks({
       classId: "cleric",
       speciesId: "tiefling",
-      speciesOption: "infernal",
       backgroundId: "acolyte",
       options: { divineOrder: ["thaumaturge"] },
     });
@@ -117,21 +118,19 @@ function expectedCounts(a: Answers): Record<keyof ReturnType<typeof spellPicks>,
 
 describe("every character gets full, repeat-free spell lists", () => {
   const characters: Array<[string, Answers]> = [];
+  // The species sub-choice follows the class, so class and species cover it.
   for (const cls of Object.values(CONTENT.classes)) {
     for (const sp of Object.values(CONTENT.species)) {
-      const subs = sp.option ? sp.option.choices.map((c) => c.id) : [undefined];
-      for (const sub of subs) {
-        for (const bg of cls.backgrounds) {
-          for (const options of spellOptionPicks(cls)) {
-            const a: Answers = {
-              classId: cls.id,
-              speciesId: sp.id,
-              backgroundId: bg,
-              ...(sub && { speciesOption: sub }),
-              ...(options && { options }),
-            };
-            characters.push([`${cls.id} ${sub ?? sp.id} ${bg} ${JSON.stringify(options)}`, a]);
-          }
+      for (const bg of cls.backgrounds) {
+        for (const options of spellOptionPicks(cls)) {
+          const a: Answers = {
+            classId: cls.id,
+            speciesId: sp.id,
+            backgroundId: bg,
+            ...(options && { options }),
+          };
+          const species = speciesName(sp, speciesOptionOf(a));
+          characters.push([`${cls.id}, ${species}, ${bg} ${JSON.stringify(options)}`, a]);
         }
       }
     }

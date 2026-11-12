@@ -9,6 +9,8 @@
 import { describe, expect, it } from "vitest";
 
 import type { Answers } from "./character";
+import { CONTENT, speciesOptionOf } from "./content";
+import { CLASS_IDS } from "./contentTypes";
 import { buildCharacter, type Character, type SpellEntry } from "./engine";
 
 function scores(c: Character): Record<string, number> {
@@ -87,12 +89,11 @@ describe("buildCharacter: one worked character per class", () => {
     expect(c.missing).toEqual([]);
   });
 
-  it("Barbarian (Goliath Stone Giant, Farmer)", () => {
+  it("Barbarian (Goliath, Farmer)", () => {
     const c = buildCharacter({
       archetype: "warrior",
       classId: "barbarian",
       speciesId: "goliath",
-      speciesOption: "stone-giant",
       backgroundId: "farmer",
       ...DONE,
     });
@@ -114,7 +115,8 @@ describe("buildCharacter: one worked character per class", () => {
       perception: 3,
     });
     expect(c.features.find((f) => f.id === "barbarian-rage")?.uses).toMatch(/^2 per Long Rest/);
-    expect(c.features.map((f) => f.name)).toContain("Giant Ancestry (Stone Giant)");
+    // A Barbarian's Goliath descends from hill giants (the builder picks it from the class).
+    expect(c.features.map((f) => f.name)).toContain("Giant Ancestry (Hill Giant)");
     expect(c.spellcasting).toEqual([]);
   });
 
@@ -123,7 +125,6 @@ describe("buildCharacter: one worked character per class", () => {
       archetype: "warrior",
       classId: "monk",
       speciesId: "elf",
-      speciesOption: "wood-elf",
       backgroundId: "guide",
       ...DONE,
     });
@@ -258,12 +259,11 @@ describe("buildCharacter: one worked character per class", () => {
     ]);
   });
 
-  it("Bard (Tiefling Infernal, Entertainer)", () => {
+  it("Bard (Infernal Tiefling, Entertainer)", () => {
     const c = buildCharacter({
       archetype: "scoundrel",
       classId: "bard",
       speciesId: "tiefling",
-      speciesOption: "infernal",
       backgroundId: "entertainer",
       ...DONE,
     });
@@ -302,12 +302,11 @@ describe("buildCharacter: one worked character per class", () => {
     expect(c.proficiencies.tools).toHaveLength(7);
   });
 
-  it("Sorcerer (Dragonborn Gold, Noble)", () => {
+  it("Sorcerer (Red Dragonborn, Noble)", () => {
     const c = buildCharacter({
       archetype: "mage",
       classId: "sorcerer",
       speciesId: "dragonborn",
-      speciesOption: "gold",
       backgroundId: "noble",
       options: { metamagic: ["quickened-spell", "seeking-spell"] },
       ...DONE,
@@ -349,7 +348,6 @@ describe("buildCharacter: one worked character per class", () => {
       archetype: "mage",
       classId: "druid",
       speciesId: "gnome",
-      speciesOption: "forest-gnome",
       backgroundId: "hermit",
       options: { primalOrder: ["magician"] },
       ...DONE,
@@ -392,7 +390,6 @@ describe("buildCharacter: one worked character per class", () => {
       archetype: "mage",
       classId: "wizard",
       speciesId: "elf",
-      speciesOption: "high-elf",
       backgroundId: "sage",
       ...DONE,
     });
@@ -530,6 +527,55 @@ describe("buildCharacter: one worked character per class", () => {
     // Aasimar's Light cantrip uses Charisma.
     expect(c.spellcasting.find((b) => b.source === "species")).toMatchObject({ ability: "cha" });
     expect(c.resistances).toEqual(["Necrotic", "Radiant"]);
+  });
+});
+
+describe("buildCharacter: the species sub-choice", () => {
+  it("follows the class, and changes when the class does", () => {
+    const wizard = buildCharacter({ classId: "wizard", speciesId: "elf" });
+    expect(wizard.species?.name).toBe("High Elf");
+    expect(wizard.speed.walk).toBe(30);
+    expect(wizard.features.map((f) => f.name)).toContain("Elven Lineage (High Elf)");
+    // The same answers with another class: a Ranger's Elf is a Wood Elf, faster on foot.
+    const ranger = buildCharacter({ classId: "ranger", speciesId: "elf" });
+    expect(ranger.species?.name).toBe("Wood Elf");
+    expect(ranger.speed.walk).toBe(35);
+    expect(ranger.spellcasting.find((b) => b.source === "species")?.cantrips[0]?.id).toBe(
+      "druidcraft",
+    );
+  });
+
+  it("waits for a class without throwing", () => {
+    const c = buildCharacter({ speciesId: "elf" });
+    expect(c.species?.name).toBe("Elf");
+    expect(c.features.map((f) => f.name)).toContain("Elven Lineage");
+    expect(c.speed.walk).toBe(30);
+    expect(c.missing).toContain("Pick what kind of hero you want to be.");
+  });
+
+  // One name per naming case: the sub-choice in front of the species, a sub-choice that
+  // already says the species, and a sub-choice that stays a trait (or doesn't exist).
+  it.each([
+    ["sorcerer", "dragonborn", "Red Dragonborn"],
+    ["rogue", "elf", "Drow Elf"],
+    ["wizard", "elf", "High Elf"],
+    ["ranger", "elf", "Wood Elf"],
+    ["druid", "gnome", "Forest Gnome"],
+    ["wizard", "gnome", "Rock Gnome"],
+    ["bard", "tiefling", "Infernal Tiefling"],
+    ["barbarian", "goliath", "Goliath"],
+    ["fighter", "dwarf", "Dwarf"],
+  ] as const)("a %s who picks %s is a %s", (classId, speciesId, name) => {
+    expect(buildCharacter({ classId, speciesId }).species?.name).toBe(name);
+  });
+
+  it("gives every class a sub-choice for every species that has one", () => {
+    for (const classId of CLASS_IDS) {
+      for (const species of Object.values(CONTENT.species)) {
+        const option = speciesOptionOf({ classId, speciesId: species.id });
+        expect(option !== undefined, `${classId} ${species.id}`).toBe(species.option !== undefined);
+      }
+    }
   });
 });
 

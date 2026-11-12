@@ -61,8 +61,6 @@ function OptionGroup({ group, answers, update }: ScreenProps & { group: OptionGr
             title={o.name}
             hue={classHue(answers)}
             icon={<Icon name={GROUP_ICON[group.key]} className="emblem-icon" />}
-            more={<p>{o.summary}</p>}
-            moreLabel="Read all of it"
           >
             <span className="choice-blurb">{o.gist}</span>
           </Choice>

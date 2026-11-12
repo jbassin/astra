@@ -36,6 +36,13 @@ export const CLASSES: CuratedClass[] = [
     ],
     masteryWeapons: ["greatsword", "flail", "javelin"],
     tools: [],
+    speciesOptions: {
+      dragonborn: "blue",
+      elf: "high-elf",
+      gnome: "rock-gnome",
+      goliath: "fire-giant",
+      tiefling: "infernal",
+    },
     humanFeat: ["tough", "alert"],
     features: {
       "fighter-fighting-style": { hidden: "Shown as the Fighting Style the player picks." },
@@ -92,6 +99,13 @@ export const CLASSES: CuratedClass[] = [
     ],
     masteryWeapons: ["greataxe", "handaxe"],
     tools: [],
+    speciesOptions: {
+      dragonborn: "white",
+      elf: "wood-elf",
+      gnome: "forest-gnome",
+      goliath: "hill-giant",
+      tiefling: "abyssal",
+    },
     humanFeat: ["tough", "alert"],
     features: {
       "barbarian-rage": {
@@ -136,6 +150,13 @@ export const CLASSES: CuratedClass[] = [
     skillPreference: ["stealth", "acrobatics", "insight", "athletics", "religion", "history"],
     tools: ["flute"],
     equipmentChoices: { "instrumentMusical|toolArtisan": "flute" },
+    speciesOptions: {
+      dragonborn: "gold",
+      elf: "wood-elf",
+      gnome: "forest-gnome",
+      goliath: "frost-giant",
+      tiefling: "chthonic",
+    },
     humanFeat: ["tough", "alert"],
     features: {
       "monk-martial-arts": {
@@ -204,6 +225,13 @@ export const CLASSES: CuratedClass[] = [
     expertisePreference: ["stealth", "sleight-of-hand", "perception", "acrobatics"],
     masteryWeapons: ["shortsword", "shortbow", "dagger"],
     tools: ["thieves-tools"],
+    speciesOptions: {
+      dragonborn: "black",
+      elf: "drow",
+      gnome: "forest-gnome",
+      goliath: "cloud-giant",
+      tiefling: "infernal",
+    },
     humanFeat: ["alert", "tough"],
     languages: { fixed: ["thieves-cant"], extra: 1 },
     features: {
@@ -251,6 +279,13 @@ export const CLASSES: CuratedClass[] = [
     expertisePreference: ["perception", "stealth", "survival"],
     masteryWeapons: ["longbow", "shortsword", "scimitar"],
     tools: [],
+    speciesOptions: {
+      dragonborn: "green",
+      elf: "wood-elf",
+      gnome: "forest-gnome",
+      goliath: "frost-giant",
+      tiefling: "abyssal",
+    },
     humanFeat: ["alert", "tough"],
     languages: { fixed: [], extra: 2 },
     features: {
@@ -317,6 +352,13 @@ export const CLASSES: CuratedClass[] = [
     expertisePreference: ["persuasion", "performance", "deception", "perception"],
     tools: ["lute", "flute", "drum"],
     equipmentChoices: { instrumentMusical: "lute" },
+    speciesOptions: {
+      dragonborn: "copper",
+      elf: "drow",
+      gnome: "forest-gnome",
+      goliath: "cloud-giant",
+      tiefling: "infernal",
+    },
     humanFeat: ["lucky", "alert"],
     features: {
       "bard-bardic-inspiration": {
@@ -354,6 +396,13 @@ export const CLASSES: CuratedClass[] = [
     abilityPriority: ["cha", "con", "dex", "wis", "int", "str"],
     skillPreference: ["persuasion", "deception", "insight", "arcana", "intimidation", "religion"],
     tools: [],
+    speciesOptions: {
+      dragonborn: "red",
+      elf: "high-elf",
+      gnome: "rock-gnome",
+      goliath: "fire-giant",
+      tiefling: "abyssal",
+    },
     humanFeat: ["alert", "tough"],
     features: {
       "sorcerer-innate-sorcery": {
@@ -413,6 +462,13 @@ export const CLASSES: CuratedClass[] = [
     // The rules give "Druidic Focus (Quarterstaff)": a quarterstaff that is also the focus.
     equipmentSwaps: {
       "druidic-focus": { item: "quarterstaff", name: "Quarterstaff (druidic focus)" },
+    },
+    speciesOptions: {
+      dragonborn: "bronze",
+      elf: "wood-elf",
+      gnome: "forest-gnome",
+      goliath: "storm-giant",
+      tiefling: "abyssal",
     },
     humanFeat: ["alert", "tough"],
     languages: { fixed: ["druidic"], extra: 0 },
@@ -486,6 +542,13 @@ export const CLASSES: CuratedClass[] = [
     ],
     expertisePreference: ["arcana", "investigation", "history", "nature", "religion", "medicine"],
     tools: [],
+    speciesOptions: {
+      dragonborn: "brass",
+      elf: "high-elf",
+      gnome: "rock-gnome",
+      goliath: "cloud-giant",
+      tiefling: "chthonic",
+    },
     humanFeat: ["alert", "tough"],
     features: {
       "wizard-arcane-recovery": {
@@ -541,6 +604,13 @@ export const CLASSES: CuratedClass[] = [
       "religion",
     ],
     tools: [],
+    speciesOptions: {
+      dragonborn: "green",
+      elf: "drow",
+      gnome: "forest-gnome",
+      goliath: "fire-giant",
+      tiefling: "infernal",
+    },
     humanFeat: ["alert", "tough"],
     features: {
       "warlock-eldritch-invocations": {
@@ -592,6 +662,13 @@ export const CLASSES: CuratedClass[] = [
     abilityPriority: ["wis", "con", "dex", "str", "cha", "int"],
     skillPreference: ["insight", "medicine", "religion", "persuasion", "history"],
     tools: [],
+    speciesOptions: {
+      dragonborn: "gold",
+      elf: "wood-elf",
+      gnome: "rock-gnome",
+      goliath: "stone-giant",
+      tiefling: "chthonic",
+    },
     humanFeat: ["tough", "alert"],
     features: {
       "cleric-divine-order": { hidden: "Shown as the Divine Order the player picks." },
@@ -645,6 +722,13 @@ export const CLASSES: CuratedClass[] = [
     skillPreference: ["athletics", "persuasion", "insight", "intimidation", "medicine", "religion"],
     masteryWeapons: ["longsword", "javelin"],
     tools: [],
+    speciesOptions: {
+      dragonborn: "silver",
+      elf: "high-elf",
+      gnome: "rock-gnome",
+      goliath: "stone-giant",
+      tiefling: "infernal",
+    },
     humanFeat: ["tough", "alert"],
     features: {
       "paladin-lay-on-hands": {
