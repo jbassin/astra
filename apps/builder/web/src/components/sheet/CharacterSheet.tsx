@@ -17,9 +17,7 @@ import { OnYourTurn, Vitals } from "./TurnSection";
 
 /** "Level 2 High Elf Wizard". */
 function calling(c: Character): string {
-  const species =
-    c.species && (c.species.option ? `${c.species.option} ${c.species.name}` : c.species.name);
-  return [`Level ${c.level}`, species, c.class?.name].filter(Boolean).join(" ");
+  return [`Level ${c.level}`, c.species?.name, c.class?.name].filter(Boolean).join(" ");
 }
 
 function SheetHeader({ c }: { c: Character }) {

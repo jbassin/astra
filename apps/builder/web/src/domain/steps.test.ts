@@ -28,7 +28,6 @@ describe("the Answers schema", () => {
       archetype: "healer",
       classId: "cleric",
       speciesId: "elf",
-      speciesOption: "wood-elf",
       backgroundId: "acolyte",
       options: { divineOrder: ["thaumaturge"] },
       name: "Ada",
@@ -46,6 +45,7 @@ describe("the Answers schema", () => {
     ["an unknown class", { classId: "artificer" }],
     ["an unknown option group", { options: { subclass: ["x"] } }],
     ["a spell pick (the builder chooses spells)", { cantrips: ["fire-bolt"] }],
+    ["a species sub-choice (the builder picks it from the class)", { speciesOption: "drow" }],
     ["a malformed id", { options: { fightingStyle: ["Defense"] } }],
     ["an overlong personality", { personality: "x".repeat(2001) }],
   ])("rejects %s", (_, answers) => {
@@ -70,9 +70,11 @@ describe("stepStatuses and nextStep", () => {
     expect(nextStep(a)).toBe("species");
   });
 
-  it("asks for the species sub-choice", () => {
-    expect(status({ speciesId: "elf" }, "species")?.issues).toEqual(["Pick your elven lineage."]);
-    expect(status({ speciesId: "elf", speciesOption: "drow" }, "species")?.complete).toBe(true);
+  it("completes the species step on the species alone", () => {
+    expect(status({}, "species")).toMatchObject({ complete: false, issues: ["Pick a species."] });
+    // An Elf has lineages, but the builder picks one from the class: nothing more to answer.
+    expect(status({ speciesId: "elf" }, "species")).toMatchObject({ complete: true, issues: [] });
+    expect(status({ classId: "wizard", speciesId: "elf" }, "species")?.complete).toBe(true);
     expect(status({ speciesId: "human" }, "species")?.complete).toBe(true);
   });
 
@@ -106,7 +108,6 @@ describe("pruneAnswers", () => {
     archetype: "healer",
     classId: "cleric",
     speciesId: "tiefling",
-    speciesOption: "infernal",
     backgroundId: "acolyte",
     options: { divineOrder: ["thaumaturge"] },
   };
@@ -123,17 +124,14 @@ describe("pruneAnswers", () => {
     expect(next.options).toBeUndefined();
     // Acolyte doesn't list Strength, so the Paladin can't keep it.
     expect(next.backgroundId).toBeUndefined();
+    // The species stays: its sub-choice is derived from the class, so there is nothing to clear.
+    expect(next.speciesId).toBe("tiefling");
   });
 
   it("clears the class when the archetype no longer offers it", () => {
     const next = pruneAnswers({ ...cleric, archetype: "mage" }, cleric);
     expect(next.classId).toBeUndefined();
     expect(next.options).toBeUndefined();
-  });
-
-  it("clears the sub-choice when the species changes", () => {
-    expect(pruneAnswers({ ...cleric, speciesId: "elf" }, cleric).speciesOption).toBeUndefined();
-    expect(pruneAnswers({ ...cleric, speciesOption: "drow" }).speciesOption).toBeUndefined();
   });
 
   it("drops option picks past the count", () => {

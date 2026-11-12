@@ -12,7 +12,9 @@
 // - weapon masteries, tools, languages and the human origin feat from the curation;
 // - level 2 Hit Points: the hit die's maximum at level 1 and its fixed average (half + 1) at
 //   level 2, each plus the Constitution modifier, plus species and feat bonuses;
-// - every spell, from the curated lists in order (`spellPicks` in content.ts).
+// - every spell, from the curated lists in order (`spellPicks` in content.ts);
+// - the species sub-choice (lineage, colour, ancestry, legacy), from the class
+//   (`speciesOptionOf` in content.ts).
 
 import type { Answers } from "./character";
 import {
@@ -20,6 +22,7 @@ import {
   chosenOptions,
   CONTENT,
   classOf,
+  speciesName,
   speciesOf,
   speciesOptionOf,
   spellPicks,
@@ -158,7 +161,8 @@ export interface Character {
   personality: string;
   archetype?: { id: string; label: string };
   class?: { id: string; name: string; hitDie: number };
-  species?: { id: string; name: string; option?: string; size: string };
+  /** `name` is the one the player sees, sub-choice included ("High Elf", "Red Dragonborn"). */
+  species?: { id: string; name: string; size: string };
   background?: { id: string; name: string };
   abilities: Record<Ability, AbilityScore>;
   hitPoints: { max: number; hitDice: string; breakdown: string };
@@ -984,9 +988,8 @@ export function buildCharacter(answers: Answers): Character {
     ...(species && {
       species: {
         id: species.id,
-        name: species.name,
+        name: speciesName(species, speciesOption),
         size: species.size,
-        ...(speciesOption && { option: speciesOption.name }),
       },
     }),
     ...(background && { background: { id: background.id, name: background.name } }),

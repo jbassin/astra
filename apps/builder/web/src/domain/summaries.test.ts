@@ -74,11 +74,7 @@ describe("summaries", () => {
   });
 
   it("give every pick card a short gist", () => {
-    const picked = [
-      ...Object.values(CONTENT.options),
-      ...Object.values(CONTENT.species).flatMap((s) => s.option?.choices ?? []),
-      ...Object.values(CONTENT.spells),
-    ];
+    const picked = [...Object.values(CONTENT.options), ...Object.values(CONTENT.spells)];
     for (const { id, gist } of picked) {
       expect(gist.trim(), id).not.toBe("");
       expect(gist.length, `${id}: "${gist}"`).toBeLessThanOrEqual(GIST_MAX);

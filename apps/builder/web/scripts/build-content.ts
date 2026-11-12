@@ -7,9 +7,10 @@
 // imported level 1–2 feature or species trait with no summary (or explicit `hidden` reason), a
 // shortlist smaller than its pick count, a spell that isn't on the class's list, a pick count
 // the class table doesn't give, a shown feature, trait, option or feat with no activation, or a
-// spell whose rules text rolls damage or healing dice its sheet entry doesn't carry, or a
-// spell, class option or species option (anything a player picks from cards) whose gist is
-// missing or longer than GIST_MAX. Pick counts come from the class table, never from here.
+// spell whose rules text rolls damage or healing dice its sheet entry doesn't carry, a spell or
+// class option whose gist is missing or longer than GIST_MAX, or a class whose species
+// sub-choices miss a species that has them or name one the species doesn't offer. Pick counts
+// come from the class table, never from here.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -545,6 +546,14 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
 
     for (const f of cur.humanFeat)
       if (!curation.feats[f] || f === "magic-initiate") fail(`${ctx}: bad human feat "${f}"`);
+    // The species sub-choice the builder gives: one the species offers, for each species with any.
+    for (const sid of SPECIES_IDS) {
+      const offered = data.species.find((s) => s.id === sid)?.options.map((o) => o.id) ?? [];
+      const pick = cur.speciesOptions[sid];
+      const want = offered.length > 0 ? `one of ${offered.join(", ")}` : "none (no sub-choices)";
+      if (offered.length > 0 ? !pick || !offered.includes(pick) : pick !== undefined)
+        fail(`${ctx}: speciesOptions.${sid} is ${pick ? `"${pick}"` : "missing"}, want ${want}`);
+    }
     if (!imp.primaryAbility.some((p) => p[cur.primary]))
       fail(`${ctx}: ${cur.primary} isn't a primary ability in the data`);
     if (new Set(cur.abilityPriority).size !== 6 || cur.abilityPriority[0] !== cur.primary) {
@@ -580,6 +589,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       optionGroups,
       ...(spellcasting && { spellcasting }),
       backgrounds: backgroundsFor(cur.primary),
+      speciesOptions: cur.speciesOptions,
       humanFeat: cur.humanFeat,
       languages,
       table: imp.table,
@@ -620,7 +630,6 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
     });
     let option: SpeciesContent["option"];
     if (imp.options.length > 0) {
-      if (!cur.option) fail(`${ctx}: has options but no curated option prompt`);
       const choices = imp.options.map((o) => {
         const c = cur.option?.choices[o.id];
         if (!c) fail(`${ctx}: option "${o.id}" has no summary`);
@@ -638,7 +647,6 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
         return {
           id: o.id,
           name: o.name,
-          gist: c ? gist(c.gist, `${ctx} ${o.id}`) : "",
           summary: c?.summary ?? "",
           rulesText: o.text,
           activation: c ? activation(c.activation, `${ctx} ${o.id}`) : ("passive" as const),
@@ -655,7 +663,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
           fail(`${ctx}: curated option "${k}" not imported`);
       }
       const label = imp.options[0]?.replacesTrait ?? "";
-      option = { label, prompt: cur.option?.prompt ?? "", choices };
+      option = { label, inName: cur.option?.inName !== false, choices };
     } else if (cur.option) fail(`${ctx}: curated option but the species has none`);
     for (const s of imp.cantrips) usedSpells.add(s);
     if (Array.isArray(cur.skillChoice)) checkSkills(cur.skillChoice, ctx);

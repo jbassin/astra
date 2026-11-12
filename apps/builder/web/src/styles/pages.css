@@ -242,7 +242,11 @@
 .dm-sheet[open] > summary {
   margin-bottom: 1rem;
 }
-.dm-sheet[open] .gifts-chevron {
+.dm-sheet-chevron {
+  fill: none;
+  transition: rotate 200ms var(--ease-out);
+}
+.dm-sheet[open] .dm-sheet-chevron {
   rotate: 180deg;
 }
 @media (min-width: 60rem) {

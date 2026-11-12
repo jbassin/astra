@@ -124,12 +124,25 @@ describe("joinContent", () => {
         if (s) s.gist = long;
       }),
     ).toThrow(/spell fire-bolt: gist has 91 characters \(max 90\)/);
-    expect(
-      withCuration((c) => {
-        const red = c.species.find((s) => s.id === "dragonborn")?.option?.choices.red;
-        if (red) Reflect.deleteProperty(red, "gist");
-      }),
-    ).toThrow(/species dragonborn red: no gist/);
+  });
+
+  it("carries the species sub-choice each class gives, and what stays out of the name", () => {
+    const { classes, species } = joinContent(data);
+    expect(classes.wizard.speciesOptions).toMatchObject({ elf: "high-elf", dragonborn: "brass" });
+    expect(species.elf.option?.inName).toBe(true);
+    expect(species.goliath.option?.inName).toBe(false);
+  });
+
+  it("fails on a class whose species sub-choice is missing or isn't the species' own", () => {
+    expect(withCuration((c) => delete cls(c, "wizard").speciesOptions.elf)).toThrow(
+      /class wizard: speciesOptions\.elf is missing, want one of drow, high-elf, wood-elf/,
+    );
+    expect(withCuration((c) => (cls(c, "wizard").speciesOptions.elf = "red"))).toThrow(
+      /class wizard: speciesOptions\.elf is "red", want one of drow, high-elf, wood-elf/,
+    );
+    expect(withCuration((c) => (cls(c, "wizard").speciesOptions.dwarf = "hill"))).toThrow(
+      /class wizard: speciesOptions\.dwarf is "hill", want none/,
+    );
   });
 
   it("takes each spell's activation from its 5etools casting time", () => {

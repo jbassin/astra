@@ -26,8 +26,25 @@ export function speciesOf(answers: Answers): SpeciesContent | undefined {
   return answers.speciesId ? CONTENT.species[answers.speciesId] : undefined;
 }
 
+/**
+ * The species sub-choice (an Elf's lineage, a Dragonborn's colour). The player never picks it:
+ * the builder gives the one the class names, so there is none until both are picked.
+ */
 export function speciesOptionOf(answers: Answers): SpeciesOptionContent | undefined {
-  return speciesOf(answers)?.option?.choices.find((c) => c.id === answers.speciesOption);
+  const species = speciesOf(answers);
+  const id = species && classOf(answers)?.speciesOptions[species.id];
+  return species?.option?.choices.find((c) => c.id === id);
+}
+
+/**
+ * The one species name a player sees. The sub-choice goes in front ("Red Dragonborn", "Drow
+ * Elf") unless its own name already says the species ("High Elf", "Forest Gnome"). The plain
+ * species name stands when there is no sub-choice yet, or when the curation keeps it out of
+ * the name (a Goliath's giant ancestry is a trait on the sheet).
+ */
+export function speciesName(species: SpeciesContent, option?: SpeciesOptionContent): string {
+  if (!option || !species.option?.inName) return species.name;
+  return option.name.endsWith(` ${species.name}`) ? option.name : `${option.name} ${species.name}`;
 }
 
 export function backgroundOf(answers: Answers): BackgroundContent | undefined {

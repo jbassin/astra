@@ -47,18 +47,11 @@ function statusOf(answers: Answers, key: StepKey): Omit<StepStatus, "key" | "lab
         ? { applicable: true, complete: true, issues: [] }
         : { applicable: true, complete: false, issues: ["Pick a class."] };
     }
-    case "species": {
-      const species = speciesOf(answers);
-      if (!species) return { applicable: true, complete: false, issues: ["Pick a species."] };
-      if (species.option && !species.option.choices.some((c) => c.id === answers.speciesOption)) {
-        return {
-          applicable: true,
-          complete: false,
-          issues: [`Pick your ${species.option.label.toLowerCase()}.`],
-        };
-      }
-      return { applicable: true, complete: true, issues: [] };
-    }
+    case "species":
+      // The species alone: the builder picks its sub-choice from the class.
+      return speciesOf(answers)
+        ? { applicable: true, complete: true, issues: [] }
+        : { applicable: true, complete: false, issues: ["Pick a species."] };
     case "background": {
       if (!cls) return { applicable: true, complete: false, blockedBy: "class", issues: [] };
       const ok = backgroundsForClass(answers).some((b) => b.id === answers.backgroundId);
@@ -132,16 +125,16 @@ function keepValid(ids: string[] | undefined, allowed: Set<string>, max: number)
 
 /**
  * Drops choices that an upstream answer made invalid, and returns a new object (the input is
- * not changed). Pass the answers from before the change as `previous` so a change of class or
- * species clears the picks made for the old one even where the new one offers the same ids.
+ * not changed). Pass the answers from before the change as `previous` so a change of class
+ * clears the picks made for the old one even where the new one offers the same ids.
  *
  * - a class the archetype doesn't offer is cleared;
  * - a new (or cleared) class clears option picks;
  * - option picks keep only ids the current shortlists offer, up to the pick count;
- * - a background the class can't take is cleared;
- * - a new (or cleared) species clears the sub-choice, and a sub-choice it doesn't offer is cleared.
+ * - a background the class can't take is cleared.
  *
- * Spells are never answers: the builder chooses them (`spellPicks` in content.ts).
+ * Spells and the species sub-choice are never answers: the builder chooses them (`spellPicks`
+ * and `speciesOptionOf` in content.ts).
  */
 export function pruneAnswers(answers: Answers, previous?: Answers): Answers {
   const next: Answers = { ...answers };
@@ -153,16 +146,6 @@ export function pruneAnswers(answers: Answers, previous?: Answers): Answers {
   const classChanged = previous !== undefined && previous.classId !== next.classId;
   if (!next.classId || classChanged) {
     delete next.options;
-  }
-
-  const speciesChanged = previous !== undefined && previous.speciesId !== next.speciesId;
-  const species = speciesOf(next);
-  if (
-    !species ||
-    speciesChanged ||
-    !species.option?.choices.some((c) => c.id === next.speciesOption)
-  ) {
-    delete next.speciesOption;
   }
 
   const cls = classOf(next);
