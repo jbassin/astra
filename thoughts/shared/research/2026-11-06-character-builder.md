@@ -113,4 +113,11 @@ browser and merged.
 **Go live.**
 - [x] Merged, `just deploy builder`, `just caddy-reload` (2026-11-07).
 - [x] SOPS secret added (#210); the DM link answers 200 and a wrong token 404.
-- [ ] Invite the five players with `just builder-invite` and send each their link.
+- [x] One group link instead of five private ones (Josh's call, 2026-11-12, #241):
+  `/p/<phrase>` lists the players' names, the browser remembers the one tapped, and "Not
+  <name>?" leads back. `just builder-party [phrase]` sets the phrase in `party.json`; Josh
+  chose a short one, knowing a short word can be guessed and that anyone with the link can
+  open any character. An independent review of the access logic ran before the merge.
+- [x] The five players invited with `just builder-invite`, the phrase set, and the live group
+  link checked in a browser (2026-11-12).
+- [ ] Josh sends the players the group link (it is on the DM page).
