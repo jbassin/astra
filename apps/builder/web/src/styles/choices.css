@@ -298,3 +298,16 @@
     width: 5.5rem;
   }
 }
+
+/* "Taken by Ada" on a greyed card: small and plain, readable at full strength. */
+.choice-taken {
+  align-self: start;
+  justify-self: start;
+  padding: 0.1rem 0.6rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}

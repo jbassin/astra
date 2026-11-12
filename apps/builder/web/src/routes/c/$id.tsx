@@ -18,7 +18,14 @@ export const Route = createFileRoute("/c/$id")({
 function PlayerComponent() {
   const { id } = Route.useParams();
   const page = Route.useLoaderData();
-  return <PlayerBuilder id={id} playerName={page.name} initial={page.character?.answers ?? {}} />;
+  return (
+    <PlayerBuilder
+      id={id}
+      playerName={page.name}
+      initial={page.character?.answers ?? {}}
+      taken={page.taken}
+    />
+  );
 }
 
 function UnknownLink() {

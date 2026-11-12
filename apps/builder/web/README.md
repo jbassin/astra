@@ -16,7 +16,9 @@ player page walks through every choice to a printable "On your turn" sheet with 
 - `/`: a short welcome that points players at their link, and at `/test`.
 - `/c/<id>`: a player's builder. An id not on the roster gets a friendly 404. Every change saves
   after a short pause (the `saveAnswers` server function); the page shows Saving…, Saved or an
-  error. Reopening the link resumes at the first screen with something left to do.
+  error. Reopening the link resumes at the first screen with something left to do. One class
+  per player (Josh's call, 2026-11-12): a class another player holds is greyed out
+  ("Taken by Ada"), and the server refuses it (see The flow and the sheet).
 - `/test`: test mode, public. The same flow and sheet with nothing saved: the answers live only
   in the tab's React state, a banner says so, and Start over clears them.
 - `/dm/<token>`: every invited player with their link, last save, progress, class, species and
@@ -39,6 +41,15 @@ player page walks through every choice to a printable "On your turn" sheet with 
   or blocked, and hides the ones a class doesn't have. The quest path (`flow/Stepper.tsx`)
   jumps to any screen; Next and Back, in the bar pinned to the bottom of the screen with the
   save state, skip the ones that don't apply.
+- **Taken classes** (`takenClasses` in `src/server/builder.ts`): the page loader and every save
+  response carry `taken`, a map from class id to the name of the player who holds it (never the
+  asking player; the first on the roster wins a tie). `PlayerBuilder` keeps it in state and
+  replaces it after each save. `ClassScreen` disables a taken card with the tag "Taken by
+  <name>"; `ArchetypeScreen` disables an archetype whose classes are all taken ("All taken").
+  The first save wins: `savePlayerAnswers` stores answers without a class another player holds
+  (and without the picks that depend on it). A player who loses that race sees the class
+  cleared and "<name> picked <class> first. Pick another class." the moment the next save
+  response, or the page load, shows it taken. `/test` passes no `taken`, so nothing greys out.
 - **Every change** goes through `pruneAnswers(next, previous)`, and `clearedSummary` tells the
   player in one line what that cleared ("That change cleared your class choices.").
 - **The species sub-choice follows the class** (Josh's call, 2026-11-12). The builder gives the
@@ -286,6 +297,9 @@ takes every data-root dir by default).
 - **A choice card is one `<label>` and nothing else.** Don't add a "More" disclosure or a
   second block of text to a card; `BuilderFlow.test.tsx` fails when a choice screen has a
   `<details>` or a background card says more than its name and story.
+- **Taken classes come from saved files only.** A class counts as held once its owner's save
+  lands (after the 700 ms pause), so two players can still pick the same class in that window:
+  the later save loses, and its owner gets the notice. A player's own class is never in `taken`.
 - **The quest path must stay a direct child of `<main class="flow">`** to stick for the whole
   page (a sticky element only sticks inside its parent). `Stepper` publishes its height as
   `--sticky-h` (0 on the sheet), which the headings' scroll margin and the pick lists' sticky

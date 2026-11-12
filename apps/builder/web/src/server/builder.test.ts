@@ -6,7 +6,7 @@ import path from "node:path";
 import { type Captured, captureTelemetry } from "@astra/observe/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { loadDmView, loadPlayerPage, playerLink, savePlayerAnswers } from "./builder";
+import { loadDmView, loadPlayerPage, playerLink, savePlayerAnswers, takenClasses } from "./builder";
 import { dmTokenMatches } from "./dmToken";
 import { builderStore } from "./store";
 
@@ -46,7 +46,7 @@ describe("player page", () => {
     const store = freshStore();
     expect(loadPlayerPage(store, "A".repeat(22))).toBeNull();
     const { id } = store.addPlayer("Ada");
-    expect(loadPlayerPage(store, id)).toEqual({ name: "Ada", character: null });
+    expect(loadPlayerPage(store, id)).toEqual({ name: "Ada", character: null, taken: {} });
     savePlayerAnswers(store, id, { archetype: "healer" });
     expect(loadPlayerPage(store, id)?.character?.answers).toEqual({ archetype: "healer" });
   });
@@ -60,6 +60,53 @@ describe("player page", () => {
     expect(() => savePlayerAnswers(store, "B".repeat(22), { name: "x" })).toThrow(/unknown player/);
     expect(await cap.metricSum("astra.builder.saves", { outcome: "ok" })).toBe(okBefore + 1);
     expect(await cap.metricSum("astra.builder.saves", { outcome: "error" })).toBe(errBefore + 1);
+  });
+});
+
+describe("taken classes", () => {
+  it("maps each class to its holder and leaves out the asking player", () => {
+    const store = freshStore();
+    const ada = store.addPlayer("Ada");
+    const bo = store.addPlayer("Bo");
+    const cy = store.addPlayer("Cy");
+    savePlayerAnswers(store, ada.id, { archetype: "warrior", classId: "fighter" });
+    savePlayerAnswers(store, bo.id, { archetype: "healer", classId: "cleric" });
+    expect(takenClasses(store, cy.id)).toEqual({ fighter: "Ada", cleric: "Bo" });
+    expect(takenClasses(store, ada.id)).toEqual({ cleric: "Bo" });
+    expect(loadPlayerPage(store, cy.id)?.taken).toEqual({ fighter: "Ada", cleric: "Bo" });
+  });
+
+  it("saves a class another player holds without it, and without what depends on it", () => {
+    const store = freshStore();
+    const ada = store.addPlayer("Ada");
+    const bo = store.addPlayer("Bo");
+    savePlayerAnswers(store, ada.id, { archetype: "warrior", classId: "fighter" });
+    const res = savePlayerAnswers(store, bo.id, {
+      archetype: "warrior",
+      classId: "fighter",
+      name: "Bo's hero",
+    });
+    expect(res.taken).toEqual({ fighter: "Ada" });
+    expect(store.readCharacter(bo.id)?.answers).toEqual({
+      archetype: "warrior",
+      name: "Bo's hero",
+    });
+  });
+
+  it("keeps a player's own class and frees the old one when they switch", () => {
+    const store = freshStore();
+    const ada = store.addPlayer("Ada");
+    const bo = store.addPlayer("Bo");
+    const own = savePlayerAnswers(store, ada.id, { archetype: "warrior", classId: "fighter" });
+    expect(own.taken).toEqual({});
+    expect(store.readCharacter(ada.id)?.answers.classId).toBe("fighter");
+    expect(savePlayerAnswers(store, bo.id, { archetype: "warrior" }).taken).toEqual({
+      fighter: "Ada",
+    });
+    savePlayerAnswers(store, ada.id, { archetype: "warrior", classId: "barbarian" });
+    const res = savePlayerAnswers(store, bo.id, { archetype: "warrior", classId: "fighter" });
+    expect(res.taken).toEqual({ barbarian: "Ada" });
+    expect(store.readCharacter(bo.id)?.answers.classId).toBe("fighter");
   });
 });
 
