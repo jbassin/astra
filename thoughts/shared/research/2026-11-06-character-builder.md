@@ -89,6 +89,27 @@ write none.
 - [ ] Josh checks the per-class species picks (#231) and the things that lost their card (#232).
 - [ ] Delete the text nothing shows now (spell summaries, the summaries of `applied` items).
 
+**Slice 5: a sheet to play from (Josh's feedback, 2026-11-12).** The one-shot has no rest,
+long or short, the players should choose less, and the sheet should work at the table. Sonnet
+agents implemented each part in its own worktree; the main session reviewed, checked it in a
+browser and merged.
+- [x] The builder picks every class option (fighting style, Divine and Primal Order,
+  invocations, Metamagic): the first entries of each class's ordered shortlist. The Class
+  choices screen and the `options` answer are gone (#236).
+- [x] A class another player holds is greyed out ("Taken by Ada") and the server refuses it;
+  an archetype with no free class greys out too (#234).
+- [x] Pressing a name that has a card opens the card (#237).
+- [x] No rest wording anywhere on the sheet ("No short rest either", Josh, 2026-11-12): a use
+  count reads "2 uses", Hit Dice are gone, and a feature that only works on a rest has no
+  card. No note says where a number comes from: the math is in the number. Armor of Shadows is
+  in the Armor Class (#238).
+- [x] Hit Points go up and down, and spell slots and every limited use have pips to mark; the
+  marks save with the character (`play` in the character document) and `/test` keeps them in
+  the tab (#239).
+- [x] Deployed and checked on `/test` (2026-11-12): flow, a Warlock and a Paladin sheet, marks,
+  the card pop-up, the DM page and print, in Chromium at phone width.
+- [ ] Josh checks the class-option picks (#236) and the reworded lines (#238).
+
 **Go live.**
 - [x] Merged, `just deploy builder`, `just caddy-reload` (2026-11-07).
 - [x] SOPS secret added (#210); the DM link answers 200 and a wrong token 404.

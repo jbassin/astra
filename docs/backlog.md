@@ -159,20 +159,27 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   transcripts by date, not episode title; `build-content.ts` sits at the 500-line ratchet limit —
   agent.
 
-- Character builder: check the per-class species picks (the table in #231) and the things that
-  lost their card (the list in #232), walk `/test`, then send the five player names for
+- Character builder: check the per-class species picks (the table in #231), the things that
+  lost their card (the list in #232), the class options the builder now gives (the table in
+  #236) and the reworded lines (the list in #238, and Repelling Blast's card, which now starts
+  "When your Eldritch Blast hits"); walk `/test`; then send the five player names for
   `just builder-invite` — Josh.
 - Character builder polish, small: a player who opens their link straight onto the sheet sees the
   full greeting until their first move; the sticky progress band shows faintly against the page
   glow on laptops; View Transitions are checked in Chromium only, not iOS Safari — agent.
-- Character builder sheet, found while cutting its text (2026-11-12): a spell an invocation
-  grants (Armor of Shadows, Mask of Many Faces, Pact of the Chain) has a card chip that says
-  "Spend a spell slot" although it is free; with Dueling, the Longsword's two-handed note wrongly
-  includes the +2; a Goliath's giant boon shows no use count; on paper most of page 1 is blank
-  after the "On your turn" heading; Shield's card no longer says when to cast it — agent.
+- Character builder sheet, found while cutting its text (2026-11-12): on paper most of page 1
+  is blank after the "On your turn" heading; Shield's card no longer says when to cast it; a
+  Warlock's gear still lists the Leather Armor although the Armor Class counts Armor of Shadows
+  (13 + Dexterity, no armor on) — agent.
 - Character builder cleanup, once Josh has seen the cut sheet: delete the text nothing shows now
-  (spell summaries and the summaries of `applied` items) with its checks, and turn the `applied`
-  species traits into `hidden` — agent.
+  (spell summaries, the summaries of `applied` items, the class options' gists and their groups'
+  prompts, and the engine's unread `breakdown` and `SkillLine.notes` fields) with its checks,
+  and turn the `applied` species traits into `hidden` — agent.
+- `scripts/ratchet.py` counts only tracked files (`git ls-files`), so a lint suppression or an
+  unused export in a new, not yet added file passes a local `just ci` and fails on GitHub
+  (#235, 2026-11-12). Count untracked files too; until then, `git add` before `just ci` — agent.
+- The remote branch `builder-card-dialog` is left over from #235 (closed, replaced by #237);
+  delete it — Josh or agent.
 - `libs/ts/site-kit/src/scaffold.test.ts` hard-codes the last namespace in `models.py`, so it
   breaks on every `just new-frontend`; make it order-independent — agent.
 
