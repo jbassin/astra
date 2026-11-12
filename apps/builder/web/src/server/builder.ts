@@ -4,7 +4,7 @@
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 
-import type { Answers, CharacterDoc, StepKey } from "@/domain/character";
+import type { Answers, CharacterDoc, PlayState, StepKey } from "@/domain/character";
 import { answeredSteps, applicableStepCount, pruneAnswers } from "@/domain/steps";
 
 import { dmTokenMatches } from "./dmToken";
@@ -54,22 +54,25 @@ export function loadPlayerPage(store: BuilderStore, id: string): PlayerPage | nu
 /**
  * Saves a player's answers and returns the new `updatedAt` and the classes others hold. A class
  * another player already holds is saved without (the first save wins), and so are the picks
- * that depend on it. Throws for an unknown id.
+ * that depend on it, and the play state too (it counted that class). Throws for an unknown id.
  */
 export function savePlayerAnswers(
   store: BuilderStore,
   id: string,
   answers: Answers,
+  play?: PlayState,
 ): { updatedAt: string; taken: TakenClasses } {
   return tracer.startActiveSpan("builder.save", (span) => {
     try {
       const taken = takenClasses(store, id);
       let kept = answers;
+      let keptPlay = play;
       if (answers.classId && answers.classId in taken) {
         const { classId: _lost, ...rest } = answers;
         kept = pruneAnswers(rest);
+        keptPlay = undefined;
       }
-      const doc = store.saveCharacter(id, kept);
+      const doc = store.saveCharacter(id, kept, keptPlay);
       saveCounter.add(1, { outcome: "ok" });
       return { updatedAt: doc.updatedAt, taken };
     } catch (err) {
@@ -94,6 +97,7 @@ export interface DmPlayerRow {
   /** How many steps apply to this player's character so far (a Barbarian skips spells). */
   total: number;
   answers: Answers;
+  play?: PlayState;
 }
 
 /** Every roster player with their answers, or `null` when the token does not match. */
@@ -105,7 +109,7 @@ export function loadDmView(
   return store.readRoster().map((player) => {
     const doc = store.readCharacter(player.id);
     const answers = doc?.answers ?? {};
-    return {
+    const row: DmPlayerRow = {
       name: player.name,
       link: playerLink(opts.publicOrigin, player.id),
       createdAt: player.createdAt,
@@ -114,6 +118,8 @@ export function loadDmView(
       total: applicableStepCount(answers),
       answers,
     };
+    if (doc?.play) row.play = doc.play;
+    return row;
   });
 }
 

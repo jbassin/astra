@@ -11,6 +11,7 @@ import {
   isAttackCantrip,
   type SpellEntry,
 } from "./engine";
+import { featureTracker, spellTracker, type Tracker } from "./play";
 
 /** Where the sheet lists each activation; the curation and the spell data set it, never the
  * wording of a summary. */
@@ -136,6 +137,8 @@ export interface TurnItem {
   id: string;
   name: string;
   uses?: string;
+  /** What the player marks for those uses: pips or a pool (`play.ts`). */
+  tracker?: Tracker;
 }
 
 interface TurnPlan {
@@ -170,7 +173,13 @@ export function attackCardId(c: Character, a: AttackLine): string | undefined {
 }
 
 function featureItem(f: FeatureLine): TurnItem {
-  return { id: f.id, name: f.name, ...(f.uses && { uses: usesText(f.uses) }) };
+  const tracker = featureTracker(f);
+  return {
+    id: f.id,
+    name: f.name,
+    ...(f.uses && { uses: usesText(f.uses) }),
+    ...(tracker && { tracker }),
+  };
 }
 
 /** The "On your turn" layout: features and spells grouped by when they're used. */
@@ -188,7 +197,13 @@ export function turnPlan(c: Character): TurnPlan {
       // Cantrips that attack already appear as attacks.
       if (!isAttackCantrip(s)) plan.actionSpells.push({ id: `spell-${s.id}`, name: s.name });
     } else if (slot === "bonus" || slot === "reaction") {
-      plan[slot].push({ id: `spell-${s.id}`, name: s.name, uses: spellUses(s, hasSlots) });
+      const tracker = spellTracker(s);
+      plan[slot].push({
+        id: `spell-${s.id}`,
+        name: s.name,
+        uses: spellUses(s, hasSlots),
+        ...(tracker && { tracker }),
+      });
     }
   }
   return plan;
@@ -202,6 +217,8 @@ export interface SheetCard {
   when: string;
   roll?: string;
   uses?: string;
+  /** What the player marks for those uses. */
+  tracker?: Tracker;
   text: string;
   /** Small print: range, duration, concentration. */
   meta?: string;
@@ -221,17 +238,22 @@ function spellMeta(s: SpellEntry): string {
  * card's roll, chips and small print carry the rest.
  */
 export function sheetCards(c: Character): SheetCard[] {
-  const features: SheetCard[] = c.features.map((f) => ({
-    id: f.id,
-    name: f.name,
-    kind: "Feature",
-    when: ACTIVATION_LABEL[f.activation],
-    ...(f.uses && { uses: usesText(f.uses) }),
-    text: f.summary,
-  }));
+  const features: SheetCard[] = c.features.map((f) => {
+    const card: SheetCard = {
+      id: f.id,
+      name: f.name,
+      kind: "Feature",
+      when: ACTIVATION_LABEL[f.activation],
+      text: f.summary,
+    };
+    if (f.uses) card.uses = usesText(f.uses);
+    const tracker = featureTracker(f);
+    if (tracker) card.tracker = tracker;
+    return card;
+  });
   const hasSlots = hasSpellSlots(c);
   const spells: SheetCard[] = allSpells(c).map((s) => {
-    return {
+    const card: SheetCard = {
       id: `spell-${s.id}`,
       name: s.name,
       kind: s.level === 0 ? "Cantrip" : "Level 1 spell",
@@ -241,6 +263,9 @@ export function sheetCards(c: Character): SheetCard[] {
       text: s.gist,
       meta: spellMeta(s),
     };
+    const tracker = spellTracker(s);
+    if (tracker) card.tracker = tracker;
+    return card;
   });
   return [...features, ...spells];
 }

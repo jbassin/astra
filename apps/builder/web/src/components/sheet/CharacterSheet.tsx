@@ -5,6 +5,7 @@
 
 import { useId, useMemo, useRef, useState } from "react";
 
+import type { PlayState } from "@/domain/character";
 import type { Character } from "@/domain/engine";
 import { sheetCards } from "@/domain/sheet";
 import { backgroundIcon, classTincture, hueStyle, speciesIcon } from "@/ui/heraldry";
@@ -14,6 +15,7 @@ import { CardDialog } from "./CardDialog";
 import { type CardLinks, CardLinksContext } from "./CardLinks";
 import { Cards } from "./Cards";
 import { Details } from "./Details";
+import { PlayContext } from "./PlayContext";
 import { type JumpTarget, SheetJump } from "./SheetJump";
 import { SpellSection } from "./SpellSection";
 import { OnYourTurn, Vitals } from "./TurnSection";
@@ -108,9 +110,15 @@ function jumpTargets(c: Character, prefix: string): JumpTarget[] {
 
 export function CharacterSheet({
   character: c,
+  play,
+  onPlay,
   onFinish,
 }: {
   character: Character;
+  /** The saved marks: Hit Points and what is used. */
+  play?: PlayState;
+  /** With it the marks can be changed (the player page, `/test`); without, they only show. */
+  onPlay?: (next: PlayState) => void;
   /** Shown as "Go to the next choice" while the sheet is incomplete; also enables printing. */
   onFinish?: () => void;
 }) {
@@ -132,6 +140,7 @@ export function CharacterSheet({
     }),
     [cards],
   );
+  const playValue = useMemo(() => ({ play: play ?? {}, onPlay }), [play, onPlay]);
   const openCard = cards.find((card) => card.id === openId);
   const classIcon = tincture?.icon ?? "wax-seal";
   const close = () => {
@@ -149,26 +158,28 @@ export function CharacterSheet({
     );
   }
   return (
-    <CardLinksContext.Provider value={links}>
-      <article className="sheet hued" style={hue}>
-        <SheetHeader c={c} />
-        {onFinish && (
-          <div className="sheet-print">
-            <button type="button" className="button quiet" onClick={() => window.print()}>
-              <Icon name="ui-printer" />
-              Print your sheet
-            </button>
-            <p>The cards at the end print ready to cut out.</p>
-          </div>
-        )}
-        <SheetJump targets={jumpTargets(c, prefix)} />
-        <Vitals c={c} />
-        <OnYourTurn c={c} id={`${prefix}-turn`} />
-        <SpellSection c={c} id={`${prefix}-spells`} />
-        <Details c={c} ids={{ abilities: `${prefix}-abilities`, gear: `${prefix}-gear` }} />
-        <Cards cards={cards} classIcon={classIcon} id={`${prefix}-cards`} />
-        {openCard && <CardDialog card={openCard} classIcon={classIcon} onClose={close} />}
-      </article>
-    </CardLinksContext.Provider>
+    <PlayContext.Provider value={playValue}>
+      <CardLinksContext.Provider value={links}>
+        <article className="sheet hued" style={hue}>
+          <SheetHeader c={c} />
+          {onFinish && (
+            <div className="sheet-print">
+              <button type="button" className="button quiet" onClick={() => window.print()}>
+                <Icon name="ui-printer" />
+                Print your sheet
+              </button>
+              <p>The cards at the end print ready to cut out.</p>
+            </div>
+          )}
+          <SheetJump targets={jumpTargets(c, prefix)} />
+          <Vitals c={c} />
+          <OnYourTurn c={c} id={`${prefix}-turn`} />
+          <SpellSection c={c} id={`${prefix}-spells`} />
+          <Details c={c} ids={{ abilities: `${prefix}-abilities`, gear: `${prefix}-gear` }} />
+          <Cards cards={cards} classIcon={classIcon} id={`${prefix}-cards`} />
+          {openCard && <CardDialog card={openCard} classIcon={classIcon} onClose={close} />}
+        </article>
+      </CardLinksContext.Provider>
+    </PlayContext.Provider>
   );
 }

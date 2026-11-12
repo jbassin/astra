@@ -4,13 +4,13 @@
 
 import { useState } from "react";
 
-import type { Answers } from "@/domain/character";
+import type { Answers, PlayState } from "@/domain/character";
 import { Icon } from "@/ui/Icon";
 
 import { BuilderFlow } from "./BuilderFlow";
 
-function keepInTab(_answers: Answers): void {
-  // Test mode keeps nothing: the flow already holds the answers in React state.
+function keepInTab(_value: { answers: Answers; play: PlayState }): void {
+  // Test mode keeps nothing: the flow already holds the answers and marks in React state.
 }
 
 export function TestBuilder() {

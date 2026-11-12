@@ -78,7 +78,7 @@ function PlayerCard({ player }: { player: DmPlayerRow }) {
           <span>{player.name}’s full sheet</span>
           <Icon name="ui-chevron-down" className="dm-sheet-chevron" />
         </summary>
-        <CharacterSheet character={c} />
+        <CharacterSheet character={c} play={player.play} />
       </details>
     </section>
   );

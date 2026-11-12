@@ -18,11 +18,13 @@ player page walks through every choice to a printable "On your turn" sheet with 
   after a short pause (the `saveAnswers` server function); the page shows Saving…, Saved or an
   error. Reopening the link resumes at the first screen with something left to do. One class
   per player (Josh's call, 2026-11-12): a class another player holds is greyed out
-  ("Taken by Ada"), and the server refuses it (see The flow and the sheet).
-- `/test`: test mode, public. The same flow and sheet with nothing saved: the answers live only
-  in the tab's React state, a banner says so, and Start over clears them.
+  ("Taken by Ada"), and the server refuses it (see The flow and the sheet). The sheet is
+  interactive: Hit Points and pips are marked on it and save with the answers (`play`).
+- `/test`: test mode, public. The same flow and sheet with nothing saved: the answers and the
+  marks live only in the tab's React state, a banner says so, and Start over clears them.
 - `/dm/<token>`: every invited player with their link, last save, progress, class, species and
-  background, and each player's full sheet in a fold-out. A wrong or missing token, or no token
+  background, and each player's full sheet in a fold-out (read-only: it shows the saved marks
+  but has no buttons). A wrong or missing token, or no token
   configured, gets the same plain 404 as any unknown URL.
 
 ## The flow and the sheet
@@ -96,6 +98,17 @@ player page walks through every choice to a printable "On your turn" sheet with 
   already shows in full in a number or a line gets no card (`hidden` and `applied`, under
   Curation below). While `missing` is non-empty it lists what's left to choose instead of
   numbers.
+- **The sheet is something to play from** (Josh, 2026-11-12). The Hit Points medallion steps
+  down and up (− and +, held to 0 and the maximum) and shows "now / max". `Pips` marks every
+  limited thing: the spell slot line in "Your spells", an "On your turn" entry with uses (pips
+  replace the count; a unit that isn't "use" stays as a word, a spell entry keeps its words and
+  adds pips), a spell's free casts in "Your spells", and the card's uses chip (grid and dialog).
+  A filled pip is one left; pressing it uses one, and pressing a hollow pip gives one back. A
+  count above `MAX_PIPS` (6; Lay on Hands' 10 Hit Points) is a − number + stepper. All of them
+  read one `PlayState` (`src/domain/play.ts` names the trackers: `slots`, `use-<feature id>`,
+  `cast-<spell id>`), so the same thing agrees everywhere. `CharacterSheet` takes `play` and
+  `onPlay`; without `onPlay` (the DM page) the dots show as plain marks and there are no buttons.
+  Paper prints the maximum Hit Points with no buttons and every pip as left.
 - **A name with a card is a button** (owner's request, 2026-11-12): every feature or spell name
   in "On your turn", each spell in the "Cast a spell" line and in "Your spells", and an attack
   cantrip's name opens that card in a dialog (`CardName` in `CardLinks.tsx`, `CardDialog.tsx`,
@@ -138,7 +151,7 @@ the sheet banner and its cards. Phone first: most players use a phone.
   `BuilderFlow.tsx`), else a CSS entrance.
 - **Styles:** `src/styles/globals.css` imports, in order, `tokens.css`, `base.css` (the shell),
   `pages.css` (home and DM), `flow.css`, `path.css` (the quest path), `choices.css`, `sheet.css`, `sheet-details.css`,
-  `cards.css` and `print.css`; a later file wins at equal weight. Keep each under 500 lines
+  `cards.css`, `play.css` (pips and steppers) and `print.css`; a later file wins at equal weight. Keep each under 500 lines
   (the ratchet counts long files). Motion is short and answers the player (screen
   change, pick, save); `prefers-reduced-motion` turns it off.
 
@@ -254,7 +267,12 @@ always come from the imported class table or feature text, never from the curati
 Everything lives under `builder.data-dir` (`/ruby/data/astra-state/builder`):
 
 - `roster.json`: `[{ id, name, createdAt }]`, written only by `just builder-invite`.
-- `characters/<id>.json`: `{ schemaVersion: 1, updatedAt, answers }`, written by the server.
+- `characters/<id>.json`: `{ schemaVersion: 1, updatedAt, answers, play? }`, written by the server.
+  `play` is the zod schema `PlayState`: `hp` (current Hit Points; absent means full) and
+  `spent` (tracker id to how many are used; absent means none), at most 60 keys. The file has
+  no `play` until something is marked, and the server drops it with a class another player
+  holds. `play.ts` clamps every number it reads, so a saved count the character no longer
+  supports never shows wrong. A change of class, species or background resets `play` in the flow.
   `answers` is the zod schema `Answers` in `src/domain/character.ts`; new steps add optional
   fields there, and a change that breaks old files bumps `schemaVersion`. Spells, class
   options and the species sub-choice are not saved: the builder derives them from the class,
@@ -338,6 +356,20 @@ takes every data-root dir by default).
   on the `<dialog>` itself fails the a11y lint and the ratchet. Keep the card body above that button.
 - **Name buttons grow their hit area with padding and a matching negative margin,** so they
   don't move the layout; print.css resets both. Don't give one a `min-height`.
+- **`vite dev` needs `--configLoader runner`** (the `dev` script has it); `pnpm vite dev` alone
+  fails with `ERR_MODULE_NOT_FOUND` for `@astra/config`.
+- **Generated icons go stale.** After adding an icon to `scripts/icons.ts`, run
+  `pnpm generate:content`; a test that draws it fails with `ICONS[name]` undefined until then.
+- **Marks are spans, and their classes are `counter*` and `pip`.** Pips sit inside paragraphs,
+  so a `<fieldset>` or a block element there is invalid HTML (a hydration error); the count is
+  hidden text (`sr-only`). `.stepper` is the quest path's class (and print.css hides it), so the
+  − number + control is `.counter`; `Play.test.tsx` fails on any React `console.error`.
+- **A tracker id is a saved key.** Renaming a feature id changes its `use-<id>` key and orphans
+  saved marks (harmless: they are ignored). Keep ids matching `TRACKER_KEY`; `play.test.ts`
+  checks every character.
+- **A dialog's cleanup must not call `close()`.** Development's effect, cleanup, effect run
+  would fire `close` and shut the card at once; jsdom has no `close`, so only the StrictMode
+  test with stubs catches it.
 - **A choice card is one `<label>` and nothing else.** Don't add a "More" disclosure or a
   second block of text to a card; `BuilderFlow.test.tsx` fails when a choice screen has a
   `<details>` or a background card says more than its name and story.

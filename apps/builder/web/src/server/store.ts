@@ -7,7 +7,14 @@ import { randomBytes } from "node:crypto";
 import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { type Answers, CharacterDoc, PlayerId, Roster, type RosterEntry } from "@/domain/character";
+import {
+  type Answers,
+  CharacterDoc,
+  PlayerId,
+  type PlayState,
+  Roster,
+  type RosterEntry,
+} from "@/domain/character";
 
 /** A save for an id that is not on the roster. */
 class UnknownPlayerError extends Error {
@@ -51,7 +58,8 @@ export interface BuilderStore {
   findPlayer(id: string): RosterEntry | undefined;
   addPlayer(name: string, now?: Date): RosterEntry;
   readCharacter(id: string): CharacterDoc | undefined;
-  saveCharacter(id: string, answers: Answers, now?: Date): CharacterDoc;
+  /** Writes the answers and, when it has anything in it, the play state. */
+  saveCharacter(id: string, answers: Answers, play?: PlayState, now?: Date): CharacterDoc;
 }
 
 export function builderStore(dataDir: string): BuilderStore {
@@ -90,10 +98,17 @@ export function builderStore(dataDir: string): BuilderStore {
       return raw === undefined ? raw : CharacterDoc.parse(raw);
     },
 
-    saveCharacter(id, answers, now = new Date()) {
+    saveCharacter(id, answers, play, now = new Date()) {
       const player = findPlayer(id);
       if (!player) throw new UnknownPlayerError("unknown player id");
-      const doc = CharacterDoc.parse({ schemaVersion: 1, updatedAt: now.toISOString(), answers });
+      // An empty play state stays out of the file.
+      const marked = play && (play.hp !== undefined || Object.keys(play.spent ?? {}).length > 0);
+      const doc = CharacterDoc.parse({
+        schemaVersion: 1,
+        updatedAt: now.toISOString(),
+        answers,
+        ...(marked && { play }),
+      });
       writeJsonAtomic(characterFile(player.id), doc);
       return doc;
     },

@@ -5,7 +5,7 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { Answers } from "@/domain/character";
+import type { Answers, PlayState } from "@/domain/character";
 import { backgroundsForClass, CONTENT } from "@/domain/content";
 
 import { BuilderFlow } from "./BuilderFlow";
@@ -13,9 +13,9 @@ import { BuilderFlow } from "./BuilderFlow";
 afterEach(cleanup);
 
 function renderFlow(initial: Answers = {}) {
-  const persist = vi.fn<(a: Answers) => void>();
+  const persist = vi.fn<(v: { answers: Answers; play: PlayState }) => void>();
   render(<BuilderFlow initial={initial} persist={persist} title="Hi" intro="Intro" />);
-  const last = (): Answers => persist.mock.lastCall?.[0] ?? initial;
+  const last = (): Answers => persist.mock.lastCall?.[0].answers ?? initial;
   return { persist, last };
 }
 

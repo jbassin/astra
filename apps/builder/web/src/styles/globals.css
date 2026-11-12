@@ -1,5 +1,5 @@
 /* builder's styles, in cascade order: the tokens, the page shell, the home and DM pages, the
- * flow with its quest path and choice cards, the sheet in three parts, then paper. A later
+ * flow with its quest path and choice cards, the sheet in three parts, its play marks, then paper. A later
  * file overrides an earlier one at equal weight. */
 @import "./tokens.css";
 @import "./base.css";
@@ -10,4 +10,5 @@
 @import "./sheet.css";
 @import "./sheet-details.css";
 @import "./cards.css";
+@import "./play.css";
 @import "./print.css";

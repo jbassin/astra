@@ -152,6 +152,24 @@
   html .vital-value {
     font-size: 1.9rem;
   }
+  /* Marks are made on paper with a pencil: the maximum, no buttons, every pip as left. */
+  html .counter-btn,
+  html .counter-now,
+  html .counter-max {
+    display: none;
+  }
+  html .counter-print {
+    display: inline;
+  }
+  html .pip,
+  html .pip[data-used] {
+    background: #000000;
+    border-color: #000000;
+    box-shadow: none;
+  }
+  html .pip::after {
+    display: none;
+  }
   html .ability-grid {
     grid-template-columns: repeat(6, 1fr);
   }

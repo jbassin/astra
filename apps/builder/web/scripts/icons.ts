@@ -125,6 +125,8 @@ const LUCIDE = [
   "flask-conical",
   "link",
   "x",
+  "minus",
+  "plus",
 ] as const;
 
 interface IconSet {

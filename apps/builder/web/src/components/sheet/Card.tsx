@@ -8,6 +8,8 @@ import type { IconName } from "@/generated/icons";
 import { SLOT_ICON, schoolIcon, slotOfLabel } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
+import { Pips } from "./Pips";
+
 /** A spell card's school icon; a feature card carries its class's emblem. */
 function emblem(id: string, classIcon: IconName): IconName {
   if (!id.startsWith("spell-")) return classIcon;
@@ -43,6 +45,7 @@ export function Card({
             {card.when}
           </span>
           {card.uses && <span className="chip card-uses">{card.uses}</span>}
+          {card.tracker && <Pips tracker={card.tracker} className="card-pips" />}
         </p>
         {card.roll && (
           <p className="card-roll">

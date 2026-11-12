@@ -23,6 +23,7 @@ function PlayerComponent() {
       id={id}
       playerName={page.name}
       initial={page.character?.answers ?? {}}
+      initialPlay={page.character?.play}
       taken={page.taken}
     />
   );
