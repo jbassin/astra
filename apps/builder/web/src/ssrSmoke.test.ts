@@ -11,6 +11,7 @@ import { vi } from "vitest";
 const dataRoot = mkdtempSync(path.join(tmpdir(), "builder-smoke-"));
 const PLAYER_ID = "SmokeTestPlayer0000000";
 const DM_TOKEN = "smoke-dm-token";
+const PARTY_WORD = "smoke-test-phrase";
 mkdirSync(path.join(dataRoot, "builder", "characters"), { recursive: true });
 writeFileSync(
   path.join(dataRoot, "builder", "roster.json"),
@@ -24,13 +25,20 @@ writeFileSync(
     answers: { archetype: "scoundrel", name: "Quill" },
   }),
 );
+writeFileSync(
+  path.join(dataRoot, "builder", "party.json"),
+  JSON.stringify({ word: PARTY_WORD, createdAt: "2026-11-12T12:00:00.000Z" }),
+);
 vi.stubEnv("ASTRA_DATA_ROOT", dataRoot);
 vi.stubEnv("BUILDER_DM_TOKEN", DM_TOKEN);
 
 describeSsrSmoke({
   appRoot: path.resolve(import.meta.dirname, ".."),
   routes: [
-    { path: "/", contains: ["Character builder", "personal link", 'href="/test"'] },
+    {
+      path: "/",
+      contains: ["Character builder", "open the link your DM sent you", 'href="/test"'],
+    },
     // The saved answers pick an archetype, so the page resumes on the class screen.
     {
       path: `/c/${PLAYER_ID}`,
@@ -57,8 +65,21 @@ describeSsrSmoke({
         "1 invited",
         "’s full sheet",
         "Still to choose",
+        `/p/${PARTY_WORD}`,
       ],
     },
+    {
+      path: `/p/${PARTY_WORD}`,
+      contains: ["Who are you?", "Smoke Tester", `href="/c/${PLAYER_ID}"`],
+    },
+    {
+      path: "/p/wrong-phrase-here",
+      status: 404,
+      contains: ["That page doesn’t exist."],
+      lacks: ["Smoke Tester", PLAYER_ID],
+    },
+    { path: `/p/${"a".repeat(65)}`, status: 404, contains: ["That page doesn’t exist."] },
+    { path: "/p/ab", status: 404, contains: ["That page doesn’t exist."] },
     { path: "/__no-such-page", status: 404, contains: ["That page doesn’t exist."] },
   ],
 });

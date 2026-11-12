@@ -15,6 +15,33 @@ beforeEach(() => {
   dir = mkdtempSync(path.join(tmpdir(), "builder-store-"));
 });
 
+describe("party", () => {
+  it("reads no file as no party", () => {
+    expect(builderStore(dir).readParty()).toBeUndefined();
+  });
+
+  it("round-trips the phrase and replaces it on a second write", () => {
+    const store = builderStore(dir);
+    const first = store.writeParty("red-fox-lantern", new Date("2026-11-12T12:00:00Z"));
+    expect(first).toEqual({ word: "red-fox-lantern", createdAt: "2026-11-12T12:00:00.000Z" });
+    expect(store.readParty()).toEqual(first);
+    const onDisk: unknown = JSON.parse(readFileSync(path.join(dir, "party.json"), "utf8"));
+    expect(onDisk).toEqual(first);
+    store.writeParty("blue-owl-meadow");
+    expect(store.readParty()?.word).toBe("blue-owl-meadow");
+  });
+
+  it("refuses a bad phrase and a malformed file", () => {
+    const store = builderStore(dir);
+    expect(() => store.writeParty("ab")).toThrow();
+    expect(() => store.writeParty("Has Capitals")).toThrow();
+    writeFileSync(path.join(dir, "party.json"), JSON.stringify({ word: "x", createdAt: "now" }));
+    expect(() => store.readParty()).toThrow();
+    writeFileSync(path.join(dir, "party.json"), "not json");
+    expect(() => store.readParty()).toThrow();
+  });
+});
+
 describe("roster", () => {
   it("reads a missing roster as empty", () => {
     expect(builderStore(dir).readRoster()).toEqual([]);

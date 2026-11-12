@@ -2,9 +2,11 @@
 // `createServerFn` wrappers so tests call it directly with a temp store.
 
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
+import { safeEqual } from "@astra/service-kit";
 import { SpanStatusCode } from "@opentelemetry/api";
 
 import type { Answers, CharacterDoc, PlayState, StepKey } from "@/domain/character";
+import type { PartyFile, PartyMember } from "@/domain/party";
 import { answeredSteps, applicableStepCount, pruneAnswers } from "@/domain/steps";
 
 import { dmTokenMatches } from "./dmToken";
@@ -88,6 +90,30 @@ export function savePlayerAnswers(
   });
 }
 
+/**
+ * The party file, or `undefined` when none is set or the file cannot be read. An unreadable
+ * file counts as no party, and the one WARN says nothing of the parse error (it can quote the
+ * file's content).
+ */
+function readPartyOrUndefined(store: BuilderStore): PartyFile | undefined {
+  try {
+    return store.readParty();
+  } catch {
+    logger.emit({ severityText: "WARN", body: "builder: party.json could not be read" });
+    return undefined;
+  }
+}
+
+/**
+ * The group page's players (id and name, in roster order), or `null` when no party phrase is
+ * set or `word` is not it. Never logs or throws the phrase or the ids.
+ */
+export function loadPartyPage(store: BuilderStore, word: string): PartyMember[] | null {
+  const party = readPartyOrUndefined(store);
+  if (!party || !word || !safeEqual(word, party.word)) return null;
+  return store.readRoster().map(({ id, name }) => ({ id, name }));
+}
+
 export interface DmPlayerRow {
   name: string;
   link: string;
@@ -100,13 +126,20 @@ export interface DmPlayerRow {
   play?: PlayState;
 }
 
+export interface DmView {
+  players: DmPlayerRow[];
+  /** The group link, or `null` when no party phrase is set. */
+  partyLink: string | null;
+}
+
 /** Every roster player with their answers, or `null` when the token does not match. */
 export function loadDmView(
   store: BuilderStore,
   opts: { token: string; expected: string | undefined; publicOrigin: string },
-): DmPlayerRow[] | null {
+): DmView | null {
   if (!dmTokenMatches(opts.token, opts.expected)) return null;
-  return store.readRoster().map((player) => {
+  const party = readPartyOrUndefined(store);
+  const players = store.readRoster().map((player) => {
     const doc = store.readCharacter(player.id);
     const answers = doc?.answers ?? {};
     const row: DmPlayerRow = {
@@ -121,6 +154,12 @@ export function loadDmView(
     if (doc?.play) row.play = doc.play;
     return row;
   });
+  return { players, partyLink: party ? partyLink(opts.publicOrigin, party.word) : null };
+}
+
+/** The group link: `<public-origin>/p/<phrase>`. */
+export function partyLink(publicOrigin: string, word: string): string {
+  return `${publicOrigin.replace(/\/+$/, "")}/p/${word}`;
 }
 
 /** The link a player opens: `<public-origin>/c/<id>`. */

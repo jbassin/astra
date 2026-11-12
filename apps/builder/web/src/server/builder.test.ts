@@ -1,12 +1,20 @@
 // @vitest-environment node
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
 import { type Captured, captureTelemetry } from "@astra/observe/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { loadDmView, loadPlayerPage, playerLink, savePlayerAnswers, takenClasses } from "./builder";
+import {
+  loadDmView,
+  loadPartyPage,
+  loadPlayerPage,
+  partyLink,
+  playerLink,
+  savePlayerAnswers,
+  takenClasses,
+} from "./builder";
 import { dmTokenMatches } from "./dmToken";
 import { builderStore } from "./store";
 
@@ -124,7 +132,9 @@ describe("DM view", () => {
     const ada = store.addPlayer("Ada");
     const bo = store.addPlayer("Bo");
     savePlayerAnswers(store, ada.id, { archetype: "warrior", look: "  " });
-    const rows = loadDmView(store, { token: "t", expected: "t", publicOrigin: `${ORIGIN}/` });
+    const view = loadDmView(store, { token: "t", expected: "t", publicOrigin: `${ORIGIN}/` });
+    const rows = view?.players;
+    expect(view?.partyLink).toBeNull();
     expect(rows).toHaveLength(2);
     expect(rows?.[0]).toMatchObject({
       name: "Ada",
@@ -137,5 +147,64 @@ describe("DM view", () => {
     expect(rows?.[0]?.updatedAt).not.toBeNull();
     expect(rows?.[1]).toMatchObject({ name: "Bo", updatedAt: null, answered: [], answers: {} });
     expect(playerLink(ORIGIN, bo.id)).toBe(rows?.[1]?.link);
+  });
+
+  it("carries the group link once a party phrase is set", () => {
+    const store = freshStore();
+    store.writeParty("red-fox-lantern");
+    const view = loadDmView(store, { token: "t", expected: "t", publicOrigin: `${ORIGIN}/` });
+    expect(view?.partyLink).toBe(`${ORIGIN}/p/red-fox-lantern`);
+    expect(partyLink(ORIGIN, "red-fox-lantern")).toBe(view?.partyLink);
+  });
+});
+
+describe("an unreadable party file", () => {
+  const SECRET = "quoted-secret-text";
+
+  it("counts as no party, and nothing from the file is returned or logged", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "builder-badparty-"));
+    const store = builderStore(dir);
+    store.addPlayer("Ada");
+    for (const content of [
+      `{"word":"${SECRET}","createdAt":"x","extra":1}`,
+      `not json ${SECRET}`,
+    ]) {
+      writeFileSync(path.join(dir, "party.json"), content);
+      expect(loadPartyPage(store, SECRET)).toBeNull();
+      expect(loadPartyPage(store, "amber-otter-quilt")).toBeNull();
+      const view = loadDmView(store, { token: "t", expected: "t", publicOrigin: ORIGIN });
+      expect(view?.partyLink).toBeNull();
+      expect(JSON.stringify(view)).not.toContain(SECRET);
+    }
+    const logs = cap
+      .logs()
+      .map((l) => JSON.stringify(l.body))
+      .join("\n");
+    expect(logs).toContain("party.json could not be read");
+    expect(logs).not.toContain(SECRET);
+  });
+});
+
+describe("party page", () => {
+  it("lists the roster's ids and names in order for the right phrase", () => {
+    const store = freshStore();
+    const ada = store.addPlayer("Ada");
+    const bo = store.addPlayer("Bo");
+    store.writeParty("red-fox-lantern");
+    expect(loadPartyPage(store, "red-fox-lantern")).toEqual([
+      { id: ada.id, name: "Ada" },
+      { id: bo.id, name: "Bo" },
+    ]);
+  });
+
+  it("is null for a wrong phrase, an empty phrase and a missing party file", () => {
+    const store = freshStore();
+    store.addPlayer("Ada");
+    expect(loadPartyPage(store, "red-fox-lantern")).toBeNull();
+    expect(loadPartyPage(store, "")).toBeNull();
+    store.writeParty("red-fox-lantern");
+    expect(loadPartyPage(store, "red-fox-lanterN")).toBeNull();
+    expect(loadPartyPage(store, "red-fox")).toBeNull();
+    expect(loadPartyPage(store, "")).toBeNull();
   });
 });

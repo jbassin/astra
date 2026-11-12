@@ -8,10 +8,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { Answers, PlayState } from "@/domain/character";
+import type { PartyMember } from "@/domain/party";
 
 import {
-  type DmPlayerRow,
+  type DmView,
   loadDmView,
+  loadPartyPage,
   loadPlayerPage,
   type PlayerPage,
   savePlayerAnswers,
@@ -41,15 +43,20 @@ export const getPlayerPage = createServerFn({ method: "GET" })
   .validator(z.object({ id: z.string().max(64) }))
   .handler(({ data }): PlayerPage | null => loadPlayerPage(storeFromConfig(), data.id));
 
+/** The group page for `/p/$word`; `null` (wrong phrase or no party) becomes a plain 404. */
+export const getPartyPage = createServerFn({ method: "GET" })
+  .validator(z.object({ word: z.string().max(64) }))
+  .handler(({ data }): PartyMember[] | null => loadPartyPage(storeFromConfig(), data.word));
+
 /** Replaces a player's saved answers and play marks; rejects ids not on the roster. */
 export const saveAnswers = createServerFn({ method: "POST" })
   .validator(z.object({ id: z.string().max(64), answers: Answers, play: PlayState.optional() }))
   .handler(({ data }) => savePlayerAnswers(storeFromConfig(), data.id, data.answers, data.play));
 
-/** Every player's picks for `/dm/$token`; `null` (wrong or unset token) becomes a plain 404. */
+/** Every player's picks and the group link for `/dm/$token`; `null` (wrong or unset token) becomes a plain 404. */
 export const getDmView = createServerFn({ method: "GET" })
   .validator(z.object({ token: z.string().max(256) }))
-  .handler(({ data }): DmPlayerRow[] | null => {
+  .handler(({ data }): DmView | null => {
     const cfg = loadConfig().builder;
     return loadDmView(builderStore(cfg.dataDir), {
       token: data.token,

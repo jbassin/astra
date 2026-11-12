@@ -68,4 +68,21 @@ describe("the player page, for contrast", () => {
       },
     });
   });
+
+  it("offers 'Not <name>?' only when a party phrase is remembered", () => {
+    window.localStorage.clear();
+    const first = render(
+      <PlayerBuilder id="SmokeTestPlayer0000000" playerName="Ada" initial={{}} taken={{}} />,
+    );
+    expect(screen.queryByRole("link", { name: "Not Ada?" })).toBeNull();
+    first.unmount();
+    window.localStorage.setItem(
+      "builder.party",
+      JSON.stringify({ id: "SmokeTestPlayer0000000", word: "red-fox-lantern" }),
+    );
+    render(<PlayerBuilder id="SmokeTestPlayer0000000" playerName="Ada" initial={{}} taken={{}} />);
+    const link = screen.getByRole("link", { name: "Not Ada?" });
+    expect(link.getAttribute("href")).toBe("/p/red-fox-lantern?switch=1");
+    window.localStorage.clear();
+  });
 });
