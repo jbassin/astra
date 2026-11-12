@@ -25,10 +25,28 @@ export interface CuratedUses extends Omit<Uses, "count"> {
   count: CuratedCount;
 }
 
-/** A summary for an imported feature or trait, or `hidden` with the reason it isn't shown. */
+/**
+ * A summary for an imported feature or trait, or `hidden` with the reason it isn't shown. A
+ * hidden entry is left out of the generated content, so nothing can show it: use it for what
+ * the character doesn't have yet, for a heading that only introduces picks, and for a class
+ * feature whose whole effect already shows elsewhere on the sheet ("Already in your skills.").
+ */
 export type CuratedSummary =
   | { summary: string; activation: Activation; uses?: CuratedUses; hidden?: undefined }
   | { hidden: string; summary?: undefined; activation?: undefined; uses?: undefined };
+
+/**
+ * For something that must stay in the content (a class option's pick card shows it; a
+ * sub-choice or a feat carries numbers the engine reads), so `hidden` won't do: `applied` is
+ * the reason the sheet makes no card and no "On your turn" entry for it. Species traits use
+ * it too. Set it only when the builder already put the whole effect into a number or a line
+ * the sheet shows, and the rules text leaves nothing to decide at the table. The reason says
+ * where it shows ("Already in your Hit Points."). It must be passive and have no `uses`
+ * (src/domain/sheet.test.ts checks), since the sheet would drop both.
+ */
+interface Applied {
+  applied?: string;
+}
 
 /**
  * A spell list the builder chooses from for the player, best first. It takes the first spells
@@ -83,7 +101,7 @@ export interface CuratedClass {
   };
 }
 
-export interface CuratedOption {
+export interface CuratedOption extends Applied {
   kind: OptionKind;
   /** Where the rules text comes from. */
   from: { feat: string } | { optionalFeature: string } | { classFeature: string };
@@ -101,7 +119,7 @@ export interface CuratedOption {
   grantsSpell?: { id: string; note: string };
 }
 
-export interface CuratedSpeciesOption {
+export interface CuratedSpeciesOption extends Applied {
   summary: string;
   activation: Activation;
   uses?: CuratedUses;
@@ -112,7 +130,7 @@ export interface CuratedSpecies {
   blurb: string;
   /** The size the builder gives when the species may pick (Medium). */
   size: string;
-  traits: Record<string, CuratedSummary>;
+  traits: Record<string, CuratedSummary & Applied>;
   /** The sub-choices, keyed by imported id. `inName: false` keeps the sub-choice out of the
    * species name the player sees (`speciesName` in content.ts). */
   option?: { inName?: false; choices: Record<string, CuratedSpeciesOption> };
@@ -120,7 +138,8 @@ export interface CuratedSpecies {
   languages: string[];
 }
 
-/** A spell's curated words: the pick card's one line and the plain summary. */
+/** A spell's curated words: the gist is its card's text on the sheet; the longer summary is
+ * shown nowhere today. */
 export interface CuratedSpell {
   gist: string;
   summary: string;
@@ -135,7 +154,7 @@ export interface CuratedBackground {
   initiate?: { cantrips: CuratedSpellList; spells: CuratedSpellList };
 }
 
-export interface CuratedFeat {
+export interface CuratedFeat extends Applied {
   summary: string;
   activation: Activation;
   uses?: CuratedUses;

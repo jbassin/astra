@@ -59,11 +59,16 @@ player page walks through every choice to a printable "On your turn" sheet with 
   the species sub-choice from the class (2026-11-12, the two bullets above). The builder chooses
   every spell: class cantrips and level 1 spells, a fighting style's cantrips and Magic
   Initiate's (`spellPicks`). No ability-score math anywhere.
-- **The sheet** (`src/components/sheet/`, wording in `src/domain/sheet.ts`): the four key
-  numbers, "On your turn" (action, bonus action, reaction, always on), spells per source with
-  DC, attack bonus and slots, "Things you're good at" (proficient skills), abilities, features
-  with uses, gear, and one card per feature and spell. While `missing` is non-empty it lists
-  what's left to choose instead of numbers.
+- **The sheet** (`src/components/sheet/`, wording in `src/domain/sheet.ts`) describes each
+  thing once, on its card; the rest is numbers, roll lines and names. It shows the four key
+  numbers; "On your turn" (action, bonus action, reaction, always on), where an attack shows
+  what to roll and everything else only its name and uses; the spells per source, with DC,
+  attack bonus, slots and the spells' names; the abilities; "Things you're good at"
+  (proficient skills); gear; and one card per feature and spell. A feature's card carries its
+  summary; a spell's carries its roll, its uses and its one-line `gist`. Something that
+  already shows in full in a number or a line gets no card (`hidden` and `applied`, under
+  Curation below). While `missing` is non-empty it lists what's left to choose instead of
+  numbers.
 - **Print:** `src/styles/print.css`. The browser's print gives the sheet alone on white, ink-light
   (outlines instead of filled banners), with the cards on a new page in a grid of dashed cut
   lines. The DM page prints each open sheet on its own page.
@@ -91,9 +96,8 @@ the sheet banner and its cards. Phone first: most players use a phone.
   test banner to one line, so each step's heading starts about 90px down; Next, Back and a
   jump scroll to the heading, just under the path, and focus it. Each class-choice list's
   name and "Pick N" count stick to the top while it scrolls. The sheet gets a sticky jump
-  bar (Turn, Spells, Abilities, Gear, Cards) and folds "Always on" and the cards until asked;
-  a laptop and paper always show everything. The bottom bar is fixed, except at the end of the
-  sheet on a laptop.
+  bar (Turn, Spells, Abilities, Gear, Cards) and folds the cards until asked; a laptop and
+  paper always show them. The bottom bar is fixed, except at the end of the sheet on a laptop.
 - **Step changes** use the View Transitions API when the browser has it (`go` in
   `BuilderFlow.tsx`), else a CSS entrance.
 - **Styles:** `src/styles/globals.css` imports, in order, `tokens.css`, `base.css` (the shell),
@@ -129,12 +133,29 @@ layers, each feeding the next:
      repeats, and the build proves there are enough. A Wizard's spellbook is the first
      `spellbookSize` level 1 spells. Changing a character's spells means reordering a list.
    - **Gists:** every spell (`spells/*.ts`) and class option (`options.ts`) also carries a
-     `gist`, the one line its pick card shows (spells have no pick cards now; their gists wait
-     for a use). Write one short,
+     `gist`: the one line a class option's pick card shows, and the text of a spell's card on
+     the sheet (nothing shows a spell's `summary`). Write one short,
      vivid, plain sentence of what it does for the player (aim for 70 characters; the build stops
      at `GIST_MAX`, 90). Leave out what the card's chips already say (casting time, range, the
      roll, the save), and state a number only when it matches the rules text: "Three glowing
      darts that always hit.", "Snap up a barrier: +5 AC until your next turn."
+   - **No card for what already shows:** every feature, trait, option and feat gets a card
+     and, by its `activation`, an "On your turn" entry, unless the curation marks it. Mark one
+     only when both hold: the engine already put all of it into a number or a line the sheet
+     shows (Hit Points, Armor Class, speed, skills, an attack's roll, the spells section, the
+     languages and "Trained with" lines), and its rules text leaves nothing to decide or
+     remember at the table. Tough is all in the Hit Points; Alert lets the player swap
+     initiative, so it keeps its card; so does Thaumaturge, because its bonus lands on skills
+     the sheet lists only when the character is proficient. There are two marks, each with a
+     reason that says where the effect shows ("Already in your Armor Class."):
+     - `hidden` (class features and species traits) leaves the entry out of the generated
+       content, so nothing can show it. Use it for a class feature, which only the sheet reads.
+       It is also the mark for a trait a level 2 character doesn't have yet and for a heading
+       that only introduces picks.
+     - `applied` (species traits, sub-choices, class options and feats) keeps the entry and its
+       `summary` in the content, where a class option's pick card and the engine still read it;
+       the engine gives it no feature line. It must be passive with no `uses` (`sheet.test.ts`
+       checks).
    - `general.ts`: the language and tool fallback orders.
 3. **Build** (`scripts/build-content.ts`, run by vite, vitest and `typecheck`): joins the two into
    `src/generated/content.ts` (gitignored), typed by `src/domain/contentTypes.ts`. It fails,
@@ -160,7 +181,8 @@ always come from the imported class table or feature text, never from the curati
   previous)`, which the UI calls on every change to drop picks an upstream change made invalid.
 - `src/domain/engine.ts`: `buildCharacter(answers)` → `Character`, the derived level 2 sheet
   (abilities, saves, skills, HP, AC with alternatives, speed, initiative, attacks with mastery,
-  spellcasting blocks per source, features with uses, equipment, proficiencies, `missing`).
+  spellcasting blocks per source, the features that get a card with their uses, equipment,
+  proficiencies, `missing`).
 
 ### Re-import or edit
 
@@ -248,13 +270,16 @@ takes every data-root dir by default).
   `config.kdl`. Without the token the DM check would try `sops -d`, which CI cannot run.
 - **SSR HTML splits text around expressions** (`Hi, <!-- -->Ada`), so smoke assertions match the
   pieces, not the joined sentence.
-- **The sheet sorts by `activation`, never by wording.** Every shown feature, trait, sub-option,
+- **The sheet sorts by `activation`, never by wording.** Every shown feature, trait, sub-choice,
   class option and feat carries a curated `activation` (`action`, `bonus`, `reaction`, `minute`
   for a minute or more, `passive` for always on or triggered); spells take theirs from the
   5etools casting unit (an hour reads `minute`). The build fails on a shown item without one.
   Changing a summary's wording moves nothing; change the field. `minute` items stay off "On your
-  turn" but keep their card. Spell summaries open with "Action." or "Bonus action.", which
-  `spellGist` skips for the sheet's "On your turn" line.
+  turn" but keep their card.
+- **A `hidden` class feature is gone from the content,** so the engine can't find it in
+  `cls.features`: Unarmored Defense, which is hidden, is given by class id. Before hiding a
+  feature, search the engine and the tests for its id. A sub-choice replaces the species trait
+  its `replacesTrait` names, so hiding that trait would drop the sub-choice's card too.
 - **print.css overrides heavier screen rules,** so its rules start with `html` (and the hidden
   parts use `!important`). Its token block repeats the dark blocks' selectors so paper stays
   light.

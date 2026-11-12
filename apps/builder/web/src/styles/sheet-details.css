@@ -1,5 +1,5 @@
-/* The sheet below the turn: spells, the six ability medallions, skills, features and gear,
- * and the list of what is still to choose. */
+/* The sheet below the turn: spells, the six ability medallions, skills and gear, and the list
+ * of what is still to choose. */
 
 /* ── spells ─────────────────────────────────────────────────────────────────────── */
 .spell-blocks {
@@ -68,35 +68,23 @@
   color: var(--hue-ink);
   font-size: 1.05rem;
 }
-.spell-list {
-  display: grid;
-  gap: 0.75rem;
+/* Names only: what each spell does is on its card. */
+.spell-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
 }
-.spell {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--rule);
+.spell-names li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.55rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-weight: 700;
 }
-.spell-icon {
-  width: 2rem;
-  height: 2rem;
-  padding: 0.35rem;
-  border-radius: 50%;
-  background: var(--hue-wash);
+.spell-names .icon {
   color: var(--hue-ink);
-}
-.spell-main {
-  display: grid;
-  gap: 0.3rem;
-  min-width: 0;
-}
-@media (min-width: 60rem) {
-  .spell-list {
-    grid-template-columns: 1fr 1fr;
-    column-gap: 1.5rem;
-  }
 }
 
 /* ── abilities ──────────────────────────────────────────────────────────────────── */
@@ -152,7 +140,7 @@
   }
 }
 
-/* ── skills, features, gear ─────────────────────────────────────────────────────── */
+/* ── skills, gear ───────────────────────────────────────────────────────────────── */
 .detail-grid {
   gap: 1.75rem;
 }
@@ -160,13 +148,11 @@
   font-size: 1.45rem;
 }
 .skill-list,
-.feature-list,
 .gear-list {
   display: grid;
   border-top: 1px solid var(--rule);
 }
 .skill-list li,
-.feature-list li,
 .gear-list li {
   display: flex;
   align-items: baseline;
@@ -205,12 +191,9 @@
 .gear-list .gold .icon {
   color: var(--gilt);
 }
-.feature-list .uses {
-  text-align: right;
-}
 @media (min-width: 60rem) {
   .detail-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

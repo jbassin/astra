@@ -13,9 +13,6 @@
 
 import type { CuratedClass } from "../src/domain/curationTypes";
 
-const SPELLCASTING_NOTE =
-  "Cast a cantrip as often as you like. A level 1 spell uses up one spell slot; all your slots come back when you finish a Long Rest.";
-
 export const CLASSES: CuratedClass[] = [
   {
     id: "fighter",
@@ -56,11 +53,7 @@ export const CLASSES: CuratedClass[] = [
           note: "Regain one use when you finish a Short Rest.",
         },
       },
-      "fighter-weapon-mastery": {
-        activation: "passive",
-        summary:
-          "You can use the special mastery property of three kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can swap one of them.",
-      },
+      "fighter-weapon-mastery": { hidden: "Already on your attacks: each weapon's Mastery line." },
       "fighter-action-surge": {
         activation: "action",
         summary:
@@ -118,15 +111,9 @@ export const CLASSES: CuratedClass[] = [
           note: "Regain one use when you finish a Short Rest.",
         },
       },
-      "barbarian-unarmored-defense": {
-        activation: "passive",
-        summary:
-          "While you wear no armor, your Armor Class is 10 + your Dexterity modifier + your Constitution modifier. You can still use a shield.",
-      },
+      "barbarian-unarmored-defense": { hidden: "Already in your Armor Class." },
       "barbarian-weapon-mastery": {
-        activation: "passive",
-        summary:
-          "You can use the special mastery property of two kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can swap one of them.",
+        hidden: "Already on your attacks: each weapon's Mastery line.",
       },
       "barbarian-danger-sense": {
         activation: "passive",
@@ -167,11 +154,7 @@ export const CLASSES: CuratedClass[] = [
       "monk-bonus-unarmed-strike": { hidden: "Part of Martial Arts." },
       "monk-martial-arts-die": { hidden: "Part of Martial Arts." },
       "monk-dexterous-attacks": { hidden: "Part of Martial Arts." },
-      "monk-unarmored-defense": {
-        activation: "passive",
-        summary:
-          "While you wear no armor and carry no shield, your Armor Class is 10 + your Dexterity modifier + your Wisdom modifier.",
-      },
+      "monk-unarmored-defense": { hidden: "Already in your Armor Class." },
       "monk-monks-focus": {
         activation: "passive",
         summary:
@@ -192,10 +175,7 @@ export const CLASSES: CuratedClass[] = [
         summary:
           "Take the Dash action as a bonus action, or spend 1 Focus Point to take both Disengage and Dash as a bonus action and double your jump distance for the turn.",
       },
-      "monk-unarmored-movement": {
-        activation: "passive",
-        summary: "Your speed goes up by 10 feet while you wear no armor and carry no shield.",
-      },
+      "monk-unarmored-movement": { hidden: "Already in your speed." },
       "monk-uncanny-metabolism": {
         activation: "passive",
         summary:
@@ -235,25 +215,14 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["alert", "tough"],
     languages: { fixed: ["thieves-cant"], extra: 1 },
     features: {
-      "rogue-expertise": {
-        activation: "passive",
-        summary:
-          "You're extra good at two of your skills: you add double your Proficiency Bonus to them (the builder picked them; they're marked on your sheet).",
-      },
+      "rogue-expertise": { hidden: "Already in your skills, marked expert." },
       "rogue-sneak-attack": {
         activation: "passive",
         summary:
           "Once per turn, deal an extra 1d6 damage when you hit with a finesse or ranged weapon and you have advantage on the attack, or when an ally of yours is within 5 feet of the target (and you don't have disadvantage).",
       },
-      "rogue-thieves-cant": {
-        activation: "passive",
-        summary: "You know Thieves' Cant, the secret slang of criminals, plus one more language.",
-      },
-      "rogue-weapon-mastery": {
-        activation: "passive",
-        summary:
-          "You can use the special mastery property of two kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can change them.",
-      },
+      "rogue-thieves-cant": { hidden: "Already in your languages." },
+      "rogue-weapon-mastery": { hidden: "Already on your attacks: each weapon's Mastery line." },
       "rogue-cunning-action": {
         activation: "bonus",
         summary: "On your turn, you can take the Dash, Disengage or Hide action as a bonus action.",
@@ -290,24 +259,15 @@ export const CLASSES: CuratedClass[] = [
     languages: { fixed: [], extra: 2 },
     features: {
       "ranger-favored-enemy": {
-        activation: "passive",
-        summary:
-          "You always have Hunter's Mark prepared, and you can cast it without using a spell slot a few times per Long Rest.",
-        uses: { count: { table: "Favored Enemy" }, per: "long", unit: "free cast" },
+        hidden: "Hunter's Mark is in your spells, and its card counts the free casts.",
       },
       "ranger-spellcasting": {
-        activation: "passive",
-        summary: `You cast Ranger spells using Wisdom. ${SPELLCASTING_NOTE} After a Long Rest you can swap one prepared spell. A druidic focus is your spellcasting focus.`,
+        hidden:
+          "Already in your spells: the ability, save DC, spell attack, slots and spell names.",
       },
-      "ranger-weapon-mastery": {
-        activation: "passive",
-        summary:
-          "You can use the special mastery property of two kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can change them.",
-      },
+      "ranger-weapon-mastery": { hidden: "Already on your attacks: each weapon's Mastery line." },
       "ranger-deft-explorer": {
-        activation: "passive",
-        summary:
-          "You gain Expertise in one of your skills (double your Proficiency Bonus; the builder picked it) and learn two more languages.",
+        hidden: "Already in your skills (marked expert) and your languages.",
       },
       "ranger-fighting-style": { hidden: "Shown as the Fighting Style the player picks." },
     },
@@ -368,14 +328,10 @@ export const CLASSES: CuratedClass[] = [
         uses: { count: "cha", per: "long" },
       },
       "bard-spellcasting": {
-        activation: "passive",
-        summary: `You cast Bard spells using Charisma. ${SPELLCASTING_NOTE} A musical instrument is your spellcasting focus.`,
+        hidden:
+          "Already in your spells: the ability, save DC, spell attack, slots and spell names.",
       },
-      "bard-expertise": {
-        activation: "passive",
-        summary:
-          "You're extra good at two of your skills: you add double your Proficiency Bonus to them (the builder picked them; they're marked on your sheet).",
-      },
+      "bard-expertise": { hidden: "Already in your skills, marked expert." },
       "bard-jack-of-all-trades": {
         activation: "passive",
         summary:
@@ -412,8 +368,8 @@ export const CLASSES: CuratedClass[] = [
         uses: { count: 2, per: "long" },
       },
       "sorcerer-spellcasting": {
-        activation: "passive",
-        summary: `You cast Sorcerer spells using Charisma. ${SPELLCASTING_NOTE} An arcane focus is your spellcasting focus.`,
+        hidden:
+          "Already in your spells: the ability, save DC, spell attack, slots and spell names.",
       },
       "sorcerer-font-of-magic": {
         activation: "bonus",
@@ -421,11 +377,7 @@ export const CLASSES: CuratedClass[] = [
           "You have Sorcery Points to spend on Metamagic. You can also turn a spell slot into Sorcery Points equal to its level (no action), or spend 2 points as a bonus action to make a level 1 spell slot, which vanishes when you finish a Long Rest.",
         uses: { count: { table: "Sorcery Points" }, per: "long", unit: "Sorcery Point" },
       },
-      "sorcerer-metamagic": {
-        activation: "passive",
-        summary:
-          "You know two Metamagic options (your picks). Each one changes a spell as you cast it for a cost in Sorcery Points. Normally only one option per spell.",
-      },
+      "sorcerer-metamagic": { hidden: "Each Metamagic pick has its own card." },
       "sorcerer-metamagic-options": { hidden: "The list the player picks Metamagic from." },
     },
     optionGroups: [
@@ -474,16 +426,14 @@ export const CLASSES: CuratedClass[] = [
     languages: { fixed: ["druidic"], extra: 0 },
     features: {
       "druid-druidic": {
-        activation: "passive",
-        summary:
-          "You know Druidic, the secret language of druids, and can leave hidden messages in it. You always have Speak with Animals prepared.",
+        hidden: "Already in your languages and your spells (Speak with Animals).",
       },
       "druid-primal-order": { hidden: "Shown as the Primal Order the player picks." },
       "druid-magician": { hidden: "Shown through the Primal Order pick." },
       "druid-warden": { hidden: "Shown through the Primal Order pick." },
       "druid-spellcasting": {
-        activation: "passive",
-        summary: `You cast Druid spells using Wisdom. ${SPELLCASTING_NOTE} After a Long Rest you can change your prepared spells. A druidic focus is your spellcasting focus.`,
+        hidden:
+          "Already in your spells: the ability, save DC, spell attack, slots and spell names.",
       },
       "druid-wild-companion": {
         activation: "action",
@@ -563,14 +513,10 @@ export const CLASSES: CuratedClass[] = [
           "You can cast any spell in your spellbook that has the Ritual tag as a ritual, without preparing it, by reading it from the book. A ritual takes longer but uses no spell slot.",
       },
       "wizard-spellcasting": {
-        activation: "passive",
-        summary: `You cast Wizard spells using Intelligence. Your spellbook holds your level 1 spells; after each Long Rest you choose which of them to prepare. ${SPELLCASTING_NOTE} Your spellbook or an arcane focus is your spellcasting focus.`,
+        hidden:
+          "Already in your spells: the ability, save DC, spell attack, slots and spell names.",
       },
-      "wizard-scholar": {
-        activation: "passive",
-        summary:
-          "You have Expertise in one knowledge skill you're proficient in (double your Proficiency Bonus; the builder picked it).",
-      },
+      "wizard-scholar": { hidden: "Already in your skills, marked expert." },
     },
     spells: {
       cantrips: ["fire-bolt", "mage-hand", "ray-of-frost", "shocking-grasp"],
@@ -614,17 +560,14 @@ export const CLASSES: CuratedClass[] = [
     humanFeat: ["alert", "tough"],
     features: {
       "warlock-eldritch-invocations": {
-        activation: "passive",
-        summary:
-          "You know Eldritch Invocations (your picks): pieces of forbidden lore that each give you a lasting magical trick.",
+        hidden: "Each invocation shows on its own card or in a number.",
       },
       "warlock-eldritch-invocation-options": {
         hidden: "The list the player picks invocations from.",
       },
       "warlock-pact-magic": {
-        activation: "passive",
-        summary:
-          "You cast Warlock spells using Charisma. Cast a cantrip as often as you like. A level 1 spell uses up one of your few spell slots, but they all come back when you finish a Short or Long Rest, so use them freely. An arcane focus is your spellcasting focus.",
+        hidden:
+          "Already in your spells: the ability, save DC, spell attack, slots and spell names.",
       },
       "warlock-magical-cunning": {
         activation: "minute",
@@ -675,8 +618,8 @@ export const CLASSES: CuratedClass[] = [
       "cleric-protector": { hidden: "Shown through the Divine Order pick." },
       "cleric-thaumaturge": { hidden: "Shown through the Divine Order pick." },
       "cleric-spellcasting": {
-        activation: "passive",
-        summary: `You cast Cleric spells using Wisdom. ${SPELLCASTING_NOTE} After a Long Rest you can change your prepared spells. A holy symbol is your spellcasting focus.`,
+        hidden:
+          "Already in your spells: the ability, save DC, spell attack, slots and spell names.",
       },
       "cleric-channel-divinity": {
         activation: "passive",
@@ -738,20 +681,13 @@ export const CLASSES: CuratedClass[] = [
         uses: { count: 10, per: "long", unit: "Hit Point" },
       },
       "paladin-spellcasting": {
-        activation: "passive",
-        summary: `You cast Paladin spells using Charisma. ${SPELLCASTING_NOTE} After a Long Rest you can swap one prepared spell. A holy symbol is your spellcasting focus.`,
+        hidden:
+          "Already in your spells: the ability, save DC, spell attack, slots and spell names.",
       },
-      "paladin-weapon-mastery": {
-        activation: "passive",
-        summary:
-          "You can use the special mastery property of two kinds of weapons (the builder picked them; they're marked on your attacks). After a Long Rest you can change them.",
-      },
+      "paladin-weapon-mastery": { hidden: "Already on your attacks: each weapon's Mastery line." },
       "paladin-fighting-style": { hidden: "Shown as the Fighting Style the player picks." },
       "paladin-paladins-smite": {
-        activation: "passive",
-        summary:
-          "You always have Divine Smite prepared, and you can cast it once without using a spell slot.",
-        uses: { count: 1, per: "long", unit: "free cast" },
+        hidden: "Divine Smite is in your spells, and its card counts the free cast.",
       },
     },
     optionGroups: [

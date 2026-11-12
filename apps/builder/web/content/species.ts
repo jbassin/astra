@@ -12,10 +12,12 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       "celestial-resistance": {
+        applied: "Already under your key numbers, as damage you take half of.",
         activation: "passive",
         summary: "Necrotic and Radiant damage hurt you less: you take only half of it.",
       },
       darkvision: {
+        applied: "Already under your key numbers, as Darkvision.",
         activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
@@ -27,6 +29,7 @@ export const SPECIES: CuratedSpecies[] = [
         uses: { count: 1, per: "long" },
       },
       "light-bearer": {
+        applied: "Already in your spells.",
         activation: "passive",
         summary:
           "You know the Light cantrip, so you can make an object glow like a torch whenever you need to see. Charisma powers it.",
@@ -52,10 +55,12 @@ export const SPECIES: CuratedSpecies[] = [
         uses: { count: "pb", per: "long" },
       },
       "damage-resistance": {
+        applied: "Already under your key numbers, as damage you take half of.",
         activation: "passive",
         summary: "You take only half damage of your dragon's damage type.",
       },
       darkvision: {
+        applied: "Already under your key numbers, as Darkvision.",
         activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
@@ -116,6 +121,7 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       darkvision: {
+        applied: "Already under your key numbers, as Darkvision.",
         activation: "passive",
         summary:
           "You can see in the dark up to 120 feet away as if it were dim light, though only in shades of gray.",
@@ -126,6 +132,7 @@ export const SPECIES: CuratedSpecies[] = [
           "You take only half Poison damage, and you roll with Advantage on saves against being Poisoned.",
       },
       "dwarven-toughness": {
+        applied: "Already in your Hit Points.",
         activation: "passive",
         summary:
           "You have 1 extra Hit Point for every level you have (already added to your total).",
@@ -145,6 +152,7 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       darkvision: {
+        applied: "Already under your key numbers, as Darkvision.",
         activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
@@ -159,6 +167,7 @@ export const SPECIES: CuratedSpecies[] = [
         summary: "You roll with Advantage on saves to avoid or end being Charmed.",
       },
       "keen-senses": {
+        applied: "Already in your skills.",
         activation: "passive",
         summary:
           "You are trained in one of Insight, Perception or Survival (already on your sheet).",
@@ -172,16 +181,19 @@ export const SPECIES: CuratedSpecies[] = [
     option: {
       choices: {
         drow: {
+          applied: "Already under your key numbers (Darkvision) and in your spells.",
           activation: "passive",
           summary:
             "Drow: you see in the dark up to 120 feet instead of 60, and you know the Dancing Lights cantrip.",
         },
         "high-elf": {
+          applied: "Already in your spells.",
           activation: "passive",
           summary:
             "High elf: you know the Prestidigitation cantrip, and after each Long Rest you can swap it for another Wizard cantrip.",
         },
         "wood-elf": {
+          applied: "Already in your speed and your spells.",
           activation: "passive",
           summary:
             "Wood elf: your speed is 35 feet instead of 30, and you know the Druidcraft cantrip.",
@@ -197,6 +209,7 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Small",
     traits: {
       darkvision: {
+        applied: "Already under your key numbers, as Darkvision.",
         activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
@@ -213,6 +226,7 @@ export const SPECIES: CuratedSpecies[] = [
     option: {
       choices: {
         "forest-gnome": {
+          applied: "Already in your spells; Speak with Animals' card counts the free casts.",
           activation: "passive",
           summary:
             "Forest gnome: you know the Minor Illusion cantrip, and you can cast Speak with Animals without a spell slot.",
@@ -326,10 +340,12 @@ export const SPECIES: CuratedSpecies[] = [
           "You gain Heroic Inspiration whenever you finish a Long Rest: spend it to reroll any one die you just rolled.",
       },
       skillful: {
+        applied: "Already in your skills.",
         activation: "passive",
         summary: "You are trained in one extra skill (already on your sheet).",
       },
       versatile: {
+        applied: "The extra feat shows on its own.",
         activation: "passive",
         summary: "You get an extra origin feat (shown with your feats).",
       },
@@ -349,6 +365,7 @@ export const SPECIES: CuratedSpecies[] = [
         uses: { count: "pb", per: "short" },
       },
       darkvision: {
+        applied: "Already under your key numbers, as Darkvision.",
         activation: "passive",
         summary:
           "You can see in the dark up to 120 feet away as if it were dim light, though only in shades of gray.",
@@ -368,6 +385,7 @@ export const SPECIES: CuratedSpecies[] = [
     size: "Medium",
     traits: {
       darkvision: {
+        applied: "Already under your key numbers, as Darkvision.",
         activation: "passive",
         summary:
           "You can see in the dark up to 60 feet away as if it were dim light, though only in shades of gray.",
@@ -378,6 +396,7 @@ export const SPECIES: CuratedSpecies[] = [
           "Your fiendish legacy gives you resistance to one damage type and an attack cantrip.",
       },
       "otherworldly-presence": {
+        applied: "Already in your spells.",
         activation: "passive",
         summary:
           "You know the Thaumaturgy cantrip: small spooky wonders like a booming voice, flickering flames or tremors underfoot.",
@@ -386,16 +405,19 @@ export const SPECIES: CuratedSpecies[] = [
     option: {
       choices: {
         abyssal: {
+          applied: "Already under your key numbers (half damage) and in your spells.",
           activation: "passive",
           summary:
             "Abyssal: you take only half Poison damage, and you know the Poison Spray cantrip.",
         },
         chthonic: {
+          applied: "Already under your key numbers (half damage) and in your spells.",
           activation: "passive",
           summary:
             "Chthonic: you take only half Necrotic damage, and you know the Chill Touch cantrip.",
         },
         infernal: {
+          applied: "Already under your key numbers (half damage) and in your spells.",
           activation: "passive",
           summary: "Infernal: you take only half Fire damage, and you know the Fire Bolt cantrip.",
         },

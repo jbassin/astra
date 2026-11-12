@@ -1,13 +1,13 @@
 // The top of the sheet: the four numbers a player checks most, as medallions, then "On your
 // turn", which sorts every attack, feature and spell by when it's used into three columns.
+// An attack shows what to roll; everything else shows its name and how often, and its card
+// says what it does.
 
 import type { AttackLine, Character } from "@/domain/engine";
 import { attackRoll, signed, type TurnItem, turnPlan } from "@/domain/sheet";
 import type { IconName } from "@/generated/icons";
 import { damageIcon, SLOT_ICON } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
-
-import { Fold } from "./Fold";
 
 function Medallion({
   icon,
@@ -120,7 +120,6 @@ function Items({ items }: { items: TurnItem[] }) {
         <strong>{i.name}</strong>
         {i.uses && <span className="uses">{i.uses}</span>}
       </p>
-      <p className="turn-detail">{i.detail}</p>
     </li>
   ));
 }
@@ -206,11 +205,9 @@ export function OnYourTurn({ c, id }: { c: Character; id?: string }) {
               <Icon name={SLOT_ICON.always} className="turn-icon" />
               Always on, or when it says
             </h4>
-            <Fold show={`Show all ${plan.always.length}`} hide="Hide them">
-              <ul>
-                <Items items={plan.always} />
-              </ul>
-            </Fold>
+            <ul>
+              <Items items={plan.always} />
+            </ul>
           </div>
         )}
       </div>

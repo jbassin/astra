@@ -128,7 +128,6 @@
   .vital,
   .turn-box,
   .spell-block,
-  .spell,
   .ability,
   .turn-item {
     break-inside: avoid;
@@ -169,10 +168,7 @@
     border: 1px solid #000000;
   }
   html .detail-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  html .spell-list {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   html .expert {
     background: none;

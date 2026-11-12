@@ -88,6 +88,11 @@ function overlap(a: SpellList, b: SpellList, cap: number): number {
   return Math.min(cap, a.filter((x) => b.includes(x)).length);
 }
 
+/** A curated entry's `applied` reason, to spread into its content entry. */
+function applied(c: { applied?: string } | undefined): { applied?: string } {
+  return c?.applied ? { applied: c.applied } : {};
+}
+
 /** Reads the imported JSON from content/5etools/. */
 export function loadImported(dir = IMPORT_DIR): ImportedData {
   const out: Partial<Record<keyof ImportedData, unknown>> = {};
@@ -263,6 +268,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       summary: o.summary,
       rulesText,
       activation: activation(o.activation, ctx),
+      ...applied(o),
     };
     const u = uses(o.uses, undefined, ctx);
     if (u) out.uses = u;
@@ -586,6 +592,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
           rulesText: t.text,
           activation: activation(c.activation, `${ctx} ${t.id}`),
           ...(u && { uses: u }),
+          ...applied(c),
         },
       ];
     });
@@ -611,6 +618,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
           summary: c?.summary ?? "",
           rulesText: o.text,
           activation: c ? activation(c.activation, `${ctx} ${o.id}`) : ("passive" as const),
+          ...applied(c),
           replacesTrait: o.replacesTrait,
           ...(o.speed !== undefined && { speed: o.speed }),
           ...(o.darkvision !== undefined && { darkvision: o.darkvision }),
@@ -673,6 +681,7 @@ export function joinContent(data: ImportedData, curation: Curation = CURATION): 
       summary: cur.summary,
       rulesText: imp.text,
       activation: activation(cur.activation, ctx),
+      ...applied(cur),
       category: imp.category,
       repeatable: imp.repeatable,
       ...(u && { uses: u }),

@@ -1,5 +1,6 @@
 // Turns a built `Character` into the plain words the sheet prints: when on a turn each thing
-// is used, what to roll for an attack or a spell, and one card per feature and spell. Pure, so
+// is used, what to roll for an attack or a spell, and one card per feature and spell. Each
+// thing is described once, on its card; "On your turn" names it and says how often. Pure, so
 // the player page, the DM page and the tests share it.
 
 import type { Ability, Activation } from "./contentTypes";
@@ -38,21 +39,6 @@ export function signed(n: number): string {
 /** "d20 + 5", "d20 − 1". */
 function d20(bonus: number): string {
   return bonus >= 0 ? `d20 + ${bonus}` : `d20 − ${Math.abs(bonus)}`;
-}
-
-/** The first sentence of a summary, for the short "On your turn" lines. */
-export function firstSentence(text: string): string {
-  const m = /^.+?[.!?](?=\s|$)/.exec(text);
-  return m ? m[0] : text;
-}
-
-/**
- * A spell's first real sentence. Spell summaries open with their casting time ("Action.",
- * "Bonus action."), which the sheet already shows, so a bare one is skipped; a reaction's
- * opening sentence names its trigger and stays.
- */
-export function spellGist(summary: string): string {
-  return firstSentence(summary.replace(/^(?:Action|Bonus action)\.\s+/, ""));
 }
 
 /** "Roll a d20 + 5 to hit. On a hit, roll 2d6 + 3 Slashing damage." */
@@ -124,16 +110,16 @@ function attackSentences(at: NonNullable<SpellEntry["attack"]>): {
 }
 
 /** How often a spell can be cast, in plain words. */
-export function spellUses(s: SpellEntry): string {
+function spellUses(s: SpellEntry): string {
   if (s.level === 0) return "As often as you like";
   if (s.freeCasts) return `${s.freeCasts} without a slot, or spend a spell slot`;
   return "Spend a spell slot";
 }
 
+/** An "On your turn" entry: a name and how often. What it does is on its card. */
 export interface TurnItem {
   id: string;
   name: string;
-  detail: string;
   uses?: string;
 }
 
@@ -161,7 +147,7 @@ function allSpells(c: Character): SpellEntry[] {
 }
 
 function featureItem(f: FeatureLine): TurnItem {
-  return { id: f.id, name: f.name, detail: firstSentence(f.summary), uses: f.uses };
+  return { id: f.id, name: f.name, ...(f.uses && { uses: f.uses }) };
 }
 
 /** The "On your turn" layout: features and spells grouped by when they're used. */
@@ -178,12 +164,7 @@ export function turnPlan(c: Character): TurnPlan {
       // Cantrips that attack already appear as attacks.
       if (!isAttackCantrip(s)) plan.actionSpells.push(s.name);
     } else if (slot === "bonus" || slot === "reaction") {
-      plan[slot].push({
-        id: `spell-${s.id}`,
-        name: s.name,
-        detail: spellGist(s.summary),
-        uses: spellUses(s),
-      });
+      plan[slot].push({ id: `spell-${s.id}`, name: s.name, uses: spellUses(s) });
     }
   }
   return plan;
@@ -210,7 +191,11 @@ function spellMeta(s: SpellEntry): string {
   return parts.join(" · ");
 }
 
-/** One cut-out card per feature and per spell, in sheet order. */
+/**
+ * One cut-out card per feature and per spell, in sheet order: the one place the sheet says
+ * what each does. A feature's text is its summary; a spell's is its one-line gist, since the
+ * card's roll, chips and small print carry the rest.
+ */
 export function sheetCards(c: Character): SheetCard[] {
   const features: SheetCard[] = c.features.map((f) => ({
     id: f.id,
@@ -228,7 +213,7 @@ export function sheetCards(c: Character): SheetCard[] {
       when: ACTIVATION_LABEL[s.activation],
       roll: spellRoll(s),
       uses: spellUses(s),
-      text: s.note ? `${s.summary} (${s.note})` : s.summary,
+      text: s.note ? `${s.gist} (${s.note})` : s.gist,
       meta: spellMeta(s),
     };
   });

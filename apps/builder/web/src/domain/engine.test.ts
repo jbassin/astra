@@ -535,7 +535,10 @@ describe("buildCharacter: the species sub-choice", () => {
     const wizard = buildCharacter({ classId: "wizard", speciesId: "elf" });
     expect(wizard.species?.name).toBe("High Elf");
     expect(wizard.speed.walk).toBe(30);
-    expect(wizard.features.map((f) => f.name)).toContain("Elven Lineage (High Elf)");
+    // The lineage has no feature line (`applied`): its cantrip is in the species' spells.
+    expect(wizard.spellcasting.find((b) => b.source === "species")?.cantrips[0]?.id).toBe(
+      "prestidigitation",
+    );
     // The same answers with another class: a Ranger's Elf is a Wood Elf, faster on foot.
     const ranger = buildCharacter({ classId: "ranger", speciesId: "elf" });
     expect(ranger.species?.name).toBe("Wood Elf");
@@ -576,6 +579,114 @@ describe("buildCharacter: the species sub-choice", () => {
         expect(option !== undefined, `${classId} ${species.id}`).toBe(species.option !== undefined);
       }
     }
+  });
+});
+
+// The sheet makes a card for each feature line. Something whose whole effect is a number or a
+// line the sheet already shows (`hidden` or `applied` in the curation) gets no line, but the
+// number keeps it.
+describe("buildCharacter: what a number already shows gets no feature line", () => {
+  it("Barbarian (Human, Soldier): Tough, Unarmored Defense, Weapon Mastery, Skillful", () => {
+    const c = buildCharacter({
+      archetype: "warrior",
+      classId: "barbarian",
+      speciesId: "human",
+      backgroundId: "soldier",
+      ...DONE,
+    });
+    // Priority str con dex wis cha int → 15 14 13 12 10 8; Soldier (Str Dex Con): Str +2, Con +1.
+    expect(scores(c)).toEqual({ str: 17, dex: 13, con: 15, int: 8, wis: 12, cha: 10 });
+    // Soldier gives Savage Attacker, so Human Versatile takes Tough.
+    // d12: (12 + 2) + (7 + 2) + Tough 4 = 27.
+    expect(c.hitPoints.max).toBe(27);
+    expect(c.armorClass.value).toBe(13); // Unarmored Defense: 10 + Dex 1 + Con 2
+    // Soldier: Athletics, Intimidation; Barbarian: Perception, Survival; Skillful: Animal Handling.
+    expect(proficientSkills(c)).toEqual({
+      "animal-handling": 3,
+      athletics: 5,
+      intimidation: 2,
+      perception: 3,
+      survival: 3,
+    });
+    expect(attack(c, "Greataxe").mastery?.name).toBe("Cleave");
+    expect(attack(c, "Handaxe").mastery?.name).toBe("Vex");
+    expect(c.features.map((f) => f.name)).toEqual([
+      "Rage",
+      "Danger Sense",
+      "Reckless Attack",
+      "Resourceful",
+      "Savage Attacker",
+    ]);
+  });
+
+  it("Monk (Orc, Wayfarer): Unarmored Defense, Unarmored Movement, Darkvision", () => {
+    const c = buildCharacter({
+      archetype: "warrior",
+      classId: "monk",
+      speciesId: "orc",
+      backgroundId: "wayfarer",
+      ...DONE,
+    });
+    // Priority dex wis con str int cha → 15 14 13 12 10 8; Wayfarer (Dex Wis Cha): Dex +2, Wis +1.
+    expect(scores(c)).toEqual({ str: 12, dex: 17, con: 13, int: 10, wis: 15, cha: 8 });
+    expect(c.hitPoints.max).toBe(15); // d8: (8 + 1) + (5 + 1)
+    expect(c.armorClass.value).toBe(15); // Unarmored Defense: 10 + Dex 3 + Wis 2
+    expect(c.speed.walk).toBe(40); // Orc 30 + Unarmored Movement 10
+    expect(c.darkvision).toBe(120);
+    expect(c.features.map((f) => f.name)).toEqual([
+      "Martial Arts",
+      "Flurry of Blows",
+      "Monk's Focus",
+      "Patient Defense",
+      "Step of the Wind",
+      "Uncanny Metabolism",
+      "Adrenaline Rush",
+      "Relentless Endurance",
+      "Lucky",
+    ]);
+  });
+});
+
+describe("buildCharacter: an option or a feat that is only a number gets no feature line", () => {
+  it("Warlock (Human, Charlatan): Agonizing Blast, Skilled, Pact Magic, the invocations heading", () => {
+    const c = buildCharacter({
+      archetype: "mage",
+      classId: "warlock",
+      speciesId: "human",
+      backgroundId: "charlatan",
+      options: { invocations: ["agonizing-blast", "repelling-blast", "eldritch-mind"] },
+      ...DONE,
+    });
+    // Priority cha con dex wis int str → 15 14 13 12 10 8; Charlatan (Dex Con Cha): Cha +2, Con +1.
+    expect(scores(c)).toEqual({ str: 8, dex: 13, con: 15, int: 10, wis: 12, cha: 17 });
+    // Charlatan gives Skilled, so Human Versatile takes Alert: Dex 1 + 2 = +3.
+    expect(c.initiative).toBe(3);
+    // Charlatan: Deception, Sleight of Hand; Warlock: Intimidation, Arcana; Skillful:
+    // Investigation; Skilled: History, Nature, Religion.
+    expect(proficientSkills(c)).toEqual({
+      arcana: 2,
+      deception: 5,
+      history: 2,
+      intimidation: 5,
+      investigation: 2,
+      nature: 2,
+      religion: 2,
+      "sleight-of-hand": 3,
+    });
+    // Eldritch Blast: Cha 3 + 2 = +5; Agonizing Blast adds Cha 3 to the 1d10.
+    expect(attack(c, "Eldritch Blast")).toMatchObject({
+      toHit: 5,
+      damage: "1d10 + 3",
+      notes: ["Includes +3 from Agonizing Blast."],
+    });
+    expect(c.spellcasting[0]).toMatchObject({ saveDc: 13, slots: [2], pactSlotLevel: 1 });
+    expect(c.features.map((f) => f.name)).toEqual([
+      "Magical Cunning",
+      "Repelling Blast",
+      "Eldritch Mind",
+      "Resourceful",
+      "Alert",
+    ]);
   });
 });
 
