@@ -107,14 +107,22 @@ export interface Summarized {
   rulesText: string[];
 }
 
-/** The longest a pick card's gist may be; the build fails on a longer one. */
+/** The longest a gist may be; the build fails on a longer one. */
 export const GIST_MAX = 90;
 
-/** Something a player picks from a list of cards. */
+/** Something with a one-line gist: a class option a player picks from a list of cards, or a
+ * spell. */
 interface Gisted {
-  /** One short, plain line for the pick card (at most GIST_MAX characters); the sheet shows
-   * the full summary. */
+  /** One short, plain line (at most GIST_MAX characters). A class option's pick card shows
+   * it; a spell's card on the sheet shows it as its text. */
   gist: string;
+}
+
+/** Something the content keeps that the sheet may leave out. */
+interface Applied {
+  /** Why the sheet makes no card and no "On your turn" entry for it: its whole effect already
+   * shows in a number or a line ("Already in your Hit Points."). */
+  applied?: string;
 }
 
 export interface FeatureContent extends Summarized, Activated {
@@ -132,7 +140,7 @@ export type OptionKind =
   | "invocation"
   | "metamagic";
 
-export interface OptionContent extends Summarized, Activated, Gisted {
+export interface OptionContent extends Summarized, Activated, Gisted, Applied {
   kind: OptionKind;
   uses?: Uses;
   /** Metamagic cost in Sorcery Points. */
@@ -243,7 +251,7 @@ export interface ArchetypeContent {
   classes: ClassId[];
 }
 
-export interface SpeciesOptionContent extends Summarized, Activated {
+export interface SpeciesOptionContent extends Summarized, Activated, Applied {
   /** The species trait this option replaces on the sheet. */
   replacesTrait: string;
   speed?: number;
@@ -253,7 +261,7 @@ export interface SpeciesOptionContent extends Summarized, Activated {
   innateSpells: Array<{ id: string; uses: Uses }>;
 }
 
-export interface SpeciesTraitContent extends Summarized, Activated {
+export interface SpeciesTraitContent extends Summarized, Activated, Applied {
   uses?: Uses;
 }
 
@@ -305,7 +313,7 @@ export interface BackgroundContent {
   initiate?: MagicInitiateContent;
 }
 
-export interface FeatContent extends Summarized, Activated {
+export interface FeatContent extends Summarized, Activated, Applied {
   category: string;
   repeatable: boolean;
   uses?: Uses;

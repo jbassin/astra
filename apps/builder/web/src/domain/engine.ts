@@ -97,7 +97,8 @@ export interface SpellEntry {
   id: string;
   name: string;
   level: number;
-  summary: string;
+  /** The one line its card shows. */
+  gist: string;
   time: string;
   range: string;
   duration: string;
@@ -179,6 +180,9 @@ export interface Character {
   skills: SkillLine[];
   attacks: AttackLine[];
   spellcasting: SpellcastingBlock[];
+  /** What gets a card: every feature, trait, option and feat, except the ones whose whole
+   * effect already shows in the numbers and lines above (the curation marks those `hidden`
+   * or `applied`). */
   features: FeatureLine[];
   equipment: Array<{ name: string; quantity: number }>;
   gold: number;
@@ -259,7 +263,7 @@ export function spellEntry(
     id: s.id,
     name: s.name,
     level: s.level,
-    summary: s.summary,
+    gist: s.gist,
     time: s.time,
     range: s.range,
     duration: s.duration,
@@ -600,15 +604,15 @@ export function buildCharacter(answers: Answers): Character {
     if (value < 0) value = 0;
     acOptions.push({ value, breakdown: parts.join(" "), armor: a, shield: hasShield });
   }
-  const barbarianUd = cls?.features.some((f) => f.id === "barbarian-unarmored-defense");
-  const monkUd = cls?.features.some((f) => f.id === "monk-unarmored-defense");
-  if (barbarianUd) {
+  // Unarmored Defense is a level 1 feature of the Barbarian and the Monk. The curation hides
+  // it (it shows here, in the Armor Class), so the class decides, not the feature list.
+  if (cls?.id === "barbarian") {
     acOptions.push({
       value: 10 + mods.dex + mods.con + shieldAc,
       breakdown: `10 ${signed(mods.dex)} Dex ${signed(mods.con)} Con (Unarmored Defense)${hasShield ? ` +${shieldAc} Shield` : ""}`,
       shield: hasShield,
     });
-  } else if (monkUd) {
+  } else if (cls?.id === "monk") {
     acOptions.push({
       value: 10 + mods.dex + mods.wis,
       breakdown: `10 ${signed(mods.dex)} Dex ${signed(mods.wis)} Wis (Unarmored Defense)`,
@@ -901,7 +905,9 @@ export function buildCharacter(answers: Answers): Character {
     }
   }
 
-  // Features.
+  // Features: each gets a card and, by its activation, an "On your turn" entry. Anything
+  // `applied` already shows in a number or a line derived above, so it gets no line here (a
+  // class feature like that is `hidden` in the curation and never reaches the content).
   const features: FeatureLine[] = [];
   for (const f of cls?.features ?? []) {
     features.push({
@@ -914,6 +920,7 @@ export function buildCharacter(answers: Answers): Character {
     });
   }
   for (const o of options) {
+    if (o.applied) continue;
     features.push({
       id: o.id,
       name: o.name,
@@ -925,6 +932,7 @@ export function buildCharacter(answers: Answers): Character {
   }
   for (const t of species?.traits ?? []) {
     if (speciesOption && t.name === speciesOption.replacesTrait) {
+      if (speciesOption.applied) continue;
       features.push({
         id: `${t.id}-${speciesOption.id}`,
         name: `${t.name} (${speciesOption.name})`,
@@ -932,7 +940,7 @@ export function buildCharacter(answers: Answers): Character {
         summary: speciesOption.summary,
         activation: speciesOption.activation,
       });
-    } else {
+    } else if (!t.applied) {
       features.push({
         id: t.id,
         name: t.name,
@@ -945,7 +953,7 @@ export function buildCharacter(answers: Answers): Character {
   }
   for (const id of feats) {
     const f = CONTENT.feats[id];
-    if (f)
+    if (f && !f.applied)
       features.push({
         id: f.id,
         name: f.name,

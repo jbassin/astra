@@ -4,16 +4,7 @@ import type { Answers } from "./character";
 import { CONTENT } from "./content";
 import type { Activation } from "./contentTypes";
 import { buildCharacter, type Character, spellEntry } from "./engine";
-import {
-  attackRoll,
-  firstSentence,
-  goodAt,
-  sheetCards,
-  slotLine,
-  spellRoll,
-  spellGist,
-  turnPlan,
-} from "./sheet";
+import { attackRoll, goodAt, sheetCards, slotLine, spellRoll, turnPlan } from "./sheet";
 
 const DONE = { name: "Test", look: "Plain.", personality: "Calm." };
 
@@ -60,14 +51,12 @@ describe("plain-language rolls", () => {
     );
   });
 
-  it("shortens summaries and slot lines", () => {
-    expect(firstSentence("Action. Three darts fly. They hit.")).toBe("Action.");
-    expect(spellGist("Bonus action. Curse a creature. It hurts.")).toBe("Curse a creature.");
-    expect(spellGist("Reaction, when you take damage. Flames.")).toBe(
-      "Reaction, when you take damage.",
-    );
+  it("writes the slot line", () => {
     expect(slotLine([2], 1)).toBe(
       "2 level 1 spell slots; they all come back after a Short or Long Rest.",
+    );
+    expect(slotLine([3], undefined)).toBe(
+      "3 level 1 spell slots; they all come back after a Long Rest.",
     );
   });
 });
@@ -169,6 +158,161 @@ describe("spell rolls", () => {
       }
     }
     expect(problems).toEqual([]);
+  });
+});
+
+const BARBARIAN: Answers = {
+  archetype: "warrior",
+  classId: "barbarian",
+  speciesId: "human",
+  backgroundId: "soldier",
+  ...DONE,
+};
+
+const CLERIC: Answers = {
+  archetype: "healer",
+  classId: "cleric",
+  speciesId: "human",
+  backgroundId: "acolyte",
+  options: { divineOrder: ["protector"] },
+  ...DONE,
+};
+
+/** Every name the sheet gives a card or an "On your turn" entry. */
+function described(c: Character): string[] {
+  return [...sheetCards(c).map((x) => x.name), ...onTurn(c)];
+}
+
+describe("each thing is described once, on its card", () => {
+  it("gives an 'On your turn' entry a name and its uses, never a sentence", () => {
+    const fighter = turnPlan(buildCharacter(FIGHTER));
+    expect(fighter.bonus).toContainEqual({
+      id: "fighter-second-wind",
+      name: "Second Wind",
+      uses: "2 per Long Rest; regain one use when you finish a Short Rest.",
+    });
+    expect(fighter.always).toContainEqual({ id: "fighter-tactical-mind", name: "Tactical Mind" });
+    // A spell cast as a bonus action or a reaction: its name and what it costs.
+    expect(turnPlan(buildCharacter(WARLOCK)).reaction).toEqual([
+      { id: "spell-hellish-rebuke", name: "Hellish Rebuke", uses: "Spend a spell slot" },
+    ]);
+    for (const answers of [FIGHTER, WIZARD, WARLOCK, BARBARIAN, CLERIC]) {
+      const plan = turnPlan(buildCharacter(answers));
+      for (const item of [...plan.action, ...plan.bonus, ...plan.reaction, ...plan.always]) {
+        const extra = Object.keys(item).filter((k) => !["id", "name", "uses"].includes(k));
+        expect(extra, item.name).toEqual([]);
+      }
+    }
+  });
+
+  it("writes a spell's card from its gist, then the note on how the character has it", () => {
+    // This Wizard has only ordinary picks, so no card carries a note.
+    const spells = sheetCards(buildCharacter(WIZARD)).filter((x) => x.kind !== "Feature");
+    expect(spells.find((x) => x.name === "Magic Missile")?.text).toBe(
+      "Three glowing darts that always hit.",
+    );
+    for (const card of spells) {
+      const spell = CONTENT.spells[card.id.slice("spell-".length)];
+      expect(card.text, card.name).toBe(spell?.gist);
+      expect(card.text, card.name).not.toBe(spell?.summary);
+    }
+    const mageArmor = sheetCards(buildCharacter(WARLOCK)).find((x) => x.name === "Mage Armor");
+    expect(mageArmor?.text).toBe(
+      `${CONTENT.spells["mage-armor"]?.gist} (Armor of Shadows: cast it on yourself without a spell slot.)`,
+    );
+  });
+});
+
+describe("what a number or a line already shows", () => {
+  it("gets no card and no turn entry: Tough, Unarmored Defense, Weapon Mastery", () => {
+    const barbarian = buildCharacter(BARBARIAN);
+    // d12: (12 + 2) + (7 + 2) + Tough 4 = 27; no armor: 10 + Dex 1 + Con 2 = 13.
+    expect(barbarian.hitPoints.max).toBe(27);
+    expect(barbarian.hitPoints.breakdown).toMatch(/\+4 Tough/);
+    expect(barbarian.armorClass.value).toBe(13);
+    expect(barbarian.armorClass.breakdown).toMatch(/Unarmored Defense/);
+    expect(barbarian.attacks.find((a) => a.name === "Greataxe")?.mastery?.name).toBe("Cleave");
+    // Soldier's two skills, the Barbarian's two, and Skillful's one.
+    expect(goodAt(barbarian)).toHaveLength(5);
+    const shown = described(barbarian);
+    for (const name of ["Tough", "Unarmored Defense", "Weapon Mastery", "Skillful", "Versatile"])
+      expect(shown, name).not.toContain(name);
+    // What the player decides or has to remember at the table keeps its card.
+    expect(sheetCards(barbarian).map((x) => x.name)).toEqual([
+      "Rage",
+      "Danger Sense",
+      "Reckless Attack",
+      "Resourceful",
+      "Savage Attacker",
+    ]);
+  });
+
+  it("leaves a caster's Spellcasting, order and Magic Initiate to the spells section", () => {
+    const cleric = buildCharacter(CLERIC);
+    const shown = described(cleric);
+    for (const name of ["Spellcasting", "Protector", "Magic Initiate", "Tough"])
+      expect(shown, name).not.toContain(name);
+    // Wis 17 (+3): save DC 8 + 3 + 2 = 13, spell attack 3 + 2 = +5.
+    expect(cleric.spellcasting[0]).toMatchObject({ saveDc: 13, attackBonus: 5, slots: [3] });
+    expect(cleric.proficiencies.armor).toContain("Heavy armor (Protector)");
+    const initiate = cleric.spellcasting.find((b) => b.source === "feat");
+    expect(initiate?.spells[0]).toMatchObject({ id: "sanctuary", freeCasts: "1 per Long Rest" });
+    expect(sheetCards(cleric).find((x) => x.name === "Sanctuary")?.uses).toBe(
+      "1 per Long Rest without a slot, or spend a spell slot",
+    );
+  });
+
+  it("leaves a fighting style and species traits that are only numbers off the cards", () => {
+    const fighter = buildCharacter({ ...FIGHTER, options: { fightingStyle: ["defense"] } });
+    // Chain Mail 16 + Defense 1; d10: (10 + 2) + (6 + 2) + Dwarven Toughness 2 = 22.
+    expect(fighter.armorClass.value).toBe(17);
+    expect(fighter.hitPoints.max).toBe(22);
+    expect(fighter.darkvision).toBe(120);
+    const shown = described(fighter);
+    for (const name of ["Defense", "Darkvision", "Dwarven Toughness", "Weapon Mastery"])
+      expect(shown, name).not.toContain(name);
+    // Dwarven Resilience also gives Advantage on a save, which no number shows.
+    expect(shown).toContain("Dwarven Resilience");
+  });
+});
+
+describe("the checks behind leaving a card out", () => {
+  it("shows every mastered weapon's mastery on an attack, so Weapon Mastery needs no card", () => {
+    for (const cls of Object.values(CONTENT.classes)) {
+      if (cls.masteries.count === 0) continue;
+      const c = buildCharacter({
+        archetype: cls.archetype,
+        classId: cls.id,
+        speciesId: "human",
+        backgroundId: cls.backgrounds[0],
+        options: Object.fromEntries(
+          cls.optionGroups.map((g) => [g.key, g.choices.slice(0, g.count)]),
+        ),
+        ...DONE,
+      });
+      expect(c.missing, cls.id).toEqual([]);
+      expect(c.masteries, cls.id).toHaveLength(cls.masteries.count);
+      for (const weapon of c.masteries) {
+        const attack = c.attacks.find((a) => a.name.startsWith(weapon));
+        expect(attack?.mastery, `${cls.id} ${weapon}`).toBeDefined();
+      }
+    }
+  });
+
+  it("flags as applied only passive things with no uses to count", () => {
+    const species = Object.values(CONTENT.species);
+    const applied = [
+      ...Object.values(CONTENT.options),
+      ...Object.values(CONTENT.feats),
+      ...species.flatMap((s) => s.traits),
+      ...species.flatMap((s) => s.option?.choices ?? []),
+    ].filter((x) => x.applied !== undefined);
+    expect(applied.length).toBeGreaterThan(0);
+    for (const x of applied) {
+      expect(x.applied?.trim(), x.id).not.toBe("");
+      expect(x.activation, x.id).toBe("passive");
+      expect("uses" in x ? x.uses : undefined, x.id).toBeUndefined();
+    }
   });
 });
 

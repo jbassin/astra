@@ -1,6 +1,5 @@
-// The rest of the sheet: the six abilities as medallions, what you're good at, features with
-// their uses, and gear, gold and languages. No ability-score math (Josh's call): just the
-// results.
+// The rest of the sheet: the six abilities as medallions, what you're good at, and gear, gold
+// and languages. No ability-score math (Josh's call): just the results.
 
 import type { Character } from "@/domain/engine";
 import { ABILITIES } from "@/domain/imported";
@@ -61,23 +60,6 @@ function GoodAt({ c }: { c: Character }) {
   );
 }
 
-function Features({ c }: { c: Character }) {
-  return (
-    <div className="detail-box">
-      <h4 className="section-title">Features</h4>
-      <ul className="feature-list">
-        {c.features.map((f) => (
-          <li key={f.id}>
-            <span>{f.name}</span>
-            {f.uses && <span className="uses">{f.uses}</span>}
-          </li>
-        ))}
-      </ul>
-      <p className="sheet-note">Each one has a card below with what it does.</p>
-    </div>
-  );
-}
-
 function Gear({ c, id }: { c: Character; id?: string }) {
   const prof = c.proficiencies;
   const trained = [...prof.armor, ...prof.weapons, ...prof.tools];
@@ -110,7 +92,6 @@ export function Details({ c, ids }: { c: Character; ids?: { abilities: string; g
       </section>
       <section className="sheet-section detail-grid">
         <GoodAt c={c} />
-        <Features c={c} />
         <Gear c={c} id={ids?.gear} />
       </section>
     </>

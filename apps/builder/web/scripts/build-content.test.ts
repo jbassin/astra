@@ -62,6 +62,23 @@ describe("joinContent", () => {
     }
   });
 
+  it("leaves a hidden feature out and carries an applied reason through", () => {
+    const { classes, feats, options, species } = joinContent(data);
+    const barbarian = classes.barbarian.features.map((f) => f.id);
+    expect(barbarian).not.toContain("barbarian-unarmored-defense");
+    expect(barbarian).toContain("barbarian-reckless-attack");
+    // An applied item stays in the content, with its summary, for the choice screens.
+    expect(feats.tough).toMatchObject({ applied: "Already in your Hit Points." });
+    expect(feats.tough?.summary).not.toBe("");
+    expect(feats.alert?.applied).toBeUndefined();
+    expect(options.defense?.applied).toBe("Already in your Armor Class.");
+    expect(options.protection?.applied).toBeUndefined();
+    const { traits, option } = species.elf;
+    expect(traits.find((t) => t.id === "darkvision")?.applied).toBeTruthy();
+    expect(traits.find((t) => t.id === "trance")?.applied).toBeUndefined();
+    expect(option?.choices.find((c) => c.id === "wood-elf")?.applied).toBeTruthy();
+  });
+
   it("fails on a feature with no summary", () => {
     expect(withCuration((c) => delete cls(c, "fighter").features["fighter-second-wind"])).toThrow(
       /feature "fighter-second-wind" has no summary/,

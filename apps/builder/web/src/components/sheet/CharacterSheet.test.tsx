@@ -2,6 +2,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import type { Answers } from "@/domain/character";
+import { CONTENT } from "@/domain/content";
 import { buildCharacter } from "@/domain/engine";
 
 import { CharacterSheet } from "./CharacterSheet";
@@ -58,7 +59,7 @@ describe("CharacterSheet", () => {
     );
   });
 
-  it("lists a Cleric's spells with their rolls and save DC, and a card for each", () => {
+  it("lists a Cleric's spells by name with the save DC, and a card for each", () => {
     const c = buildCharacter(CLERIC);
     expect(c.missing).toEqual([]);
     render(<CharacterSheet character={c} />);
@@ -81,5 +82,52 @@ describe("CharacterSheet", () => {
     expect(screen.getByText("Pick a species.")).toBeTruthy();
     expect(screen.queryByText("On your turn")).toBeNull();
     expect(screen.queryByText("Hit Points")).toBeNull();
+  });
+});
+
+describe("CharacterSheet: each thing is described once, on its card", () => {
+  it("names a feature on the turn and says what it does on its card alone", () => {
+    render(<CharacterSheet character={buildCharacter(BARBARIAN)} />);
+    const rage = within(box("Your bonus action")).getByText("Rage").closest("li");
+    expect(rage?.textContent).toBe(
+      "Rage2 per Long Rest; regain one use when you finish a Short Rest.",
+    );
+    const always = box("Always on, or when it says");
+    expect(within(always).getByText("Reckless Attack").closest("li")?.textContent).toBe(
+      "Reckless Attack",
+    );
+    expect(within(always).queryByRole("button")).toBeNull(); // names only, so no fold
+    expect(screen.getAllByText(/fly into a Rage/)).toHaveLength(1);
+    expect(screen.getAllByText(/you can attack recklessly/)).toHaveLength(1);
+    // No list of features, and no card for what the numbers already show.
+    expect(screen.queryByRole("heading", { name: "Features" })).toBeNull();
+    for (const name of ["Unarmored Defense", "Weapon Mastery", "Darkvision"])
+      expect(screen.queryByRole("heading", { name }), name).toBeNull();
+    expect(screen.getByText("Darkvision 120 ft.")).toBeTruthy();
+  });
+
+  it("keeps the spells section to names, and puts each spell's gist on its card", () => {
+    render(<CharacterSheet character={buildCharacter(CLERIC)} />);
+    const block = box("Cleric spells");
+    expect(within(block).getByText(/^3 level 1 spell slots/)).toBeTruthy();
+    const names = [...block.querySelectorAll(".spell-names li")].map((li) => li.textContent);
+    expect(names).toEqual([
+      "Sacred Flame",
+      "Guidance",
+      "Toll the Dead",
+      "Bless",
+      "Healing Word",
+      "Guiding Bolt",
+      "Cure Wounds",
+      "Shield of Faith",
+    ]);
+    // No uses, rolls or sentences here: they are on the cards.
+    expect(block.textContent).not.toMatch(/Spend a spell slot|As often as you like|Roll a d20/);
+    const bless = screen.getByRole("heading", { name: "Bless", level: 5 }).closest("article");
+    expect(bless && within(bless).getByText(CONTENT.spells.bless?.gist ?? "")).toBeTruthy();
+    expect(bless && within(bless).getByText("Spend a spell slot")).toBeTruthy();
+    // Spellcasting and the Protector order show in the numbers and lines, not on cards.
+    for (const name of ["Spellcasting", "Protector", "Magic Initiate"])
+      expect(screen.queryByRole("heading", { name }), name).toBeNull();
   });
 });

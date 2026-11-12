@@ -9,6 +9,7 @@ import type { CuratedOption } from "../src/domain/curationTypes";
 export const OPTIONS: Record<string, CuratedOption> = {
   // ---- fighting styles ----
   defense: {
+    applied: "Already in your Armor Class.",
     kind: "fighting-style",
     from: { feat: "defense" },
     activation: "passive",
@@ -24,6 +25,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
       "When you hit with a melee weapon held in two hands (Two-Handed or Versatile), any 1 or 2 on a damage die counts as a 3.",
   },
   "thrown-weapon-fighting": {
+    applied: "Already in your thrown attacks' damage.",
     kind: "fighting-style",
     from: { feat: "thrown-weapon-fighting" },
     activation: "passive",
@@ -31,6 +33,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
     summary: "When you hit with a thrown weapon such as a javelin, add 2 to the damage.",
   },
   dueling: {
+    applied: "Already in your one-handed melee damage.",
     kind: "fighting-style",
     from: { feat: "dueling" },
     activation: "passive",
@@ -47,6 +50,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
       "When an enemy you can see attacks an ally within 5 feet of you, use your reaction and your shield to give that attack, and all others on that ally until your next turn, Disadvantage.",
   },
   archery: {
+    applied: "Already in your ranged attack rolls.",
     kind: "fighting-style",
     from: { feat: "archery" },
     activation: "passive",
@@ -62,6 +66,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
       "When you make the extra attack from fighting with a Light weapon in each hand, add your ability modifier to its damage.",
   },
   "blessed-warrior": {
+    applied: "Already in your spells.",
     kind: "fighting-style",
     from: { feat: "blessed-warrior" },
     activation: "passive",
@@ -76,6 +81,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
     },
   },
   "druidic-warrior": {
+    applied: "Already in your spells.",
     kind: "fighting-style",
     from: { feat: "druidic-warrior" },
     activation: "passive",
@@ -92,6 +98,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
 
   // ---- Divine Order (Cleric) ----
   protector: {
+    applied: "Already in your gear, under Trained with.",
     kind: "divine-order",
     from: { classFeature: "cleric-protector" },
     activation: "passive",
@@ -119,6 +126,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
     extraCantrips: 1,
   },
   warden: {
+    applied: "Already in your gear, under Trained with.",
     kind: "primal-order",
     from: { classFeature: "druid-warden" },
     activation: "passive",
@@ -128,6 +136,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
 
   // ---- Eldritch Invocations (Warlock) ----
   "agonizing-blast": {
+    applied: "Already in Eldritch Blast's damage.",
     kind: "invocation",
     from: { optionalFeature: "agonizing-blast" },
     activation: "passive",

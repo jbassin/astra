@@ -1,39 +1,32 @@
 // The spells part of the sheet: one block per source (class, fighting style, species, Magic
-// Initiate), each with its save DC, attack bonus, slots and what to roll for every spell.
+// Initiate), each with its save DC, attack bonus, slots and the names of its spells. What a
+// spell does, what to roll and how often are on its card.
 
 import { CONTENT } from "@/domain/content";
 import type { Character, SpellcastingBlock, SpellEntry } from "@/domain/engine";
-import { ABILITY_NAMES, signed, slotLine, spellGist, spellRoll, spellUses } from "@/domain/sheet";
+import { ABILITY_NAMES, signed, slotLine } from "@/domain/sheet";
 import type { IconName } from "@/generated/icons";
-import { ABILITY_ICON, damageIcon, schoolIcon } from "@/ui/heraldry";
+import { ABILITY_ICON, schoolIcon } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
-/** The damage type's icon, a heart for a heal, else the d20. */
-function rollIcon(s: SpellEntry): IconName {
-  if (s.attack?.damageType) return damageIcon(s.attack.damageType);
-  return s.healing ? "heart-plus" : "dice-twenty-faces-twenty";
-}
-
-function Spell({ s }: { s: SpellEntry }) {
-  const roll = spellRoll(s);
+/** One level's spells, by name; each carries its school's icon, as its card does. */
+function Names({ title, icon, spells }: { title: string; icon: IconName; spells: SpellEntry[] }) {
+  if (spells.length === 0) return null;
   return (
-    <li className="spell" data-level={s.level}>
-      <Icon name={schoolIcon(CONTENT.spells[s.id]?.school)} className="spell-icon" />
-      <div className="spell-main">
-        <p className="turn-name">
-          <strong>{s.name}</strong> <span className="uses">{spellUses(s)}</span>
-        </p>
-        {roll ? (
-          <p className="roll">
-            <Icon name={rollIcon(s)} className="roll-icon" />
-            <span>{roll}</span>
-          </p>
-        ) : (
-          <p className="turn-detail">{spellGist(s.summary)}</p>
-        )}
-        {s.note && <p className="turn-detail">{s.note}</p>}
-      </div>
-    </li>
+    <>
+      <h6 className="spell-level">
+        <Icon name={icon} />
+        {title}
+      </h6>
+      <ul className="spell-names">
+        {spells.map((s) => (
+          <li key={s.id}>
+            <Icon name={schoolIcon(CONTENT.spells[s.id]?.school)} />
+            {s.name}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 
@@ -68,32 +61,8 @@ function Block({ b }: { b: SpellcastingBlock }) {
           {slots}
         </p>
       )}
-      {b.cantrips.length > 0 && (
-        <>
-          <h6 className="spell-level">
-            <Icon name="magic-swirl" />
-            Cantrips
-          </h6>
-          <ul className="spell-list">
-            {b.cantrips.map((s) => (
-              <Spell key={s.id} s={s} />
-            ))}
-          </ul>
-        </>
-      )}
-      {b.spells.length > 0 && (
-        <>
-          <h6 className="spell-level">
-            <Icon name="spell-book" />
-            Level 1 spells
-          </h6>
-          <ul className="spell-list">
-            {b.spells.map((s) => (
-              <Spell key={s.id} s={s} />
-            ))}
-          </ul>
-        </>
-      )}
+      <Names title="Cantrips" icon="magic-swirl" spells={b.cantrips} />
+      <Names title="Level 1 spells" icon="spell-book" spells={b.spells} />
       {unprepared.length > 0 && (
         <p className="sheet-note">
           Also in your spellbook (swap them in after a Long Rest):{" "}

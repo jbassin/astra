@@ -34,10 +34,10 @@ export const FEATS: Record<string, CuratedFeat> = {
     uses: { count: "pb", per: "long", unit: "Luck Point" },
   },
   "magic-initiate": {
+    applied: "Already in your spells; the level 1 spell's card counts the free cast.",
     activation: "passive",
     summary:
       "You learn two cantrips and one level 1 spell from one class's spell list. You can cast the level 1 spell once for free, and again after each Long Rest; you can also cast it with spell slots if you have them.",
-    uses: { count: 1, per: "long" },
   },
   musician: {
     activation: "passive",
@@ -51,6 +51,7 @@ export const FEATS: Record<string, CuratedFeat> = {
       "Once per turn when you hit with a weapon, roll its damage dice twice and use the better result.",
   },
   skilled: {
+    applied: "Already in your skills.",
     activation: "passive",
     summary: "You are trained in three extra skills (already on your sheet).",
   },
@@ -60,6 +61,7 @@ export const FEATS: Record<string, CuratedFeat> = {
       "Your punches deal 1d4 plus your Strength modifier Bludgeoning damage, and you reroll 1s on that die. Once per turn when you punch someone during the Attack action, you can also shove them 5 feet away. You can fight well with improvised weapons like chairs and bottles.",
   },
   tough: {
+    applied: "Already in your Hit Points.",
     activation: "passive",
     summary:
       "Your Hit Point maximum goes up by 2 for every level you have (already added to your total).",
