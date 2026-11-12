@@ -26,7 +26,7 @@ export const SPECIES: CuratedSpecies[] = [
         activation: "action",
         summary:
           "As an action, touch a creature and roll 2d4 (one d4 per point of your Proficiency Bonus); it regains that many Hit Points. Use it when a friend is badly hurt.",
-        uses: { count: 1, per: "long" },
+        uses: { count: 1 },
       },
       "light-bearer": {
         applied: "Already in your spells.",
@@ -52,7 +52,7 @@ export const SPECIES: CuratedSpecies[] = [
         activation: "action",
         summary:
           "When you take the Attack action, swap one attack for a breath: a 15-foot cone or a 30-foot line 5 feet wide. Everyone in it makes a Dexterity save, taking 1d10 damage on a failure or half on a success.",
-        uses: { count: "pb", per: "long" },
+        uses: { count: "pb" },
       },
       "damage-resistance": {
         applied: "Already under your key numbers, as damage you take half of.",
@@ -141,7 +141,7 @@ export const SPECIES: CuratedSpecies[] = [
         activation: "bonus",
         summary:
           "As a bonus action while touching stone, you sense creatures moving on the ground within 60 feet for 10 minutes, even ones you can't see.",
-        uses: { count: "pb", per: "long" },
+        uses: { count: "pb" },
       },
     },
     languages: ["dwarvish"],
@@ -174,8 +174,7 @@ export const SPECIES: CuratedSpecies[] = [
       },
       trance: {
         activation: "passive",
-        summary:
-          "You don't need to sleep and magic can't put you to sleep. You finish a Long Rest in 4 hours of quiet meditation.",
+        summary: "You don't need to sleep and magic can't put you to sleep.",
       },
     },
     option: {
@@ -189,8 +188,7 @@ export const SPECIES: CuratedSpecies[] = [
         "high-elf": {
           applied: "Already in your spells.",
           activation: "passive",
-          summary:
-            "High elf: you know the Prestidigitation cantrip, and after each Long Rest you can swap it for another Wizard cantrip.",
+          summary: "High elf: you know the Prestidigitation cantrip.",
         },
         "wood-elf": {
           applied: "Already in your speed and your spells.",
@@ -230,7 +228,6 @@ export const SPECIES: CuratedSpecies[] = [
           activation: "passive",
           summary:
             "Forest gnome: you know the Minor Illusion cantrip, and you can cast Speak with Animals without a spell slot.",
-          uses: { count: "pb", per: "long" },
         },
         "rock-gnome": {
           activation: "passive",
@@ -266,37 +263,37 @@ export const SPECIES: CuratedSpecies[] = [
           activation: "bonus",
           summary:
             "Cloud's Jaunt: as a bonus action, teleport up to 30 feet to a spot you can see.",
-          uses: { count: "pb", per: "long" },
+          uses: { count: "pb" },
         },
         "fire-giant": {
           activation: "passive",
           summary:
             "Fire's Burn: when you hit with an attack roll and deal damage, add 1d10 Fire damage.",
-          uses: { count: "pb", per: "long" },
+          uses: { count: "pb" },
         },
         "frost-giant": {
           activation: "passive",
           summary:
             "Frost's Chill: when you hit with an attack roll and deal damage, add 1d6 Cold damage and cut the target's speed by 10 feet until the start of your next turn.",
-          uses: { count: "pb", per: "long" },
+          uses: { count: "pb" },
         },
         "hill-giant": {
           activation: "passive",
           summary:
             "Hill's Tumble: when you hit a Large or smaller creature with an attack roll and deal damage, you can knock it Prone.",
-          uses: { count: "pb", per: "long" },
+          uses: { count: "pb" },
         },
         "stone-giant": {
           activation: "reaction",
           summary:
             "Stone's Endurance: when you take damage, use your reaction to roll 1d12, add your Constitution modifier, and take that much less damage.",
-          uses: { count: "pb", per: "long" },
+          uses: { count: "pb" },
         },
         "storm-giant": {
           activation: "reaction",
           summary:
             "Storm's Thunder: when a creature within 60 feet damages you, use your reaction to deal it 1d8 Thunder damage.",
-          uses: { count: "pb", per: "long" },
+          uses: { count: "pb" },
         },
       },
     },
@@ -336,8 +333,8 @@ export const SPECIES: CuratedSpecies[] = [
     traits: {
       resourceful: {
         activation: "passive",
-        summary:
-          "You gain Heroic Inspiration whenever you finish a Long Rest: spend it to reroll any one die you just rolled.",
+        summary: "You have Heroic Inspiration: spend it to reroll any one die you just rolled.",
+        uses: { count: 1 },
       },
       skillful: {
         applied: "Already in your skills.",
@@ -362,7 +359,7 @@ export const SPECIES: CuratedSpecies[] = [
         activation: "bonus",
         summary:
           "Take the Dash action as a bonus action to move twice as far, and gain Temporary Hit Points equal to your Proficiency Bonus when you do.",
-        uses: { count: "pb", per: "short" },
+        uses: { count: "pb" },
       },
       darkvision: {
         applied: "Already under your key numbers, as Darkvision.",
@@ -374,7 +371,7 @@ export const SPECIES: CuratedSpecies[] = [
         activation: "passive",
         summary:
           "When something drops you to 0 Hit Points without killing you outright, you can drop to 1 Hit Point instead.",
-        uses: { count: 1, per: "long" },
+        uses: { count: 1 },
       },
     },
     languages: ["orc"],

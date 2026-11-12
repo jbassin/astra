@@ -155,16 +155,13 @@ export const OPTIONS: Record<string, CuratedOption> = {
     requires: { attackCantrip: true },
   },
   "armor-of-shadows": {
+    applied: "Already in your Armor Class.",
     kind: "invocation",
     from: { optionalFeature: "armor-of-shadows" },
     activation: "passive",
     gist: "Free Mage Armor on yourself, whenever you like.",
     summary:
       "Cast Mage Armor on yourself whenever you like without using a spell slot (Armor Class 13 + Dexterity when you wear no armor).",
-    grantsSpell: {
-      id: "mage-armor",
-      note: "Armor of Shadows: cast it on yourself without a spell slot.",
-    },
   },
   "eldritch-mind": {
     kind: "invocation",
@@ -181,10 +178,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
     gist: "A spirit familiar that scouts for you and can even attack.",
     summary:
       "Learn Find Familiar and cast it without a spell slot: a small spirit pet (an imp, sprite or the like) that scouts and helps, and can attack when you give up one of your attacks.",
-    grantsSpell: {
-      id: "find-familiar",
-      note: "Pact of the Chain: cast it as an action without a spell slot.",
-    },
+    grantsSpell: { id: "find-familiar" },
   },
   "mask-of-many-faces": {
     kind: "invocation",
@@ -193,7 +187,7 @@ export const OPTIONS: Record<string, CuratedOption> = {
     gist: "Disguise yourself as someone else whenever you like.",
     summary:
       "Cast Disguise Self whenever you like without using a spell slot to look like someone else.",
-    grantsSpell: { id: "disguise-self", note: "Mask of Many Faces: cast it without a spell slot." },
+    grantsSpell: { id: "disguise-self" },
   },
 
   // ---- Metamagic (Sorcerer) ----

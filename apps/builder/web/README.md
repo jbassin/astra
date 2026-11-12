@@ -70,13 +70,29 @@ player page walks through every choice to a printable "On your turn" sheet with 
   class option (2026-11-12, the bullets above). The builder chooses every spell: class
   cantrips and level 1 spells, a fighting style's cantrips and Magic Initiate's
   (`spellPicks`). No ability-score math anywhere.
+- **No rests** (2026-11-12: "In the one shot there won't be a long rest", "No short rest
+  either"). The sheet never mentions a rest and nothing on it depends on one: a use count is
+  just a number of uses, spell slots are just a count, and a feature that works only on a rest
+  (the Wizard's Arcane Recovery) is `hidden`. `noRests.test.ts` builds every class, species and
+  background and fails on the whole word "rest" in any text the sheet shows.
+- **No "why" beside a number** (2026-11-12). A bonus goes into the number and nothing says where
+  it came from: Archery, Dueling, Thrown Weapon Fighting, Agonizing Blast and Armor of Shadows
+  change the attack roll, the damage or the Armor Class, with no "Includes +2 from…" note and
+  no source in brackets.
 - **The sheet** (`src/components/sheet/`, wording in `src/domain/sheet.ts`) describes each
   thing once, on its card; the rest is numbers, roll lines and names. It shows the four key
   numbers; "On your turn" (action, bonus action, reaction, always on), where an attack shows
   what to roll and everything else only its name and uses; the spells per source, with DC,
   attack bonus, slots and the spells' names; the abilities; "Things you're good at"
   (proficient skills); gear; and one card per feature and spell. A feature's card carries its
-  summary; a spell's carries its roll, its uses and its one-line `gist`. Something that
+  summary; a spell's carries its roll, its uses and its one-line `gist` alone (no note on
+  where the character got it). A use count is a number and a unit
+  (`FeatureLine.uses`: `{ max, unit }`; `usesText` words it: "2 uses", "2 Sorcery Points"). A
+  spell's uses chip: a cantrip or a spell an option grants (`atWill`) "As often as you like";
+  free casts "n without a slot, or spend a spell slot", or "n use(s)" when the character has no
+  spell slots; a curated `cost` (the Druid's Find Familiar) as written; else "Spend a spell
+  slot". The Armor Class takes Armor of Shadows as one more option (13 + Dexterity), so the
+  Warlock has no Mage Armor entry and no card for it. Something that
   already shows in full in a number or a line gets no card (`hidden` and `applied`, under
   Curation below). While `missing` is non-empty it lists what's left to choose instead of
   numbers.
@@ -150,8 +166,9 @@ layers, each feeding the next:
      first entries up to the pick count, skipping a cantrip the character already has from the
      species or an earlier list (class, then fighting style, then Magic Initiate) and a Magic
      Initiate spell the class already prepares; entries past the count are backups for those
-     repeats, and the build proves there are enough. A Wizard's spellbook is the first
-     `spellbookSize` level 1 spells. Changing a character's spells means reordering a list.
+     repeats, and the build proves there are enough. Changing a character's spells means
+     reordering a list. A Wizard's list is longer than the five prepared spells; the sheet
+     shows only the prepared ones.
    - **Gists:** every spell (`spells/*.ts`) and class option (`options.ts`) also carries a
      `gist`: a class option's one line (nothing shows it since the pick screen went), and a spell's card text on
      the sheet (nothing shows a spell's `summary`). Write one short,
@@ -170,8 +187,10 @@ layers, each feeding the next:
      reason that says where the effect shows ("Already in your Armor Class."):
      - `hidden` (class features and species traits) leaves the entry out of the generated
        content, so nothing can show it. Use it for a class feature, which only the sheet reads.
-       It is also the mark for a trait a level 2 character doesn't have yet and for a heading
-       that only introduces picks.
+       It is also the mark for a trait a level 2 character doesn't have yet, for a heading
+       that only introduces picks, and for a feature that works only on a rest.
+     - `Uses` (`contentTypes.ts`) is `{ count, unit? }`: how many, and what one is called when it
+       isn't "use". It has no rest information, and a text must not name one.
      - `applied` (species traits, sub-choices, class options and feats) keeps the entry and its
        `summary` in the content, where the engine still reads it;
        the engine gives it no feature line. It must be passive with no `uses` (`sheet.test.ts`

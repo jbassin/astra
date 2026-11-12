@@ -52,7 +52,6 @@ describe("joinContent", () => {
     expect(classes.fighter.masteries.count).toBe(3);
     expect(classes.rogue.expertise.count).toBe(2);
     expect(classes.ranger.expertise.count).toBe(1);
-    expect(classes.wizard.spellcasting?.spellbookSize).toBe(8);
   });
 
   it("offers each class only backgrounds that list its primary ability", () => {

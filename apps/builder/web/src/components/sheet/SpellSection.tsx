@@ -34,8 +34,6 @@ function Names({ title, icon, spells }: { title: string; icon: IconName; spells:
 
 function Block({ b }: { b: SpellcastingBlock }) {
   const slots = slotLine(b.slots, b.pactSlotLevel);
-  const prepared = new Set(b.spells.map((s) => s.id));
-  const unprepared = (b.spellbook ?? []).filter((s) => !prepared.has(s.id));
   return (
     <div className="spell-block">
       <h5>{b.label}</h5>
@@ -65,12 +63,6 @@ function Block({ b }: { b: SpellcastingBlock }) {
       )}
       <Names title="Cantrips" icon="magic-swirl" spells={b.cantrips} />
       <Names title="Level 1 spells" icon="spell-book" spells={b.spells} />
-      {unprepared.length > 0 && (
-        <p className="sheet-note">
-          Also in your spellbook (swap them in after a Long Rest):{" "}
-          {unprepared.map((s) => s.name).join(", ")}.
-        </p>
-      )}
     </div>
   );
 }

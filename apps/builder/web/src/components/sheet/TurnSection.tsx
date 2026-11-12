@@ -22,7 +22,7 @@ function Medallion({
   icon: IconName;
   label: string;
   value: string;
-  note: string;
+  note?: string;
 }) {
   return (
     <div className="vital">
@@ -31,7 +31,7 @@ function Medallion({
         {label}
       </dt>
       <dd className="vital-value">{value}</dd>
-      <dd className="vital-note">{note}</dd>
+      {note && <dd className="vital-note">{note}</dd>}
     </div>
   );
 }
@@ -40,12 +40,7 @@ export function Vitals({ c }: { c: Character }) {
   return (
     <section className="sheet-section vitals" aria-label="Key numbers">
       <dl className="vital-grid">
-        <Medallion
-          icon="heart-plus"
-          label="Hit Points"
-          value={String(c.hitPoints.max)}
-          note={`Hit Dice ${c.hitPoints.hitDice}`}
-        />
+        <Medallion icon="heart-plus" label="Hit Points" value={String(c.hitPoints.max)} />
         <Medallion
           icon="checked-shield"
           label="Armor Class"

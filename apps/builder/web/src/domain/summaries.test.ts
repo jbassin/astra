@@ -23,7 +23,6 @@ const ALLOWED: Record<string, { numbers: string[]; why: string }> = {
     why: "the Martial Arts die, from its sub-feature at level 1–2",
   },
   "paladin-lay-on-hands": { numbers: ["10"], why: "5 × Paladin level 2" },
-  "wizard-arcane-recovery": { numbers: ["1"], why: "half of Wizard level 2, rounded up" },
   "barbarian-rage": { numbers: ["2"], why: "Rage Damage column at level 2 (+2)" },
   "druid-wild-shape": {
     numbers: ["1", "2"],

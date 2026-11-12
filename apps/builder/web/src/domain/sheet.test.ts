@@ -74,12 +74,8 @@ describe("plain-language rolls", () => {
   });
 
   it("writes the slot line", () => {
-    expect(slotLine([2], 1)).toBe(
-      "2 level 1 spell slots; they all come back after a Short or Long Rest.",
-    );
-    expect(slotLine([3], undefined)).toBe(
-      "3 level 1 spell slots; they all come back after a Long Rest.",
-    );
+    expect(slotLine([2], 1)).toBe("2 level 1 spell slots.");
+    expect(slotLine([3], undefined)).toBe("3 level 1 spell slots.");
   });
 });
 
@@ -219,7 +215,7 @@ describe("each thing is described once, on its card", () => {
     expect(fighter.bonus).toContainEqual({
       id: "fighter-second-wind",
       name: "Second Wind",
-      uses: "2 per Long Rest; regain one use when you finish a Short Rest.",
+      uses: "2 uses",
     });
     expect(fighter.always).toContainEqual({ id: "fighter-tactical-mind", name: "Tactical Mind" });
     // A spell cast as a bonus action or a reaction: its name and what it costs.
@@ -235,8 +231,7 @@ describe("each thing is described once, on its card", () => {
     }
   });
 
-  it("writes a spell's card from its gist, then the note on how the character has it", () => {
-    // This Wizard has only ordinary picks, so no card carries a note.
+  it("writes a spell's card from its gist alone", () => {
     const spells = sheetCards(build(WIZARD)).filter((x) => x.kind !== "Feature");
     expect(spells.find((x) => x.name === "Magic Missile")?.text).toBe(
       "Three glowing darts that always hit.",
@@ -246,10 +241,10 @@ describe("each thing is described once, on its card", () => {
       expect(card.text, card.name).toBe(spell?.gist);
       expect(card.text, card.name).not.toBe(spell?.summary);
     }
-    const mageArmor = sheetCards(build(WARLOCK)).find((x) => x.name === "Mage Armor");
-    expect(mageArmor?.text).toBe(
-      `${CONTENT.spells["mage-armor"]?.gist} (Armor of Shadows: cast it on yourself without a spell slot.)`,
-    );
+    // Armor of Shadows is in the Warlock's Armor Class: no Mage Armor card, no card of its own.
+    const warlock = sheetCards(build(WARLOCK));
+    expect(warlock.map((x) => x.name)).not.toContain("Mage Armor");
+    expect(warlock.map((x) => x.name)).not.toContain("Armor of Shadows");
   });
 });
 
@@ -284,11 +279,11 @@ describe("what a number or a line already shows", () => {
       expect(shown, name).not.toContain(name);
     // Wis 17 (+3): save DC 8 + 3 + 2 = 13, spell attack 3 + 2 = +5.
     expect(cleric.spellcasting[0]).toMatchObject({ saveDc: 13, attackBonus: 5, slots: [3] });
-    expect(cleric.proficiencies.armor).toContain("Heavy armor (Protector)");
+    expect(cleric.proficiencies.armor).toContain("Heavy armor");
     const initiate = cleric.spellcasting.find((b) => b.source === "feat");
-    expect(initiate?.spells[0]).toMatchObject({ id: "sanctuary", freeCasts: "1 per Long Rest" });
+    expect(initiate?.spells[0]).toMatchObject({ id: "sanctuary", freeCasts: 1 });
     expect(sheetCards(cleric).find((x) => x.name === "Sanctuary")?.uses).toBe(
-      "1 per Long Rest without a slot, or spend a spell slot",
+      "1 without a slot, or spend a spell slot",
     );
   });
 
