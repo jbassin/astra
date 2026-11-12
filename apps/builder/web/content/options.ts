@@ -1,7 +1,7 @@
-// The class option picks a player chooses from (fighting styles, Divine and Primal Orders,
-// Eldritch Invocations, Metamagic), keyed by option id. Each has a gist (the pick card's short
-// line) and a plain summary; the shortlist per class is in classes.ts, and nothing here is
-// recommended or preselected. A fighting style's cantrips are chosen by the builder, in order
+// The class options the builder gives a character (fighting styles, Divine and Primal Orders,
+// Eldritch Invocations, Metamagic), keyed by option id. Each has a gist and a plain summary; the
+// shortlist per class is in classes.ts, best first, and the builder gives the first few
+// (`chosenOptions`). A fighting style's cantrips are chosen by the builder, in order
 // (`CuratedSpellList`).
 
 import type { CuratedOption } from "../src/domain/curationTypes";

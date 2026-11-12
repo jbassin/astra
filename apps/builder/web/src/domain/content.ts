@@ -11,7 +11,6 @@ import {
   CLASS_IDS,
   type ClassContent,
   type OptionContent,
-  type OptionGroupContent,
   type SpeciesContent,
   type SpeciesOptionContent,
 } from "./contentTypes";
@@ -66,19 +65,15 @@ export function backgroundsForClass(answers: Answers): BackgroundContent[] {
   return ids.map((id) => CONTENT.backgrounds[id]);
 }
 
-/** The option ids picked for a group, keeping only ones the group offers. */
-export function pickedOptions(answers: Answers, group: OptionGroupContent): string[] {
-  return (answers.options?.[group.key] ?? []).filter((id) => group.choices.includes(id));
-}
-
-/** Every option the player has picked for their class, resolved. */
+/**
+ * Every option the builder gives the class: the first `count` of each option group's
+ * shortlist (best first; entries past the count are alternates). The player picks none.
+ */
 export function chosenOptions(answers: Answers): OptionContent[] {
   const cls = classOf(answers);
   if (!cls) return [];
   return cls.optionGroups.flatMap((g) =>
-    pickedOptions(answers, g)
-      .slice(0, g.count)
-      .flatMap((id) => (CONTENT.options[id] ? [CONTENT.options[id]] : [])),
+    g.choices.slice(0, g.count).flatMap((id) => (CONTENT.options[id] ? [CONTENT.options[id]] : [])),
   );
 }
 

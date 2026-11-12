@@ -21,7 +21,6 @@ const VIEW_ICON: Record<ViewKey, IconName> = {
   class: "wax-seal",
   species: "village",
   background: "scroll-unfurled",
-  options: "laurels",
   about: "quill-ink",
   sheet: "scroll-quill",
 };
@@ -45,8 +44,7 @@ export function Stepper({
   const nav = useRef<HTMLElement>(null);
   useEffect(() => {
     // The path sticks to the top of the screen (path.css), except on the sheet, which has its
-    // own jump bar. Publish its height as --sticky-h, so headings and the pick lists' sticky
-    // counters sit just under it.
+    // own jump bar. Publish its height as --sticky-h, so headings sit just under it.
     const el = nav.current;
     const root = document.documentElement;
     if (!el) return;

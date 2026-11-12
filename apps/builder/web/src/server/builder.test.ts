@@ -130,8 +130,8 @@ describe("DM view", () => {
       name: "Ada",
       link: `${ORIGIN}/c/${ada.id}`,
       answered: ["archetype"],
-      // Before a class is picked, every step counts (class options and spells may apply).
-      total: 8,
+      // Every step applies to every class.
+      total: 7,
       answers: { archetype: "warrior", look: "  " },
     });
     expect(rows?.[0]?.updatedAt).not.toBeNull();

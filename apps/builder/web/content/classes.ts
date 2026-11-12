@@ -10,6 +10,8 @@
 // (`CuratedSpellList`): the first entries up to the pick count are the character's spells, and
 // any after them are backups for a cantrip the species already gives. A Wizard's spellbook is
 // the first eight level 1 spells, of which the first five are prepared.
+// Class options work the same way: each option group's `choices` is best first, and the builder
+// gives the first `count` (`chosenOptions`). To change a pick, reorder the list.
 
 import type { CuratedClass } from "../src/domain/curationTypes";
 
@@ -648,7 +650,7 @@ export const CLASSES: CuratedClass[] = [
         label: "Divine Order",
         prompt: "Pick your sacred role.",
         count: 1,
-        choices: ["protector", "thaumaturge"],
+        choices: ["thaumaturge", "protector"],
       },
     ],
     spells: {

@@ -24,7 +24,6 @@ const CLERIC: Answers = {
   classId: "cleric",
   speciesId: "human",
   backgroundId: "acolyte",
-  options: { divineOrder: ["protector"] },
   ...DONE,
 };
 
@@ -115,6 +114,7 @@ describe("CharacterSheet: each thing is described once, on its card", () => {
       "Sacred Flame",
       "Guidance",
       "Toll the Dead",
+      "Light",
       "Bless",
       "Healing Word",
       "Guiding Bolt",

@@ -33,7 +33,7 @@ import {
   type ScreenProps,
   SpeciesScreen,
 } from "./flow/OriginScreens";
-import { AboutScreen, OptionsScreen } from "./flow/PickScreens";
+import { AboutScreen } from "./flow/PickScreens";
 import { Stepper } from "./flow/Stepper";
 import { CharacterSheet } from "./sheet/CharacterSheet";
 
@@ -60,11 +60,6 @@ const SCREENS: Record<
     title: "Pick your background",
     hint: "What your hero did before adventuring.",
     Body: BackgroundScreen,
-  },
-  options: {
-    title: "Make your class choices",
-    hint: "Read each one and pick what sounds most like your hero. None is wrong.",
-    Body: OptionsScreen,
   },
   about: {
     title: "Tell us about your hero",
@@ -190,7 +185,7 @@ export function BuilderFlow({
 
   function update(patch: Partial<Answers>) {
     const merged = { ...answers, ...patch };
-    const next = pruneAnswers(merged, answers);
+    const next = pruneAnswers(merged);
     setNotice(clearedSummary(merged, next));
     setAnswers(next);
     persist(next);

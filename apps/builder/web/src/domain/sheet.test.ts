@@ -2,9 +2,24 @@ import { describe, expect, it } from "vitest";
 
 import type { Answers } from "./character";
 import { CONTENT } from "./content";
-import type { Activation } from "./contentTypes";
+import type { Activation, ClassId } from "./contentTypes";
 import { buildCharacter, type Character, spellEntry } from "./engine";
 import { attackRoll, goodAt, sheetCards, slotLine, spellRoll, turnPlan } from "./sheet";
+import { type Shortlist, withShortlist } from "./testShortlist";
+
+/** The options the fixtures below use, which the shipped shortlists don't give first. */
+const PICKS: Partial<Record<ClassId, Shortlist>> = {
+  fighter: { fightingStyle: ["great-weapon-fighting"] },
+  warlock: { invocations: ["agonizing-blast", "armor-of-shadows", "pact-of-the-chain"] },
+  cleric: { divineOrder: ["protector"] },
+};
+
+function build(a: Answers): Character {
+  const picks = a.classId && PICKS[a.classId];
+  return a.classId && picks
+    ? withShortlist(a.classId, picks, () => buildCharacter(a))
+    : buildCharacter(a);
+}
 
 const DONE = { name: "Test", look: "Plain.", personality: "Calm." };
 
@@ -13,7 +28,6 @@ const FIGHTER: Answers = {
   classId: "fighter",
   speciesId: "dwarf",
   backgroundId: "soldier",
-  options: { fightingStyle: ["great-weapon-fighting"] },
   ...DONE,
 };
 
@@ -27,7 +41,7 @@ const WIZARD: Answers = {
 
 describe("plain-language rolls", () => {
   it("writes a weapon attack as a d20 roll and a damage roll", () => {
-    const c = buildCharacter(FIGHTER);
+    const c = build(FIGHTER);
     const greatsword = c.attacks.find((a) => a.name === "Greatsword");
     expect(greatsword && attackRoll(greatsword)).toBe(
       "Roll a d20 + 5 to hit. On a hit, roll 2d6 + 3 Slashing damage.",
@@ -63,7 +77,7 @@ describe("plain-language rolls", () => {
 
 describe("the sheet's layout from buildCharacter", () => {
   it("puts a Fighter's Second Wind on the bonus action and makes a card per feature", () => {
-    const c = buildCharacter(FIGHTER);
+    const c = build(FIGHTER);
     const plan = turnPlan(c);
     expect(plan.bonus.map((i) => i.name)).toContain("Second Wind");
     expect(plan.action.map((i) => i.name)).toContain("Action Surge");
@@ -79,7 +93,7 @@ describe("the sheet's layout from buildCharacter", () => {
   });
 
   it("puts a Wizard's Shield on the reaction and gives every spell a card with its roll", () => {
-    const c = buildCharacter(WIZARD);
+    const c = build(WIZARD);
     expect(c.missing).toEqual([]);
     const plan = turnPlan(c);
     expect(plan.reaction.map((i) => i.name)).toEqual(["Shield"]);
@@ -108,7 +122,6 @@ const WARLOCK: Answers = {
   classId: "warlock",
   speciesId: "orc",
   backgroundId: "charlatan",
-  options: { invocations: ["agonizing-blast", "armor-of-shadows", "pact-of-the-chain"] },
   ...DONE,
 };
 
@@ -123,7 +136,7 @@ function rollOf(id: string): string | undefined {
 describe("spell rolls", () => {
   it("shows Hellish Rebuke's damage as well as its save", () => {
     // Cha 17 (+3): save DC 8 + 3 + 2 = 13.
-    const c = buildCharacter(WARLOCK);
+    const c = build(WARLOCK);
     expect(turnPlan(c).reaction.map((i) => i.name)).toEqual(["Hellish Rebuke"]);
     expect(sheetCards(c).find((x) => x.name === "Hellish Rebuke")).toMatchObject({
       when: "Your reaction",
@@ -174,7 +187,6 @@ const CLERIC: Answers = {
   classId: "cleric",
   speciesId: "human",
   backgroundId: "acolyte",
-  options: { divineOrder: ["protector"] },
   ...DONE,
 };
 
@@ -185,7 +197,7 @@ function described(c: Character): string[] {
 
 describe("each thing is described once, on its card", () => {
   it("gives an 'On your turn' entry a name and its uses, never a sentence", () => {
-    const fighter = turnPlan(buildCharacter(FIGHTER));
+    const fighter = turnPlan(build(FIGHTER));
     expect(fighter.bonus).toContainEqual({
       id: "fighter-second-wind",
       name: "Second Wind",
@@ -193,11 +205,11 @@ describe("each thing is described once, on its card", () => {
     });
     expect(fighter.always).toContainEqual({ id: "fighter-tactical-mind", name: "Tactical Mind" });
     // A spell cast as a bonus action or a reaction: its name and what it costs.
-    expect(turnPlan(buildCharacter(WARLOCK)).reaction).toEqual([
+    expect(turnPlan(build(WARLOCK)).reaction).toEqual([
       { id: "spell-hellish-rebuke", name: "Hellish Rebuke", uses: "Spend a spell slot" },
     ]);
     for (const answers of [FIGHTER, WIZARD, WARLOCK, BARBARIAN, CLERIC]) {
-      const plan = turnPlan(buildCharacter(answers));
+      const plan = turnPlan(build(answers));
       for (const item of [...plan.action, ...plan.bonus, ...plan.reaction, ...plan.always]) {
         const extra = Object.keys(item).filter((k) => !["id", "name", "uses"].includes(k));
         expect(extra, item.name).toEqual([]);
@@ -207,7 +219,7 @@ describe("each thing is described once, on its card", () => {
 
   it("writes a spell's card from its gist, then the note on how the character has it", () => {
     // This Wizard has only ordinary picks, so no card carries a note.
-    const spells = sheetCards(buildCharacter(WIZARD)).filter((x) => x.kind !== "Feature");
+    const spells = sheetCards(build(WIZARD)).filter((x) => x.kind !== "Feature");
     expect(spells.find((x) => x.name === "Magic Missile")?.text).toBe(
       "Three glowing darts that always hit.",
     );
@@ -216,7 +228,7 @@ describe("each thing is described once, on its card", () => {
       expect(card.text, card.name).toBe(spell?.gist);
       expect(card.text, card.name).not.toBe(spell?.summary);
     }
-    const mageArmor = sheetCards(buildCharacter(WARLOCK)).find((x) => x.name === "Mage Armor");
+    const mageArmor = sheetCards(build(WARLOCK)).find((x) => x.name === "Mage Armor");
     expect(mageArmor?.text).toBe(
       `${CONTENT.spells["mage-armor"]?.gist} (Armor of Shadows: cast it on yourself without a spell slot.)`,
     );
@@ -225,7 +237,7 @@ describe("each thing is described once, on its card", () => {
 
 describe("what a number or a line already shows", () => {
   it("gets no card and no turn entry: Tough, Unarmored Defense, Weapon Mastery", () => {
-    const barbarian = buildCharacter(BARBARIAN);
+    const barbarian = build(BARBARIAN);
     // d12: (12 + 2) + (7 + 2) + Tough 4 = 27; no armor: 10 + Dex 1 + Con 2 = 13.
     expect(barbarian.hitPoints.max).toBe(27);
     expect(barbarian.hitPoints.breakdown).toMatch(/\+4 Tough/);
@@ -248,7 +260,7 @@ describe("what a number or a line already shows", () => {
   });
 
   it("leaves a caster's Spellcasting, order and Magic Initiate to the spells section", () => {
-    const cleric = buildCharacter(CLERIC);
+    const cleric = build(CLERIC);
     const shown = described(cleric);
     for (const name of ["Spellcasting", "Protector", "Magic Initiate", "Tough"])
       expect(shown, name).not.toContain(name);
@@ -263,7 +275,7 @@ describe("what a number or a line already shows", () => {
   });
 
   it("leaves a fighting style and species traits that are only numbers off the cards", () => {
-    const fighter = buildCharacter({ ...FIGHTER, options: { fightingStyle: ["defense"] } });
+    const fighter = buildCharacter({ ...FIGHTER }); // the shipped pick: Defense
     // Chain Mail 16 + Defense 1; d10: (10 + 2) + (6 + 2) + Dwarven Toughness 2 = 22.
     expect(fighter.armorClass.value).toBe(17);
     expect(fighter.hitPoints.max).toBe(22);
@@ -285,9 +297,6 @@ describe("the checks behind leaving a card out", () => {
         classId: cls.id,
         speciesId: "human",
         backgroundId: cls.backgrounds[0],
-        options: Object.fromEntries(
-          cls.optionGroups.map((g) => [g.key, g.choices.slice(0, g.count)]),
-        ),
         ...DONE,
       });
       expect(c.missing, cls.id).toEqual([]);
@@ -318,7 +327,7 @@ describe("the checks behind leaving a card out", () => {
 
 /** The Fighter with one feature's activation changed and its summary left alone. */
 function fighterWith(id: string, activation: Activation): Character {
-  const c = buildCharacter(FIGHTER);
+  const c = build(FIGHTER);
   const f = c.features.find((x) => x.id === id);
   if (!f) throw new Error(`no feature ${id}`);
   f.activation = activation;
@@ -356,11 +365,11 @@ describe("grouping comes from the activation field, not the wording", () => {
       "Takes a minute or more",
     );
     // Warlock's Magical Cunning is curated as a 1-minute rite.
-    expect(onTurn(buildCharacter(WARLOCK))).not.toContain("Magical Cunning");
+    expect(onTurn(build(WARLOCK))).not.toContain("Magical Cunning");
   });
 
   it("files a spell by its field, not its casting-time wording", () => {
-    const c = buildCharacter(WIZARD);
+    const c = build(WIZARD);
     const shield = c.spellcasting.flatMap((b) => b.spells).find((s) => s.id === "shield");
     if (!shield) throw new Error("no Shield");
     shield.activation = "bonus";
