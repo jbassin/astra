@@ -18,16 +18,7 @@ import { fileURLToPath } from "node:url";
 
 import { buildContent, defineContentSource, emitModule } from "@astra/content-build";
 
-import { BACKGROUNDS } from "../content/backgrounds";
-import { CLASSES } from "../content/classes";
-import { FEATS } from "../content/feats";
 import { LANGUAGE_FILL, TOOL_FALLBACK } from "../content/general";
-import { MASTERY_SUMMARIES } from "../content/masteries";
-import { OPTIONS } from "../content/options";
-import { SPECIES } from "../content/species";
-import { CANTRIPS } from "../content/spells/cantrips";
-import { LEVEL1_SPELLS } from "../content/spells/level1";
-import { SPELL_ROLLS } from "../content/spells/rolls";
 import { ARCHETYPES } from "../src/domain/character";
 import {
   type Ability,
@@ -62,15 +53,9 @@ import {
   type WeaponProficiency,
 } from "../src/domain/contentTypes";
 import type {
-  CuratedBackground,
-  CuratedClass,
   CuratedCount,
-  CuratedFeat,
-  CuratedOption,
-  CuratedSpecies,
   CuratedSpell,
   CuratedSpellList,
-  CuratedSpellRoll,
   CuratedUses,
 } from "../src/domain/curationTypes";
 import {
@@ -79,6 +64,7 @@ import {
   type ImportedData,
   type ImportedEquipment,
 } from "../src/domain/imported";
+import { CURATION, type Curation } from "./curation";
 import { iconSource } from "./icons";
 import { unshownRolls } from "./spell-rolls";
 
@@ -110,31 +96,6 @@ export function loadImported(dir = IMPORT_DIR): ImportedData {
   }
   return out as ImportedData;
 }
-
-/** Everything hand-written under content/, as one value so tests can pass a modified copy. */
-export interface Curation {
-  classes: CuratedClass[];
-  species: CuratedSpecies[];
-  backgrounds: CuratedBackground[];
-  feats: Record<string, CuratedFeat>;
-  options: Record<string, CuratedOption>;
-  masteries: Record<string, string>;
-  cantrips: Record<string, CuratedSpell>;
-  level1: Record<string, CuratedSpell>;
-  spellRolls: Record<string, CuratedSpellRoll>;
-}
-
-export const CURATION: Curation = {
-  classes: CLASSES,
-  species: SPECIES,
-  backgrounds: BACKGROUNDS,
-  feats: FEATS,
-  options: OPTIONS,
-  masteries: MASTERY_SUMMARIES,
-  cantrips: CANTRIPS,
-  level1: LEVEL1_SPELLS,
-  spellRolls: SPELL_ROLLS,
-};
 
 /** Joins imported data and curation, collecting every problem; throws if there are any. */
 export function joinContent(data: ImportedData, curation: Curation = CURATION): BuilderContent {

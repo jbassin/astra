@@ -3,7 +3,8 @@
 
 import { describe, expect, it } from "vitest";
 
-import { CURATION, type Curation, joinContent, loadImported } from "./build-content";
+import { joinContent, loadImported } from "./build-content";
+import { CURATION, type Curation } from "./curation";
 import { unshownRolls } from "./spell-rolls";
 
 const data = loadImported();
