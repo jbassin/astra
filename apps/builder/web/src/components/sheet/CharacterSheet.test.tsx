@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import type { Answers } from "@/domain/character";
@@ -96,7 +96,7 @@ describe("CharacterSheet: each thing is described once, on its card", () => {
     expect(within(always).getByText("Reckless Attack").closest("li")?.textContent).toBe(
       "Reckless Attack",
     );
-    expect(within(always).queryByRole("button")).toBeNull(); // names only, so no fold
+    expect(always.querySelector("details")).toBeNull(); // names only, so no fold
     expect(screen.getAllByText(/fly into a Rage/)).toHaveLength(1);
     expect(screen.getAllByText(/you can attack recklessly/)).toHaveLength(1);
     // No list of features, and no card for what the numbers already show.
@@ -129,5 +129,73 @@ describe("CharacterSheet: each thing is described once, on its card", () => {
     // Spellcasting and the Protector order show in the numbers and lines, not on cards.
     for (const name of ["Spellcasting", "Protector", "Magic Initiate"])
       expect(screen.queryByRole("heading", { name }), name).toBeNull();
+  });
+});
+
+describe("CharacterSheet: pressing a name shows its card", () => {
+  it("opens the Rage card from the bonus action box, and the close button closes it", () => {
+    render(<CharacterSheet character={buildCharacter(BARBARIAN)} />);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    const rage = within(box("Your bonus action")).getByRole("button", { name: "Rage" });
+    fireEvent.click(rage);
+    const dialog = screen.getByRole("dialog", { name: "Rage" });
+    expect(within(dialog).getByRole("heading", { name: "Rage", level: 5 })).toBeTruthy();
+    expect(within(dialog).getByText(/fly into a Rage/)).toBeTruthy();
+    fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(rage);
+  });
+
+  it("opens a spell's card from Your spells, and Esc closes it", () => {
+    render(<CharacterSheet character={buildCharacter(CLERIC)} />);
+    fireEvent.click(within(box("Cleric spells")).getByRole("button", { name: "Bless" }));
+    const dialog = screen.getByRole("dialog", { name: "Bless" });
+    expect(within(dialog).getByText(CONTENT.spells.bless?.gist ?? "")).toBeTruthy();
+    fireEvent.keyDown(dialog, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("opens a spell from the Cast a spell line, and a click on the backdrop closes it", () => {
+    render(<CharacterSheet character={buildCharacter(CLERIC)} />);
+    const line = screen.getByText("Cast a spell:").closest("li");
+    const first = line && within(line).getAllByRole("button")[0];
+    expect(first).toBeTruthy();
+    if (first) fireEvent.click(first);
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(dialog);
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("makes an attack cantrip's name a button, but not a weapon attack's", () => {
+    const wizard = buildCharacter({
+      archetype: "mage",
+      classId: "wizard",
+      speciesId: "human",
+      backgroundId: "sage",
+      ...DONE,
+    });
+    expect(wizard.missing).toEqual([]);
+    const { unmount } = render(<CharacterSheet character={wizard} />);
+    const bolt = within(box("Your action")).getByRole("button", { name: "Fire Bolt" });
+    fireEvent.click(bolt);
+    expect(screen.getByRole("dialog", { name: "Fire Bolt" })).toBeTruthy();
+    unmount();
+    cleanup();
+    render(<CharacterSheet character={buildCharacter(BARBARIAN)} />);
+    const action = box("Your action");
+    expect(within(action).getByText(/^Greataxe/)).toBeTruthy();
+    expect(within(action).queryByRole("button", { name: /Greataxe/ })).toBeNull();
+    expect(within(action).queryAllByRole("button")).toEqual([]);
+  });
+
+  it("keeps the open card per sheet", () => {
+    render(
+      <>
+        <CharacterSheet character={buildCharacter(BARBARIAN)} />
+        <CharacterSheet character={buildCharacter(BARBARIAN)} />
+      </>,
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: "Rage" })[0] as HTMLElement);
+    expect(screen.getAllByRole("dialog")).toHaveLength(1);
   });
 });

@@ -9,6 +9,8 @@ import type { IconName } from "@/generated/icons";
 import { ABILITY_ICON, schoolIcon } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
+import { CardName } from "./CardLinks";
+
 /** One level's spells, by name; each carries its school's icon, as its card does. */
 function Names({ title, icon, spells }: { title: string; icon: IconName; spells: SpellEntry[] }) {
   if (spells.length === 0) return null;
@@ -22,7 +24,7 @@ function Names({ title, icon, spells }: { title: string; icon: IconName; spells:
         {spells.map((s) => (
           <li key={s.id}>
             <Icon name={schoolIcon(CONTENT.spells[s.id]?.school)} />
-            {s.name}
+            <CardName id={`spell-${s.id}`}>{s.name}</CardName>
           </li>
         ))}
       </ul>
