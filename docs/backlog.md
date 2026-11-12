@@ -159,12 +159,20 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   transcripts by date, not episode title; `build-content.ts` sits at the 500-line ratchet limit —
   agent.
 
-- Character builder: walk `/test`, then send the five player names for `just builder-invite`
-  — Josh.
+- Character builder: check the per-class species picks (the table in #231) and the things that
+  lost their card (the list in #232), walk `/test`, then send the five player names for
+  `just builder-invite` — Josh.
 - Character builder polish, small: a player who opens their link straight onto the sheet sees the
   full greeting until their first move; the sticky progress band shows faintly against the page
-  glow on laptops; the sheet's "On your turn" spell line still uses the summary's first sentence,
-  not the curated gist; View Transitions are checked in Chromium only, not iOS Safari — agent.
+  glow on laptops; View Transitions are checked in Chromium only, not iOS Safari — agent.
+- Character builder sheet, found while cutting its text (2026-11-12): a spell an invocation
+  grants (Armor of Shadows, Mask of Many Faces, Pact of the Chain) has a card chip that says
+  "Spend a spell slot" although it is free; with Dueling, the Longsword's two-handed note wrongly
+  includes the +2; a Goliath's giant boon shows no use count; on paper most of page 1 is blank
+  after the "On your turn" heading; Shield's card no longer says when to cast it — agent.
+- Character builder cleanup, once Josh has seen the cut sheet: delete the text nothing shows now
+  (spell summaries and the summaries of `applied` items) with its checks, and turn the `applied`
+  species traits into `hidden` — agent.
 - `libs/ts/site-kit/src/scaffold.test.ts` hard-codes the last namespace in `models.py`, so it
   breaks on every `just new-frontend`; make it order-independent — agent.
 

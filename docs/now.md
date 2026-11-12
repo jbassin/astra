@@ -1,6 +1,6 @@
 # Now
 
-Updated 2026-11-09.
+Updated 2026-11-12.
 
 ## In flight
 
@@ -14,19 +14,22 @@ Updated 2026-11-09.
   client: the six Implements on "esoterica" draw ink arms and hands with no errors. The module is
   still not enabled, so players don't see arms yet. Next: Josh relaunches the world, enables IK
   Arms, places the real anchors, and checks a player client.
-- **Character builder is live at builder.iridi.cc and redesigned (2026-11-07, #207 to #216).**
-  A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players: archetype, class,
-  species, background, class choices, spells and an about-you step, then a plain-language "On
-  your turn" sheet with printable cards. Content comes from the 2024 entries of 5etools (pinned
-  commit 87471edd) with curated shortlists, plain summaries and one-line gists; every shown
-  spell carries its damage or healing dice, and the sheet groups by a curated activation. The
-  look was rebuilt phone first (#213, #214, #216): a "guild charter" identity with a heraldic
-  hue and game-icons emblem per class, Texturina and Atkinson Hyperlegible Next, a sticky
-  progress bar, compact pick cards, and a sheet with a jump bar; gothic and Tailwind are gone
-  from the builder. Each player gets a private link from `just builder-invite <name>`; answers
-  save to `/ruby/data/astra-state/builder/`; Josh sees everyone at `/dm/<token>` (SOPS
-  `builder_dm_token`); `/test` runs the flow without saving. Next: Josh walks `/test`, then
-  the five invites. Plan:
+- **Character builder is live at builder.iridi.cc, with about half the reading (2026-11-12,
+  #231 and #232).** A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players:
+  archetype, class, species, background, class choices and an about-you step, then an "On your
+  turn" sheet with printable cards. The builder chooses every spell and, from the class, the
+  species sub-choice, which it shows as the species (a Wizard's Elf is a "High Elf"). Choice
+  cards show one line and nothing folds out. The sheet describes each thing once, on its card;
+  a spell's card shows its one-line gist, and what already shows in a number gets no card. A
+  player reads 470 to 600 words to build (was 700 to 1,000) and a sheet of 660 to 1,310 (was
+  1,000 to 2,400). Content comes from the 2024 entries of 5etools (pinned commit 87471edd) with
+  curated shortlists, summaries and gists. The look is phone first (#213, #214, #216): a "guild
+  charter" identity with a heraldic hue and game-icons emblem per class, a sticky progress bar,
+  and a sheet with a jump bar. Each player gets a private link from `just builder-invite
+  <name>`; answers save to `/ruby/data/astra-state/builder/`; Josh sees everyone at
+  `/dm/<token>` (SOPS `builder_dm_token`); `/test` runs the flow without saving. Next: Josh
+  checks the per-class species picks (listed in #231) and the things that lost their card
+  (listed in #232), walks `/test`, then the five invites. Plan:
   [`thoughts/shared/research/2026-11-06-character-builder.md`](../thoughts/shared/research/2026-11-06-character-builder.md).
 - **Unused web apps removed from the repo (2026-11-04): menhir, ledger, the vellum site
   and weal-overlay.** weal-bot no longer posts rolls to an overlay. Code, config, compose, Caddy,
