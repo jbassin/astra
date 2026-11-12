@@ -13,7 +13,7 @@ background, spells, gear, and a name and look. Answers save on the server as the
 can come back and change them. Josh sees everyone's picks on a DM page. The final output is a
 plain-language "on your turn" sheet plus ability cards, readable on screen and in print.
 
-## 0.1 Progress and next steps (updated 2026-11-06)
+## 0.1 Progress and next steps (updated 2026-11-12)
 
 **Process:** plan in the chat, ship in slices, each slice one pull request that leaves `main`
 green. This file is the plan; this section is the checklist.
@@ -75,6 +75,19 @@ offered too many choices.
   cantrips and Magic Initiate alike. The spells screen and the spell answers are gone.
 - [x] A test resolves spells for every class, species, background and spell-changing option.
 - [ ] Josh reviews the eight class sets (and the Magic Initiate and fighting-style order).
+
+**Slice 4: less reading (Josh's call, 2026-11-12).** A new player read 700 to 1,000 words to
+build a character and got a sheet of 1,000 to 2,400 more; the cuts delete text and choices and
+write none.
+- [x] Choice cards show one line: background cards lose the talent text and nothing folds out
+  (#231).
+- [x] The builder picks the species sub-choice from the class (`speciesOptions` in
+  `content/classes.ts`) and shows it as the species (#231).
+- [x] The sheet describes each thing once, on its card; a spell's card shows its gist; what
+  already shows in a number gets no card (#232).
+- [x] Deployed and checked on `/test` (2026-11-12).
+- [ ] Josh checks the per-class species picks (#231) and the things that lost their card (#232).
+- [ ] Delete the text nothing shows now (spell summaries, the summaries of `applied` items).
 
 **Go live.**
 - [x] Merged, `just deploy builder`, `just caddy-reload` (2026-11-07).

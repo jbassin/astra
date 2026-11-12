@@ -17,3 +17,4 @@ Start with `docs/now.md` and `docs/backlog.md`; app facts are in each app's READ
 - [Verify rules against corpus](verify-rules-against-corpus.md) — read before any PF2e rules claim: grep the codex corpus and quote it.
 - [Frontend work](tanstack-start-skill.md) — read when touching a TanStack Start frontend: site-kit and gothic READMEs, bundled skills.
 - [Book fonts licensed](book-fonts-licensed.md) — read before flagging any font or book-distribution risk: licensed, cleared, never ask.
+- [Less player-facing prose](less-player-prose.md) — read before writing text players will read: cut or reuse, don't write more.
