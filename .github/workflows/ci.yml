@@ -250,7 +250,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:16-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139
         env:
           POSTGRES_PASSWORD: test
         ports:
@@ -303,7 +303,7 @@ jobs:
     if: needs.changes.outputs.codex == 'true'
     runs-on: ubuntu-latest
     container:
-      image: node:24-slim
+      image: node:24-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54
     env:
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
     steps:

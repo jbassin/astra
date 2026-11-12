@@ -36,7 +36,7 @@ x-astra-app: &astra-app
 # 0700). Each store sets its own `<app>-db` network, shared only with its app.
 x-astra-postgres: &astra-postgres
   <<: *astra-service
-  image: postgres:16-alpine
+  image: postgres:16-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139
 
 # The Dagster trio: `pipeline` carries webserver/daemon -> code-server gRPC (:4000) and their
 # OTLP to the collector; `dagster-db` reaches dagster-postgres. Each run's container
@@ -551,7 +551,7 @@ services:
   # otel-collector-config.yaml's node-exporter job). Listens on :9100 (LAN-visible,
   # read-only metrics). Scrape interval is the receiver's global 60s. ---
   node-exporter:
-    image: prom/node-exporter:v1.9.1
+    image: prom/node-exporter:v1.9.1@sha256:d00a542e409ee618a4edc67da14dd48c5da66726bbd5537ab2af9c1dfc442c8a
     container_name: astra-node-exporter
     network_mode: host
     pid: host
