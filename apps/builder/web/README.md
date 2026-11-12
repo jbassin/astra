@@ -80,6 +80,16 @@ player page walks through every choice to a printable "On your turn" sheet with 
   already shows in full in a number or a line gets no card (`hidden` and `applied`, under
   Curation below). While `missing` is non-empty it lists what's left to choose instead of
   numbers.
+- **A name with a card is a button** (owner's request, 2026-11-12): every feature or spell name
+  in "On your turn", each spell in the "Cast a spell" line and in "Your spells", and an attack
+  cantrip's name opens that card in a dialog (`CardName` in `CardLinks.tsx`, `CardDialog.tsx`,
+  the shared `Card.tsx`). Weapon and unarmed attacks have no card and stay text. A name links
+  only when `sheetCards(c)` has the card's id (`attackCardId` finds an attack cantrip's).
+  `CharacterSheet` keeps the open card in its own state, so each sheet on the DM page has its own;
+  the dialog is mounted only while open, so the server renders none. It is the native `<dialog>`
+  (`showModal()`): Esc, the close button and a click on the backdrop close it, and focus goes back
+  to the pressed name. On a phone the card rises from the bottom edge; from 36rem it sits in the
+  middle. Styles are at the end of `cards.css`.
 - **Print:** `src/styles/print.css`. The browser's print gives the sheet alone on white, ink-light
   (outlines instead of filled banners), with the cards on a new page in a grid of dashed cut
   lines. The DM page prints each open sheet on its own page.
@@ -301,6 +311,14 @@ takes every data-root dir by default).
 - **print.css overrides heavier screen rules,** so its rules start with `html` (and the hidden
   parts use `!important`). Its token block repeats the dark blocks' selectors so paper stays
   light.
+- **jsdom has no `showModal`.** `CardDialog` calls it only when it exists and otherwise sets the
+  `open` attribute (so tests and old browsers work); the fallback has no Esc handling from the
+  browser, so the dialog also listens for the Escape key itself. The `<dialog>` is a
+  transparent full-screen frame; a `<button class="card-dialog-backdrop">` fills it behind the card
+  (hidden from assistive tech, `tabIndex={-1}`) and closes it on a press, because a click handler
+  on the `<dialog>` itself fails the a11y lint and the ratchet. Keep the card body above that button.
+- **Name buttons grow their hit area with padding and a matching negative margin,** so they
+  don't move the layout; print.css resets both. Don't give one a `min-height`.
 - **A choice card is one `<label>` and nothing else.** Don't add a "More" disclosure or a
   second block of text to a card; `BuilderFlow.test.tsx` fails when a choice screen has a
   `<details>` or a background card says more than its name and story.

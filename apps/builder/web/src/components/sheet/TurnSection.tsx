@@ -3,11 +3,15 @@
 // An attack shows what to roll; everything else shows its name and how often, and its card
 // says what it does.
 
+import { Fragment } from "react";
+
 import type { AttackLine, Character } from "@/domain/engine";
-import { attackRoll, signed, type TurnItem, turnPlan } from "@/domain/sheet";
+import { attackCardId, attackRoll, signed, type TurnItem, turnPlan } from "@/domain/sheet";
 import type { IconName } from "@/generated/icons";
 import { damageIcon, SLOT_ICON } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
+
+import { CardName } from "./CardLinks";
 
 function Medallion({
   icon,
@@ -89,11 +93,14 @@ export function Vitals({ c }: { c: Character }) {
   );
 }
 
-function Attack({ a }: { a: AttackLine }) {
+function Attack({ a, cardId }: { a: AttackLine; cardId?: string }) {
   return (
     <li className="turn-item attack">
       <p className="turn-name">
-        <strong>{a.name}</strong> <span className="turn-range">{a.range}</span>
+        <strong>
+          <CardName id={cardId}>{a.name}</CardName>
+        </strong>{" "}
+        <span className="turn-range">{a.range}</span>
       </p>
       <p className="roll">
         <Icon name={damageIcon(a.damageType)} className="roll-icon" />
@@ -117,7 +124,9 @@ function Items({ items }: { items: TurnItem[] }) {
   return items.map((i) => (
     <li key={i.id} className="turn-item">
       <p className="turn-name">
-        <strong>{i.name}</strong>
+        <strong>
+          <CardName id={i.id}>{i.name}</CardName>
+        </strong>
         {i.uses && <span className="uses">{i.uses}</span>}
       </p>
     </li>
@@ -134,13 +143,19 @@ function ActionBox({ c, plan }: { c: Character; plan: ReturnType<typeof turnPlan
       <p className="turn-hint">Pick one each turn. Most often: attack.</p>
       <ul>
         {c.attacks.map((a) => (
-          <Attack key={a.name} a={a} />
+          <Attack key={a.name} a={a} cardId={attackCardId(c, a)} />
         ))}
         {plan.actionSpells.length > 0 && (
           <li className="turn-item">
             <p>
-              <strong>Cast a spell:</strong> {plan.actionSpells.join(", ")}. Your spells are listed
-              below.
+              <strong>Cast a spell:</strong>{" "}
+              {plan.actionSpells.map((s, n) => (
+                <Fragment key={s.id}>
+                  {n > 0 && ", "}
+                  <CardName id={s.id}>{s.name}</CardName>
+                </Fragment>
+              ))}
+              . Your spells are listed below.
             </p>
           </li>
         )}

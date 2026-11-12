@@ -53,8 +53,15 @@
   .dm-link,
   .dm-sheet > summary,
   .sheet-jump,
-  .fold-toggle {
+  .fold-toggle,
+  .card-dialog {
     display: none !important;
+  }
+  /* A name that opens its card is plain text on paper. */
+  html .card-link {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
   }
   html .flow,
   html .dm {
