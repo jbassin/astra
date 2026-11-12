@@ -22,7 +22,17 @@ player page walks through every choice to a printable "On your turn" sheet with 
   interactive: Hit Points and pips are marked on it and save with the answers (`play`).
 - `/test`: test mode, public. The same flow and sheet with nothing saved: the answers and the
   marks live only in the tab's React state, a banner says so, and Start over clears them.
-- `/dm/<token>`: every invited player with their link, last save, progress, class, species and
+- `/p/<phrase>`: the group link (Josh's call, 2026-11-12). "Who are you?" and one button per
+  player, in roster order, each linking to that player's `/c/<id>`. Tapping a name remembers the
+  player and the phrase in the browser's `localStorage`; a later visit forwards to that player at
+  once (and refreshes the remembered phrase, so a replaced phrase heals), and
+  `/p/<phrase>?switch=1` forgets them, shows the list and drops `?switch=1` from the URL. The
+  player page shows "Not <name>?" (after mount) linking to `?switch=1`, and after mount it
+  remembers this page's player when the browser remembered another, so the last player opened
+  is the one remembered. A wrong phrase, a malformed or over-long one, no party file and an
+  unreadable party file all get the same plain 404 as any unknown URL. The private `/c/<id>` links keep
+  working.
+- `/dm/<token>`: the group link at the top (when a phrase is set), then every invited player with their link, last save, progress, class, species and
   background, and each player's full sheet in a fold-out (read-only: it shows the saved marks
   but has no buttons). A wrong or missing token, or no token
   configured, gets the same plain 404 as any unknown URL.
@@ -252,6 +262,12 @@ always come from the imported class table or feature text, never from the curati
   random id (128 bits, base64url) and prints their link. The running server reads the roster on
   every request, so the link works at once. Run it on the host from any checkout after
   `pnpm install`; `ASTRA_DATA_ROOT` points it at another data root.
+- **Group link:** `just builder-party [phrase]` writes `party.json` and prints
+  `https://builder.iridi.cc/p/<phrase>`. With no phrase it makes three random words
+  (`crypto.randomInt`, from the list in `scripts/party.ts`); with one it checks 3 to 64 characters, `a-z` and `0-9` in groups
+  joined by single hyphens (`owl` and `amber-otter-quilt` pass; `ab`, `-owl` and `Owl` don't).
+  Run it again to replace the phrase: the old group link stops working at once. The running
+  server reads the file on every request. The private links are unaffected.
 - **DM link:** `https://builder.iridi.cc/dm/<token>`, where the token is the SOPS secret
   `builder_dm_token` (config `builder.dm-token`, env `BUILDER_DM_TOKEN`, injected by
   `just deploy`). Read it with
@@ -267,6 +283,8 @@ always come from the imported class table or feature text, never from the curati
 Everything lives under `builder.data-dir` (`/ruby/data/astra-state/builder`):
 
 - `roster.json`: `[{ id, name, createdAt }]`, written only by `just builder-invite`.
+- `party.json`: `{ word, createdAt }`, written only by `just builder-party`. Runtime data of the
+  same kind as the roster's ids, so it stays out of `config.kdl` and SOPS.
 - `characters/<id>.json`: `{ schemaVersion: 1, updatedAt, answers, play? }`, written by the server.
   `play` is the zod schema `PlayState`: `hp` (current Hit Points; absent means full) and
   `spent` (tracker id to how many are used; absent means none), at most 60 keys. The file has
@@ -295,6 +313,17 @@ takes every data-root dir by default).
 
 ## Traps
 
+- **The party phrase reveals every player's id.** `/p/<phrase>` returns all ids, and nothing
+  throttles guesses, so the phrase is the only defence against strangers. A generated phrase
+  (three random words, about 27 bits from 570 words) is the safe choice. A phrase Josh picks
+  may be short, and a short common word can be found with a word list; he accepted that on
+  2026-11-12. Anyone with the group link can open any player's character (also accepted that
+  day). The phrase grants nothing else: saves still need a roster id. This repo is public, so
+  never write a real phrase into code, tests, docs or a commit message.
+- **The phrase is in the request path,** so the shared kit's telemetry records it, as it does
+  player ids and the DM token. The app's own code never logs the phrase or the ids, or puts
+  them in an error message or span attribute. An unreadable `party.json` counts as no party and
+  logs one WARN that names no content.
 - **The 5etools checkout is untrusted data.** The importer only reads JSON from it and never runs
   git there (a repo's config can run commands), so the commit is passed in by hand. Don't add a
   `git rev-parse` to the recipe.

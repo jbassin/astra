@@ -9,6 +9,7 @@ import { saveAnswers } from "@/server/builderFns";
 import { Icon } from "@/ui/Icon";
 
 import { BuilderFlow } from "./BuilderFlow";
+import { NotYou } from "./NotYou";
 import { type SaveState, useAutosave } from "./useAutosave";
 
 const SAVE_LABEL: Record<SaveState, string> = {
@@ -53,7 +54,15 @@ export function PlayerBuilder({
       taken={taken}
       persist={autosave.schedule}
       title={`Hi, ${playerName}`}
-      intro="Everything saves as you go, so you can close this page and come back to the same link any time."
+      intro={
+        <>
+          <p>
+            Everything saves as you go, so you can close this page and come back to the same link
+            any time.
+          </p>
+          <NotYou id={id} name={playerName} />
+        </>
+      }
       status={
         <output className="save-state" data-state={autosave.state} title={autosave.error}>
           <Icon name={SAVE_ICON[autosave.state]} />

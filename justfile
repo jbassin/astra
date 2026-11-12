@@ -807,6 +807,11 @@ weal-engine-build:
 builder-invite +name:
     cd apps/builder/web && node --import tsx scripts/invite.ts "$@"
 
+# Set the character builder's group link (<builder.data-dir>/party.json) and print it. With no
+# phrase it picks three random words; running it again replaces the phrase and breaks the old link.
+builder-party phrase="":
+    cd apps/builder/web && node --import tsx scripts/party.ts {{ if phrase == "" { "" } else { quote(phrase) } }}
+
 # Re-import the builder's D&D content from a 5etools `data/` checkout at <commit>, then rebuild
 # it. The checkout is only read as JSON (nothing in it is ever run); commit the changed
 # content/5etools/ files.

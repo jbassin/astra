@@ -59,6 +59,8 @@ export interface SmokeRoute {
   status?: number;
   /** Text the rendered page must contain. */
   contains: ReadonlyArray<string>;
+  /** Text the rendered page must not contain (a private page's 404 must not leak its data). */
+  lacks?: ReadonlyArray<string>;
 }
 
 export interface SsrSmokeOptions {
@@ -108,6 +110,9 @@ export function describeSsrSmoke(opts: SsrSmokeOptions): void {
         expect(result?.status).toBe(route.status ?? 200);
         for (const text of route.contains) {
           expect(result?.html, `${route.path} lacks ${JSON.stringify(text)}`).toContain(text);
+        }
+        for (const text of route.lacks ?? []) {
+          expect(result?.html, `${route.path} has ${JSON.stringify(text)}`).not.toContain(text);
         }
       });
     }

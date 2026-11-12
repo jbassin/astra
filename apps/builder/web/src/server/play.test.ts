@@ -49,7 +49,7 @@ describe("the server logic", () => {
     const play = { hp: 4, spent: { "use-barbarian-rage": 1 } };
     savePlayerAnswers(store, ada.id, { archetype: "warrior", classId: "barbarian" }, play);
     expect(loadPlayerPage(store, ada.id)?.character?.play).toEqual(play);
-    const rows = loadDmView(store, { token: "t", expected: "t", publicOrigin: ORIGIN });
+    const rows = loadDmView(store, { token: "t", expected: "t", publicOrigin: ORIGIN })?.players;
     expect(rows?.[0]?.play).toEqual(play);
   });
 
@@ -67,7 +67,7 @@ describe("the server logic", () => {
     const { store } = fresh();
     const ada = store.addPlayer("Ada");
     savePlayerAnswers(store, ada.id, { archetype: "warrior" });
-    const rows = loadDmView(store, { token: "t", expected: "t", publicOrigin: ORIGIN });
+    const rows = loadDmView(store, { token: "t", expected: "t", publicOrigin: ORIGIN })?.players;
     expect(rows?.[0]).not.toHaveProperty("play");
   });
 });

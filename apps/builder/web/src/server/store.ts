@@ -1,5 +1,5 @@
-// The builder's file store under `builder.data-dir`: `roster.json` (the invited players) and
-// `characters/<id>.json` (each player's saved answers). Every write goes to a temp file in the
+// The builder's file store under `builder.data-dir`: `roster.json` (the invited players),
+// `party.json` (the group link's phrase) and `characters/<id>.json` (each player's saved answers). Every write goes to a temp file in the
 // same directory and is renamed into place, so a reader never sees half a file. Server-only:
 // the server functions and the invite script import it, never a route or component.
 
@@ -15,6 +15,7 @@ import {
   Roster,
   type RosterEntry,
 } from "@/domain/character";
+import { PartyFile } from "@/domain/party";
 
 /** A save for an id that is not on the roster. */
 class UnknownPlayerError extends Error {
@@ -57,6 +58,10 @@ export interface BuilderStore {
   readRoster(): Roster;
   findPlayer(id: string): RosterEntry | undefined;
   addPlayer(name: string, now?: Date): RosterEntry;
+  /** The party phrase, or `undefined` when none is set. Throws on a malformed file. */
+  readParty(): PartyFile | undefined;
+  /** Sets (or replaces) the party phrase; throws when it does not match the pattern. */
+  writeParty(word: string, now?: Date): PartyFile;
   readCharacter(id: string): CharacterDoc | undefined;
   /** Writes the answers and, when it has anything in it, the play state. */
   saveCharacter(id: string, answers: Answers, play?: PlayState, now?: Date): CharacterDoc;
@@ -64,6 +69,7 @@ export interface BuilderStore {
 
 export function builderStore(dataDir: string): BuilderStore {
   const rosterFile = path.join(dataDir, "roster.json");
+  const partyFile = path.join(dataDir, "party.json");
   // Only ids that pass PlayerId reach a path, so an id can never leave characters/.
   const characterFile = (id: PlayerId) => path.join(dataDir, "characters", `${id}.json`);
 
@@ -79,6 +85,17 @@ export function builderStore(dataDir: string): BuilderStore {
   return {
     readRoster,
     findPlayer,
+
+    readParty() {
+      const raw = readJson(partyFile);
+      return raw === undefined ? undefined : PartyFile.parse(raw);
+    },
+
+    writeParty(word, now = new Date()) {
+      const party = PartyFile.parse({ word, createdAt: now.toISOString() });
+      writeJsonAtomic(partyFile, party);
+      return party;
+    },
 
     addPlayer(name, now = new Date()) {
       const entry: RosterEntry = {

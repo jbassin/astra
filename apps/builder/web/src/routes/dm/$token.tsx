@@ -12,9 +12,9 @@ import { Crest, Icon } from "@/ui/Icon";
 // DM page never shows that it exists.
 export const Route = createFileRoute("/dm/$token")({
   loader: async ({ params }) => {
-    const players = await getDmView({ data: { token: params.token } });
-    if (!players) throw notFound();
-    return players;
+    const view = await getDmView({ data: { token: params.token } });
+    if (!view) throw notFound();
+    return view;
   },
   staleTime: 0,
   component: DmComponent,
@@ -85,10 +85,16 @@ function PlayerCard({ player }: { player: DmPlayerRow }) {
 }
 
 function DmComponent() {
-  const players = Route.useLoaderData();
+  const { players, partyLink } = Route.useLoaderData();
   return (
     <main className="dm">
       <h1>Players</h1>
+      {partyLink && (
+        <p className="dm-link dm-party-link">
+          <Icon name="ui-link" />
+          <a href={partyLink}>{partyLink}</a>
+        </p>
+      )}
       <p className="lede">
         {players.length === 0
           ? "No players yet. Invite one with `just builder-invite <name>`."

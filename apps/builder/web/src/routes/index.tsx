@@ -37,8 +37,8 @@ function HomeComponent() {
           <Icon name="ui-link" className="home-path-icon" />
           <h2>Got a link from your DM?</h2>
           <p>
-            To make your real character, open the personal link your DM sent you. It saves as you
-            go, so the same link picks up where you left off.
+            To make your real character, open the link your DM sent you. It saves as you go, so the
+            same link picks up where you left off.
           </p>
         </div>
         <div className="home-path">

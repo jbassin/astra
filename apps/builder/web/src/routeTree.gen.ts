@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestRouteImport } from './routes/test'
 import { Route as CIdRouteImport } from './routes/c/$id'
 import { Route as DmTokenRouteImport } from './routes/dm/$token'
+import { Route as PWordRouteImport } from './routes/p/$word'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const DmTokenRoute = DmTokenRouteImport.update({
   path: '/dm/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PWordRoute = PWordRouteImport.update({
+  id: '/p/$word',
+  path: '/p/$word',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/test': typeof TestRoute
   '/c/$id': typeof CIdRoute
   '/dm/$token': typeof DmTokenRoute
+  '/p/$word': typeof PWordRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/test': typeof TestRoute
   '/c/$id': typeof CIdRoute
   '/dm/$token': typeof DmTokenRoute
+  '/p/$word': typeof PWordRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/test': typeof TestRoute
   '/c/$id': typeof CIdRoute
   '/dm/$token': typeof DmTokenRoute
+  '/p/$word': typeof PWordRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/test' | '/c/$id' | '/dm/$token'
+  fullPaths: '/' | '/test' | '/c/$id' | '/dm/$token' | '/p/$word'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/test' | '/c/$id' | '/dm/$token'
-  id: '__root__' | '/' | '/test' | '/c/$id' | '/dm/$token'
+  to: '/' | '/test' | '/c/$id' | '/dm/$token' | '/p/$word'
+  id: '__root__' | '/' | '/test' | '/c/$id' | '/dm/$token' | '/p/$word'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   TestRoute: typeof TestRoute
   CIdRoute: typeof CIdRoute
   DmTokenRoute: typeof DmTokenRoute
+  PWordRoute: typeof PWordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DmTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/p/$word': {
+      id: '/p/$word'
+      path: '/p/$word'
+      fullPath: '/p/$word'
+      preLoaderRoute: typeof PWordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestRoute: TestRoute,
   CIdRoute: CIdRoute,
   DmTokenRoute: DmTokenRoute,
+  PWordRoute: PWordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
