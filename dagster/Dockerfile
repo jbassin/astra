@@ -8,7 +8,7 @@
 # workspace, not just pip-install dagster (the Phase-0 image did the latter and the code
 # location crash-looped on `No module named 'astra_akasha_backend'`).
 
-FROM python:3.12-slim
+FROM python:3.12-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b
 
 # Pipeline runtime binaries the assets shell out to: `unzip` (scribe extracts the Craig
 # zip), `ffmpeg` + `ffprobe` (scribe per-speaker merge + mouthpiece assembly/duration).
@@ -20,7 +20,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # uv pinned to the host's line (matches uv.lock's format).
-COPY --from=ghcr.io/astral-sh/uv:0.11.19 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.19@sha256:b46b03ddfcfbf8f547af7e9eaefdf8a39c8cebcba7c98858d3162bd28cf536f6 /uv /bin/uv
 
 # One shared venv for the workspace sync + the extra dagster server pkgs; on PATH for
 # the three CMDs. VIRTUAL_ENV makes `uv pip install` target the same venv as `uv sync`.
@@ -69,7 +69,7 @@ RUN uv sync --frozen --no-dev --package astra-pipeline
 # Pyodide; a rebuild can, and this step prints the version. start() raises on a failed
 # fetch and a None version fails the build (sandbox_version swallows errors). This layer
 # sits after the workspace COPY, so any source change re-runs it.
-COPY --from=denoland/deno:bin-2.5.6 /deno /usr/local/bin/deno
+COPY --from=denoland/deno:bin-2.5.6@sha256:2f5f9d651af33c337767c423a340f76df35e35ff8ff4734210237b9c6fed94c7 /deno /usr/local/bin/deno
 ENV DENO_DIR=/opt/deno \
     DENO_NO_PACKAGE_JSON=1 \
     ASTRA_DENO_CACHED_ONLY=1
