@@ -22,6 +22,7 @@ import {
   viewStatuses,
 } from "@/domain/flow";
 import { pruneAnswers } from "@/domain/steps";
+import type { TakenClasses } from "@/server/builder";
 import { CLASS_HERALDRY, hueStyle } from "@/ui/heraldry";
 import { Icon } from "@/ui/Icon";
 
@@ -128,6 +129,7 @@ function FlowBar({
 function Screen({
   answers,
   update,
+  taken,
   view,
   statuses,
   go,
@@ -144,7 +146,7 @@ function Screen({
   const status = statuses.find((s) => s.key === view);
   const { Body } = SCREENS[view];
   if (status?.state === "blocked") return <Blocked status={status} go={go} />;
-  return <Body answers={answers} update={update} />;
+  return <Body answers={answers} update={update} taken={taken} />;
 }
 
 export function BuilderFlow({
@@ -154,6 +156,7 @@ export function BuilderFlow({
   intro,
   banner,
   status,
+  taken,
 }: {
   initial: Answers;
   persist: (answers: Answers) => void;
@@ -162,6 +165,8 @@ export function BuilderFlow({
   banner?: ReactNode;
   /** Shown in the bottom bar between Back and Next: the save state. */
   status?: ReactNode;
+  /** Class id to the name of the player who holds it; none in test mode. */
+  taken?: TakenClasses;
 }) {
   const [answers, setAnswers] = useState<Answers>(initial);
   const [view, setView] = useState<ViewKey>(() => startView(initial));
@@ -190,6 +195,17 @@ export function BuilderFlow({
     setAnswers(next);
     persist(next);
   }
+
+  // A class someone else took first (a lost race): clear it and say so.
+  const lostClass = answers.classId && taken ? taken[answers.classId] : undefined;
+  useEffect(() => {
+    if (!lostClass) return;
+    const lost = classOf(answers)?.name;
+    update({ classId: undefined });
+    setNotice(`${lostClass} picked ${lost} first. Pick another class.`);
+    // `update` closes over the current answers; the effect runs once per lost class.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- fires on a newly lost class only
+  }, [lostClass, answers.classId]);
 
   function go(next: ViewKey) {
     moved.current = true;
@@ -238,7 +254,14 @@ export function BuilderFlow({
               <span>{notice}</span>
             </output>
           )}
-          <Screen answers={answers} update={update} view={view} statuses={statuses} go={go} />
+          <Screen
+            answers={answers}
+            update={update}
+            taken={taken}
+            view={view}
+            statuses={statuses}
+            go={go}
+          />
         </div>
       </section>
       <FlowBar answers={answers} view={view} go={go} status={status} />

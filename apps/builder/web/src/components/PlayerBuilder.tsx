@@ -1,7 +1,10 @@
 // The player page's builder: the shared flow with a debounced server save and its indicator.
 
+import { useState } from "react";
+
 import type { Answers } from "@/domain/character";
 import type { IconName } from "@/generated/icons";
+import type { TakenClasses } from "@/server/builder";
 import { saveAnswers } from "@/server/builderFns";
 import { Icon } from "@/ui/Icon";
 
@@ -28,15 +31,23 @@ export function PlayerBuilder({
   id,
   playerName,
   initial,
+  taken: firstTaken,
 }: {
   id: string;
   playerName: string;
   initial: Answers;
+  taken: TakenClasses;
 }) {
-  const autosave = useAutosave((next: Answers) => saveAnswers({ data: { id, answers: next } }));
+  // Every save answers with the fresh map, so a class someone just took greys out here too.
+  const [taken, setTaken] = useState(firstTaken);
+  const autosave = useAutosave(async (next: Answers) => {
+    const res = await saveAnswers({ data: { id, answers: next } });
+    setTaken(res.taken);
+  });
   return (
     <BuilderFlow
       initial={initial}
+      taken={taken}
       persist={autosave.schedule}
       title={`Hi, ${playerName}`}
       intro="Everything saves as you go, so you can close this page and come back to the same link any time."

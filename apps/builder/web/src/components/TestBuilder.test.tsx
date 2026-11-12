@@ -8,7 +8,7 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const saveAnswers = vi.hoisted(() =>
-  vi.fn(() => Promise.resolve({ updatedAt: "2026-11-07T00:00:00.000Z" })),
+  vi.fn(() => Promise.resolve({ updatedAt: "2026-11-07T00:00:00.000Z", taken: {} })),
 );
 vi.mock("@/server/builderFns", () => ({ saveAnswers }));
 
@@ -58,7 +58,7 @@ describe("test mode", () => {
 
 describe("the player page, for contrast", () => {
   it("saves the same clicks for the player's id", async () => {
-    render(<PlayerBuilder id="SmokeTestPlayer0000000" playerName="Ada" initial={{}} />);
+    render(<PlayerBuilder id="SmokeTestPlayer0000000" playerName="Ada" initial={{}} taken={{}} />);
     await pickAFewThings();
     expect(saveAnswers).toHaveBeenCalledWith({
       data: { id: "SmokeTestPlayer0000000", answers: { archetype: "warrior", classId: "fighter" } },

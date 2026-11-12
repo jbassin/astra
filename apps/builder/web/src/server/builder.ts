@@ -5,7 +5,7 @@ import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 
 import type { Answers, CharacterDoc, StepKey } from "@/domain/character";
-import { answeredSteps, applicableStepCount } from "@/domain/steps";
+import { answeredSteps, applicableStepCount, pruneAnswers } from "@/domain/steps";
 
 import { dmTokenMatches } from "./dmToken";
 import type { BuilderStore } from "./store";
@@ -17,29 +17,61 @@ const saveCounter = lazyCounter(SCOPE, "astra.builder.saves", {
   description: "Character saves by outcome (ok, error)",
 });
 
+/** Class id to the name of the roster player who holds it. */
+export type TakenClasses = Record<string, string>;
+
 export interface PlayerPage {
   name: string;
   character: CharacterDoc | null;
+  taken: TakenClasses;
+}
+
+/**
+ * The classes other players hold, by class id, with the holder's name. The asking player's own
+ * class never appears. When two others hold the same class, the first on the roster wins.
+ */
+export function takenClasses(store: BuilderStore, exceptId: string): TakenClasses {
+  const taken: TakenClasses = {};
+  for (const player of store.readRoster()) {
+    if (player.id === exceptId) continue;
+    const classId = store.readCharacter(player.id)?.answers.classId;
+    if (classId && !(classId in taken)) taken[classId] = player.name;
+  }
+  return taken;
 }
 
 /** The player page's data, or `null` for an id not on the roster. */
 export function loadPlayerPage(store: BuilderStore, id: string): PlayerPage | null {
   const player = store.findPlayer(id);
   if (!player) return null;
-  return { name: player.name, character: store.readCharacter(id) ?? null };
+  return {
+    name: player.name,
+    character: store.readCharacter(id) ?? null,
+    taken: takenClasses(store, id),
+  };
 }
 
-/** Saves a player's answers and returns the new `updatedAt`. Throws for an unknown id. */
+/**
+ * Saves a player's answers and returns the new `updatedAt` and the classes others hold. A class
+ * another player already holds is saved without (the first save wins), and so are the picks
+ * that depend on it. Throws for an unknown id.
+ */
 export function savePlayerAnswers(
   store: BuilderStore,
   id: string,
   answers: Answers,
-): { updatedAt: string } {
+): { updatedAt: string; taken: TakenClasses } {
   return tracer.startActiveSpan("builder.save", (span) => {
     try {
-      const doc = store.saveCharacter(id, answers);
+      const taken = takenClasses(store, id);
+      let kept = answers;
+      if (answers.classId && answers.classId in taken) {
+        const { classId: _lost, ...rest } = answers;
+        kept = pruneAnswers(rest);
+      }
+      const doc = store.saveCharacter(id, kept);
       saveCounter.add(1, { outcome: "ok" });
-      return { updatedAt: doc.updatedAt };
+      return { updatedAt: doc.updatedAt, taken };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       span.setStatus({ code: SpanStatusCode.ERROR, message });

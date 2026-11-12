@@ -11,6 +11,7 @@ import {
   speciesOptionOf,
 } from "@/domain/content";
 import { ABILITY_NAMES } from "@/domain/sheet";
+import type { TakenClasses } from "@/server/builder";
 import {
   ABILITY_ICON,
   ARCHETYPE_HERALDRY,
@@ -26,13 +27,16 @@ import { Choice, ChoiceGroup } from "./Choice";
 export interface ScreenProps {
   answers: Answers;
   update: (patch: Partial<Answers>) => void;
+  /** Class id to the name of the player who holds it; absent in test mode. */
+  taken?: TakenClasses;
 }
 
-export function ArchetypeScreen({ answers, update }: ScreenProps) {
+export function ArchetypeScreen({ answers, update, taken }: ScreenProps) {
   return (
     <ChoiceGroup legend="Kind of hero" layout="tiles" quietLegend>
       {ARCHETYPES.map((a) => {
         const h = ARCHETYPE_HERALDRY[a.id];
+        const full = taken !== undefined && classesForArchetype(a.id).every((c) => c.id in taken);
         return (
           <Choice
             key={a.id}
@@ -40,6 +44,7 @@ export function ArchetypeScreen({ answers, update }: ScreenProps) {
             name="archetype"
             value={a.id}
             checked={answers.archetype === a.id}
+            disabled={full}
             onChange={() => update({ archetype: a.id })}
             title={a.label}
             size="tile"
@@ -47,6 +52,7 @@ export function ArchetypeScreen({ answers, update }: ScreenProps) {
             icon={<Crest icon={h.icon} />}
           >
             <span className="choice-blurb">{a.blurb}</span>
+            {full && <span className="choice-taken">All taken</span>}
           </Choice>
         );
       })}
@@ -54,11 +60,12 @@ export function ArchetypeScreen({ answers, update }: ScreenProps) {
   );
 }
 
-export function ClassScreen({ answers, update }: ScreenProps) {
+export function ClassScreen({ answers, update, taken }: ScreenProps) {
   return (
     <ChoiceGroup legend="Class" layout="grid" quietLegend>
       {classesForArchetype(answers.archetype).map((c) => {
         const h = CLASS_HERALDRY[c.id];
+        const holder = taken?.[c.id];
         return (
           <Choice
             key={c.id}
@@ -66,6 +73,7 @@ export function ClassScreen({ answers, update }: ScreenProps) {
             name="class"
             value={c.id}
             checked={answers.classId === c.id}
+            disabled={holder !== undefined}
             onChange={() => update({ classId: c.id })}
             title={c.name}
             hue={hueStyle(h)}
@@ -76,6 +84,7 @@ export function ClassScreen({ answers, update }: ScreenProps) {
               <Icon name={ABILITY_ICON[c.primary]} />
               Main ability: {ABILITY_NAMES[c.primary]}
             </span>
+            {holder !== undefined && <span className="choice-taken">Taken by {holder}</span>}
           </Choice>
         );
       })}
