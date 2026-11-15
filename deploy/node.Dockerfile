@@ -29,9 +29,9 @@ ARG RUNTIME=plain
 # they take nothing from the repo: no APP, no lockfile, no manifests. A source, manifest or
 # lockfile change then rebuilds only the app layers above them. Bump a version ARG to rebuild
 # one. node:24-slim ships a `node` user at uid/gid 1000, so compose's `user: "1000:1000"` carries over. ---
-FROM node:24-slim AS os-plain
+FROM node:24-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54 AS os-plain
 
-FROM node:24-slim AS os-ffmpeg
+FROM node:24-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54 AS os-ffmpeg
 # ffmpeg (loudness and encode) and yt-dlp (a python zipapp, so python3) on PATH. yt-dlp is
 # PINNED, not `latest`: YouTube breaks old releases every few weeks (2026-09-07: 2026.07.04
 # got 403 on every download) and a `latest` URL behind a cached layer never refreshes.
@@ -47,7 +47,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get purge -y curl && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-FROM node:24-slim AS os-chromium
+FROM node:24-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54 AS os-chromium
 # Chromium and its system libraries, from the `playwright` release pnpm-lock.yaml locks (the
 # app's own install drives the browser at runtime). `just infra-check` fails when this ARG
 # and the lock disagree, so bump them together. portal-headless launches it with --no-sandbox,
@@ -59,7 +59,7 @@ RUN npx --yes "playwright@${PLAYWRIGHT_VERSION}" install --with-deps chromium \
     && rm -rf /var/lib/apt/lists/* /root/.npm \
     && chown -R 1000:1000 /ms-playwright
 
-FROM node:24-slim AS base
+FROM node:24-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54 AS base
 WORKDIR /repo
 # CI=true: pnpm may then replace the modules dir that `pnpm fetch` left (no TTY prompt).
 ENV CI=true
