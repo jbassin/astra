@@ -1,6 +1,9 @@
 // GLSL for the arm strip (see strip.ts for the attributes). The sandbox page in
 // `apps/portal/arms/bench/` runs the same vertex shader and prelude, so a fragment shader written
 // there drops into FRAGMENTS unchanged. The shared smear buffer's passes (smear.ts) are at the end.
+// The bench page embeds this file (bench/sync-bench.mjs), so it runs exactly these shaders.
+
+import { BURST_DECAY } from "./look";
 
 export const ARM_VERT = `precision highp float;
 attribute vec2 aVertexPosition;
@@ -24,7 +27,11 @@ void main() {
  * pixels, uSegments the segment count, uColorA/B/C the flag's fill, outline and glow colours,
  * uOutlineWidth the flag's outline width in pixels. uAlpha is the arm's opacity (a hidden token's
  * arm is half transparent): PIXI does not apply it to a custom shader, so the shader must.
- * Output is premultiplied alpha.
+ * Output is premultiplied alpha. uShimmer (0..1), uShatter (seconds since the arm shattered on
+ * this client, -1 when it is not shattered, huge when it was already shattered when built) and
+ * uBroken (0..1, how broken it looks) are the arm's shimmer and shatter state (shatter.ts);
+ * uSheenSpeed, uShardPx and uBurstLen are the shared tuning (`tune` in shatter.ts). Only the ink
+ * paint shader uses them.
  */
 export const FRAGMENT_PRELUDE = `precision highp float;
 #define PI 3.14159265
@@ -36,6 +43,12 @@ uniform vec3 uColorB;
 uniform vec3 uColorC;
 uniform float uOutlineWidth;
 uniform float uAlpha;
+uniform float uShimmer;
+uniform float uShatter;
+uniform float uBroken;
+uniform float uSheenSpeed;
+uniform float uShardPx;
+uniform float uBurstLen;
 varying vec2 vUv;
 varying float vDist;
 varying float vSeg;
@@ -71,6 +84,43 @@ float fbm2(vec2 p) {
 const INK_PATTERN = `const float INK_PX = 90.;  // body pattern size, in pixels
 const float FLOW = .35;    // how fast the body's pattern drifts toward the hand`;
 
+/**
+ * What the shimmer and the shatter share between the arm's paint pass and the hands in the buffer
+ * pass (both include NOISE2 first, and declare uTime and uSheenSpeed).
+ */
+const INK_FX = `const float SHEEN_PERIOD = 300.;  // distance between the sheen's bands, in pixels
+const float BURST_DECAY = ${BURST_DECAY.toFixed(2)};
+vec2 hash22(vec2 p) {
+  p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+  return fract(sin(p) * 43758.5453);
+}
+// Shards: a Voronoi pattern over p (one cell per unit). x is the gap between the nearest and the
+// second nearest feature point (0 on a crack, growing into a cell), y a random 0..1 per cell.
+vec2 shards(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = p - i;
+  float d1 = 8.;
+  float d2 = 8.;
+  float id = 0.;
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 g = vec2(float(x), float(y));
+      vec2 r = g + hash22(i + g) - f;
+      float d = dot(r, r);
+      if (d < d1) { d2 = d1; d1 = d; id = hash(i + g + 7.3); }
+      else if (d < d2) { d2 = d; }
+    }
+  }
+  return vec2(sqrt(d2) - sqrt(d1), id);
+}
+// The shimmer's pattern, 0..1: a base glint, bands travelling toward larger x (toward the hand),
+// and sparse twinkles at p (pixels).
+float sheen(float x, vec2 p) {
+  float bands = pow(.5 + .5 * sin(6.2832 * (x - uTime * uSheenSpeed) / SHEEN_PERIOD), 3.);
+  float twinkle = pow(noise(p / 12. + vec2(uTime * 2., 0.)), 5.);
+  return clamp(.3 + .7 * bands + 1.5 * twinkle, 0., 1.);
+}`;
+
 /** Fragment shader bodies by the name the flag's `shader` field gives. */
 export const FRAGMENTS: Readonly<Record<string, string>> = {
   // Body in the fill colour with an outline-coloured edge: the module's original look.
@@ -88,6 +138,29 @@ export const FRAGMENTS: Readonly<Record<string, string>> = {
   // Ported from the body code of the bench's WORLD_INK_BUFFER.
   [SMEAR_SHADER]: `${NOISE2}
 ${INK_PATTERN}
+${INK_FX}
+// The arm's shimmer and shatter, in the arm's own pixels ap (along, across). fx is what goes in
+// the arm texture's green, blue and alpha, as fractions of the ink: x the sheen (0 when the arm
+// is not shimmering), y a crack code (.35 * broken for the dulled shard, rising to 1 on a crack
+// line, whose half width in pixels is 5 * broken + 14 * burst), z the flash (burst cubed). Returns
+// the factor the ink density is multiplied by: thinner when broken, and at the burst's peak the
+// shards with a high random value are blasted away and come back as the burst dies down.
+float armFx(vec2 ap, out vec3 fx) {
+  fx = vec3(0.);
+  float keep = 1.;
+  if (uShimmer > 0.) fx.x = uShimmer * sheen(ap.x, ap);
+  float burst = (uShatter < 0. || uShatter >= uBurstLen) ? 0. : exp(-uShatter * BURST_DECAY / uBurstLen);
+  if (uBroken > 0. || burst > 0.) {
+    vec2 s = shards(ap / uShardPx);
+    float edge = s.x * uShardPx * .5;
+    float w = 5. * uBroken + 14. * burst;
+    float line = (1. - smoothstep(w - 2., w + 2., edge)) * smoothstep(0., 2., w);
+    keep = (1. - .3 * uBroken) * (1. - burst * smoothstep(.35, .75, s.y));
+    fx.y = .35 * uBroken + .65 * line;
+    fx.z = burst * burst * burst * (.6 + .4 * s.y);
+  }
+  return keep;
+}
 void main() {
   float across = abs(vUv.y);
   float body = 1. - across * across;
@@ -98,7 +171,13 @@ void main() {
   vec2 warp = vec2(cos(angle), sin(angle)) * .35;
   float n = fbm2(q + warp - drift * 1.3);
   float paint = clamp(body * 1.25 + (n - .5) * 1.6 - .1, 0., 1.) * smoothstep(0., .2, body);
-  gl_FragColor = vec4(paint);
+  vec3 fx;
+  float whole = paint;
+  paint *= armFx(ap, fx);
+  // Premultiplied by the density; the smear passes decode and fade these (see INK_BUFFER_FRAG).
+  // The flash uses the density before the burst blasted shards away, so the ink that lingers
+  // where a shard was still flares.
+  gl_FragColor = vec4(paint, paint * fx.xy, whole * fx.z);
 }`,
 };
 
@@ -133,7 +212,9 @@ export const MAX_HANDS = 8;
  * swirls the ink, and fades it. uRegion is (x, y, size in map pixels, texture size in texels);
  * uDelta is seconds since the last frame. The first uHandCount entries of uHands (x, y in map
  * pixels, then the arm's unit direction at the hand) and uHandParams (radius in pixels, thumb
- * side ±1, finger curl 0..1, unused) are the hands. Drawn with blending off.
+ * side ±1, finger curl 0..1, the hand's shimmer and shatter packed by `packFx`) are the hands.
+ * Drawn with blending off. The buffer's channels: r the ink density, g the shimmer, b the crack
+ * code, a the flash (each of the last three already multiplied by the density).
  */
 export const INK_BUFFER_FRAG = `precision highp float;
 #define MAX_HANDS ${MAX_HANDS}
@@ -145,6 +226,8 @@ uniform vec4 uRegion;
 uniform vec4 uHands[MAX_HANDS];
 uniform vec4 uHandParams[MAX_HANDS];
 uniform float uHandCount;
+uniform float uSheenSpeed;
+uniform float uShardPx;
 varying vec2 vUv;
 
 const float fade = .5;        // how fast smears fade, per second (lower: longer smears)
@@ -157,11 +240,14 @@ const float HAND_CLEAR_R = .6;// how far around the hand that reaches, in hand r
 // A texel farther than this from a hand's centre, in hand radii, skips that hand. The hand
 // reaches about 2 radii (fingertips at curl 0, the wrist) and its clearing zone 0.6 beyond.
 const float HAND_REACH = 2.6;
+const float FX_FADE = 10.;    // the arm texture's green, blue and alpha fade this fast, per second
+const float FLASH_SPREAD = 8.;// how much harder the flash pushes ink down its slope
 ${INK_PATTERN}
 
 #define TEX1(uv) texture2D(uBuffer, uv).r
 
 ${NOISE2}
+${INK_FX}
 
 float hash3(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
 float noise3(vec3 p) {
@@ -248,8 +334,11 @@ float hand(vec2 q, float curl, out float h) {
 }
 
 void main() {
-  // The ink bodies the arms painted this frame.
-  float paint = texture2D(uArm, vUv).r;
+  // The ink bodies the arms painted this frame: density in r, and in g, b and a the shimmer, crack
+  // code and flash, each already multiplied by the density (see the ink paint shader).
+  vec4 armData = texture2D(uArm, vUv);
+  float paint = armData.r;
+  vec3 fx = armData.gba;
 
   // The hands, in the same ink, with their pattern in map coordinates. Their edges are firmer
   // and their noise weaker than the arms', so the fingers read as fingers. Hands combine by max.
@@ -257,6 +346,7 @@ void main() {
   float handPaint = 0.;
   float handZone = 0.;  // 1 in and just around a hand, where smears are cleared fast
   float hn = -1.;       // the hands' shared noise, worked out only for a texel inside a hand
+  vec3 handFx = vec3(0.);
   for (int i = 0; i < MAX_HANDS; i++) {
     if (float(i) >= uHandCount) break;
     vec4 at = uHands[i];
@@ -278,10 +368,32 @@ void main() {
     }
     // The palm sits low (denser ink reads higher), curled fingers rise toward full density.
     float level = mix(.55, 1., clamp(height * CURL_RISE, 0., 1.));
-    handPaint = max(handPaint,
-      clamp(density * level + (hn - .5) * .3, 0., 1.) * smoothstep(0., .1, density));
+    float ink = clamp(density * level + (hn - .5) * .3, 0., 1.) * smoothstep(0., .1, density);
+    float whole = ink;  // before a burst blasts shards away
+
+    // The hand's shimmer and shatter, packed in the fourth param (see packFx in shatter.ts):
+    // 5 bits each of shimmer, broken and burst. Same look as the arm's, in hand radii.
+    float pk = params.w;
+    float hs = mod(pk, 32.) / 31.;
+    float hb = mod(floor(pk / 32.), 32.) / 31.;
+    float hu = floor(pk / 1024.) / 31.;
+    vec3 hfx = vec3(0.);
+    if (hs > 0.) hfx.x = hs * sheen(dot(rel, at.zw), wpx);
+    if (hb > 0. || hu > 0.) {
+      float cell = .55 * uShardPx / 80.;
+      vec2 s = shards(hq / cell);
+      float edge = s.x * cell * .5;
+      float w = .05 * hb + .13 * hu;
+      float line = (1. - smoothstep(w - .03, w + .03, edge)) * smoothstep(0., .03, w);
+      ink *= (1. - .3 * hb) * (1. - hu * smoothstep(.35, .75, s.y));
+      hfx.y = .35 * hb + .65 * line;
+      hfx.z = hu * hu * hu * (.6 + .4 * s.y);
+    }
+    handPaint = max(handPaint, ink);
+    handFx = max(handFx, vec3(ink * hfx.xy, whole * hfx.z));
   }
   paint = max(paint, handPaint);
+  fx = max(fx, handFx);
 
   // Spreading: push ink down its own slope, so edges creep outward.
   float px = uRegion.z;  // pixels per unit of vUv
@@ -291,7 +403,7 @@ void main() {
     TEX1(vUv - unit.xz) - TEX1(vUv + unit.xz),
     TEX1(vUv - unit.zy) - TEX1(vUv + unit.zy),
     data.x * data.x) + .001);
-  vec2 offset = -normal.xy;
+  vec2 offset = -normal.xy * (1. + FLASH_SPREAD * data.a);
 
   // Turbulence, in map pixels.
   vec2 wp = vUv * px;
@@ -304,48 +416,12 @@ void main() {
 
   // Keep the square's border empty.
   float border = min(min(vUv.x, vUv.y), min(1. - vUv.x, 1. - vUv.y));
-  paint *= smoothstep(0., .02, border);
-  gl_FragColor = vec4(clamp(paint, 0., 1.));
+  float keepBorder = smoothstep(0., .02, border);
+  paint *= keepBorder;
+  // The shimmer, crack code and flash are not advected: they are stamped fresh each frame where
+  // the arms and hands are now, and what they left behind fades fast, so they hug the ink body.
+  fx = max(fx, data.gba - uDelta * FX_FADE) * keepBorder;
+  gl_FragColor = vec4(clamp(paint, 0., 1.), clamp(fx, 0., 1.));
 }`;
 
-/**
- * The image pass (the Shadertoy shader's Image tab): lights the buffer across the whole square,
- * so smears show wherever they drift. uColorA is the body colour. uColorC (glow) is declared so
- * the pass has the same colour inputs as an arm, but this lighting, like the bench's, does not
- * use it. Output is premultiplied and multiplied by uAlpha, as every visible shader's must be.
- */
-export const INK_IMAGE_FRAG = `precision highp float;
-uniform sampler2D uBuffer;
-uniform vec4 uRegion;
-uniform vec3 uColorA;
-uniform vec3 uColorC;
-uniform float uAlpha;
-varying vec2 vUv;
-
-#define TEX(uv) texture2D(uBuffer, uv).r
-#define ss(a, b, t) smoothstep(a, b, t)
-
-float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-
-void main() {
-  vec2 uv = vUv;
-  float gray = TEX(uv);
-  if (gray < .01) { gl_FragColor = vec4(0.); return; }
-
-  vec3 unit = vec3(vec2(3. / uRegion.w), 0.);
-  vec3 normal = normalize(vec3(
-    TEX(uv + unit.xz) - TEX(uv - unit.xz),
-    TEX(uv - unit.zy) - TEX(uv + unit.zy),
-    gray * gray * gray + .001));
-
-  vec3 color = uColorA + vec3(.3) * (1. - abs(normal.z));
-  vec3 dir = normalize(vec3(0., 1., 2.));
-  float specular = pow(dot(normal, dir) * .5 + .5, 20.);
-  color += vec3(.5) * ss(.2, 1., specular);
-  vec3 tint = .5 + .5 * cos(vec3(1., 2., 3.) + dot(normal, dir) * 4. - uv.y * 3. - 3.);
-  color += tint * smoothstep(.15, .0, gray);
-  color -= hash(gl_FragCoord.xy) * .1;
-
-  float a = ss(.03, .35, gray);
-  gl_FragColor = vec4(clamp(color, 0., 1.) * a, a) * uAlpha;
-}`;
+export { INK_IMAGE_FRAG } from "./ink-image";

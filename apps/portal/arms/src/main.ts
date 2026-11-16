@@ -4,9 +4,19 @@
 // that configures it (see config.ts).
 
 import { type ArmConfig, FLAG_KEY, FLAG_SCOPE, parseArmFlag } from "./config";
+import {
+  flagTouched,
+  type Look,
+  newLook,
+  setLookState,
+  stepLook,
+  writeLook,
+  writeTune,
+} from "./look";
 import { reachRadius } from "./region";
 import { ARM_VERT, fragmentSource, SMEAR_SHADER } from "./shaders";
 import { createShatter, type ShatterApi } from "./shatter";
+import { parseShatterFlag, SHATTER_KEY } from "./shatter-config";
 import { createSmear, type InkHand } from "./smear";
 import { defaultLength, type Point, solve } from "./solve";
 import { allocateStrip, type StripArrays, stripEnd, stripIndices, writeStrip } from "./strip";
@@ -39,6 +49,9 @@ interface Uniforms {
   uColorC: Float32Array;
   uOutlineWidth: number;
   uAlpha: number;
+  uShimmer: number;
+  uShatter: number;
+  uBroken: number;
 }
 
 interface Arm {
@@ -52,6 +65,8 @@ interface Arm {
   /** The hand the smear buffer draws, for an ink arm whose flag asks for one. */
   readonly hand: InkHand | null;
   readonly config: ArmConfig;
+  /** The shimmer and shatter animation, from `flags.world.ikShatter` (look.ts). */
+  readonly look: Look;
   /** One segment's length in pixels (the flag's, or fitted when the arm was built). */
   readonly length: number;
   /** The drag preview the arm is following, while there is one. */
@@ -146,8 +161,13 @@ const startTime = performance.now();
 let ticker: PIXI.Ticker | null = null;
 function tick(): void {
   const time = (performance.now() - startTime) / 1000;
-  for (const arm of arms.values()) arm.uniforms.uTime = time;
-  smear.update(time, Math.min((ticker?.deltaMS ?? 0) / 1000, 0.1));
+  const delta = Math.min((ticker?.deltaMS ?? 0) / 1000, 0.1);
+  for (const arm of arms.values()) {
+    arm.uniforms.uTime = time;
+    stepLook(arm.look, delta);
+    writeLook(arm.look, arm.uniforms, arm.hand?.params ?? null);
+  }
+  smear.update(time, delta);
 }
 
 function draw(arm: Arm): void {
@@ -192,7 +212,11 @@ function makeMesh(config: ArmConfig): { mesh: PIXI.Mesh; strip: StripArrays; uni
     uColorC: rgb(config.glow),
     uOutlineWidth: config.outlineWidth,
     uAlpha: 1,
+    uShimmer: 0,
+    uShatter: -1,
+    uBroken: 0,
   };
+  writeTune(uniforms);
   const shader = PIXI.Shader.from(ARM_VERT, fragmentSource(config.shader), uniforms);
   return { mesh: new PIXI.Mesh(geometry, shader), strip, uniforms };
 }
@@ -259,6 +283,9 @@ function build(token: FoundryToken): void {
   const length =
     config.length ??
     defaultLength(config.anchor, centerOf(token), config.segments, canvas.grid.size);
+  const look = newLook(parseShatterFlag(token.document.getFlag(FLAG_SCOPE, SHATTER_KEY)) ?? null);
+  // Written now so that a shattered arm's first frame is already settled, not normal.
+  writeLook(look, uniforms, hand?.params ?? null);
   arms.set(token.id, {
     container,
     mesh,
@@ -267,6 +294,7 @@ function build(token: FoundryToken): void {
     rings,
     hand,
     config,
+    look,
     length,
     preview: null,
     joints: [],
@@ -321,9 +349,14 @@ on("canvasTearDown", () => {
 });
 on("updateToken", (doc: FoundryTokenDocument, change: Record<string, unknown>) => {
   if (!doc.object) return;
-  const flags = change.flags;
-  const armChanged = typeof flags === "object" && flags !== null && FLAG_SCOPE in flags;
-  if (armChanged || "elevation" in change) build(doc.object);
+  // Only the arm's own flag (or its elevation) rebuilds it. A change to the shatter flag just
+  // moves the arm's look; the next tick writes it to the uniforms.
+  if (flagTouched(change, FLAG_SCOPE, FLAG_KEY) || "elevation" in change) {
+    build(doc.object);
+  } else if (flagTouched(change, FLAG_SCOPE, SHATTER_KEY)) {
+    const arm = arms.get(doc.object.id);
+    if (arm) setLookState(arm.look, parseShatterFlag(doc.getFlag(FLAG_SCOPE, SHATTER_KEY)) ?? null);
+  }
 });
 
 /**

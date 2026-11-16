@@ -5,7 +5,11 @@
 //      smears and fades the ink, and writes the other buffer texture (ping-pong);
 //   3. image: one quad in canvas.primary lights the buffer over the square, under the tokens.
 // The textures exist only while at least one ink arm does.
+// Each texture holds four channels: r the ink density, g the shimmer, b the crack code and a the
+// flash, the last three premultiplied by the density (see INK_BUFFER_FRAG and the ink paint
+// shader in shaders.ts).
 
+import { writeTune } from "./look";
 import { type Region, type Reach, sameRegion, smearRegion } from "./region";
 import {
   ARM_VERT,
@@ -21,7 +25,8 @@ import {
 export interface InkHand {
   /** x, y of the token centre in map pixels, then the arm's unit direction there. */
   readonly at: Float32Array;
-  /** Radius in map pixels, thumb side (±1), finger curl (0..1), unused. */
+  /** Radius in map pixels, thumb side (±1), finger curl (0..1), the shimmer and shatter packed
+   * by `packFx` (shatter.ts). */
   readonly params: Float32Array;
 }
 
@@ -114,6 +119,7 @@ export function createSmear(host: SmearHost): Smear {
     uHandParams,
     uHandCount: 0,
   };
+  writeTune(bufferUniforms);
   const colorA = new Float32Array(3);
   const colorC = new Float32Array(3);
   const imageUniforms: Record<string, unknown> = {
@@ -122,7 +128,9 @@ export function createSmear(host: SmearHost): Smear {
     uColorA: colorA,
     uColorC: colorC,
     uAlpha: 1,
+    uTime: 0,
   };
+  writeTune(imageUniforms);
 
   function clear(texture: PIXI.RenderTexture): void {
     host.renderer().render(empty, { renderTexture: texture, clear: true });
@@ -239,6 +247,9 @@ export function createSmear(host: SmearHost): Smear {
     bufferUniforms.uHandCount = hands;
     bufferUniforms.uTime = time;
     bufferUniforms.uDelta = delta;
+    writeTune(bufferUniforms);
+    writeTune(imageUniforms);
+    imageUniforms.uTime = time;
     bufferUniforms.uBuffer = gpu.read;
     renderer.render(gpu.bufferQuad, { renderTexture: gpu.write, clear: true });
     [gpu.read, gpu.write] = [gpu.write, gpu.read];
@@ -253,6 +264,10 @@ export function createSmear(host: SmearHost): Smear {
       arm.geometry,
       PIXI.Shader.from(ARM_VERT, fragmentSource(SMEAR_SHADER), arm.uniforms),
     );
+    // Screen blending (src + dst * (1 - src), per channel, alpha included) combines overlapping
+    // arms as a + b - ab in every channel, so draw order never matters. Normal blending would only
+    // do that for the density.
+    mesh.state.blendMode = PIXI.BLEND_MODES.SCREEN;
     painters.set(id, { arm, mesh });
     refresh();
   }

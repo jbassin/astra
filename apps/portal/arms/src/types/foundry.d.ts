@@ -45,9 +45,12 @@ declare namespace PIXI {
     static from(vertex: string, fragment: string, uniforms: Record<string, unknown>): Shader;
     readonly uniforms: Record<string, unknown>;
   }
+  /** Only the blend modes this module uses (the numbers are PIXI's). */
+  const BLEND_MODES: { readonly SCREEN: number };
   class State {
     /** False draws without blending: the output replaces what is there. */
     blend: boolean;
+    blendMode: number;
   }
   class Mesh extends Container {
     constructor(geometry: Geometry, shader: Shader);

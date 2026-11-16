@@ -22,12 +22,14 @@ because that is where astra's Foundry code is.
 - `src/shaders.ts` holds the strip's vertex shader, the fragment prelude (attributes and uniforms
   every fragment shader can use) and the named fragment shaders the `shader` field picks from:
   `flat` and `ink`. It also holds the shared smear buffer's passes. `apps/portal/arms/bench/`
-  holds a sandbox page for writing new ones.
+  holds a sandbox page for writing new ones, and a boss demo (see Bench).
+- `src/look.ts` runs the per-client animation behind the
+  shimmer and shatter looks (below). It is pure, so it has unit tests.
 - `src/smear.ts` is the shared smear buffer for ink arms (below); `src/region.ts` works out the
   square of map it covers.
 - `src/main.ts` is the Foundry glue: it builds an arm on `drawToken`, re-poses it on
-  `refreshToken`, rebuilds it when the flag changes, advances every arm's `uTime` and the smear
-  buffer on the canvas ticker, registers the buffer size setting, and exposes `globalThis.ikArms`.
+  `refreshToken`, rebuilds it when `flags.world.ikArm` or the elevation changes, advances every
+  arm's `uTime` and shimmer/shatter look and the smear buffer on the canvas ticker, registers the buffer size setting, and exposes `globalThis.ikArms`.
 - The arm is a `PIXI.Mesh` (plus a `PIXI.Graphics` for `rings`) in a `PIXI.Container` in
   `canvas.primary` with `sortLayer` 690, just under tokens (700), so it is lit and fogged like the
   map. Each arm has its own shader instance, since its uniforms differ. A hidden token's arm shows
@@ -63,6 +65,74 @@ draw), and every ink arm on the scene feeds one smear buffer fixed to the map, a
   textures, which clears the ink.
 - The textures and the image quad exist only while an ink arm does: they are freed on the first
   frame with no ink arm, on `teardown()`, and when the canvas is torn down (scene change).
+
+## Shimmer and shatter
+
+A boss fight can mark an arm with a second token flag, `flags.world.ikShatter`, which only changes
+how the arm looks. Another part of the world (the fight logic) writes it; this module only reads it.
+
+```js
+flags.world.ikShatter = { state: "shimmer" | "shattered", since: Date.now() }; // absent: a normal arm
+```
+
+- **`shimmer`**: the whole ink arm and its hand turn kaleidoscopic. The image pass tiles the map
+  with hexagonal cells (`uKaleidoPx` wide), mirror-folds each into wedges around its centre and
+  fills the fold with a four-step iterated domain warp: warm (mixed toward the arm's `glow`,
+  `uColorC`) in the middle of a cell, teal at its edge, with hard bright facets. Every `uSnapEvery`
+  seconds a cell's fold snaps a sixth of a turn over half a second (cubic ease), zooming in 25% and
+  flashing, with the red channel split off wider during the snap. Cells snap at their own times
+  (`uSnapSpread` 1; 0 snaps them together). The pattern shows only where the arm's sheen (g) is,
+  so sweeping bands and twinkles from the paint pass still modulate it. It costs the image pass one
+  hex lookup and a 4-iteration warp, twice (red is sampled apart), only on shimmering texels.
+- **`shattered`**: a burst of about a second, then a settled look until the flag clears. In the
+  burst the kaleidoscope flares across the whole arm and hand at full strength, shimmering or not,
+  with every cell turning together while the fold zooms in; a Voronoi crack pattern opens in the
+  arm's own pixels, some shards are blasted away and ink is thrown outward (the flare still shows on
+  the ink that lingers where a shard was). A small white flash adds to it. The settled look is
+  cracked, dead stained glass: thinner, greyer ink whose shards hold the kaleidoscope dark and
+  frozen at a fixed time, with see-through crack lines edged in its colours (`uGlassGain` sets how
+  strongly). Clearing the flag heals it back to normal over 0.6 seconds.
+- **No rebuild.** A change to `ikShatter` does not rebuild the arm; only `ikArm` or the elevation
+  does. `flagTouched` in `src/look.ts` reads Foundry's change object, including an unset
+  (`{"flags": {"world": {"-=ikShatter": null}}}`).
+- **Client time.** Each client times the animation from when it sees the change, never from
+  `since` (clients' clocks differ). An arm that is already `shattered` when it is built (a page
+  load mid-fight) starts in the settled look, with no burst. The shimmer eases in and out over
+  0.4 seconds.
+
+**Per-arm uniforms** (declared in every fragment shader's prelude; `flat` ignores them):
+
+| Uniform | Meaning |
+| --- | --- |
+| `uShimmer` | 0..1, eased on the client |
+| `uBroken` | 0..1, how broken the arm looks: up in 0.1 s when shattered, down in 0.6 s on reset |
+| `uShatter` | seconds since this client saw the arm shatter; -1 when it is not shattered; 1000 when it was already shattered at build |
+
+**Tuning uniforms** (the same on every arm, from `tune` in `src/look.ts`, and set on the buffer
+and image passes too): `uSheenSpeed` (px/s), `uShimmerGain`, `uShardPx`, `uBurstLen` (s),
+`uCrackDark`, `uKaleidoPx`, `uSnapEvery` (s), `uSnapSpread` and `uGlassGain`. The module never changes `tune`; the bench's sliders do, and its defaults are the
+module's.
+
+**Channel encoding.** Overlapping arms must combine without depending on draw order, so the paint
+meshes use screen blending (`src + dst * (1 - src)`, per channel, alpha included), and each arm
+paints premultiplied by its density `p`:
+
+| Channel | Arm texture and buffer | Image pass reads |
+| --- | --- | --- |
+| r | ink density `p` | the ink |
+| g | `p` * shimmer sheen (0..1) | glint colour and brightness |
+| b | `p` * crack code | `.35 * broken` on a dulled shard, rising to 1 on a crack line |
+| a | `p` * flash, using the density before the burst dropped shards | the burst's kaleidoscope flare and white flash |
+
+The image pass divides g, b and a by r to get fractions of the ink. The buffer pass keeps g, b and a
+from each frame's paint, but does not advect or spread them: they fade at 10 per second so they hug
+the arm and keep their crisp edges, while r smears and fades as before. The flash also makes ink
+spread down its slope up to 9 times as hard, which throws ink outward.
+
+**Hands** carry the same look through the fourth float of `uHandParams`, packed 5 bits each as
+`shimmer + 32 * broken + 1024 * burst` (`packFx`/`unpackFx` in `src/look.ts`, decoded in
+`INK_BUFFER_FRAG`); the burst's strength is worked out on the CPU, and the hand's flash is the burst
+cubed, as the arm's is.
 
 ## Hand
 
@@ -168,10 +238,26 @@ timer: delete an effect (or call `reroll()`) to end it.
 - **Scene flag writes merge.** `effectUuids` and `window` are written as `[]` and `null`, not unset.
 - **Untested against the live world.** Only the state machine and the flag parser have unit tests.
 
+## Bench
+
+`bench/arm-shader-bench.html` is one self-contained page. Its **Boss demo** (the default) shows six
+ink arms with hands around a centre, so normal, shimmering and shattered arms sit side by side. It
+has per-arm Shimmer, Shatter and Reset buttons (clicking a shimmering hand shatters it), a Run the
+cycle button (four of six shimmer, a hit on each shatters its arm, the third hit shatters all six at once, a pause, then a reset), and sliders for the tuning
+uniforms with a copy button for the values. Its **Shader editor** is the older single-arm playground
+with its own starter shaders.
+
+The boss demo runs the module's own code. `src/benchSync.ts` transpiles `solve`, `region`, `strip`,
+`config`, `look`, `ink-image`, `shaders` and `smear` into one `ArmsLib` script between the page's
+`BEGIN generated` and `END generated` comments, and `benchSync.test.ts` fails when that block is out
+of date. After changing any of those files, run `pnpm --filter @astra/portal-arms sync-bench` and
+commit the page. Only the Foundry glue (token flag, hooks) is rewritten in the page, as buttons.
+
 ## Build, test, install
 
 ```sh
 pnpm --filter @astra/portal-arms test
+pnpm --filter @astra/portal-arms sync-bench   # refresh the bench page's copy of the module's code
 just arms-module-install     # tsdown build, then copy into Data/modules/ik-arms in Foundry
 ```
 
@@ -206,13 +292,26 @@ needs each client to reload.
 - **Rebuilding an ink arm keeps its ink; removing the last one loses it.** A flag or elevation
   change removes the arm and adds it straight back, which keeps the textures. With no ink arm
   left at the next frame, the textures are freed.
+- **Edit the buffer's channels together.** The arm texture's r, g, b and a each mean something
+  (Shimmer and shatter); a shader that writes `vec4(paint)` there reads as shimmering and cracked.
+  The paint mesh must keep screen blending, or overlapping arms stop combining per channel.
+- **Shimmer, cracks and flash are not advected.** They show where the arm and hand are now; a
+  smear left behind by a moving arm is plain ink. They also run at the buffer's resolution (about
+  3 to 4 map pixels per texel for a large boss), so a crack line under about 8 pixels wide is only a
+  texel or two.
+- **A shard blasted away comes back.** At the burst's peak, shards with a high random value are
+  dropped from the paint, and they return as the burst dies down, so the shards do not travel; the
+  ink spreading outward sells the throw.
+- **The hand's palm sits under the token.** Its cracks and shimmer show on the fingers and the
+  edge of the palm only.
 - **The paint pass ignores `uAlpha`.** It writes ink density, not colour; the image pass, which is
   visible, multiplies by its own `uAlpha` (always 1).
 - **The setting's `onChange` goes through `globalThis.ikArms`.** Foundry keeps the callback from
   the first registration, and re-importing the module (the dev-load macro) does not register the
   setting again, so the callback must find the running instance.
-- **Only the solver, the strip, the flag parser, the smear square and the shader registry have
-  unit tests.** The canvas glue in `src/main.ts` and `src/smear.ts` must be checked against the
-  live world after changing it. The shaders compile and link in WebGL 1 (checked in Chromium), but
-  the smear passes and the hand have never run inside Foundry (the hand was rendered once with
-  the buffer pass in headless Chromium).
+- **Only the solver, the strip, the flag parser, the shatter look, the smear square, the shader
+  registry and the bench sync have unit tests.** The canvas glue in `src/main.ts` must be checked
+  against the live world after changing it. The shaders compile and link in WebGL 1 (checked in
+  Chromium), and the bench's boss demo runs the module's smear passes, hands, shimmer and shatter in
+  headless Chromium; none of it has run inside Foundry yet, and the `updateToken` hook that reads
+  `ikShatter` has only been exercised through its pure helper.

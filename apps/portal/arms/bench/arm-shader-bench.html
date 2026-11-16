@@ -122,11 +122,39 @@ details h3 { margin: 10px 0 0; font: 600 12px var(--f-body); color: var(--fg); }
   .stage { height: 52vh; }
   .rail { overflow: visible; }
 }
+
+[hidden] { display: none !important; }
+.railgroup { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.modes { margin-top: 10px; }
+.stage[data-mode="boss"] .editor-view, .stage[data-mode="boss"] #editor-bar { display: none; }
+.stage[data-mode="editor"] .boss-view, .stage[data-mode="editor"] #boss-bar, .stage[data-mode="editor"] #banner { display: none; }
+.stage canvas.boss-view { cursor: pointer; }
+.banner {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+  font: 600 16px var(--f-display); letter-spacing: 0.04em; color: #fff;
+  background: color-mix(in srgb, #e0457b 80%, #000); border: 1px solid #ff9fc0;
+  padding: 8px 16px; border-radius: 6px; pointer-events: none; text-align: center; max-width: calc(100% - 24px);
+}
+.armrow { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+.armrow:first-child { border-top: 0; }
+.armname { font-weight: 600; }
+.badge { justify-self: start; font: 500 11px var(--f-mono); padding: 2px 8px; border-radius: 99px; background: var(--raise); color: var(--muted); border: 1px solid var(--line); }
+.badge[data-state="shimmer"] { color: #ffd1e3; border-color: #e0457b; }
+.badge[data-state="shattered"] { color: #ffb38a; border-color: #b0562a; }
+.armrow .btns { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+.armrow .btn { padding: 4px 10px; font-size: 12px; }
+.btn[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+#tune-json { display: block; font: 11.5px/1.45 var(--f-mono); color: var(--fg); background: #0e0c12; border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; word-break: break-all; user-select: all; }
+.swatches2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 </style>
 
 <div class="app">
-  <div class="stage" id="stage">
-    <div class="stage-bar">
+  <div class="stage" id="stage" data-mode="boss">
+    <div class="stage-bar" id="boss-bar">
+      <span class="hint">Click a shimmering hand to shatter it.</span>
+    </div>
+    <div class="banner" id="banner" hidden>ESOTERICA is weakened for a round</div>
+    <div class="stage-bar" id="editor-bar">
       <div class="seg-ctl" role="group" aria-label="How the hand moves">
         <button type="button" id="mode-auto" aria-pressed="true">Auto</button>
         <button type="button" id="mode-drag" aria-pressed="false">Drag</button>
@@ -138,8 +166,14 @@ details h3 { margin: 10px 0 0; font: 600 12px var(--f-body); color: var(--fg); }
   <aside class="rail">
     <header>
       <h1>Arm Shader Bench</h1>
-      <p>Design a fill shader for the ik-arms module. Same PIXI 7.4.3 and arm solver as Foundry, so what works here ports over.</p>
+      <p>Try the ik-arms Foundry module's shaders. Same PIXI 7.4.3 and arm solver as Foundry, so what works here ports over.</p>
+      <div class="seg-ctl modes" role="group" aria-label="What to show">
+        <button type="button" id="mode-boss" aria-pressed="true">Boss demo</button>
+        <button type="button" id="mode-editor" aria-pressed="false">Shader editor</button>
+      </div>
     </header>
+
+    <div class="railgroup" id="editor-rail" hidden>
 
     <section class="card">
       <h2>Arm</h2>
@@ -266,6 +300,60 @@ details h3 { margin: 10px 0 0; font: 600 12px var(--f-body); color: var(--fg); }
         <p class="note">Write <code>gl_FragColor</code>. On the arm, use premultiplied alpha: <code>vec4(colour * a, a)</code>. Buffer A stores 8 bits per channel, so very slow fades can stall.</p>
       </details>
     </section>
+
+    </div>
+
+    <div class="railgroup" id="boss-rail">
+      <section class="card">
+        <h2>The fight</h2>
+        <p class="note">Six ink arms with hands, drawn by the module's own code. Four shimmer; a hit on a shimmering arm shatters it; the third hit shatters all six and weakens the boss, then everything resets.</p>
+        <div class="row">
+          <div class="left">
+            <button type="button" class="btn" id="cycle" aria-pressed="false">Run the cycle</button>
+            <label class="check"><input type="checkbox" id="autohit" checked> Hit for me</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="left">
+            <button type="button" class="btn" id="shimmer-four">Shimmer four</button>
+            <button type="button" class="btn" id="reset-all">Reset all</button>
+            <label class="check"><input type="checkbox" id="drift" checked> Hands drift</label>
+          </div>
+        </div>
+        <div class="status ok" id="cycle-status" role="status">Cycle off. Click a shimmering hand to shatter it.</div>
+      </section>
+
+      <section class="card">
+        <h2>Arms</h2>
+        <div id="arm-rows"></div>
+        <p class="note">Shimmer toggles the glint. Shatter plays the burst, then the arm stays cracked. Reset heals it back to normal. These set the same state the token flag will.</p>
+      </section>
+
+      <section class="card">
+        <h2>Tuning</h2>
+        <div class="grid2" id="tuning"></div>
+        <code id="tune-json"></code>
+        <div class="row">
+          <button type="button" class="btn" id="tune-copy">Copy values</button>
+          <button type="button" class="btn" id="tune-reset">Reset tuning</button>
+        </div>
+        <p class="note">Tell me the values you like. The module uses these numbers as its defaults.</p>
+      </section>
+
+      <section class="card">
+        <h2>Colours</h2>
+        <div class="swatches2">
+          <label class="swatch">fill (uColorA)<input type="color" id="col-fill" value="#2b2433"></label>
+          <label class="swatch">glow (uColorC)<input type="color" id="col-glow" value="#e0457b"></label>
+        </div>
+        <p class="note">The shimmer and the crack edges use the glow colour. The image pass takes the colours of the first arm.</p>
+      </section>
+
+      <section class="card">
+        <h2>What this page runs</h2>
+        <p class="note">The shaders, smear buffer, arm solver and shatter animation below the "generated" marker in this file are the module's own sources, copied in by <code>pnpm --filter @astra/portal-arms sync-bench</code>; a test fails when they drift. Only the Foundry glue (the token flag, the hooks) is replaced here by the buttons. The shader editor uses its own older starter shaders, not these.</p>
+      </section>
+    </div>
   </aside>
 </div>
 
@@ -1037,7 +1125,9 @@ void main() {
     resizeTo: stageEl, antialias: true, backgroundColor: 0x0d0b10,
     autoDensity: true, resolution: Math.min(window.devicePixelRatio || 1, 2),
   });
+  app.view.classList.add("editor-view");
   stageEl.prepend(app.view);
+  window.benchEditor = { app };
   const renderer = app.renderer;
 
   const world = new PIXI.Container();
@@ -1583,3 +1673,1725 @@ void main() {
   });
 })();
 </script>
+
+<!-- BEGIN generated by src/benchSync.ts (pnpm sync-bench); do not edit -->
+<script>
+// The module's own code, as CommonJS: ArmsLib.shaders, ArmsLib.smear and so on.
+const ArmsLib = (() => {
+  const factories = {};
+  const cache = {};
+  function req(name) {
+    if (!cache[name]) {
+      const exports = {};
+      cache[name] = exports;
+      factories[name](exports, req);
+    }
+    return cache[name];
+  }
+  factories["./solve"] = function (exports, require) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.solve = solve;
+exports.defaultLength = defaultLength;
+/**
+ * Pose a chain of `segments` equal rigid segments from `anchor` to `target`; returns the
+ * `segments + 1` joint positions, shoulder first. The pose is a pure function of its inputs, so
+ * every client draws the same arm. A target beyond reach straightens the arm and stretches every
+ * segment equally, so the arm never comes off the hand. The last joint is always the target.
+ *
+ * `arc`: the joints lie on a circular arc, so every joint bends by the same angle `theta`. For two
+ * segments it is the ordinary two-bone elbow solution. A chain of n segments of length `length`,
+ * each turning by theta, spans `length * sin(n * theta / 2) / sin(theta / 2)`, which falls from
+ * `n * length` at theta = 0 to 0 at theta = 2 * pi / n, so bisection finds theta.
+ *
+ * `alternate`: a zigzag that crosses the anchor-hand line at every segment. The interior joints sit
+ * a distance d to alternate sides of the line, so each interior segment crosses it at an angle psi
+ * with `sin(psi) = 2d / length`, and the two end segments, which cover only d sideways, lean at
+ * half that offset. With L = `length`, the chain spans
+ * `L * (2 * sqrt(1 - sin(psi)^2 / 4) + (n - 2) * cos(psi))`. Its derivative is
+ * `-L * sin(psi) * (cos(psi) / (2 * sqrt(1 - sin(psi)^2 / 4)) + n - 2)`, and the fraction is at
+ * least -1/2 because `1 - sin^2 / 4 >= cos^2`, so for n >= 3 the span falls strictly on [0, pi]:
+ * from `n * L` to `(4 - n) * L`. Bisection on that bracket finds psi; a closed form exists only
+ * after squaring twice, which brings in a spurious root to rule out. Past psi = pi/2 the interior
+ * segments lean back toward the anchor, which is what lets the arm reach close in.
+ *
+ * Closest reach: one segment for n = 3, and none for n >= 4 (the span reaches 0). A 3-segment arm
+ * with the hand nearer than one segment folds flat on the line (psi = pi) and its last segment
+ * shortens. Three segments give the same pose as the old equal-turn pattern, and two segments
+ * (a single joint) use `arc`.
+ */
+function solve(anchor, target, segments, length, bend, pattern = "arc") {
+    const dx = target.x - anchor.x;
+    const dy = target.y - anchor.y;
+    const distance = Math.max(Math.hypot(dx, dy), 0.001);
+    const reach = distance >= segments * length;
+    const segment = reach ? distance / segments : length;
+    // Each interior joint as (along, across) the anchor-target line, in units of one segment.
+    const frame = [];
+    if (pattern === "alternate" && segments >= 3) {
+        const span = (psi) => 2 * Math.sqrt(1 - Math.sin(psi) ** 2 / 4) + (segments - 2) * Math.cos(psi);
+        let psi = 0;
+        if (!reach) {
+            const ratio = distance / length;
+            let lo = 0;
+            let hi = Math.PI;
+            for (let i = 0; i < 50; i++) {
+                const mid = (lo + hi) / 2;
+                if (span(mid) > ratio)
+                    lo = mid;
+                else
+                    hi = mid;
+            }
+            psi = (lo + hi) / 2;
+        }
+        const offset = Math.sin(psi) / 2;
+        const end = Math.sqrt(1 - offset * offset);
+        for (let k = 1; k < segments; k++) {
+            frame.push([end + (k - 1) * Math.cos(psi), (k % 2 === 1 ? -bend : bend) * offset]);
+        }
+    }
+    else {
+        let theta = 0;
+        if (!reach) {
+            const ratio = distance / length;
+            let lo = 0;
+            let hi = (2 * Math.PI) / segments;
+            for (let i = 0; i < 40; i++) {
+                const mid = (lo + hi) / 2;
+                if (Math.sin((segments * mid) / 2) / Math.sin(mid / 2) > ratio)
+                    lo = mid;
+                else
+                    hi = mid;
+            }
+            theta = (lo + hi) / 2;
+        }
+        let along = 0;
+        let across = 0;
+        for (let k = 0; k < segments - 1; k++) {
+            const heading = bend * (k - (segments - 1) / 2) * theta;
+            along += Math.cos(heading);
+            across += Math.sin(heading);
+            frame.push([along, across]);
+        }
+    }
+    const ux = Math.cos(Math.atan2(dy, dx));
+    const uy = Math.sin(Math.atan2(dy, dx));
+    const joints = [{ x: anchor.x, y: anchor.y }];
+    for (const [along, across] of frame) {
+        joints.push({
+            x: anchor.x + segment * (along * ux - across * uy),
+            y: anchor.y + segment * (along * uy + across * ux),
+        });
+    }
+    // The last joint is the target itself, not the sum of rounded steps.
+    joints.push({ x: target.x, y: target.y });
+    return joints;
+}
+/**
+ * The segment length a new arm gets: the arm is 1.25 times as long as the hand is far from the
+ * anchor, so it starts with a visible bend, and a segment is never shorter than `minimum`.
+ */
+function defaultLength(anchor, center, segments, minimum) {
+    const distance = Math.hypot(center.x - anchor.x, center.y - anchor.y);
+    return Math.max(Math.round((1.25 * distance) / segments), minimum);
+}
+
+  };
+  factories["./region"] = function (exports, require) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reachRadius = reachRadius;
+exports.smearRegion = smearRegion;
+exports.sameRegion = sameRegion;
+/**
+ * How far an arm's ink can land from its anchor, in pixels: its full length with 10% to spare
+ * (the curve bulges past the joints), plus its widest width, plus two grid squares for the ink
+ * to smear into, plus twice the hand's radius when it has one (`handRadius` 0 when not): the
+ * hand's ink reaches about two radii from the token centre, at the fingertips and the wrist.
+ */
+function reachRadius(segments, length, maxWidth, gridSize, handRadius = 0) {
+    return segments * length * 1.1 + maxWidth + 2 * gridSize + 2 * handRadius;
+}
+/**
+ * The smallest square holding every arm's reach square (anchor ± radius), centred on their
+ * bounding box; `null` with no arms. It is a square, not the bounding rectangle, so the square
+ * buffer texture has the same pixels-per-texel along both axes.
+ */
+function smearRegion(reaches) {
+    if (reaches.length === 0)
+        return null;
+    let left = Infinity;
+    let top = Infinity;
+    let right = -Infinity;
+    let bottom = -Infinity;
+    for (const { anchor, radius } of reaches) {
+        left = Math.min(left, anchor.x - radius);
+        top = Math.min(top, anchor.y - radius);
+        right = Math.max(right, anchor.x + radius);
+        bottom = Math.max(bottom, anchor.y + radius);
+    }
+    const size = Math.max(right - left, bottom - top);
+    return {
+        x: (left + right) / 2 - size / 2,
+        y: (top + bottom) / 2 - size / 2,
+        size,
+    };
+}
+function sameRegion(a, b) {
+    return a === b || (a !== null && b !== null && a.x === b.x && a.y === b.y && a.size === b.size);
+}
+
+  };
+  factories["./strip"] = function (exports, require) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SUBDIV = void 0;
+exports.vertexCount = vertexCount;
+exports.stripIndices = stripIndices;
+exports.allocateStrip = allocateStrip;
+exports.buildPath = buildPath;
+exports.writeStrip = writeStrip;
+exports.stripEnd = stripEnd;
+/** Centre-line samples per segment. */
+exports.SUBDIV = 24;
+function vertexCount(segments) {
+    return (segments * exports.SUBDIV + 1) * 2;
+}
+/** Two triangles per sample step, for vertices laid out as `StripArrays` describes. */
+function stripIndices(segments) {
+    const steps = segments * exports.SUBDIV;
+    const index = new Uint16Array(steps * 6);
+    for (let i = 0; i < steps; i++) {
+        const a = 2 * i;
+        index.set([a, a + 1, a + 2, a + 1, a + 3, a + 2], i * 6);
+    }
+    return index;
+}
+function allocateStrip(segments) {
+    const n = vertexCount(segments);
+    return {
+        position: new Float32Array(n * 2),
+        uv: new Float32Array(n * 2),
+        dist: new Float32Array(n),
+        seg: new Float32Array(n),
+        half: new Float32Array(n),
+    };
+}
+/**
+ * Sample the centre line through `joints` (at least two): straight between joints, or, when
+ * `smooth`, a Catmull-Rom curve through them, with an end point extrapolated past each end.
+ */
+function buildPath(joints, smooth) {
+    const n = joints.length - 1;
+    const samples = n * exports.SUBDIV;
+    const xs = new Float64Array(samples + 1);
+    const ys = new Float64Array(samples + 1);
+    /** Joint `k`, with one extra point mirrored past each end for the curve's end tangents. */
+    const joint = (k) => {
+        if (k < 0)
+            return mirror(pointAt(joints, 0), pointAt(joints, 1));
+        if (k > n)
+            return mirror(pointAt(joints, n), pointAt(joints, n - 1));
+        return pointAt(joints, k);
+    };
+    for (let g = 0; g <= samples; g++) {
+        const i = Math.min(Math.floor(g / exports.SUBDIV), n - 1);
+        const t = (g - i * exports.SUBDIV) / exports.SUBDIV;
+        const p1 = joint(i);
+        const p2 = joint(i + 1);
+        if (!smooth) {
+            xs[g] = p1.x + (p2.x - p1.x) * t;
+            ys[g] = p1.y + (p2.y - p1.y) * t;
+            continue;
+        }
+        const p0 = joint(i - 1);
+        const p3 = joint(i + 2);
+        const t2 = t * t;
+        const t3 = t2 * t;
+        const cr = (a, b, c, d) => 0.5 * (2 * b + (c - a) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (3 * b - a - 3 * c + d) * t3);
+        xs[g] = cr(p0.x, p1.x, p2.x, p3.x);
+        ys[g] = cr(p0.y, p1.y, p2.y, p3.y);
+    }
+    const cum = new Float64Array(samples + 1);
+    for (let g = 1; g <= samples; g++) {
+        cum[g] = at(cum, g - 1) + Math.hypot(at(xs, g) - at(xs, g - 1), at(ys, g) - at(ys, g - 1));
+    }
+    return { xs, ys, cum, samples };
+}
+/** `array[i]`, for an index the caller knows is in range (NaN shows up if it is not). */
+function at(array, i) {
+    return array[i] ?? Number.NaN;
+}
+function pointAt(points, i) {
+    return points[i] ?? { x: Number.NaN, y: Number.NaN };
+}
+/** `p` reflected through `centre`. */
+function mirror(centre, p) {
+    return { x: 2 * centre.x - p.x, y: 2 * centre.y - p.y };
+}
+/**
+ * Write the strip for `joints` into `out` (sized by `allocateStrip(joints.length - 1)`) and
+ * return the centre line's length in pixels. The half width tapers from `shoulderHalf` to
+ * `wristHalf` along the arm. Smooth mode pinches the inner side of a tight bend to 0.9 times the
+ * local radius so the strip never folds over itself; straight mode mitres each joint so both
+ * segments keep their full width.
+ */
+function writeStrip(out, joints, shoulderHalf, wristHalf, smooth) {
+    const n = joints.length - 1;
+    const { xs, ys, cum, samples } = buildPath(joints, smooth);
+    const total = at(cum, samples) || 1;
+    const { position, uv, dist, seg, half } = out;
+    for (let g = 0; g <= samples; g++) {
+        const i = Math.min(Math.floor(g / exports.SUBDIV), n - 1);
+        const t = (g - i * exports.SUBDIV) / exports.SUBDIV;
+        const ga = Math.max(g - 1, 0);
+        const gb = Math.min(g + 1, samples);
+        let tx = at(xs, gb) - at(xs, ga);
+        let ty = at(ys, gb) - at(ys, ga);
+        const tl = Math.hypot(tx, ty) || 1;
+        tx /= tl;
+        ty /= tl;
+        const nx = -ty;
+        const ny = tx;
+        const u = at(cum, g) / total;
+        const hm = shoulderHalf + (wristHalf - shoulderHalf) * u;
+        let plus = hm;
+        let minus = hm;
+        if (g > 0 && g < samples) {
+            const ax = at(xs, g) - at(xs, g - 1);
+            const ay = at(ys, g) - at(ys, g - 1);
+            const bx = at(xs, g + 1) - at(xs, g);
+            const by = at(ys, g + 1) - at(ys, g);
+            const la = Math.hypot(ax, ay) || 1e-6;
+            if (!smooth && g % exports.SUBDIV === 0) {
+                const k = 1 / Math.max((nx * -ay + ny * ax) / la, 0.4);
+                plus *= k;
+                minus *= k;
+            }
+            else if (smooth) {
+                const turn = Math.atan2(ax * by - ay * bx, ax * bx + ay * by);
+                if (Math.abs(turn) > 1e-6) {
+                    const radius = (at(cum, g + 1) - at(cum, g - 1)) / 2 / Math.abs(turn);
+                    if (turn > 0)
+                        plus = Math.min(plus, 0.9 * radius);
+                    else
+                        minus = Math.min(minus, 0.9 * radius);
+                }
+            }
+        }
+        const v = 2 * g;
+        const x = at(xs, g);
+        const y = at(ys, g);
+        position[2 * v] = x - nx * minus;
+        position[2 * v + 1] = y - ny * minus;
+        position[2 * v + 2] = x + nx * plus;
+        position[2 * v + 3] = y + ny * plus;
+        uv[2 * v] = u;
+        uv[2 * v + 1] = -1;
+        uv[2 * v + 2] = u;
+        uv[2 * v + 3] = 1;
+        dist[v] = dist[v + 1] = at(cum, g);
+        seg[v] = seg[v + 1] = i + t;
+        half[v] = half[v + 1] = hm;
+    }
+    return total;
+}
+/**
+ * The end of a strip `writeStrip` wrote: the last centre-line sample (the hand) and the
+ * direction from the sample before it. The last vertex pair is never pinched or mitred, so its
+ * midpoint is that sample and the vector across it is the end normal, a quarter turn from the
+ * direction.
+ */
+function stripEnd(strip) {
+    const p = strip.position;
+    const v = p.length - 4;
+    const mx = at(p, v);
+    const my = at(p, v + 1);
+    const px = at(p, v + 2);
+    const py = at(p, v + 3);
+    const nx = px - mx;
+    const ny = py - my;
+    const nl = Math.hypot(nx, ny);
+    const x = (mx + px) / 2;
+    const y = (my + py) / 2;
+    // writeStrip puts the plus side at the tangent turned by +90 degrees: n = (-ty, tx).
+    return nl > 0 ? { x, y, dx: ny / nl, dy: -nx / nl } : { x, y, dx: 1, dy: 0 };
+}
+
+  };
+  factories["./config"] = function (exports, require) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULTS = exports.MAX_SEGMENTS = exports.FLAG_KEY = exports.FLAG_SCOPE = void 0;
+exports.parseArmFlag = parseArmFlag;
+/** The flag lives in the "world" scope, which Foundry accepts whether or not this module is on. */
+exports.FLAG_SCOPE = "world";
+exports.FLAG_KEY = "ikArm";
+exports.MAX_SEGMENTS = 12;
+exports.DEFAULTS = {
+    segments: 2,
+    length: null,
+    bend: 1,
+    bendPattern: "arc",
+    shoulderWidth: 0.7,
+    wristWidth: 0.4,
+    fill: 0x2b2433,
+    outline: 0xc9a45c,
+    outlineWidth: 5,
+    glow: 0xe0457b,
+    shader: "flat",
+    smooth: true,
+    rings: false,
+    hand: false,
+    handSize: 1,
+    curl: 1,
+};
+function isRecord(value) {
+    return typeof value === "object" && value !== null;
+}
+function finite(value) {
+    return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+function positive(value, fallback) {
+    const n = finite(value);
+    return n !== null && n > 0 ? n : fallback;
+}
+/**
+ * Validate a token's raw flag. A flag is hand-editable world data, so every field is checked:
+ * without a usable anchor there is no arm (`null`), and any other bad field falls back to its
+ * default.
+ */
+function parseArmFlag(flag) {
+    if (!isRecord(flag) || !isRecord(flag.anchor))
+        return null;
+    const x = finite(flag.anchor.x);
+    const y = finite(flag.anchor.y);
+    if (x === null || y === null)
+        return null;
+    const segments = finite(flag.segments);
+    const length = finite(flag.length);
+    const bend = finite(flag.bend);
+    const curl = finite(flag.curl);
+    return {
+        anchor: { x, y },
+        segments: segments === null
+            ? exports.DEFAULTS.segments
+            : Math.min(Math.max(Math.round(segments), 1), exports.MAX_SEGMENTS),
+        length: length !== null && length > 0 ? length : null,
+        bend: bend !== null && bend < 0 ? -1 : 1,
+        bendPattern: flag.bendPattern === "alternate" ? "alternate" : "arc",
+        shoulderWidth: positive(flag.shoulderWidth, exports.DEFAULTS.shoulderWidth),
+        wristWidth: positive(flag.wristWidth, exports.DEFAULTS.wristWidth),
+        fill: finite(flag.fill) ?? exports.DEFAULTS.fill,
+        outline: finite(flag.outline) ?? exports.DEFAULTS.outline,
+        outlineWidth: finite(flag.outlineWidth) ?? exports.DEFAULTS.outlineWidth,
+        glow: finite(flag.glow) ?? exports.DEFAULTS.glow,
+        shader: typeof flag.shader === "string" && flag.shader !== "" ? flag.shader : exports.DEFAULTS.shader,
+        smooth: typeof flag.smooth === "boolean" ? flag.smooth : exports.DEFAULTS.smooth,
+        rings: typeof flag.rings === "boolean" ? flag.rings : exports.DEFAULTS.rings,
+        hand: typeof flag.hand === "boolean" ? flag.hand : exports.DEFAULTS.hand,
+        handSize: positive(flag.handSize, exports.DEFAULTS.handSize),
+        curl: curl === null ? exports.DEFAULTS.curl : Math.min(Math.max(curl, 0), 1),
+    };
+}
+
+  };
+  factories["./look"] = function (exports, require) {
+"use strict";
+// The look of a shimmering or shattered arm: the per-client animation state, and
+// the numbers the shaders are tuned with. Pure functions, no PIXI and no Foundry, so main.ts and
+// the bench page (which embeds this file, see benchSync.ts) run the same code.
+//
+// The logic (shatter.ts) writes `flags.world.ikShatter = { state, since }` on a token; absent means
+// a normal arm. main.ts reads it with `parseShatterFlag` (shatter-config.ts) and feeds the state here. `since` is the writer's clock and is never used: clients'
+// clocks differ, so each client times the animation from when it sees the change.
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BURST_DECAY = exports.NO_AGE = exports.SETTLED_AGE = exports.BREAK_OUT = exports.SHIMMER_EASE = exports.tune = exports.DEFAULT_TUNE = void 0;
+exports.flagTouched = flagTouched;
+exports.writeTune = writeTune;
+exports.newLook = newLook;
+exports.setLookState = setLookState;
+exports.stepLook = stepLook;
+exports.burstOf = burstOf;
+exports.packFx = packFx;
+exports.unpackFx = unpackFx;
+exports.writeLook = writeLook;
+/**
+ * Whether an `updateToken` change object touches `flags[scope][key]`. Foundry writes an unset as
+ * `{"-=key": null}` and a forced replace as `{"==key": value}`, and removing the whole scope as
+ * `{"-=scope": null}`; all three count.
+ */
+function flagTouched(change, scope, key) {
+    if (typeof change !== "object" || change === null || !("flags" in change))
+        return false;
+    const flags = change.flags;
+    if (typeof flags !== "object" || flags === null)
+        return false;
+    if (`-=${scope}` in flags || `==${scope}` in flags)
+        return true;
+    const inScope = Reflect.get(flags, scope);
+    if (typeof inScope !== "object" || inScope === null)
+        return false;
+    return key in inScope || `-=${key}` in inScope || `==${key}` in inScope;
+}
+exports.DEFAULT_TUNE = {
+    sheenSpeed: 20,
+    shimmerGain: 0.4,
+    shardPx: 80,
+    burstLen: 1,
+    crackDark: 0.9,
+    kaleidoPx: 100,
+    snapEvery: 3,
+    snapSpread: 1,
+    glassGain: 0.7,
+};
+/** The live tuning; the module never changes it, the bench's sliders do. */
+exports.tune = { ...exports.DEFAULT_TUNE };
+/** Copy the tuning into a shader's uniform object. */
+function writeTune(target) {
+    target.uSheenSpeed = exports.tune.sheenSpeed;
+    target.uShimmerGain = exports.tune.shimmerGain;
+    target.uShardPx = exports.tune.shardPx;
+    target.uBurstLen = exports.tune.burstLen;
+    target.uCrackDark = exports.tune.crackDark;
+    target.uKaleidoPx = exports.tune.kaleidoPx;
+    target.uSnapEvery = exports.tune.snapEvery;
+    target.uSnapSpread = exports.tune.snapSpread;
+    target.uGlassGain = exports.tune.glassGain;
+}
+// ---- Animation ----
+/** Seconds for the shimmer to ease in or out. */
+exports.SHIMMER_EASE = 0.4;
+/** Seconds for the broken look to take hold, and to heal when the flag clears. */
+const BREAK_IN = 0.1;
+exports.BREAK_OUT = 0.6;
+/** `uShatter` for an arm that shattered before this client saw it: the burst is long over. */
+exports.SETTLED_AGE = 1000;
+/** `uShatter` when the arm is not shattered. */
+exports.NO_AGE = -1;
+/** How fast the burst dies away: its strength is exp(-age * BURST_DECAY / burstLen). */
+exports.BURST_DECAY = 4.2;
+/** The look of an arm that is built in `state`: shattered arms are already settled, no burst. */
+function newLook(state) {
+    return {
+        state,
+        shimmer: state === "shimmer" ? 1 : 0,
+        broken: state === "shattered" ? 1 : 0,
+        age: state === "shattered" ? exports.SETTLED_AGE : exports.NO_AGE,
+    };
+}
+/** The flag changed: start the burst on a new shatter, end it when the arm is no longer broken. */
+function setLookState(look, state) {
+    if (state === look.state)
+        return;
+    look.age = state === "shattered" ? 0 : exports.NO_AGE;
+    look.state = state;
+}
+function toward(value, target, step) {
+    return value < target ? Math.min(value + step, target) : Math.max(value - step, target);
+}
+/** Advance the look by `dt` seconds. */
+function stepLook(look, dt) {
+    look.shimmer = toward(look.shimmer, look.state === "shimmer" ? 1 : 0, dt / exports.SHIMMER_EASE);
+    const target = look.state === "shattered" ? 1 : 0;
+    look.broken = toward(look.broken, target, dt / (target > look.broken ? BREAK_IN : exports.BREAK_OUT));
+    if (look.state === "shattered")
+        look.age = Math.min(look.age + dt, exports.SETTLED_AGE);
+}
+/** The burst's strength, 1 at the moment of shattering down to 0 at `len` seconds. */
+function burstOf(age, len) {
+    return age < 0 || age >= len ? 0 : Math.exp((-age * exports.BURST_DECAY) / len);
+}
+function smooth(x) {
+    return x * x * (3 - 2 * x);
+}
+function quantize(value) {
+    return Math.round(Math.min(Math.max(value, 0), 1) * 31);
+}
+/** Pack three 0..1 values into one float, 5 bits each (exact in a 32-bit float). */
+function packFx(shimmer, broken, burst) {
+    return quantize(shimmer) + 32 * quantize(broken) + 1024 * quantize(burst);
+}
+/** The inverse of `packFx`, as the buffer pass decodes it. */
+function unpackFx(packed) {
+    return {
+        shimmer: (packed % 32) / 31,
+        broken: (Math.floor(packed / 32) % 32) / 31,
+        burst: Math.floor(packed / 1024) / 31,
+    };
+}
+/**
+ * Write the look to an arm's shader uniforms (`uShimmer`, `uShatter`, `uBroken`) and, for an arm
+ * with a hand, to the fourth float of its hand params (`packFx`).
+ */
+function writeLook(look, uniforms, handParams) {
+    const shimmer = smooth(look.shimmer);
+    const broken = smooth(look.broken);
+    uniforms.uShimmer = shimmer;
+    uniforms.uBroken = broken;
+    uniforms.uShatter = look.age;
+    if (handParams)
+        handParams[3] = packFx(shimmer, broken, burstOf(look.age, exports.tune.burstLen));
+}
+
+  };
+  factories["./ink-image"] = function (exports, require) {
+"use strict";
+// The smear buffer's image pass: lights the buffer and draws the shimmer's kaleidoscope, the
+// cracks and the flash. Split from shaders.ts for size; shaders.ts re-exports it.
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.INK_IMAGE_FRAG = void 0;
+/**
+ * The image pass (the Shadertoy shader's Image tab): lights the buffer across the whole square,
+ * so smears show wherever they drift. uColorA is the body colour and uColorC (glow) the shimmer's
+ * and the cracks' glow. Output is premultiplied and multiplied by uAlpha, as every visible
+ * shader's must be. The buffer's g, b and a (shimmer, crack code, flash; see INK_BUFFER_FRAG)
+ * are divided by the density r to get fractions of the ink: shimmer shows a kaleidoscope (hexagonal
+ * mirror-folded cells that snap round, warm toward glow and teal at the edges), a broken arm is greyer and thinner with see-through crack lines edged in glow, and the
+ * flash whitens it. uShimmerGain scales the shimmer; uCrackDark is how much a crack line cuts
+ * away.
+ */
+exports.INK_IMAGE_FRAG = `precision highp float;
+uniform sampler2D uBuffer;
+uniform vec4 uRegion;
+uniform vec3 uColorA;
+uniform vec3 uColorC;
+uniform float uAlpha;
+uniform float uTime;
+uniform float uShimmerGain;
+uniform float uCrackDark;
+uniform float uKaleidoPx;
+uniform float uSnapEvery;
+uniform float uSnapSpread;  // 0: every cell snaps together; 1: each at its own time
+uniform float uGlassGain;   // how strongly a shattered arm shows its frozen kaleidoscope
+varying vec2 vUv;
+
+#define TEX(uv) texture2D(uBuffer, uv).r
+#define ss(a, b, t) smoothstep(a, b, t)
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+
+const float PI = 3.14159265;
+const float SNAP_LEN = .5;        // seconds a snap takes
+
+// The nearest hexagonal cell to p (one cell is 1 wide and 1.73 tall): xy is p from the cell's
+// centre, zw the cell's id.
+vec4 hexCell(vec2 p) {
+  const vec2 r = vec2(1., 1.7320508);
+  const vec2 h = r * .5;
+  vec2 a = mod(p, r) - h;
+  vec2 b = mod(p - h, r) - h;
+  vec2 g = dot(a, a) < dot(b, b) ? a : b;
+  return vec4(g, p - g);
+}
+float easeCubic(float x) { return x < .5 ? 4. * x * x * x : 1. - pow(-2. * x + 2., 3.) / 2.; }
+
+// The shimmer's kaleidoscope at map position p (pixels): hexagonal cells uKaleidoPx wide, each
+// mirror-folded into wedges around its centre, filled with a cheap iterated domain warp (warm
+// toward the glow colour in the middle of a cell, teal at its edge, hard bright facets). Every
+// uSnapEvery seconds a cell's fold snaps a sixth of a turn over SNAP_LEN with a cubic ease, zooming
+// in a little and flashing; pulse (0..1) is that snap's strength. tm is the time to evaluate at
+// (uTime for the live pattern, a fixed time for a shattered arm's frozen glass), live 1 lets
+// the snaps happen and 0 holds the fold still, and burst (0..1, a shattering arm's flash) forces
+// every cell into a snap together: the fold turns a whole wedge (which looks the same as where it
+// started) as the burst dies away, zoomed in and with the pulse at full strength.
+vec3 kaleido(vec2 p, float tm, float live, float burst, out float pulse) {
+  vec4 cell = hexCell(p / uKaleidoPx);
+  vec2 l = cell.xy;
+  float u = tm / uSnapEvery + hash(cell.zw) * uSnapSpread;
+  float e = easeCubic(clamp(fract(u) * uSnapEvery / SNAP_LEN, 0., 1.));
+  pulse = max(sin(e * PI) * live, burst);
+  float period = PI / 3.;
+  float a = mod(atan(l.y, l.x) + (floor(u) + e * live + (1. - burst)) * period, period);
+  a = abs(a - period * .5);
+  vec2 q = vec2(cos(a), sin(a)) * length(l) * mix(1., 1.25, pulse) * 7.;
+  float t = tm * .5;
+  for (int i = 0; i < 4; i++) {
+    q += cos(q.yx * 1.3 + vec2(2. * t, t) + float(i) * 1.7) * .6;
+    q -= abs(dot(sin(q * .9 + t), vec2(.5)));
+  }
+  float v = length(q);
+  float edge = smoothstep(.1, .55, length(l));
+  vec3 warm = mix(vec3(1., .55, .25), uColorC * 1.5, .55);
+  vec3 teal = vec3(0., .85, .7);
+  vec3 bands = .5 + .5 * cos(6.2832 * (vec3(0., .12, .25) + v * .22));
+  vec3 color = mix(warm, teal, edge) * (.3 + bands);
+  float facet = smoothstep(.0, .06, abs(fract(v * .8) - .5) - .36);
+  color += vec3(.9) * facet * .45;
+  return color / (1. + .3 * color);
+}
+
+void main() {
+  vec2 uv = vUv;
+  vec4 data = texture2D(uBuffer, uv);
+  float gray = data.r;
+  if (gray < .01) { gl_FragColor = vec4(0.); return; }
+
+  vec3 unit = vec3(vec2(3. / uRegion.w), 0.);
+  vec3 normal = normalize(vec3(
+    TEX(uv + unit.xz) - TEX(uv - unit.xz),
+    TEX(uv - unit.zy) - TEX(uv + unit.zy),
+    gray * gray * gray + .001));
+
+  vec3 color = uColorA + vec3(.3) * (1. - abs(normal.z));
+  vec3 dir = normalize(vec3(0., 1., 2.));
+  float specular = pow(dot(normal, dir) * .5 + .5, 20.);
+  color += vec3(.5) * ss(.2, 1., specular);
+  vec3 tint = .5 + .5 * cos(vec3(1., 2., 3.) + dot(normal, dir) * 4. - uv.y * 3. - 3.);
+  color += tint * smoothstep(.15, .0, gray);
+
+  // Shimmer, shatter and flash, as fractions of the ink.
+  float inv = 1. / max(gray, .05);
+  float sh = clamp(data.g * inv, 0., 1.);
+  float code = clamp(data.b * inv, 0., 1.);
+  float flash = clamp(data.a * inv, 0., 1.);
+  float dull = ss(0., .3, code);                     // a shard of a broken arm
+  float cut = ss(.5, .95, code);                     // the middle of a crack line
+  float rim = ss(.4, .6, code) * (1. - ss(.8, 1., code));  // a crack line's glowing edge
+
+  color = mix(color, vec3(dot(color, vec3(.333))) * .6, dull * .7);
+  vec3 glass = uColorC * 1.3;  // what a crack line's edge glows with
+  float glassMix = 0.;         // how much of it is the kaleidoscope's colours
+  vec2 wpx = uRegion.xy + uv * uRegion.z;
+  if (sh > .02 || flash > .02) {
+    // The live kaleidoscope: where the arm shimmers, and across the whole arm in a shatter's
+    // burst, at full strength whether or not it was shimmering. The red channel splits off by an
+    // amount that widens on a snap, only while there is one.
+    float pulse;
+    float pulseRed;
+    vec3 kal = kaleido(wpx, uTime, 1., flash, pulse);
+    if (pulse > .02) kal.r = kaleido(wpx + vec2(uKaleidoPx * (.012 + .05 * pulse), 0.), uTime, 1., flash, pulseRed).r;
+    kal *= 1. + .5 * pulse;
+    color = mix(color, kal, clamp(max(sh * uShimmerGain * .85, flash), 0., 1.));
+    glass = kal * 1.6;
+    glassMix = 1.;
+  } else if (dull > .02 || rim > .02) {
+    // A shattered arm's frozen glass: the same pattern at a fixed time, with no snaps. The
+    // shards hold it dark and nearly grey, the crack edges glow with it.
+    float pulse;
+    vec3 frozen = kaleido(wpx, 7.3, 0., 0., pulse);
+    float grey = dot(frozen, vec3(.333));
+    color = mix(color, mix(vec3(grey), frozen, .5) * .65, dull * uGlassGain);
+    glass = frozen * 1.8;
+    glassMix = uGlassGain;
+  }
+  color += vec3(1.) * pow(sh, 4.) * .45 * uShimmerGain;
+  color += mix(uColorC * 1.3, glass, glassMix) * rim * .8;
+  color += mix(vec3(1.), uColorC, .3) * flash * .35;
+  color -= hash(gl_FragCoord.xy) * .1;
+
+  float a = ss(.03, .35, gray);
+  a *= 1. - cut * uCrackDark;
+  a = max(a, flash * .5);
+  gl_FragColor = vec4(clamp(color, 0., 1.) * a, a) * uAlpha;
+}`;
+
+  };
+  factories["./shaders"] = function (exports, require) {
+"use strict";
+// GLSL for the arm strip (see strip.ts for the attributes). The sandbox page in
+// `apps/portal/arms/bench/` runs the same vertex shader and prelude, so a fragment shader written
+// there drops into FRAGMENTS unchanged. The shared smear buffer's passes (smear.ts) are at the end.
+// The bench page embeds this file (bench/sync-bench.mjs), so it runs exactly these shaders.
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.INK_IMAGE_FRAG = exports.INK_BUFFER_FRAG = exports.MAX_HANDS = exports.QUAD_VERT = exports.FRAGMENTS = exports.SMEAR_SHADER = exports.FRAGMENT_PRELUDE = exports.ARM_VERT = void 0;
+exports.fragmentSource = fragmentSource;
+const look_1 = require("./look");
+exports.ARM_VERT = `precision highp float;
+attribute vec2 aVertexPosition;
+attribute vec2 aUv;
+attribute float aDist;
+attribute float aSeg;
+attribute float aHalf;
+uniform mat3 translationMatrix;
+uniform mat3 projectionMatrix;
+varying vec2 vUv;
+varying float vDist;
+varying float vSeg;
+varying float vHalf;
+void main() {
+  vUv = aUv; vDist = aDist; vSeg = aSeg; vHalf = aHalf;
+  gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+}`;
+/**
+ * Put in front of every fragment shader. uTime is seconds, uLength the centre line's length in
+ * pixels, uSegments the segment count, uColorA/B/C the flag's fill, outline and glow colours,
+ * uOutlineWidth the flag's outline width in pixels. uAlpha is the arm's opacity (a hidden token's
+ * arm is half transparent): PIXI does not apply it to a custom shader, so the shader must.
+ * Output is premultiplied alpha. uShimmer (0..1), uShatter (seconds since the arm shattered on
+ * this client, -1 when it is not shattered, huge when it was already shattered when built) and
+ * uBroken (0..1, how broken it looks) are the arm's shimmer and shatter state (shatter.ts);
+ * uSheenSpeed, uShardPx and uBurstLen are the shared tuning (`tune` in shatter.ts). Only the ink
+ * paint shader uses them.
+ */
+exports.FRAGMENT_PRELUDE = `precision highp float;
+#define PI 3.14159265
+uniform float uTime;
+uniform float uLength;
+uniform float uSegments;
+uniform vec3 uColorA;
+uniform vec3 uColorB;
+uniform vec3 uColorC;
+uniform float uOutlineWidth;
+uniform float uAlpha;
+uniform float uShimmer;
+uniform float uShatter;
+uniform float uBroken;
+uniform float uSheenSpeed;
+uniform float uShardPx;
+uniform float uBurstLen;
+varying vec2 vUv;
+varying float vDist;
+varying float vSeg;
+varying float vHalf;`;
+/**
+ * The shader name that draws through the shared smear buffer (smear.ts) instead of on the arm
+ * itself. Its `FRAGMENTS` entry is the paint pass: the arm's own mesh stays hidden, and a second
+ * mesh on the same geometry draws that shader into the smear's arm texture.
+ */
+exports.SMEAR_SHADER = "ink";
+const NOISE2 = `float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+float fbm2(vec2 p) {
+  float r = 0.;
+  float a = .5;
+  for (int i = 0; i < 4; i++) {
+    r += noise(p) * a;
+    p = p * 2.03 + vec2(17.1, 9.3);
+    a *= .5;
+  }
+  return r;
+}`;
+/** The ink pattern's scale and drift, shared by the ink paint shader and the hand. */
+const INK_PATTERN = `const float INK_PX = 90.;  // body pattern size, in pixels
+const float FLOW = .35;    // how fast the body's pattern drifts toward the hand`;
+/**
+ * What the shimmer and the shatter share between the arm's paint pass and the hands in the buffer
+ * pass (both include NOISE2 first, and declare uTime and uSheenSpeed).
+ */
+const INK_FX = `const float SHEEN_PERIOD = 300.;  // distance between the sheen's bands, in pixels
+const float BURST_DECAY = ${look_1.BURST_DECAY.toFixed(2)};
+vec2 hash22(vec2 p) {
+  p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+  return fract(sin(p) * 43758.5453);
+}
+// Shards: a Voronoi pattern over p (one cell per unit). x is the gap between the nearest and the
+// second nearest feature point (0 on a crack, growing into a cell), y a random 0..1 per cell.
+vec2 shards(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = p - i;
+  float d1 = 8.;
+  float d2 = 8.;
+  float id = 0.;
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 g = vec2(float(x), float(y));
+      vec2 r = g + hash22(i + g) - f;
+      float d = dot(r, r);
+      if (d < d1) { d2 = d1; d1 = d; id = hash(i + g + 7.3); }
+      else if (d < d2) { d2 = d; }
+    }
+  }
+  return vec2(sqrt(d2) - sqrt(d1), id);
+}
+// The shimmer's pattern, 0..1: a base glint, bands travelling toward larger x (toward the hand),
+// and sparse twinkles at p (pixels).
+float sheen(float x, vec2 p) {
+  float bands = pow(.5 + .5 * sin(6.2832 * (x - uTime * uSheenSpeed) / SHEEN_PERIOD), 3.);
+  float twinkle = pow(noise(p / 12. + vec2(uTime * 2., 0.)), 5.);
+  return clamp(.3 + .7 * bands + 1.5 * twinkle, 0., 1.);
+}`;
+/** Fragment shader bodies by the name the flag's `shader` field gives. */
+exports.FRAGMENTS = {
+    // Body in the fill colour with an outline-coloured edge: the module's original look.
+    flat: `void main() {
+  float edge = (1.0 - abs(vUv.y)) * vHalf;  // pixels in from the edge
+  float rim = uOutlineWidth > 0.0
+    ? 1.0 - smoothstep(uOutlineWidth - 1.0, uOutlineWidth + 1.0, edge)
+    : 0.0;
+  gl_FragColor = vec4(mix(uColorA, uColorB, rim), 1.0) * uAlpha;
+}`,
+    // The ink arm's paint pass (see SMEAR_SHADER): the ink body's density, patterned in the arm's
+    // own pixels so it flows from shoulder to hand. It is drawn into the smear's arm texture with
+    // normal (premultiplied) blending, so where arms overlap the densities combine as a + b - ab,
+    // whatever order the arms are drawn in. It is density, not colour, so it ignores uAlpha.
+    // Ported from the body code of the bench's WORLD_INK_BUFFER.
+    [exports.SMEAR_SHADER]: `${NOISE2}
+${INK_PATTERN}
+${INK_FX}
+// The arm's shimmer and shatter, in the arm's own pixels ap (along, across). fx is what goes in
+// the arm texture's green, blue and alpha, as fractions of the ink: x the sheen (0 when the arm
+// is not shimmering), y a crack code (.35 * broken for the dulled shard, rising to 1 on a crack
+// line, whose half width in pixels is 5 * broken + 14 * burst), z the flash (burst cubed). Returns
+// the factor the ink density is multiplied by: thinner when broken, and at the burst's peak the
+// shards with a high random value are blasted away and come back as the burst dies down.
+float armFx(vec2 ap, out vec3 fx) {
+  fx = vec3(0.);
+  float keep = 1.;
+  if (uShimmer > 0.) fx.x = uShimmer * sheen(ap.x, ap);
+  float burst = (uShatter < 0. || uShatter >= uBurstLen) ? 0. : exp(-uShatter * BURST_DECAY / uBurstLen);
+  if (uBroken > 0. || burst > 0.) {
+    vec2 s = shards(ap / uShardPx);
+    float edge = s.x * uShardPx * .5;
+    float w = 5. * uBroken + 14. * burst;
+    float line = (1. - smoothstep(w - 2., w + 2., edge)) * smoothstep(0., 2., w);
+    keep = (1. - .3 * uBroken) * (1. - burst * smoothstep(.35, .75, s.y));
+    fx.y = .35 * uBroken + .65 * line;
+    fx.z = burst * burst * burst * (.6 + .4 * s.y);
+  }
+  return keep;
+}
+void main() {
+  float across = abs(vUv.y);
+  float body = 1. - across * across;
+  vec2 ap = vec2(vDist, vUv.y * vHalf);
+  vec2 q = ap / INK_PX;
+  vec2 drift = vec2(uTime * FLOW, 0.);
+  float angle = fbm2(q * .8 - drift) * 6.28 * 2. + uTime;
+  vec2 warp = vec2(cos(angle), sin(angle)) * .35;
+  float n = fbm2(q + warp - drift * 1.3);
+  float paint = clamp(body * 1.25 + (n - .5) * 1.6 - .1, 0., 1.) * smoothstep(0., .2, body);
+  vec3 fx;
+  float whole = paint;
+  paint *= armFx(ap, fx);
+  // Premultiplied by the density; the smear passes decode and fade these (see INK_BUFFER_FRAG).
+  // The flash uses the density before the burst blasted shards away, so the ink that lingers
+  // where a shard was still flares.
+  gl_FragColor = vec4(paint, paint * fx.xy, whole * fx.z);
+}`,
+};
+const DEFAULT_SHADER = "flat";
+/** The full fragment source for a shader name; an unknown name gets `flat`. */
+function fragmentSource(name) {
+    const body = Object.hasOwn(exports.FRAGMENTS, name) ? exports.FRAGMENTS[name] : exports.FRAGMENTS[DEFAULT_SHADER];
+    return `${exports.FRAGMENT_PRELUDE}\n${body}`;
+}
+// ---- The shared smear buffer's passes (smear.ts), ported from the bench's "world" mode ----
+/** Vertex shader for the smear's square quads; `aUv` runs 0..1 across the square. */
+exports.QUAD_VERT = `precision highp float;
+attribute vec2 aVertexPosition;
+attribute vec2 aUv;
+uniform mat3 translationMatrix;
+uniform mat3 projectionMatrix;
+varying vec2 vUv;
+void main() {
+  vUv = aUv;
+  gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+}`;
+/** How many hands the buffer pass draws at most; ink arms past this many get no hand. */
+exports.MAX_HANDS = 8;
+/**
+ * The buffer pass (the Shadertoy shader's Buffer A, fixed to the map): reads the ink the arms
+ * painted this frame (uArm, .r) and last frame's buffer (uBuffer), adds the hands, spreads and
+ * swirls the ink, and fades it. uRegion is (x, y, size in map pixels, texture size in texels);
+ * uDelta is seconds since the last frame. The first uHandCount entries of uHands (x, y in map
+ * pixels, then the arm's unit direction at the hand) and uHandParams (radius in pixels, thumb
+ * side ±1, finger curl 0..1, the hand's shimmer and shatter packed by `packFx`) are the hands.
+ * Drawn with blending off. The buffer's channels: r the ink density, g the shimmer, b the crack
+ * code, a the flash (each of the last three already multiplied by the density).
+ */
+exports.INK_BUFFER_FRAG = `precision highp float;
+#define MAX_HANDS ${exports.MAX_HANDS}
+uniform float uTime;
+uniform float uDelta;
+uniform sampler2D uBuffer;
+uniform sampler2D uArm;
+uniform vec4 uRegion;
+uniform vec4 uHands[MAX_HANDS];
+uniform vec4 uHandParams[MAX_HANDS];
+uniform float uHandCount;
+uniform float uSheenSpeed;
+uniform float uShardPx;
+varying vec2 vUv;
+
+const float fade = .5;        // how fast smears fade, per second (lower: longer smears)
+const float PUSH_PX = 150.;   // how fast turbulence pushes ink, in pixels per second
+const float SWIRL_PX = 400.;  // size of the turbulence pattern, in pixels
+const float SWIRL_SPEED = .05;// how fast the turbulence pattern changes
+const float SPREAD_PX = 8.;   // how far the spreading looks for the ink's slope
+const float HAND_CLEAR = 10.; // smears fade this many times faster in and around a hand
+const float HAND_CLEAR_R = .6;// how far around the hand that reaches, in hand radii
+// A texel farther than this from a hand's centre, in hand radii, skips that hand. The hand
+// reaches about 2 radii (fingertips at curl 0, the wrist) and its clearing zone 0.6 beyond.
+const float HAND_REACH = 2.6;
+const float FX_FADE = 10.;    // the arm texture's green, blue and alpha fade this fast, per second
+const float FLASH_SPREAD = 8.;// how much harder the flash pushes ink down its slope
+${INK_PATTERN}
+
+#define TEX1(uv) texture2D(uBuffer, uv).r
+
+${NOISE2}
+${INK_FX}
+
+float hash3(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+float noise3(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  vec3 u = f * f * (3. - 2. * f);
+  return mix(
+    mix(mix(hash3(i), hash3(i + vec3(1., 0., 0.)), u.x),
+        mix(hash3(i + vec3(0., 1., 0.)), hash3(i + vec3(1., 1., 0.)), u.x), u.y),
+    mix(mix(hash3(i + vec3(0., 0., 1.)), hash3(i + vec3(1., 0., 1.)), u.x),
+        mix(hash3(i + vec3(0., 1., 1.)), hash3(i + vec3(1., 1., 1.)), u.x), u.y), u.z);
+}
+float fbm3(vec3 p) {
+  float result = 0.;
+  float amplitude = .5;
+  for (int index = 0; index < 3; index++) {
+    result += noise3(p / amplitude) * amplitude;
+    amplitude /= 3.;
+  }
+  return result;
+}
+
+// ---- The hand: an upturned hand under the token, as a signed distance field. ----
+// Ported from the bench's WORLD_INK_BUFFER. Local coordinates are in hand radii: x points on
+// from the arm toward the fingers, y toward the thumb. Negative distance is inside the hand.
+float sdCapsule(vec2 p, vec2 a, vec2 b, float r) {
+  vec2 pa = p - a;
+  vec2 ba = b - a;
+  float h = clamp(dot(pa, ba) / dot(ba, ba), 0., 1.);
+  return length(pa - ba * h) - r;
+}
+float sdEllipse(vec2 p, vec2 r) { return (length(p / r) - 1.) * min(r.x, r.y); }
+// Smooth union, so palm, fingers and wrist melt together like one piece of ink.
+float smin(float a, float b, float k) {
+  float h = clamp(.5 + .5 * (b - a) / k, 0., 1.);
+  return mix(b, a, h) - k * h * (1. - h);
+}
+const float FINGER_W = 1.0;    // finger and thumb thickness (1 = as drawn below)
+const float FINGER_L = 1.0;    // finger and thumb length
+const float CURL_RISE = 1.0;   // how high curled fingers rise above the palm (shows as shading)
+const float CURL_CLOSE = .55;  // how far curled fingertips turn in toward the middle (radians)
+
+vec2 rot(vec2 v, float a) { return vec2(v.x * cos(a) - v.y * sin(a), v.x * sin(a) + v.y * cos(a)); }
+
+// Distance along a capsule's spine, 0 at a and 1 at b.
+float along(vec2 p, vec2 a, vec2 b) { vec2 ba = b - a; return clamp(dot(p - a, ba) / dot(ba, ba), 0., 1.); }
+
+// Signed distance to the hand with fingers curled by curl (0..1); h returns how high the hand is
+// there (0 palm, up to 1 at a fully curled fingertip). Height becomes ink density, which the
+// image pass lights as relief.
+float hand(vec2 q, float curl, out float h) {
+  float d = sdEllipse(q - vec2(-.05, 0.), vec2(.85, .78));              // palm, under the token
+  d = smin(d, sdCapsule(q, vec2(-1.4, 0.), vec2(-.5, 0.), .4), .25);    // wrist, into the arm
+  h = 0.;
+  float nearest = 1e3;
+  for (int i = 0; i < 4; i++) {
+    float f = float(i) - 1.5;
+    float a = f * .46;                                                  // fingers fan out
+    vec2 dir = vec2(cos(a), sin(a));
+    vec2 base = dir * .65;
+    vec2 knuckle = dir * (.65 + (.6 - .08 * abs(f)) * FINGER_L);        // middle fingers longest
+    // Curled fingers bend up toward the viewer (shorter from above) and close in.
+    vec2 tipDir = rot(dir, -sign(f) * curl * CURL_CLOSE * (abs(f) / 1.5));
+    vec2 tip = knuckle + tipDir * .55 * FINGER_L * (1. - curl * .6);
+    float d1 = sdCapsule(q, base, knuckle, .24 * FINGER_W);
+    float d2 = sdCapsule(q, knuckle, tip, (.2 + .05 * curl) * FINGER_W);
+    if (d1 < nearest) { nearest = d1; h = .5 * curl * along(q, base, knuckle); }
+    if (d2 < nearest) { nearest = d2; h = curl * (.5 + .5 * along(q, knuckle, tip)); }
+    d = smin(d, d1, .14);
+    d = smin(d, d2, .07);
+  }
+  vec2 tb = vec2(-.2, .6);                                              // thumb
+  vec2 tk = tb + normalize(vec2(.55, .6)) * .6 * FINGER_L;
+  vec2 tt = tk + rot(normalize(vec2(1., -.3)), -curl * CURL_CLOSE) * .5 * FINGER_L * (1. - curl * .5);
+  float t1 = sdCapsule(q, tb, tk, .28 * FINGER_W);
+  float t2 = sdCapsule(q, tk, tt, .23 * FINGER_W);
+  if (t1 < nearest) { nearest = t1; h = .4 * curl * along(q, tb, tk); }
+  if (t2 < nearest) { nearest = t2; h = curl * (.4 + .5 * along(q, tk, tt)); }
+  d = smin(d, t1, .16);
+  d = smin(d, t2, .07);
+  // Height only where a finger is the nearest part (not over the palm).
+  h *= 1. - smoothstep(-.05, .1, nearest - d);
+  return d;
+}
+
+void main() {
+  // The ink bodies the arms painted this frame: density in r, and in g, b and a the shimmer, crack
+  // code and flash, each already multiplied by the density (see the ink paint shader).
+  vec4 armData = texture2D(uArm, vUv);
+  float paint = armData.r;
+  vec3 fx = armData.gba;
+
+  // The hands, in the same ink, with their pattern in map coordinates. Their edges are firmer
+  // and their noise weaker than the arms', so the fingers read as fingers. Hands combine by max.
+  vec2 wpx = uRegion.xy + vUv * uRegion.z;
+  float handPaint = 0.;
+  float handZone = 0.;  // 1 in and just around a hand, where smears are cleared fast
+  float hn = -1.;       // the hands' shared noise, worked out only for a texel inside a hand
+  vec3 handFx = vec3(0.);
+  for (int i = 0; i < MAX_HANDS; i++) {
+    if (float(i) >= uHandCount) break;
+    vec4 at = uHands[i];
+    vec4 params = uHandParams[i];
+    vec2 rel = wpx - at.xy;
+    float reach = HAND_REACH * params.x;
+    if (dot(rel, rel) > reach * reach) continue;
+    vec2 hq = vec2(dot(rel, at.zw), dot(rel, vec2(-at.w, at.z)) * params.y) / params.x;
+    float height;
+    float d = hand(hq, params.z, height);
+    handZone = max(handZone, 1. - smoothstep(0., HAND_CLEAR_R, d));
+    float density = clamp(-d / .15, 0., 1.);
+    if (density <= 0.) continue;
+    if (hn < 0.) {
+      vec2 drift = vec2(uTime * FLOW, 0.);
+      vec2 h2 = wpx / INK_PX;
+      float ha = fbm2(h2 * .8 - drift) * 6.28 * 2. + uTime;
+      hn = fbm2(h2 + vec2(cos(ha), sin(ha)) * .35 - drift * 1.3);
+    }
+    // The palm sits low (denser ink reads higher), curled fingers rise toward full density.
+    float level = mix(.55, 1., clamp(height * CURL_RISE, 0., 1.));
+    float ink = clamp(density * level + (hn - .5) * .3, 0., 1.) * smoothstep(0., .1, density);
+    float whole = ink;  // before a burst blasts shards away
+
+    // The hand's shimmer and shatter, packed in the fourth param (see packFx in shatter.ts):
+    // 5 bits each of shimmer, broken and burst. Same look as the arm's, in hand radii.
+    float pk = params.w;
+    float hs = mod(pk, 32.) / 31.;
+    float hb = mod(floor(pk / 32.), 32.) / 31.;
+    float hu = floor(pk / 1024.) / 31.;
+    vec3 hfx = vec3(0.);
+    if (hs > 0.) hfx.x = hs * sheen(dot(rel, at.zw), wpx);
+    if (hb > 0. || hu > 0.) {
+      float cell = .55 * uShardPx / 80.;
+      vec2 s = shards(hq / cell);
+      float edge = s.x * cell * .5;
+      float w = .05 * hb + .13 * hu;
+      float line = (1. - smoothstep(w - .03, w + .03, edge)) * smoothstep(0., .03, w);
+      ink *= (1. - .3 * hb) * (1. - hu * smoothstep(.35, .75, s.y));
+      hfx.y = .35 * hb + .65 * line;
+      hfx.z = hu * hu * hu * (.6 + .4 * s.y);
+    }
+    handPaint = max(handPaint, ink);
+    handFx = max(handFx, vec3(ink * hfx.xy, whole * hfx.z));
+  }
+  paint = max(paint, handPaint);
+  fx = max(fx, handFx);
+
+  // Spreading: push ink down its own slope, so edges creep outward.
+  float px = uRegion.z;  // pixels per unit of vUv
+  vec3 unit = vec3(vec2(SPREAD_PX / px), 0.);
+  vec4 data = texture2D(uBuffer, vUv);
+  vec3 normal = normalize(vec3(
+    TEX1(vUv - unit.xz) - TEX1(vUv + unit.xz),
+    TEX1(vUv - unit.zy) - TEX1(vUv + unit.zy),
+    data.x * data.x) + .001);
+  vec2 offset = -normal.xy * (1. + FLASH_SPREAD * data.a);
+
+  // Turbulence, in map pixels.
+  vec2 wp = vUv * px;
+  float spice = fbm3(vec3(wp / SWIRL_PX, uTime * SWIRL_SPEED)) * 6.28 * 2. + uTime;
+  offset += vec2(cos(spice), sin(spice));
+
+  vec2 uv = vUv + offset * PUSH_PX * uDelta / px;
+  float frame = texture2D(uBuffer, uv).x;
+  paint = max(paint, frame - uDelta * fade * (1. + HAND_CLEAR * handZone));
+
+  // Keep the square's border empty.
+  float border = min(min(vUv.x, vUv.y), min(1. - vUv.x, 1. - vUv.y));
+  float keepBorder = smoothstep(0., .02, border);
+  paint *= keepBorder;
+  // The shimmer, crack code and flash are not advected: they are stamped fresh each frame where
+  // the arms and hands are now, and what they left behind fades fast, so they hug the ink body.
+  fx = max(fx, data.gba - uDelta * FX_FADE) * keepBorder;
+  gl_FragColor = vec4(clamp(paint, 0., 1.), clamp(fx, 0., 1.));
+}`;
+var ink_image_1 = require("./ink-image");
+Object.defineProperty(exports, "INK_IMAGE_FRAG", { enumerable: true, get: function () { return ink_image_1.INK_IMAGE_FRAG; } });
+
+  };
+  factories["./smear"] = function (exports, require) {
+"use strict";
+// The shared smear buffer for `shader: "ink"` arms. One square on the map covers every ink arm's
+// reach. Each frame, three passes run, as in the bench's "world" mode:
+//   1. paint: every ink arm draws its ink body into the arm texture (its own uniforms);
+//   2. buffer: one quad reads the arm texture and last frame's buffer, adds the arms' hands,
+//      smears and fades the ink, and writes the other buffer texture (ping-pong);
+//   3. image: one quad in canvas.primary lights the buffer over the square, under the tokens.
+// The textures exist only while at least one ink arm does.
+// Each texture holds four channels: r the ink density, g the shimmer, b the crack code and a the
+// flash, the last three premultiplied by the density (see INK_BUFFER_FRAG and the ink paint
+// shader in shaders.ts).
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createSmear = createSmear;
+const look_1 = require("./look");
+const region_1 = require("./region");
+const shaders_1 = require("./shaders");
+/** A 1 by 1 square with `aUv` 0..1; meshes scale and place it. */
+function unitQuad() {
+    return new PIXI.Geometry()
+        .addAttribute("aVertexPosition", new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]), 2)
+        .addAttribute("aUv", new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]), 2)
+        .addIndex(new Uint16Array([0, 1, 2, 0, 2, 3]));
+}
+function createSmear(host) {
+    const painters = new Map();
+    /** The painters sorted by token id, so the same arms get the hands when there are too many. */
+    let order = [];
+    let region = null;
+    let gpu = null;
+    const empty = new PIXI.Container();
+    /** (x, y, size in map pixels, texture size in texels). */
+    const uRegion = new Float32Array([0, 0, 1, 1]);
+    /** The hands, packed: MAX_HANDS slots of 4 floats each (see INK_BUFFER_FRAG). */
+    const uHands = new Float32Array(shaders_1.MAX_HANDS * 4);
+    const uHandParams = new Float32Array(shaders_1.MAX_HANDS * 4);
+    const bufferUniforms = {
+        uTime: 0,
+        uDelta: 1 / 60,
+        uBuffer: null,
+        uArm: null,
+        uRegion,
+        uHands,
+        uHandParams,
+        uHandCount: 0,
+    };
+    (0, look_1.writeTune)(bufferUniforms);
+    const colorA = new Float32Array(3);
+    const colorC = new Float32Array(3);
+    const imageUniforms = {
+        uBuffer: null,
+        uRegion,
+        uColorA: colorA,
+        uColorC: colorC,
+        uAlpha: 1,
+        uTime: 0,
+    };
+    (0, look_1.writeTune)(imageUniforms);
+    function clear(texture) {
+        host.renderer().render(empty, { renderTexture: texture, clear: true });
+    }
+    function placeImage() {
+        if (!gpu || !region)
+            return;
+        gpu.imageQuad.position.set(region.x, region.y);
+        gpu.imageQuad.scale.set(region.size);
+    }
+    /** Recompute the region, colours and elevation from the current arms. */
+    function refresh() {
+        const arms = [...painters.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+        order = arms.map(([, p]) => p);
+        const next = (0, region_1.smearRegion)(arms.map(([, p]) => p.arm.reach));
+        // With no arms left, keep the region: an arm that is rebuilt is removed and added again
+        // straight away, and its ink should survive that. The next frame frees the textures.
+        if (!next)
+            return;
+        if (!(0, region_1.sameRegion)(region, next)) {
+            region = next;
+            uRegion[0] = next.x;
+            uRegion[1] = next.y;
+            uRegion[2] = next.size;
+            placeImage();
+            if (gpu)
+                for (const texture of [gpu.read, gpu.write, gpu.armTexture])
+                    clear(texture);
+        }
+        // One set of colours for the whole image pass: the ink arm whose token id sorts first.
+        const first = arms[0]?.[1].arm;
+        if (first) {
+            colorA.set(first.colorA);
+            colorC.set(first.colorC);
+        }
+        if (gpu) {
+            gpu.imageContainer.elevation = Math.min(...arms.map(([, p]) => p.arm.elevation));
+            host.primary().sortDirty = true;
+        }
+    }
+    function makeGpu() {
+        const size = host.bufferSize();
+        const texture = () => PIXI.RenderTexture.create({ width: size, height: size, resolution: 1 });
+        const read = texture();
+        const write = texture();
+        const armTexture = texture();
+        for (const t of [read, write, armTexture])
+            clear(t);
+        uRegion[3] = size;
+        bufferUniforms.uArm = armTexture;
+        const bufferQuad = new PIXI.Mesh(unitQuad(), PIXI.Shader.from(shaders_1.QUAD_VERT, shaders_1.INK_BUFFER_FRAG, bufferUniforms));
+        bufferQuad.state.blend = false;
+        bufferQuad.scale.set(size);
+        const imageContainer = new PIXI.Container();
+        imageContainer.eventMode = "none";
+        imageContainer.sortLayer = host.sortLayer;
+        // Under the arms' joint rings when they share an elevation.
+        imageContainer.sort = -1;
+        const imageQuad = imageContainer.addChild(new PIXI.Mesh(unitQuad(), PIXI.Shader.from(shaders_1.QUAD_VERT, shaders_1.INK_IMAGE_FRAG, imageUniforms)));
+        host.primary().addChild(imageContainer);
+        return { size, read, write, armTexture, bufferQuad, imageContainer, imageQuad };
+    }
+    function release() {
+        if (!gpu)
+            return;
+        for (const t of [gpu.read, gpu.write, gpu.armTexture])
+            t.destroy(true);
+        gpu.bufferQuad.destroy();
+        if (!gpu.imageContainer.destroyed)
+            gpu.imageContainer.destroy({ children: true });
+        bufferUniforms.uBuffer = bufferUniforms.uArm = imageUniforms.uBuffer = null;
+        gpu = null;
+    }
+    function update(time, delta) {
+        if (painters.size === 0) {
+            release();
+            return;
+        }
+        if (!region)
+            return;
+        if (!gpu) {
+            gpu = makeGpu();
+            placeImage();
+            refresh();
+        }
+        const renderer = host.renderer();
+        // 1. Paint: each arm draws its strip into the arm texture, scaled so the region fills it.
+        const s = gpu.size / region.size;
+        let cleared = false;
+        for (const { arm, mesh } of painters.values()) {
+            if (!arm.paints())
+                continue;
+            mesh.scale.set(s);
+            mesh.position.set(-region.x * s, -region.y * s);
+            renderer.render(mesh, { renderTexture: gpu.armTexture, clear: !cleared });
+            cleared = true;
+        }
+        if (!cleared)
+            clear(gpu.armTexture);
+        // 2. Buffer: read last frame's buffer, write the other texture, then swap them. The hands
+        // of the arms that paint this frame go first, up to MAX_HANDS.
+        let hands = 0;
+        for (const { arm } of order) {
+            if (hands === shaders_1.MAX_HANDS)
+                break;
+            if (!arm.hand || !arm.paints())
+                continue;
+            uHands.set(arm.hand.at, hands * 4);
+            uHandParams.set(arm.hand.params, hands * 4);
+            hands++;
+        }
+        bufferUniforms.uHandCount = hands;
+        bufferUniforms.uTime = time;
+        bufferUniforms.uDelta = delta;
+        (0, look_1.writeTune)(bufferUniforms);
+        (0, look_1.writeTune)(imageUniforms);
+        imageUniforms.uTime = time;
+        bufferUniforms.uBuffer = gpu.read;
+        renderer.render(gpu.bufferQuad, { renderTexture: gpu.write, clear: true });
+        [gpu.read, gpu.write] = [gpu.write, gpu.read];
+        // 3. Image: canvas.primary draws the quad later this frame, from the newest buffer.
+        imageUniforms.uBuffer = gpu.read;
+    }
+    function add(id, arm) {
+        painters.get(id)?.mesh.destroy();
+        const mesh = new PIXI.Mesh(arm.geometry, PIXI.Shader.from(shaders_1.ARM_VERT, (0, shaders_1.fragmentSource)(shaders_1.SMEAR_SHADER), arm.uniforms));
+        // Screen blending (src + dst * (1 - src), per channel, alpha included) combines overlapping
+        // arms as a + b - ab in every channel, so draw order never matters. Normal blending would only
+        // do that for the density.
+        mesh.state.blendMode = PIXI.BLEND_MODES.SCREEN;
+        painters.set(id, { arm, mesh });
+        refresh();
+    }
+    function remove(id) {
+        const painter = painters.get(id);
+        if (!painter)
+            return;
+        painters.delete(id);
+        painter.mesh.destroy();
+        refresh();
+    }
+    function rebuild() {
+        release();
+    }
+    function teardown() {
+        for (const { mesh } of painters.values())
+            mesh.destroy();
+        painters.clear();
+        release();
+        region = null;
+    }
+    return { add, remove, update, rebuild, teardown };
+}
+
+  };
+  const lib = {};
+  for (const name of ["solve","region","strip","config","look","ink-image","shaders","smear"]) lib[name] = req("./" + name);
+  return lib;
+})();
+</script>
+<!-- END generated -->
+
+<script>
+// The boss demo: six ink arms with hands around a centre, drawn by the module's own code
+// (ArmsLib, generated above): the strip, the ink paint shader, the smear buffer and the shatter
+// look. Only the Foundry glue is replaced: this file builds the arms like src/main.ts does and
+// sets their state from the buttons instead of from the token flag.
+(() => {
+  "use strict";
+  const { defaultLength } = ArmsLib.solve;
+  const { solve } = ArmsLib.solve;
+  const { reachRadius } = ArmsLib.region;
+  const { allocateStrip, writeStrip, stripIndices, stripEnd } = ArmsLib.strip;
+  const { parseArmFlag } = ArmsLib.config;
+  const { ARM_VERT, fragmentSource } = ArmsLib.shaders;
+  const { createSmear } = ArmsLib.smear;
+  const S = ArmsLib.look;
+
+  const GRID = 140;
+  const TOKEN_W = 2 * GRID;          // a 2 x 2 token, like the editor's hand size 1
+  const COUNT = 6;
+  const ANCHOR_R = 160;              // shoulders sit on a ring this far from the centre
+  const HAND_R = 850;                // the hands rest on a ring this far out
+  const $ = (id) => document.getElementById(id);
+  const stageEl = $("stage");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---- PIXI ----
+  const app = new PIXI.Application({
+    resizeTo: stageEl, antialias: true, backgroundColor: 0x0d0b10,
+    autoDensity: true, resolution: Math.min(window.devicePixelRatio || 1, 2),
+  });
+  app.view.classList.add("boss-view");
+  stageEl.prepend(app.view);
+  const world = new PIXI.Container();
+  app.stage.addChild(world);
+  const floor = new PIXI.Graphics();
+  // The smear's image quad goes in here, as it goes in canvas.primary in Foundry.
+  const primary = new PIXI.Container();
+  primary.sortDirty = false;
+  const tokensG = new PIXI.Graphics();
+  world.addChild(floor, primary, tokensG);
+
+  function drawFloor() {
+    const x0 = -2600, x1 = 2600;
+    floor.clear();
+    floor.beginFill(0x7a5426).drawRect(x0, x0, x1 - x0, x1 - x0).endFill();
+    floor.lineStyle(2, 0x5a3b18, 0.9);
+    for (let x = x0; x <= x1; x += GRID) floor.moveTo(x, x0).lineTo(x, x1).moveTo(x0, x).lineTo(x1, x);
+    // The boss, under the shoulders.
+    floor.lineStyle(6, 0xc9a45c, 0.9).beginFill(0x1a1420).drawCircle(0, 0, ANCHOR_R + 60).endFill();
+  }
+  drawFloor();
+
+  function fitCamera() {
+    const w = app.screen.width, h = app.screen.height;
+    const s = Math.min(w, h) / (2 * (HAND_R + 330));
+    world.scale.set(s);
+    world.position.set(w / 2, h / 2);
+  }
+  fitCamera();
+  new ResizeObserver(() => { app.resize(); fitCamera(); }).observe(stageEl);
+
+  // ---- Smear buffer: the module's own ----
+  const smear = createSmear({
+    renderer: () => app.renderer,
+    primary: () => primary,
+    bufferSize: () => 1024,
+    sortLayer: 690,
+  });
+
+  // ---- Arms ----
+  const rgb = (c) => new Float32Array([((c >> 16) & 255) / 255, ((c >> 8) & 255) / 255, (c & 255) / 255]);
+  const hexNum = (hex) => parseInt(hex.slice(1), 16);
+  const colors = { fill: 0x2b2433, glow: 0xe0457b };
+  const ATTRIBUTES = [
+    ["aVertexPosition", "position", 2], ["aUv", "uv", 2], ["aDist", "dist", 1],
+    ["aSeg", "seg", 1], ["aHalf", "half", 1],
+  ];
+  const angleOf = (i) => ((i * 360) / COUNT - 90) * (Math.PI / 180);
+  const ringPoint = (r, a) => ({ x: Math.cos(a) * r, y: Math.sin(a) * r });
+
+  function buildArm(i) {
+    const a = angleOf(i);
+    const anchor = ringPoint(ANCHOR_R, a);
+    const rest = ringPoint(HAND_R, a);
+    const flag = {
+      anchor, segments: 3, bend: i % 2 ? -1 : 1, shoulderWidth: 1.1, wristWidth: 0.6,
+      shader: "ink", hand: true, handSize: 1, curl: 1, smooth: true,
+      fill: colors.fill, glow: colors.glow,
+    };
+    const config = parseArmFlag(flag);
+    const length = defaultLength(config.anchor, rest, config.segments, GRID);
+    const strip = allocateStrip(config.segments);
+    const geometry = new PIXI.Geometry();
+    for (const [buffer, key, size] of ATTRIBUTES) geometry.addAttribute(buffer, strip[key], size);
+    geometry.addIndex(stripIndices(config.segments));
+    const uniforms = {
+      uTime: 0, uLength: 1, uSegments: config.segments,
+      uColorA: rgb(config.fill), uColorB: rgb(config.outline), uColorC: rgb(config.glow),
+      uOutlineWidth: config.outlineWidth, uAlpha: 1, uShimmer: 0, uShatter: -1, uBroken: 0,
+    };
+    S.writeTune(uniforms);
+    // Never drawn itself: the smear's paint mesh draws this geometry into the arm texture.
+    const mesh = new PIXI.Mesh(geometry, PIXI.Shader.from(ARM_VERT, fragmentSource(config.shader), uniforms));
+    const hand = {
+      at: new Float32Array([0, 0, 1, 0]),
+      params: new Float32Array([TOKEN_W / 2 * config.handSize, config.bend, config.curl, 0]),
+    };
+    const arm = { i, id: `arm-${i}`, config, length, strip, geometry, mesh, uniforms, hand,
+      look: S.newLook(null), state: null, pos: { ...rest }, rest };
+    arm.reachRadius = reachRadius(config.segments, length,
+      GRID * Math.max(config.shoulderWidth, config.wristWidth), GRID, hand.params[0]);
+    return arm;
+  }
+  function register(arm) {
+    smear.add(arm.id, {
+      geometry: arm.geometry, uniforms: arm.uniforms,
+      reach: { anchor: arm.config.anchor, radius: arm.reachRadius },
+      colorA: arm.uniforms.uColorA, colorC: arm.uniforms.uColorC,
+      elevation: 0, hand: arm.hand, paints: () => true,
+    });
+  }
+  function pose(arm) {
+    const { config, strip, uniforms, geometry, hand } = arm;
+    const joints = solve(config.anchor, arm.pos, config.segments, arm.length, config.bend, config.bendPattern);
+    uniforms.uLength = writeStrip(strip, joints, (GRID * config.shoulderWidth) / 2,
+      (GRID * config.wristWidth) / 2, config.smooth);
+    for (const [buffer] of ATTRIBUTES) geometry.getBuffer(buffer).update();
+    const end = stripEnd(strip);
+    hand.at.set([end.x, end.y, end.dx, end.dy]);
+  }
+
+  const arms = [];
+  for (let i = 0; i < COUNT; i++) {
+    const arm = buildArm(i);
+    arms.push(arm);
+    register(arm);
+  }
+
+  // The tokens: a disc over each hand's palm, as the token art covers it in Foundry.
+  const labels = arms.map((arm) => {
+    const t = new PIXI.Text(String(arm.i + 1), { fill: 0xe8dfc9, fontSize: 76, fontFamily: "Chakra Petch, sans-serif", fontWeight: "600" });
+    t.anchor.set(0.5);
+    world.addChild(t);
+    return t;
+  });
+  function drawTokens() {
+    tokensG.clear();
+    for (const [n, arm] of arms.entries()) {
+      tokensG.lineStyle(5, 0xc9a45c, 1).beginFill(0x17121d).drawCircle(arm.pos.x, arm.pos.y, 100).endFill();
+      labels[n].position.set(arm.pos.x, arm.pos.y);
+    }
+    // The shoulders.
+    tokensG.lineStyle(0);
+    for (const arm of arms) tokensG.beginFill(0xc9a45c).drawCircle(arm.config.anchor.x, arm.config.anchor.y, 14).endFill();
+  }
+
+  // ---- State, as the token flag would set it ----
+  const STATE_LABEL = { null: "normal", shimmer: "shimmering", shattered: "shattered" };
+  function setState(i, state) {
+    const arm = arms[i];
+    if (arm.state === state) return;
+    arm.state = state;
+    S.setLookState(arm.look, state);
+    syncRows();
+  }
+  function resetAll() {
+    for (let i = 0; i < COUNT; i++) setState(i, null);
+    cycle.hits = 0;
+  }
+  function shimmerFour() {
+    const order = [...Array(COUNT).keys()].sort(() => Math.random() - 0.5).slice(0, 4);
+    for (const i of order) setState(i, "shimmer");
+  }
+  const shimmering = () => arms.filter((a) => a.state === "shimmer");
+
+  // ---- The fight cycle ----
+  // Reset, four of six shimmer, three get shattered, the boss is weak for a moment, repeat.
+  const cycle = { on: false, phase: "reset", t: 0, hits: 0 };
+  const status = $("cycle-status");
+  const banner = $("banner");
+  // A hit shatters its own arm at once. The third hit opens the Shattered window: every arm that
+  // is not yet shattered bursts at the same moment, and all six stay shattered until a reset.
+  function hit(i) {
+    if (arms[i].state !== "shimmer") return;
+    setState(i, "shattered");
+    cycle.hits++;
+    if (cycle.on && cycle.phase === "fight") cycle.t = 0;
+    if (cycle.hits >= 3) {
+      for (let k = 0; k < COUNT; k++) setState(k, "shattered");
+      if (cycle.on && cycle.phase === "fight") { cycle.phase = "weak"; cycle.t = 0; }
+    }
+  }
+  function setPhase(phase) {
+    cycle.phase = phase;
+    cycle.t = 0;
+    if (phase === "reset") { resetAll(); cycle.hits = 0; }
+  }
+  function stepCycle(dt) {
+    banner.hidden = !(cycle.on && cycle.phase === "weak");
+    if (!cycle.on) { status.textContent = "Cycle off. Click a shimmering hand to shatter it."; return; }
+    cycle.t += dt;
+    if (cycle.phase === "reset") {
+      status.textContent = "Resetting.";
+      if (cycle.t > 1.2) { shimmerFour(); setPhase("fight"); }
+    } else if (cycle.phase === "fight") {
+      status.textContent = `${cycle.hits} of 3 shattered.` + ($("autohit").checked ? "" : " Click a shimmering hand.");
+      if ($("autohit").checked && cycle.t > 1.7) {
+        const list = shimmering();
+        if (list.length) hit(list[Math.floor(Math.random() * list.length)].i);
+      }
+    } else if (cycle.phase === "weak") {
+      status.textContent = "Third hit: all six arms shatter and the boss is weakened for a round.";
+      if (cycle.t > 3) setPhase("reset");
+    }
+  }
+  $("cycle").addEventListener("click", () => {
+    cycle.on = !cycle.on;
+    $("cycle").setAttribute("aria-pressed", String(cycle.on));
+    $("cycle").textContent = cycle.on ? "Stop the cycle" : "Run the cycle";
+    if (cycle.on) setPhase("reset");
+    else banner.hidden = true;
+  });
+  $("reset-all").addEventListener("click", () => { if (cycle.on) setPhase("reset"); else resetAll(); });
+  $("shimmer-four").addEventListener("click", () => {
+  resetAll();
+  shimmerFour();
+  if (cycle.on) { cycle.phase = "fight"; cycle.hits = 0; cycle.t = 0; }
+});
+
+  // ---- Per-arm rows ----
+  const rows = $("arm-rows");
+  for (const arm of arms) {
+    const row = document.createElement("div");
+    row.className = "armrow";
+    row.innerHTML = `<span class="armname">Arm ${arm.i + 1}</span><span class="badge"></span>
+      <span class="btns"><button type="button" class="btn" data-act="shimmer">Shimmer</button>
+      <button type="button" class="btn" data-act="shatter">Shatter</button>
+      <button type="button" class="btn" data-act="reset">Reset</button></span>`;
+    row.addEventListener("click", (e) => {
+      const act = e.target instanceof HTMLElement ? e.target.dataset.act : null;
+      if (act === "shimmer") setState(arm.i, arm.state === "shimmer" ? null : "shimmer");
+      else if (act === "shatter") setState(arm.i, "shattered");
+      else if (act === "reset") setState(arm.i, null);
+    });
+    arm.row = row;
+    rows.append(row);
+  }
+  function syncRows() {
+    for (const arm of arms) {
+      const badge = arm.row.querySelector(".badge");
+      badge.textContent = STATE_LABEL[arm.state];
+      badge.dataset.state = String(arm.state);
+    }
+  }
+
+  // ---- Tuning ----
+  const TUNING = [
+    { key: "sheenSpeed", label: "Shimmer speed", unit: " px/s", min: 0, max: 800, step: 10 },
+    { key: "shimmerGain", label: "Shimmer intensity", unit: "", min: 0, max: 2, step: 0.05 },
+    { key: "shardPx", label: "Shard size", unit: " px", min: 30, max: 220, step: 5 },
+    { key: "burstLen", label: "Burst length", unit: " s", min: 0.3, max: 3, step: 0.05 },
+    { key: "crackDark", label: "Crack darkness", unit: "", min: 0, max: 1, step: 0.05 },
+    { key: "kaleidoPx", label: "Kaleidoscope cell size", unit: " px", min: 50, max: 400, step: 10 },
+    { key: "snapEvery", label: "Snap interval", unit: " s", min: 1, max: 8, step: 0.25 },
+    { key: "snapSpread", label: "Snap spread (0 = in sync)", unit: "", min: 0, max: 1, step: 0.05 },
+    { key: "glassGain", label: "Shattered glass", unit: "", min: 0, max: 1, step: 0.05 },
+  ];
+  const tuneBox = $("tuning");
+  const tuneJson = $("tune-json");
+  function showTune() {
+    tuneJson.textContent = JSON.stringify(S.tune);
+    for (const t of TUNING) {
+      $(`t-${t.key}-out`).textContent = `${(+S.tune[t.key]).toFixed(t.step < 0.1 ? 2 : t.step < 1 ? 2 : 0)}${t.unit}`;
+      $(`t-${t.key}`).value = S.tune[t.key];
+    }
+  }
+  for (const t of TUNING) {
+    const field = document.createElement("div");
+    field.className = "field";
+    field.innerHTML = `<label for="t-${t.key}">${t.label} <output id="t-${t.key}-out"></output></label>
+      <input type="range" id="t-${t.key}" min="${t.min}" max="${t.max}" step="${t.step}">`;
+    field.querySelector("input").addEventListener("input", (e) => { S.tune[t.key] = +e.target.value; showTune(); });
+    tuneBox.append(field);
+  }
+  $("tune-reset").addEventListener("click", () => { Object.assign(S.tune, S.DEFAULT_TUNE); showTune(); });
+  $("tune-copy").addEventListener("click", () => {
+    const text = JSON.stringify(S.tune);
+    const done = (label) => { $("tune-copy").textContent = label; setTimeout(() => ($("tune-copy").textContent = "Copy values"), 1400); };
+    try { navigator.clipboard.writeText(text).then(() => done("Copied"), () => done("Select the values above")); }
+    catch { done("Select the values above"); }
+  });
+  showTune();
+
+  // ---- Colours and drift ----
+  for (const [id, key] of [["col-fill", "fill"], ["col-glow", "glow"]]) {
+    $(id).addEventListener("input", (e) => {
+      colors[key] = hexNum(e.target.value);
+      for (const arm of arms) {
+        arm.uniforms.uColorA.set(rgb(colors.fill));
+        arm.uniforms.uColorC.set(rgb(colors.glow));
+      }
+      for (const arm of arms) register(arm);   // the image pass copies the colours when an arm is added
+    });
+  }
+  const drift = $("drift");
+  drift.checked = !reduceMotion;
+
+  // ---- Clicking a hand shatters it, if it is shimmering ----
+  app.view.addEventListener("pointerdown", (e) => {
+    const r = app.view.getBoundingClientRect();
+    const p = world.toLocal(new PIXI.Point(e.clientX - r.left, e.clientY - r.top));
+    let best = null, bestD = 170;
+    for (const arm of arms) {
+      const d = Math.hypot(p.x - arm.pos.x, p.y - arm.pos.y);
+      if (d < bestD) { best = arm; bestD = d; }
+    }
+    if (best) hit(best.i);
+  });
+
+  // ---- Frame ----
+  let time = 0;
+  let timeScale = 1;
+  app.ticker.add(() => {
+    const dt = Math.min(app.ticker.deltaMS / 1000, 0.1) * timeScale;
+    time += dt;
+    for (const arm of arms) {
+      if (drift.checked) {
+        const k = arm.i;
+        const a = angleOf(k) + 0.18 * Math.sin(time * 0.45 + k * 1.7);
+        const r = HAND_R * (1 + 0.07 * Math.sin(time * 0.6 + k * 2.3));
+        arm.pos = ringPoint(r, a);
+      }
+      pose(arm);
+      arm.uniforms.uTime = time;
+      S.stepLook(arm.look, dt);
+      S.writeLook(arm.look, arm.uniforms, arm.hand.params);
+      S.writeTune(arm.uniforms);
+    }
+    smear.update(time, dt);
+    drawTokens();
+    stepCycle(dt);
+  });
+
+  // ---- Mode switch ----
+  const editorRail = $("editor-rail");
+  const bossRail = $("boss-rail");
+  function setMode(mode) {
+    stageEl.dataset.mode = mode;
+    const boss = mode === "boss";
+    bossRail.hidden = !boss;
+    editorRail.hidden = boss;
+    $("mode-boss").setAttribute("aria-pressed", String(boss));
+    $("mode-editor").setAttribute("aria-pressed", String(!boss));
+    const editor = window.benchEditor && window.benchEditor.app;
+    if (boss) { app.ticker.start(); editor && editor.ticker.stop(); }
+    else { app.ticker.stop(); editor && editor.ticker.start(); editor && editor.resize(); }
+  }
+  $("mode-boss").addEventListener("click", () => setMode("boss"));
+  $("mode-editor").addEventListener("click", () => setMode("editor"));
+
+  // A starting position with each kind side by side: normal, shimmering, shattered.
+  setState(0, "shimmer"); setState(2, "shimmer"); setState(4, "shimmer");
+  arms[3].state = "shattered"; arms[3].look = S.newLook("shattered");   // already shattered when "built"
+  syncRows();
+  setMode("boss");
+  window.bossBench = { arms, setState, resetAll, shimmerFour, hit, cycle, setTimeScale: (s) => { timeScale = s; } };
+})();
+</script>
+
