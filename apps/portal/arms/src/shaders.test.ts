@@ -45,4 +45,37 @@ describe("shader sources", () => {
   it("multiplies the visible ink pass by uAlpha", () => {
     expect(INK_IMAGE_FRAG).toContain("* uAlpha;");
   });
+
+  it("declares the shimmer and shatter uniforms for every fragment shader", () => {
+    for (const name of [
+      "uShimmer",
+      "uShatter",
+      "uBroken",
+      "uSheenSpeed",
+      "uShardPx",
+      "uBurstLen",
+    ]) {
+      expect(FRAGMENT_PRELUDE).toContain(`uniform float ${name};`);
+    }
+  });
+
+  it("takes the kaleidoscope's tuning in the image pass", () => {
+    for (const name of ["uKaleidoPx", "uSnapEvery", "uSnapSpread", "uGlassGain"]) {
+      expect(INK_IMAGE_FRAG).toContain(`uniform float ${name};`);
+    }
+  });
+
+  it("paints density, shimmer, crack code and flash into the arm texture", () => {
+    expect(FRAGMENTS[SMEAR_SHADER]).toContain(
+      "gl_FragColor = vec4(paint, paint * fx.xy, whole * fx.z);",
+    );
+  });
+
+  it("has no loop without a constant bound", () => {
+    for (const source of [FRAGMENTS[SMEAR_SHADER] ?? "", INK_BUFFER_FRAG, INK_IMAGE_FRAG]) {
+      for (const [, header] of source.matchAll(/for \(([^)]*)\)/g)) {
+        expect(header).toMatch(/<=? (-?\d+|MAX_HANDS)/);
+      }
+    }
+  });
 });
