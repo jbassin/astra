@@ -1,6 +1,6 @@
 // The shatter mechanic's state machine: pure, no Foundry. Four arms shimmer; each shimmering arm
-// that is hit shatters; when enough have shattered, the round is "triggered" and every arm still
-// shimmering stops. shatter.ts reads and writes these states through the token flags.
+// that is hit shatters; when enough have shattered, the round is "triggered" and every arm in the
+// fight shatters. shatter.ts reads and writes these states through the token flags.
 
 export type ArmState = "shimmer" | "shattered";
 
@@ -18,7 +18,7 @@ interface HitResult {
   readonly shattered: boolean;
   /** This hit reached the threshold. */
   readonly triggered: boolean;
-  /** Arms that were still shimmering when the round triggered; they go back to normal. */
+  /** Arms that were still shimmering when the round triggered; they shatter with the rest. */
   readonly released: readonly string[];
 }
 
@@ -77,16 +77,21 @@ export function fromStates(
   };
 }
 
-/** Apply a hit on `armId`. A hit on a non-shimmering arm, or after the threshold, does nothing. */
-export function hit(round: Round, armId: string): HitResult {
+/**
+ * Apply a hit on `armId`. A hit on a non-shimmering arm, or after the threshold, does nothing.
+ * The hit that reaches the threshold shatters every arm in `allArms` too (the whole boss breaks),
+ * so the triggered round's `shattered` is the hit arms followed by the rest of `allArms`.
+ */
+export function hit(round: Round, armId: string, allArms: readonly string[] = []): HitResult {
   const none: HitResult = { round, shattered: false, triggered: false, released: [] };
   if (isTriggered(round) || !round.shimmering.includes(armId)) return none;
   const shattered = [...round.shattered, armId];
   const shimmering = round.shimmering.filter((id) => id !== armId);
   const next: Round = { ...round, shimmering, shattered };
   if (!isTriggered(next)) return { round: next, shattered: true, triggered: false, released: [] };
+  const rest = allArms.filter((id) => !shattered.includes(id));
   return {
-    round: { ...next, shimmering: [] },
+    round: { ...next, shimmering: [], shattered: [...shattered, ...new Set(rest)] },
     shattered: true,
     triggered: true,
     released: shimmering,

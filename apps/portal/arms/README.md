@@ -112,8 +112,9 @@ ikArms.detach(token);
 
 A boss-fight mechanic that runs on the arms (`src/shatter.ts`; the rules are pure code in
 `src/shatter-state.ts`). Four of the six arms shimmer. A hit on a shimmering arm shatters it. On
-the third shatter every arm still shimmering stops, and each arm's actor gets a "Shattered"
-effect (Weakness 10 to all damage). When the window ends, every arm returns to normal, the effects
+the third shatter every arm in the fight shatters (the hit arms stay shattered, every other arm
+shatters at that moment), and each arm's actor gets a "Shattered" effect (Weakness 10 to all
+damage). All arms stay shattered for the window. When the window ends, every arm returns to normal, the effects
 go, and four new arms shimmer.
 
 **API** (GM client, on `globalThis.ikArms.shatter`):
