@@ -1,9 +1,20 @@
 # Now
 
-Updated 2026-11-12.
+Updated 2026-11-16.
 
 ## In flight
 
+- **ESOTERICA's arms shimmer and shatter (2026-11-16, #243 to #245).** `ikArms.shatter.start()`
+  (GM, on the "esoterica" scene) makes four of the six Implement arms shimmer with a kaleidoscope
+  look. pf2e damage on a shimmering arm shatters it; the third shatter breaks all six arms and puts
+  a "Shattered" effect (Weakness 10 to all damage) on every Implement, because damage reaches
+  ESOTERICA through the Implements (the "ESOTERICA damage redirect" macro). The module ends the
+  window itself after one full round of the combat tracker, then four new arms shimmer. The look
+  was tuned with Josh in the bench page (published as a private artifact). Installed and checked
+  live on 2026-11-16 outside combat: the shimmer draws, three hits shattered all six and applied
+  six effects; the test was cleaned up. Not yet checked: the one-round window in a real combat,
+  and a player client. Details in
+  [`apps/portal/arms/README.md`](../apps/portal/arms/README.md#shatter-mechanic).
 - **ik-arms arms are shader-drawn ink for the six-handed boss (2026-11-09, #225 to #229).** The
   module in `apps/portal/arms` now draws each arm as one smooth strip through its joints with a
   named shader; `shader: "ink"` arms paint into one smear buffer fixed to the map, shared by every
