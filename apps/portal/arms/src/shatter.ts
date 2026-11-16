@@ -202,7 +202,8 @@ function enqueue(task: () => Promise<void>): Promise<void> {
 async function handleHit(armId: string): Promise<void> {
   const fight = findFight();
   if (!fight?.config.arms.includes(armId)) return;
-  const result = hit(readRound(fight), armId);
+  // The hit that triggers the window shatters every arm in the fight, not only the three hit.
+  const result = hit(readRound(fight), armId, fight.config.arms);
   if (!result.shattered) return;
   await writeRound(fight, result.round);
   if (result.triggered) await applyEffects(fight);

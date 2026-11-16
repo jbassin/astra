@@ -70,6 +70,20 @@ describe("hit", () => {
     expect(isTriggered(last.round)).toBe(true);
   });
 
+  it("shatters every arm in the fight on the trigger", () => {
+    const [a = "", b = "", c = "", d = ""] = start.shimmering;
+    const round = hit(hit(start, a, ids).round, b, ids).round;
+    expect(round.shattered).toEqual([a, b]);
+    const last = hit(round, c, ids);
+    expect(last.triggered).toBe(true);
+    expect(last.released).toEqual([d]);
+    expect(last.round.shimmering).toEqual([]);
+    expect(last.round.shattered.slice(0, 3)).toEqual([a, b, c]);
+    expect(new Set(last.round.shattered)).toEqual(new Set(ids));
+    expect(last.round.shattered).toHaveLength(ids.length);
+    expect(isTriggered(fromStates(statesOf(last.round, ids)))).toBe(true);
+  });
+
   it("ignores hits after the threshold until reset", () => {
     const [a, b, c, d] = start.shimmering as [string, string, string, string];
     const done = hit(hit(hit(start, a).round, b).round, c).round;
