@@ -108,6 +108,65 @@ ikArms.detach(token);
 | `handSize` | 1 | hand radius in token radii: the token's width / 2 × `handSize` |
 | `curl` | 1 | 0 to 1 (clamped): how far the fingers curl around the token |
 
+## Shatter mechanic
+
+A boss-fight mechanic that runs on the arms (`src/shatter.ts`; the rules are pure code in
+`src/shatter-state.ts`). Four of the six arms shimmer. A hit on a shimmering arm shatters it. On
+the third shatter every arm still shimmering stops, and each arm's actor gets a "Shattered"
+effect (Weakness 10 to all damage). When the window ends, every arm returns to normal, the effects
+go, and four new arms shimmer.
+
+**API** (GM client, on `globalThis.ikArms.shatter`):
+
+- `start({ arms? })` writes the fight flag on the viewed scene and picks the first four. `arms`
+  (tokens, token documents or ids) defaults to every token on the scene with an `ikArm` flag. It
+  stops a fight that is already running first.
+- `stop()` clears every arm flag, deletes our effects and sets the fight inactive.
+- `reroll()` resets now and picks four new arms.
+- `status()` returns each arm's state and eligibility, the shatter count, and whether a window is
+  open.
+
+**Flags.**
+
+- `flags.world.ikShatter = { state: "shimmer" | "shattered", since }` on each arm token. Absent
+  means a normal arm. The token flags are the truth: after a reload the fight resumes from them.
+  `since` is `Date.now()` on the writer. The shaders read this flag.
+- `flags.world.ikShatterFight = { arms, shimmer: 4, needed: 3, weakness: 10, effectUuids, window,
+  active }` on the scene. `effectUuids` lists the six effects while a window is open. `window` is
+  `{ combat, round, turn }` when the third shatter happened, or null outside combat. Each effect
+  item carries `flags.world.ikShatterEffect = true`.
+
+**Trigger.** Only the active GM client acts (`game.users.activeGM?.isSelf`), so there is one
+writer. A hit is an `updateActor` call with `options.damageTaken > 0` and no `options.damageUndo`
+(pf2e's `applyDamage` passes `damageTaken`; undo passes `damageUndo`). The arms are unlinked, and
+Foundry 14's `ActorDelta#_onUpdate` fires `updateActor` for the synthetic actor with the options
+spread over, so `actor.token.id` names the arm. A hit on an arm that is not shimmering does nothing,
+and neither does any hit after the third shatter. Arms at 0 HP or defeated are not picked; with
+fewer than four eligible, all of them shimmer and `needed` drops to the number picked (at most 3).
+
+**Reset.** The effects are created with an unlimited duration, on purpose. pf2e would expire a
+"1 round, turn-start" effect only at the start of that arm's own turn (it requires the current
+combatant's actor to be the effect's actor), so the six effects would end one at a time. Instead
+the module stores the combat's round and turn at the third shatter and ends the window, in
+`updateCombat`, when combat reaches that turn index in the next round or later. It also ends it
+when the combat is deleted or replaced, or when any one of our effects is deleted by hand. Ending
+removes the remaining effects, clears the arm flags and picks again. The steps are queued and
+idempotent, so six `deleteItem` events produce one reset. A window opened outside combat has no
+timer: delete an effect (or call `reroll()`) to end it.
+
+**Traps.**
+
+- **The damage redirect macro.** The world's "ESOTERICA damage redirect" macro resets an arm's HP
+  with a plain update that has no `damageTaken`, so it is not a hit. Its `updateActor` hook runs
+  on the client that applied the damage; ours runs on the active GM. Neither depends on the
+  other's order.
+- **Weakness lives on the arms, not the boss.** pf2e works out IWR on the arm's actor before the
+  macro redirects the damage.
+- **All six arms must be in the combat tracker** for the window timer to mean one round.
+  Reordering or removing combatants changes the turn index; the window compares indexes only.
+- **Scene flag writes merge.** `effectUuids` and `window` are written as `[]` and `null`, not unset.
+- **Untested against the live world.** Only the state machine and the flag parser have unit tests.
+
 ## Build, test, install
 
 ```sh

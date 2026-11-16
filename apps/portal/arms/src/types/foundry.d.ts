@@ -99,6 +99,7 @@ interface FoundryToken {
 interface FoundryCanvas {
   readonly ready: boolean;
   readonly grid: { readonly size: number };
+  readonly scene: FoundryScene | null;
   readonly primary: PIXI.Container & { sortDirty: boolean };
   readonly tokens: {
     readonly placeables: FoundryToken[];
@@ -128,6 +129,11 @@ interface FoundrySettingConfig {
 
 declare const game: {
   readonly user: { readonly isGM: boolean };
+  /** `activeGM` is the one GM client Foundry nominates, or null with no GM connected. */
+  readonly users: { readonly activeGM: { readonly isSelf: boolean } | null };
+  readonly scenes: { readonly contents: FoundryScene[] };
+  /** The active encounter, if any. `turn` is null until the encounter starts. */
+  readonly combat: FoundryCombat | null;
   /** True once the world has finished loading (after the `ready` hook). */
   readonly ready: boolean;
   readonly settings: {
@@ -138,7 +144,11 @@ declare const game: {
   };
 };
 declare const ui: {
-  readonly notifications: { info(message: string): void; warn(message: string): void };
+  readonly notifications: {
+    info(message: string): void;
+    warn(message: string): void;
+    error(message: string): void;
+  };
 };
 declare const Hooks: {
   /** `never[]` so a callback may name whichever arguments its hook passes. */
@@ -146,3 +156,44 @@ declare const Hooks: {
   once(name: string, fn: (...args: never[]) => void): number;
   off(name: string, id: number): void;
 };
+
+/** Shatter mechanic (src/shatter.ts): the actor, item, scene and combat surface it touches. */
+interface FoundryTokenDocument {
+  readonly id: string;
+  readonly name: string;
+  /** The synthetic actor for an unlinked token. */
+  readonly actor: FoundryActor | null;
+  readonly parent: FoundryScene | null;
+  readonly combatant: { readonly isDefeated: boolean } | null;
+}
+
+interface FoundryItem {
+  readonly id: string;
+  readonly uuid: string;
+  getFlag(scope: string, key: string): unknown;
+}
+
+interface FoundryActor {
+  /** Set on a synthetic (unlinked token) actor, null on a world actor. */
+  readonly token: { readonly id: string; readonly parent: FoundryScene | null } | null;
+  readonly items: {
+    filter(fn: (item: FoundryItem) => boolean): FoundryItem[];
+  };
+  readonly system: { readonly attributes?: { readonly hp?: { readonly value?: number } } };
+  createEmbeddedDocuments(type: "Item", data: object[]): Promise<FoundryItem[]>;
+  deleteEmbeddedDocuments(type: "Item", ids: string[]): Promise<unknown>;
+}
+
+interface FoundryScene {
+  readonly id: string;
+  readonly tokens: { get(id: string): FoundryTokenDocument | undefined };
+  getFlag(scope: string, key: string): unknown;
+  setFlag(scope: string, key: string, value: unknown): Promise<unknown>;
+}
+
+interface FoundryCombat {
+  readonly id: string;
+  readonly started: boolean;
+  readonly round: number;
+  readonly turn: number | null;
+}
