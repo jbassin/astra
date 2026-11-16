@@ -6,6 +6,7 @@
 import { type ArmConfig, FLAG_KEY, FLAG_SCOPE, parseArmFlag } from "./config";
 import { reachRadius } from "./region";
 import { ARM_VERT, fragmentSource, SMEAR_SHADER } from "./shaders";
+import { createShatter, type ShatterApi } from "./shatter";
 import { createSmear, type InkHand } from "./smear";
 import { defaultLength, type Point, solve } from "./solve";
 import { allocateStrip, type StripArrays, stripEnd, stripIndices, writeStrip } from "./strip";
@@ -66,6 +67,8 @@ interface IkArmsApi {
   /** Remake the smear buffer's textures (the buffer size setting calls this). */
   rebuildSmear(): void;
   teardown(): void;
+  /** The shatter mechanic (shatter.ts). */
+  readonly shatter: ShatterApi;
   readonly arms: ReadonlyMap<string, Arm>;
 }
 
@@ -76,6 +79,7 @@ declare global {
 // Importing this file again (the dev-load macro does) replaces the running instance.
 globalThis.ikArms?.teardown();
 
+const shatter = createShatter();
 const arms = new Map<string, Arm>();
 const hooks: [name: string, id: number][] = [];
 function on(name: string, fn: (...args: never[]) => void): void {
@@ -386,6 +390,7 @@ async function pickAnchor(tokens: FoundryToken[] = canvas.tokens.controlled): Pr
 
 function teardown(): void {
   for (const [name, id] of hooks) Hooks.off(name, id);
+  shatter.teardown();
   for (const id of arms.keys()) remove(id);
   smear.teardown();
   ticker?.remove(tick);
@@ -399,6 +404,7 @@ globalThis.ikArms = {
   pickAnchor,
   rebuildSmear: () => smear.rebuild(),
   teardown,
+  shatter: shatter.api,
   arms,
 };
 
