@@ -267,6 +267,10 @@ needs each client to reload.
 
 ## Traps
 
+- **Only the active GM's client runs the shatter logic, and it runs whatever module it loaded.**
+  After `just arms-module-install`, a GM tab that has not reloaded still runs the old code, so
+  hits do nothing even though `start()` from another GM client (the headless Portal GM) worked.
+  Reload the active GM's tab (`game.users.activeGM`) before testing hits.
 - **At most 8 hands.** The buffer pass has room for 8; with more ink arms with hands painting,
   the ones whose token ids sort last get no hand.
 - **The hand draws under the token.** It is ink in the smear buffer at sortLayer 690, so the

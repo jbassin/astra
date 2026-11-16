@@ -131,6 +131,11 @@ Pointer: [`apps/mouthpiece/py/README.md`](../apps/mouthpiece/py/README.md).
   placeholders off the map's edge); then check a hand-dragged token and a player client, which
   the headless GM could not test. If the ink arms are slow on a player's machine, set their
   `ik-arms.bufferSize` client setting to 512 — Josh.
+- ik-arms shatter: run one cycle in a real combat with all six Implements in the tracker, and
+  check the Shattered window ends one round after the third shatter (the module times it from
+  the combat's round and turn; moving or removing arms in the tracker mid-window shifts it).
+  Every GM and player client must reload after a module install; hits are only handled by the
+  active GM's client — Josh.
 
 ## Frontends
 
