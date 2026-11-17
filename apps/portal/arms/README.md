@@ -279,6 +279,15 @@ notifications.
 - **Checked live on a throwaway encounter** (thresholds, healing, skip, round 2 reshuffle and
   reroll) through the headless GM client; the greyscale was checked in a browser client.
 
+## Chat images
+
+Chat cards (pf2e's damage cards, for one) show a token's image in an `<img>`, which cannot play a
+video, so an animated token such as a JB2A rune `.webm` shows as a broken image.
+`src/chat-images.ts` hooks `renderChatMessageHTML` on every client and swaps each video-backed
+image for JB2A's still beside it (`<name>_400x400.webm` becomes `<name>_Thumb.webp`), or, when the
+name has no such pattern, for a muted looping `<video>`. It only changes how the message renders;
+the stored message is untouched, so messages already in the log are fixed after a reload.
+
 ## Bench
 
 `bench/arm-shader-bench.html` is one self-contained page. Its **Boss demo** (the default) shows six

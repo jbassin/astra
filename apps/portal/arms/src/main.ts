@@ -3,6 +3,7 @@
 // the arm itself from the token's on-screen position, so nothing is synced beyond the token flag
 // that configures it (see config.ts).
 
+import { createChatImages } from "./chat-images";
 import { type ArmConfig, FLAG_KEY, FLAG_SCOPE, parseArmFlag } from "./config";
 import { createImplements, type ImplementsApi } from "./implements";
 import {
@@ -99,6 +100,7 @@ globalThis.ikArms?.teardown();
 
 const shatter = createShatter();
 const implementSets = createImplements();
+const teardownChatImages = createChatImages();
 const arms = new Map<string, Arm>();
 const hooks: [name: string, id: number][] = [];
 function on(name: string, fn: (...args: never[]) => void): void {
@@ -429,6 +431,7 @@ function teardown(): void {
   for (const [name, id] of hooks) Hooks.off(name, id);
   shatter.teardown();
   implementSets.teardown();
+  teardownChatImages();
   for (const id of arms.keys()) remove(id);
   smear.teardown();
   ticker?.remove(tick);
