@@ -25,6 +25,13 @@ Updated 2026-11-16.
   client: the six Implements on "esoterica" draw ink arms and hands with no errors. The module is
   still not enabled, so players don't see arms yet. Next: Josh relaunches the world, enables IK
   Arms, places the real anchors, and checks a player client.
+- **ESOTERICA's Implements now have an active and an inactive set (2026-11-16).** Each threshold
+  the three health bars cross (a bar at half, a bar empty) makes one random Implement inactive:
+  grey token and tracker row, no initiative, turn skipped. From round 2 the top of each round
+  reshuffles the sets and rerolls the active Implements' initiative. Off by default; the world
+  macro "ESOTERICA: active Implements (toggle)" turns it on, alongside the damage redirect.
+  Checked live on a throwaway encounter ([`apps/portal/arms/README.md`](../apps/portal/arms/README.md),
+  Active Implements).
 - **Character builder is live at builder.iridi.cc, with a sheet to play from (2026-11-12,
   #231 to #241).** A D&D 5e (2024) level 2 builder for Josh's one-shot with five new players:
   archetype, class, species, background and an about-you step, then an "On your turn" sheet
