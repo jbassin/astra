@@ -242,6 +242,7 @@ interface FoundryCombat {
   readonly combatant: FoundryCombatant | null;
   rollInitiative(ids: string[], options?: Record<string, unknown>): Promise<unknown>;
   updateEmbeddedDocuments(type: "Combatant", updates: object[]): Promise<unknown>;
+  update(data: { turn: number }): Promise<unknown>;
   nextTurn(): Promise<unknown>;
   previousTurn(): Promise<unknown>;
 }

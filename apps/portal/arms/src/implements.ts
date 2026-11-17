@@ -163,6 +163,9 @@ async function newRound(combat: FoundryCombat): Promise<void> {
       { skipDialog: true, messageMode: "gm", updateTurn: false },
     );
   }
+  // pf2e's setMultipleInitiatives moves the turn to follow whoever was current; the round
+  // starts with the new highest initiative instead. A no-op when the turn is already 0.
+  await combat.update({ turn: 0 });
   const names = on.map((c) => c.name.replace(/^Implement of /, "")).join(", ");
   whisperGm(`<strong>ESOTERICA</strong>, round ${combat.round}: active Implements are ${names}.`);
 }
