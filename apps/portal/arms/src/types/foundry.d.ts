@@ -152,6 +152,8 @@ declare const ui: {
     warn(message: string): void;
     error(message: string): void;
   };
+  /** The combat tracker sidebar tab. */
+  readonly combat?: { render(): unknown };
 };
 declare const Hooks: {
   /** `never[]` so a callback may name whichever arguments its hook passes. */
@@ -182,7 +184,9 @@ interface FoundryActor {
   readonly items: {
     filter(fn: (item: FoundryItem) => boolean): FoundryItem[];
   };
-  readonly system: { readonly attributes?: { readonly hp?: { readonly value?: number } } };
+  readonly system: {
+    readonly attributes?: { readonly hp?: { readonly value?: number; readonly max?: number } };
+  };
   createEmbeddedDocuments(type: "Item", data: object[]): Promise<FoundryItem[]>;
   deleteEmbeddedDocuments(type: "Item", ids: string[]): Promise<unknown>;
 }
@@ -200,3 +204,49 @@ interface FoundryCombat {
   readonly round: number;
   readonly turn: number | null;
 }
+
+/** Active Implements (src/implements.ts): combat, chat, tracker and token-mesh surface. */
+declare namespace PIXI {
+  class Filter {
+    enabled: boolean;
+  }
+  class ColorMatrixFilter extends Filter {
+    desaturate(): void;
+  }
+  interface Container {
+    filters: Filter[] | null;
+  }
+}
+
+interface FoundryToken {
+  /** The token's sprite (Foundry's PrimarySpriteMesh); null before it is drawn. */
+  readonly mesh: PIXI.Container | null;
+}
+
+interface FoundryCombatant {
+  readonly id: string;
+  readonly name: string;
+  readonly sceneId: string;
+  readonly tokenId: string | null;
+  readonly token: FoundryTokenDocument | null;
+  readonly initiative: number | null;
+}
+
+interface FoundryCombat {
+  readonly combatants: {
+    filter(fn: (c: FoundryCombatant) => boolean): FoundryCombatant[];
+    find(fn: (c: FoundryCombatant) => boolean): FoundryCombatant | undefined;
+    get(id: string): FoundryCombatant | undefined;
+  };
+  /** The combatant whose turn it is. */
+  readonly combatant: FoundryCombatant | null;
+  rollInitiative(ids: string[], options?: Record<string, unknown>): Promise<unknown>;
+  updateEmbeddedDocuments(type: "Combatant", updates: object[]): Promise<unknown>;
+  nextTurn(): Promise<unknown>;
+  previousTurn(): Promise<unknown>;
+}
+
+declare const ChatMessage: {
+  create(data: { content: string; whisper: string[] }): Promise<unknown>;
+  getWhisperRecipients(name: string): string[];
+};

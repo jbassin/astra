@@ -238,6 +238,47 @@ timer: delete an effect (or call `reroll()`) to end it.
 - **Scene flag writes merge.** `effectUuids` and `window` are written as `[]` and `null`, not unset.
 - **Untested against the live world.** Only the state machine and the flag parser have unit tests.
 
+## Active Implements
+
+A second boss-fight mechanic (`src/implements.ts`; the rules are pure code in
+`src/implements-state.ts`) that thins the boss's turns as its health bars fall. The world's macro
+"ESOTERICA: active Implements (toggle)" turns it on and off.
+
+- Every Implement starts active. Each threshold the health bars cross moves one random active
+  Implement to the inactive set. Each bar has two thresholds: half its max, and 0. One Implement
+  always stays active. Healing a bar back over a threshold makes a random inactive one active.
+- From round 2 on, the top of each round reshuffles the sets (same sizes), clears the inactive
+  Implements' initiative, and rolls the active ones' initiative (whispered to the GM, no dialog).
+  Round 1 keeps the initiative rolled to start the fight.
+- An inactive Implement's turn is skipped: when combat lands on it, the module calls `nextTurn()`
+  (or `previousTurn()` when the GM stepped back). It stays in the combat with its HP, effects and
+  flags. Its token symbol draws in greyscale (a `ColorMatrixFilter` on the token mesh) and its
+  combat tracker row is greyed, on every client. The arm is unchanged.
+- The shatter mechanic ignores the sets: an inactive Implement can still shimmer and shatter, and
+  damage to it still drains the bars through the redirect macro.
+
+**API** (GM client, on `globalThis.ikArms.implements`): `start({ bars, implements? })` (bars are
+required; implements default to every `ikArm` token on the viewed scene), `stop()`,
+`reshuffle()`, `setInactive(tokens)` (a GM override, kept until the next threshold or round) and
+`status()`.
+
+**Flags.** `flags.world.ikInactive = true` on an inactive Implement's token is the truth.
+`flags.world.ikImplements = { bars, implements, active }` on the scene names the tokens. Only the
+active GM client writes (`game.users.activeGM?.isSelf`), which is usually the headless portal
+client, so the module reports threshold changes and each round's active set as GM whispers, not
+notifications.
+
+**Traps.**
+
+- **The first turn of a reshuffled round.** Foundry moves to turn 0 before the module rerolls,
+  so turn-start processing (pf2e effects that expire at turn start) runs for whoever was first
+  under the old order, not for the new first combatant.
+- **Mid-round changes don't reorder.** An Implement that goes inactive mid-round keeps its
+  initiative until the next round; its remaining turn is skipped. One made active mid-round has no
+  initiative, so it sorts last and acts at the end of the round.
+- **Checked live on a throwaway encounter** (thresholds, healing, skip, round 2 reshuffle and
+  reroll) through the headless GM client; the greyscale was checked in a browser client.
+
 ## Bench
 
 `bench/arm-shader-bench.html` is one self-contained page. Its **Boss demo** (the default) shows six
@@ -309,7 +350,7 @@ needs each client to reload.
 - **The setting's `onChange` goes through `globalThis.ikArms`.** Foundry keeps the callback from
   the first registration, and re-importing the module (the dev-load macro) does not register the
   setting again, so the callback must find the running instance.
-- **Only the solver, the strip, the flag parser, the shatter look, the smear square, the shader
+- **Only the solver, the strip, the flag parser, the active-Implements rules, the shatter look, the smear square, the shader
   registry and the bench sync have unit tests.** The canvas glue in `src/main.ts` must be checked
   against the live world after changing it. The shaders compile and link in WebGL 1 (checked in
   Chromium), and the bench's boss demo runs the module's smear passes, hands, shimmer and shatter in
