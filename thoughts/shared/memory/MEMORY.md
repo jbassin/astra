@@ -19,3 +19,4 @@ Start with `docs/now.md` and `docs/backlog.md`; app facts are in each app's READ
 - [Frontend work](tanstack-start-skill.md) — read when touching a TanStack Start frontend: site-kit and gothic READMEs, bundled skills.
 - [Book fonts licensed](book-fonts-licensed.md) — read before flagging any font or book-distribution risk: licensed, cleared, never ask.
 - [Less player-facing prose](less-player-prose.md) — read before writing text players will read: cut or reuse, don't write more.
+- [Faerrin uses modified ABP](faerrin-modified-abp.md) — read before suggesting PF2e treasure: no potency, striking or resilient runes.
