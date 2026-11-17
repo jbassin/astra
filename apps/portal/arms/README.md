@@ -248,7 +248,8 @@ A second boss-fight mechanic (`src/implements.ts`; the rules are pure code in
   Implement to the inactive set. Each bar has two thresholds: half its max, and 0. One Implement
   always stays active. Healing a bar back over a threshold makes a random inactive one active.
 - From round 2 on, the top of each round reshuffles the sets (same sizes), clears the inactive
-  Implements' initiative, and rolls the active ones' initiative (whispered to the GM, no dialog).
+  Implements' initiative, rolls the active ones' initiative (whispered to the GM, no dialog), and
+  puts the turn on whoever now has the highest initiative.
   Round 1 keeps the initiative rolled to start the fight.
 - An inactive Implement's turn is skipped: when combat lands on it, the module calls `nextTurn()`
   (or `previousTurn()` when the GM stepped back). It stays in the combat with its HP, effects and
@@ -271,8 +272,10 @@ notifications.
 **Traps.**
 
 - **The first turn of a reshuffled round.** Foundry moves to turn 0 before the module rerolls,
-  so turn-start processing (pf2e effects that expire at turn start) runs for whoever was first
-  under the old order, not for the new first combatant.
+  and pf2e's `setMultipleInitiatives` then moves the turn to follow that combatant to its new
+  place. The module sets the turn back to 0 afterwards, so the round starts with the new highest
+  initiative. Turn-start processing (pf2e effects that expire at turn start) runs for whoever was
+  first under the old order, and again for the new first combatant when the reset changes the turn.
 - **Mid-round changes don't reorder.** An Implement that goes inactive mid-round keeps its
   initiative until the next round; its remaining turn is skipped. One made active mid-round has no
   initiative, so it sorts last and acts at the end of the round.
